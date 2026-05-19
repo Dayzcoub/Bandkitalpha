@@ -39,10 +39,9 @@
     </filter>
   </defs>
 
-  <rect width="1400" height="400" rx="46" fill="url(#bg)"/>
-  <rect x="1.5" y="1.5" width="1397" height="397" rx="44.5" stroke="url(#line)" stroke-opacity="0.42" stroke-width="3"/>
-  <rect width="1400" height="400" rx="46" fill="url(#violetGlow)"/>
-  <rect width="1400" height="400" rx="46" fill="url(#cyanGlow)"/>
+  <rect width="1400" height="400" fill="url(#bg)"/>
+  <rect width="1400" height="400" fill="url(#violetGlow)"/>
+  <rect width="1400" height="400" fill="url(#cyanGlow)"/>
 
   <path d="M76 246C173 205 267 230 359 270C484 323 584 283 675 226C774 164 884 213 984 260C1105 317 1216 259 1324 229" stroke="#182b76" stroke-opacity="0.34" stroke-width="9" stroke-linecap="round" filter="url(#softBlur)"/>
   <path d="M128 274C240 226 346 265 464 292C566 316 627 248 705 203C809 142 892 218 1017 285C1120 340 1221 283 1304 248" stroke="url(#lineSoft)" stroke-width="6" stroke-linecap="round" opacity="0.58"/>
