@@ -1,0 +1,92 @@
+/* Profile social layer: friendship, follows, personal feed policy and relationship controls. */
+
+.bk-profile-social-card {
+  overflow: hidden;
+}
+
+.bk-profile-social-kpis {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.bk-profile-feed-policy {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--bk-space-4);
+  padding: var(--bk-space-4);
+  border: 1px solid var(--bk-border);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, .035);
+}
+
+.bk-profile-feed-policy strong,
+.bk-profile-feed-policy span {
+  display: block;
+}
+
+.bk-profile-feed-policy span {
+  margin-top: var(--bk-space-1);
+  color: var(--bk-muted);
+  line-height: 1.45;
+}
+
+.bk-profile-social-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bk-space-2);
+}
+
+.bk-profile-social-actions .bk-button {
+  min-width: 0;
+}
+
+.bk-profile-card .bk-chip-row .bk-badge {
+  max-width: 100%;
+  white-space: normal;
+}
+
+.bk-social-card .bk-card-body p {
+  line-height: 1.55;
+}
+
+.bk-social-card .bk-action-row {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 767px) {
+  .bk-profile-social-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bk-profile-feed-policy {
+    display: grid;
+    gap: var(--bk-space-3);
+    padding: var(--bk-space-3);
+  }
+
+  .bk-profile-social-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .bk-profile-social-actions .bk-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .bk-social-card .bk-social-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--bk-space-2);
+  }
+
+  .bk-social-card .bk-social-actions > span,
+  .bk-social-card .bk-social-actions .bk-button:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .bk-social-card .bk-social-actions .bk-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
