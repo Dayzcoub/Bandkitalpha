@@ -69,5 +69,5 @@ export function mobileTopBar(ctx: AppContext): string {
 }
 
 export function topBar(ctx: AppContext): string {
-  return `<header class="bk-top-bar"><input class="bk-search" type="search" aria-label="${ctx.t('common.search')}" placeholder="${ctx.t('common.searchPlaceholder')}" /><div class="bk-top-actions"><button class="bk-button bk-button-primary" data-route="/feed">${ctx.t('common.quickCreate')}</button><button class="bk-button bk-button-secondary" data-route="/settings">${ctx.t('nav.settings')}</button><button class="bk-button bk-icon-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /></button></div></header>`;
+  return `<header class="bk-top-bar"><input class="bk-search" type="search" aria-label="${ctx.t('common.search')}" placeholder="${ctx.t('common.searchPlaceholder')}" /><div class="bk-top-actions"><button class="bk-button bk-button-primary" data-route="/events/new">${ctx.t('events.create')}</button><button class="bk-button bk-button-secondary" data-route="/settings">${ctx.t('nav.settings')}</button><button class="bk-button bk-icon-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /></button></div></header>`;
 }
