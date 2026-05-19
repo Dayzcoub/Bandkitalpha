@@ -1,5 +1,6 @@
 import type { AppContext } from '../app/types.js';
 import { canAccess } from '../lib/permissions/permissions.js';
+import { canSeeDiagnostics } from '../lib/permissions/diagnostics.js';
 import { pageHeader, contentGrid } from '../components/layout/page.js';
 import { defaultRightRail, routeMapPreview, securityBadges } from '../components/domain/commonBlocks.js';
 import { button, card, formField, img, kpi, listRow, badge } from '../components/ui/primitives.js';
@@ -95,7 +96,8 @@ function renderOnboarding(ctx: AppContext): string {
 function renderFeed(ctx: AppContext): string {
   const mobileHome = renderMobileFeedReference(ctx);
   const greeting = card(`<div class="bk-dashboard-greeting"><div><h1 class="bk-title">${ctx.t('dashboard.greeting')}</h1><p class="bk-subtitle">${ctx.t('dashboard.subtitle')}</p></div>${button(ctx.t('dashboard.configure'), 'secondary', '/settings')}</div><div class="bk-kpi-grid bk-kpi-grid-reference">${kpi('3', ctx.t('dashboard.kpi.invites'))}${kpi('2', ctx.t('dashboard.kpi.todayEvents'))}${kpi('7', ctx.t('dashboard.kpi.unread'))}${kpi('1', ctx.t('dashboard.kpi.tasks'))}</div>`, 'bk-dashboard-greeting-card bk-feed-desktop-block');
-  const hero = card(`<div class="bk-workspace-hero"><div><div class="bk-eyebrow">${ctx.t('common.workspace')}</div><h2 class="bk-title">${ctx.t('dashboard.title')}</h2><p class="bk-subtitle">${ctx.t('dashboard.workspaceCopy')}</p><div class="bk-chip-row">${badge(ctx.t('common.mock'))}${badge(ctx.t('common.offline'))}${badge(ctx.t('common.i18nReady'), 'positive')}</div></div>${img('illustrationPortfolio', 'bk-hero-art', ctx.t('asset.alt.empty'))}</div>`, 'bk-dashboard-card bk-dashboard-card-reference bk-feed-desktop-block');
+  const heroDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row">${badge(ctx.t('common.mock'))}${badge(ctx.t('common.offline'))}${badge(ctx.t('common.i18nReady'), 'positive')}</div>` : '';
+  const hero = card(`<div class="bk-workspace-hero"><div><div class="bk-eyebrow">${ctx.t('common.workspace')}</div><h2 class="bk-title">${ctx.t('dashboard.title')}</h2><p class="bk-subtitle">${ctx.t('dashboard.workspaceCopy')}</p>${heroDiagnostics}</div>${img('illustrationPortfolio', 'bk-hero-art', ctx.t('asset.alt.empty'))}</div>`, 'bk-dashboard-card bk-dashboard-card-reference bk-feed-desktop-block');
   const quick = card(`<div class="bk-card-section-head"><h3 class="bk-card-title">${ctx.t('common.quickCreate')}</h3>${button(ctx.t('actions.view'), 'ghost', '/events')}</div><div class="bk-card-grid bk-card-grid-4">${quickActions.map((action) => quickActionCard(ctx, action)).join('')}</div>`, 'bk-quick-actions-card bk-feed-desktop-block');
   const composer = card(`<div class="bk-composer-head">${img('avatarMusician', 'bk-avatar', ctx.t('asset.alt.avatar'))}<div><h3 class="bk-card-title">${ctx.t('feed.createPost')}</h3><div class="bk-meta">${ctx.t('security.linkNotice')}</div></div></div><textarea class="bk-textarea" aria-label="${ctx.t('feed.composerPlaceholder')}" placeholder="${ctx.t('feed.composerPlaceholder')}"></textarea><div class="bk-action-row">${button(ctx.t('feed.createPost'), 'primary')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-composer-card bk-feed-desktop-block');
   const list = posts.map((post) => `<div class="bk-feed-desktop-block">${postCard(ctx, post)}</div>`).join('');
