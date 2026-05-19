@@ -150,7 +150,7 @@ export const profiles: MockProfile[] = [
     profileTypeKey: 'profile.type.soloPerformer',
     subscriptionTierKey: 'profile.tier.performerPremium',
     statusBadges: [
-      { labelKey: 'badge.official', tone: 'positive' },
+      { labelKey: 'badge.verified', tone: 'positive' },
       { labelKey: 'profile.type.soloPerformer', tone: 'neutral' },
       { labelKey: 'profile.tier.performerPremium', tone: 'warning' },
     ],
