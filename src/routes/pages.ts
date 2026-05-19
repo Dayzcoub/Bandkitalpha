@@ -239,7 +239,24 @@ function renderAdminAudit(ctx: AppContext): string {
 }
 
 function renderBandWizard(ctx: AppContext): string {
-  return renderWizard(ctx, 'bands.create', 'bands.subtitle', ['bands.wizard.identity', 'bands.wizard.members', 'bands.wizard.permissions']);
+  const projectTypeSelect = `<select class="bk-select"><option>${ctx.t('bands.type.bandProject')}</option><option>${ctx.t('profile.type.soloPerformer')}</option><option>${ctx.t('profile.type.organizationRepresentative')}</option></select>`;
+  const visibilitySelect = `<select class="bk-select"><option>${ctx.t('feed.visibility.workspace')}</option><option>${ctx.t('feed.visibility.noExternalLinks')}</option><option>${ctx.t('marketplace.filter.safeOnly')}</option></select>`;
+  const memberRows = profiles.slice(0, 4).map((profile) => listRow(profile.name, `${ctx.t(profile.profileTypeKey)} · ${ctx.t(profile.availabilityKey)}`, profile.avatar, badge(ctx.t(profile.trustLevelKey), profile.reputation > 90 ? 'positive' : 'neutral'))).join('');
+  const permissionRows = [
+    listRow('Владелец проекта', 'Полный доступ к настройкам, ролям, документам и жалобам', 'navAdminInactive', badge(ctx.t('security.twoFactorRequired'), 'warning')),
+    listRow('Менеджер / букинг', 'События, приглашения, документы и коммуникации', 'roleManager', badge(ctx.t('qa.allowed'), 'positive')),
+    listRow('Участник', 'Профиль, расписание, чаты и подтверждение участия', 'roleMusician', badge(ctx.t('permission.read'), 'neutral')),
+  ].join('');
+  const quickSummary = card(`<div class="bk-kpi-grid">${kpi(ctx.t('bands.type.bandProject'), ctx.t('common.type'))}${kpi('4', ctx.t('bands.members'))}${kpi(ctx.t('marketplace.filter.safeOnly'), ctx.t('common.security'))}</div>`, 'bk-event-wizard-summary');
+  const identityStep = card(`<div class="bk-step-index">1</div><h3 class="bk-card-title">${ctx.t('bands.wizard.identity')}</h3><p class="bk-state-copy">Название, тип проекта, город и публичность. Это mock-форма будущего create-project flow.</p><div class="bk-form bk-event-wizard-form">${formField('Название проекта', '<input class="bk-input" value="Northern Lights Band" />')}${formField(ctx.t('common.type'), projectTypeSelect)}${formField(ctx.t('profile.city'), '<input class="bk-input" value="Helsinki" />')}${formField('Видимость', visibilitySelect)}${formField(ctx.t('profile.about'), '<textarea class="bk-textarea">Рабочий проект для концертов, репетиций, документов и безопасной коммуникации.</textarea>')}</div>`, 'bk-flow-card bk-event-wizard-card');
+  const membersStep = card(`<div class="bk-step-index">2</div><h3 class="bk-card-title">${ctx.t('bands.wizard.members')}</h3><p class="bk-state-copy">Первичный состав проекта: музыканты, сольные исполнители, менеджер или технический специалист.</p><div class="bk-list">${memberRows}</div><div class="bk-action-row">${button(ctx.t('actions.invite'), 'secondary')}${button(ctx.t('marketplace.filter.safeOnly'), 'ghost')}</div>`, 'bk-flow-card bk-event-wizard-card');
+  const permissionsStep = card(`<div class="bk-step-index">3</div><h3 class="bk-card-title">${ctx.t('bands.wizard.permissions')}</h3><p class="bk-state-copy">Роли, 2FA для повышенных прав, запрет внешних ссылок и будущие guard patterns.</p><div class="bk-list">${permissionRows}</div><div class="bk-chip-row">${badge(ctx.t('security.linkNotice'), 'warning')}${badge(ctx.t('security.reportAvailable'), 'positive')}</div>`, 'bk-flow-card bk-event-wizard-card');
+  const main = [
+    pageHeader(ctx, 'bands.create', 'bands.subtitle'),
+    quickSummary,
+    card(`<div class="bk-eyebrow">${ctx.t('flow.wizardPattern')}</div><div class="bk-flow-grid bk-event-wizard-grid">${identityStep}${membersStep}${permissionsStep}</div><div class="bk-action-footer">${button(ctx.t('actions.back'), 'secondary')}${button(ctx.t('actions.save'), 'secondary')}${button(ctx.t('actions.next'), 'primary')}</div>`, 'bk-event-wizard-shell'),
+  ].join('');
+  return contentGrid(main, defaultRightRail(ctx));
 }
 
 function renderEventWizard(ctx: AppContext): string {
