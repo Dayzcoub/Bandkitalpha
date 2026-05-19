@@ -24,12 +24,39 @@ export function createBandKitApp(root: HTMLElement) {
     render();
   }
 
+  function closeMobileMenu(): void {
+    const layer = root.querySelector<HTMLElement>('[data-mobile-menu-layer]');
+    layer?.classList.remove('is-open');
+    layer?.setAttribute('aria-hidden', 'true');
+  }
+
+  function openMobileMenu(): void {
+    const layer = root.querySelector<HTMLElement>('[data-mobile-menu-layer]');
+    layer?.classList.add('is-open');
+    layer?.setAttribute('aria-hidden', 'false');
+  }
+
   function bindEvents(): void {
     root.querySelectorAll<HTMLElement>('[data-route]').forEach((node) => {
       node.addEventListener('click', (event) => {
         event.preventDefault();
         const nextPath = node.dataset.route;
-        if (nextPath) navigate(nextPath);
+        if (nextPath) {
+          closeMobileMenu();
+          navigate(nextPath);
+        }
+      });
+    });
+    root.querySelectorAll<HTMLElement>('[data-mobile-menu-open]').forEach((node) => {
+      node.addEventListener('click', (event) => {
+        event.preventDefault();
+        openMobileMenu();
+      });
+    });
+    root.querySelectorAll<HTMLElement>('[data-mobile-menu-close]').forEach((node) => {
+      node.addEventListener('click', (event) => {
+        event.preventDefault();
+        closeMobileMenu();
       });
     });
     root.querySelectorAll<HTMLSelectElement>('select[data-pref]').forEach((node) => {
