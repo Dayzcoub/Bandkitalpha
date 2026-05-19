@@ -1,10 +1,20 @@
 import type { AssetKey } from '../lib/assets/assetRegistry.js';
 
+export type MockBadgeTone = 'neutral' | 'positive' | 'warning' | 'danger';
+
+export interface MockProfileBadge {
+  labelKey: string;
+  tone: MockBadgeTone;
+}
+
 export interface MockProfile {
   id: string;
   name: string;
   handle: string;
   roleKey: string;
+  profileTypeKey: string;
+  subscriptionTierKey: string;
+  statusBadges: MockProfileBadge[];
   avatar: AssetKey;
   reputation: number;
   city: string;
@@ -94,7 +104,7 @@ export interface MockTrustCheck {
   id: string;
   titleKey: string;
   copyKey: string;
-  tone: 'positive' | 'warning' | 'danger';
+  tone: MockBadgeTone;
 }
 
 export interface MockOffer {
@@ -114,9 +124,60 @@ export interface MockAuditEvent {
 }
 
 export const profiles: MockProfile[] = [
-  { id: 'p1', name: 'Alex Rhythm', handle: '@alex-rhythm', roleKey: 'profile.role.musician', avatar: 'avatarGuitarist', reputation: 92, city: 'Helsinki', availabilityKey: 'mock.profile.availability.open', trustLevelKey: 'mock.trust.verifiedMember' },
-  { id: 'p2', name: 'Mira Voice', handle: '@mira-voice', roleKey: 'profile.role.musician', avatar: 'avatarVocalist', reputation: 96, city: 'Tallinn', availabilityKey: 'mock.profile.availability.session', trustLevelKey: 'mock.trust.trustedPro' },
-  { id: 'p3', name: 'Nikita Sound', handle: '@nikita-sound', roleKey: 'profile.role.sound_engineer', avatar: 'avatarSound', reputation: 89, city: 'Riga', availabilityKey: 'mock.profile.availability.busy', trustLevelKey: 'mock.trust.verifiedMember' },
+  {
+    id: 'p1',
+    name: 'Alex Rhythm',
+    handle: '@alex-rhythm',
+    roleKey: 'profile.role.musician',
+    profileTypeKey: 'profile.type.soloPerformer',
+    subscriptionTierKey: 'subscription.freeBasic',
+    statusBadges: [
+      { labelKey: 'badge.verified', tone: 'positive' },
+      { labelKey: 'profile.type.soloPerformer', tone: 'neutral' },
+      { labelKey: 'subscription.freeBasic', tone: 'neutral' },
+    ],
+    avatar: 'avatarGuitarist',
+    reputation: 92,
+    city: 'Helsinki',
+    availabilityKey: 'mock.profile.availability.open',
+    trustLevelKey: 'mock.trust.verifiedMember',
+  },
+  {
+    id: 'p2',
+    name: 'Mira Voice',
+    handle: '@mira-voice',
+    roleKey: 'profile.role.musician',
+    profileTypeKey: 'profile.type.soloPerformer',
+    subscriptionTierKey: 'subscription.performerPremium',
+    statusBadges: [
+      { labelKey: 'badge.official', tone: 'positive' },
+      { labelKey: 'profile.type.soloPerformer', tone: 'neutral' },
+      { labelKey: 'subscription.performerPremium', tone: 'warning' },
+    ],
+    avatar: 'avatarVocalist',
+    reputation: 96,
+    city: 'Tallinn',
+    availabilityKey: 'mock.profile.availability.session',
+    trustLevelKey: 'mock.trust.trustedPro',
+  },
+  {
+    id: 'p3',
+    name: 'Nikita Sound',
+    handle: '@nikita-sound',
+    roleKey: 'profile.role.sound_engineer',
+    profileTypeKey: 'profile.type.technicalSpecialist',
+    subscriptionTierKey: 'subscription.performerPro',
+    statusBadges: [
+      { labelKey: 'badge.verified', tone: 'positive' },
+      { labelKey: 'profile.type.technicalSpecialist', tone: 'neutral' },
+      { labelKey: 'subscription.performerPro', tone: 'warning' },
+    ],
+    avatar: 'avatarSound',
+    reputation: 89,
+    city: 'Riga',
+    availabilityKey: 'mock.profile.availability.busy',
+    trustLevelKey: 'mock.trust.verifiedMember',
+  },
 ];
 
 export const posts: MockPost[] = [
