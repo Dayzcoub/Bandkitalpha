@@ -69,6 +69,7 @@ export function securityRailCard(ctx: AppContext): string {
 }
 
 export function securityBadges(ctx: AppContext): string {
+  if (ctx.path === '/settings/security') return '';
   return `<div class="bk-chip-row">${badge(ctx.t('badge.verified'), ctx.state.verification === 'verified' ? 'positive' : 'warning')}${badge(ctx.t('badge.email'), ctx.state.verification === 'emailPending' ? 'warning' : 'positive')}${badge(ctx.t('badge.phone'), ctx.state.verification === 'phonePending' ? 'warning' : 'positive')}${badge(ctx.t('badge.twoFactor'), ctx.state.verification === 'twoFactorRequired' ? 'warning' : 'positive')}</div>`;
 }
 
