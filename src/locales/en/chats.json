@@ -1,0 +1,13 @@
+{
+  "chats.title": "Chats",
+  "chats.subtitle": "DMs, group, project and event chats with link policy.",
+  "chats.roomTitle": "Chat room",
+  "chats.rooms": "Chat list",
+  "chats.messages": "Messages",
+  "chats.composer": "Message",
+  "chats.attachments": "Attachments",
+  "chats.direct": "Direct chat",
+  "chats.group": "Group chat",
+  "chats.send": "Send",
+  "chats.empty": "No messages yet"
+}

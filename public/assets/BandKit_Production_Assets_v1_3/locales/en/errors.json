@@ -1,0 +1,7 @@
+{
+  "errors.generic": "Something went wrong",
+  "errors.network": "No connection",
+  "errors.forbidden": "Not enough permissions",
+  "errors.not_found": "Not found",
+  "errors.validation": "Check the fields"
+}

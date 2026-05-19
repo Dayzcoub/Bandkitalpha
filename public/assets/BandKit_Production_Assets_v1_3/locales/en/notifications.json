@@ -1,0 +1,6 @@
+{
+  "notifications.event_invite": "{{sender}} invited you to “{{event}}”",
+  "notifications.chat_message": "New message from {{sender}}",
+  "notifications.complaint_status_changed": "Your complaint status has changed",
+  "notifications.role_request": "New role request"
+}

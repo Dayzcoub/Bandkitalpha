@@ -1,0 +1,17 @@
+{
+  "app.name": "BandKit",
+  "actions.save": "Save",
+  "actions.cancel": "Cancel",
+  "actions.create": "Create",
+  "actions.edit": "Edit",
+  "actions.delete": "Delete",
+  "actions.invite": "Invite",
+  "actions.report": "Report",
+  "navigation.feed": "Feed",
+  "navigation.events": "Events",
+  "navigation.chats": "Chats",
+  "navigation.profile": "Profile",
+  "navigation.documents": "Documents",
+  "state.empty.title": "Nothing here yet",
+  "state.loading": "Loading…"
+}

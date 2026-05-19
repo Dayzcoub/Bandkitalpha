@@ -1,0 +1,8 @@
+{
+  "events.create": "Создать событие",
+  "events.rehearsal": "Репетиция",
+  "events.concert": "Концерт",
+  "events.invite_members": "Пригласить участников",
+  "events.status.confirmed": "Подтверждено",
+  "events.status.cancelled": "Отменено"
+}

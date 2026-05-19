@@ -1,0 +1,10 @@
+{
+  "profile.role.musician": "Музыкант",
+  "profile.role.band": "Группа",
+  "profile.role.orchestra": "Оркестр",
+  "profile.role.studio": "Студия",
+  "profile.role.venue": "Площадка",
+  "profile.role.organizer": "Организатор",
+  "profile.rating.title": "Рейтинг надёжности",
+  "profile.cover.fallback": "Обложка профиля"
+}

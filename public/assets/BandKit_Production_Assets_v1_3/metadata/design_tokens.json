@@ -1,0 +1,50 @@
+{
+  "brand": "BandKit",
+  "version": "1.1.0",
+  "colors": {
+    "bg_graphite": "#080e18",
+    "panel": "#0a1220",
+    "primary_purple": "#a855ff",
+    "secondary_blue": "#5b7cff",
+    "accent_cyan": "#22d3ee",
+    "text": "#f7f7fb",
+    "muted": "#a5adba",
+    "success": "#2dd4bf",
+    "warning": "#fbbf24",
+    "danger": "#ff6b6b",
+    "safe_green": "#86efac"
+  },
+  "shape": {
+    "icon_tile_radius_px_at_96": 16,
+    "app_icon_radius_px_at_512": 128
+  },
+  "stroke": {
+    "icon_line_weight_px_at_96": 4,
+    "source_linecap": "round",
+    "source_linejoin": "round"
+  },
+  "states": [
+    "active",
+    "inactive"
+  ],
+  "formats": [
+    "svg",
+    "png",
+    "webp",
+    "ico"
+  ],
+  "i18n": {
+    "baseline_languages": [
+      "ru",
+      "en"
+    ],
+    "language_neutral_assets": true,
+    "localized_assets_path": "assets/localized/{lang}/",
+    "ui_string_strategy": "key-based locale packs"
+  },
+  "fallback_asset_sizes": {
+    "avatars": "512x512",
+    "covers": "1600x640",
+    "thumbnails": "512x512"
+  }
+}

@@ -1,0 +1,5608 @@
+{
+  "package": "BandKit_Production_Assets_v1_3",
+  "brand": "BandKit",
+  "version": "1.3",
+  "generated_files": 622,
+  "layout_contract": "spec/BandKit_Interface_Layout_Contract_v1_0.md",
+  "main_tz": "spec/BandKit_TZ_v1_2.md",
+  "assets": [
+    {
+      "path": "00_README/README.md",
+      "role": "metadata/documentation",
+      "format": "md",
+      "size_bytes": 6839,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "60748850afc5ad8e84597609d6991da99501a6a92a52695b046da3ec8aa4dc1d"
+    },
+    {
+      "path": "app-icons/icon-180.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 8195,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "7bd1a6ca7858cc8fc1cd91db21b1b47259e06eb058389380e9337da1f7cec2a4"
+    },
+    {
+      "path": "app-icons/icon-180.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 7900,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "07869f8ab6c828e1b392ef3b27454bd0578a23c857eb31832f079757c6e7db11"
+    },
+    {
+      "path": "app-icons/icon-192.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 8412,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "331818837fb4efc38abd8e834535a54644e885de770f0ea87d5fd4b98627d3c8"
+    },
+    {
+      "path": "app-icons/icon-192.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 7726,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ab848a81dd0182b7373d9cd2a5cee3ea4727eb4005720d34cbd36483ec9833e8"
+    },
+    {
+      "path": "app-icons/icon-512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 26789,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "269ce7f21c9035066a5453334bf0d2912e4d19db106303cb7e2362c3f1a94551"
+    },
+    {
+      "path": "app-icons/icon-512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 20700,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "94784fc1cd5d7caf31d7a2262c1160b5d0e9028b4e5a35789d547449f33486e2"
+    },
+    {
+      "path": "app-icons/maskable-512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 19193,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b36fe49e3466838a954cf6b16b3084ab86fc2500e29dbcbf42b8a5387a21159c"
+    },
+    {
+      "path": "app-icons/maskable-512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 18624,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "26e13e45776351479619b8e0ecff7e182dfff5e43a77b49f42386c202742699e"
+    },
+    {
+      "path": "badges/active/png/banned_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5018,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f543d0cdce4d641fac2f6131fc46a93623057f24566910e8958d7b6f0cda0be6"
+    },
+    {
+      "path": "badges/active/png/email_verified_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4905,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "416684947e5b895b4f27978945d869047054217fec97670ee95969181386c715"
+    },
+    {
+      "path": "badges/active/png/phone_verified_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4748,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c4010e2c6b72ed267d69452b1ea0e85083a5e5989d0f9848f19e3fd7909408d0"
+    },
+    {
+      "path": "badges/active/png/protected_workspace_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5353,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bcbeaf7fe48c5af5a9151301466a8e66fabd705aefc451e0597873edaa4b68fc"
+    },
+    {
+      "path": "badges/active/png/restricted_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3582,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0a4c576b19e8125be7e23249aa179d4e7321dc60d57790c2bc46128d14534a30"
+    },
+    {
+      "path": "badges/active/png/risky_account_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4930,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c0d7cd24938481a0a925596c0605b7bfbdc50af385b5c6ca4b8995e1e64c4328"
+    },
+    {
+      "path": "badges/active/png/trusted_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5976,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e75a8728b76da819d4067af96d23992491bfa44ac8d540afbab5e5f5a981ec58"
+    },
+    {
+      "path": "badges/active/png/two_factor_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 6051,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "699c9fd9cf4be9e446c9cb5f42948cc9237dd52e749702570671adfd6321a8ed"
+    },
+    {
+      "path": "badges/active/png/verified_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5532,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "dffda76a4b0bd9221f19f55ca810e7d191e22f706c3650d7994adbfd2569a357"
+    },
+    {
+      "path": "badges/active/png/warning_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4445,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a33d8bfae1fd4c56aabc40fe670d82b50d90684b60bb17cf43ae6901ab8e1e76"
+    },
+    {
+      "path": "badges/active/svg/banned.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1048,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "07e633d95035a7062497b47f355837210e5216b030ccf733133cfe0fc7d849e8"
+    },
+    {
+      "path": "badges/active/svg/email_verified.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1131,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "31b058c013da54602b5c3ca213cd07f2e771739346b52edbbcb2269802d543d4"
+    },
+    {
+      "path": "badges/active/svg/phone_verified.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1124,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "4c92608565c58d4952f1770f3834282b66d40013e4ccf6ed4e44539c22937e3f"
+    },
+    {
+      "path": "badges/active/svg/protected_workspace.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1107,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "79a2bcfc7caec84920d005c648e6719d51b2bab1f82c2d03e91b16515603d220"
+    },
+    {
+      "path": "badges/active/svg/restricted.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1113,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "91aee0fb4f0104b947830367ecbfdc3da9c2f1376e9a827f1ada081ac5fa37dc"
+    },
+    {
+      "path": "badges/active/svg/risky_account.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1120,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "2a55b89f0db43316f051a9c2b8ed9ec61a9428612b3bd9b9eb7238d96420dc03"
+    },
+    {
+      "path": "badges/active/svg/trusted.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1111,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "5aa09ad36679825d8708227454b9b8c978c2820dbb2c8521a4e5997b6ad92351"
+    },
+    {
+      "path": "badges/active/svg/two_factor.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1174,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "47316faebd4bfc9a8de8731f27ac4893359cfd5692b82997b5d2696cc9332835"
+    },
+    {
+      "path": "badges/active/svg/verified.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1084,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "e660c9e6635e80b3cc3a9a076d1cb877361e232f919abd92b372bb08bff3b62e"
+    },
+    {
+      "path": "badges/active/svg/warning.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1050,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "10c8ad6e87361f112149c83c7e2c036eac767e142dd632e3d7768a454c5540bf"
+    },
+    {
+      "path": "badges/active/webp/banned_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4430,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fd4cbe4d4672c7217609657fdc4dc1e2c4398fb2e8ebbeca682d7463fa34393b"
+    },
+    {
+      "path": "badges/active/webp/email_verified_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4342,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a9f28a69c262cfe36bba1b804bb22438dd4c69a01a8bfe94ec3b57889f34efad"
+    },
+    {
+      "path": "badges/active/webp/phone_verified_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4192,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fa6a09277c371fd2ff79856322f612074654a9535beeda9b5cd902d243013b73"
+    },
+    {
+      "path": "badges/active/webp/protected_workspace_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4398,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2874e43d45061cb95c92e449698f41b99468403903a49d0d19728ab10c86132f"
+    },
+    {
+      "path": "badges/active/webp/restricted_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3694,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3b501c6c77832ec4ece24f091216582d8753919fb0894d7ac490306ab300e51e"
+    },
+    {
+      "path": "badges/active/webp/risky_account_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4658,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fdff82fac17e9883e3495f6f4b89f06697fef79a50b1f5c9c6dbab4bafcf3787"
+    },
+    {
+      "path": "badges/active/webp/trusted_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 5092,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a837bfd9f044fff6f4f1517b2340b84d095ade0ae35dd3bfdbbc4961de3363c0"
+    },
+    {
+      "path": "badges/active/webp/two_factor_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 5126,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "72a22edfd58cdba7f905d148d28380e13d5f3ccdd49d11546f4dc0fe1457e735"
+    },
+    {
+      "path": "badges/active/webp/verified_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4640,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "936510792b4dab9d67d9d956de33460422015744881ce75950287de1f521baaa"
+    },
+    {
+      "path": "badges/active/webp/warning_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4170,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a2950a3df5ecd4d4cf295b5d301fd5df24948f2627459c91b2e366cace368675"
+    },
+    {
+      "path": "badges/inactive/png/banned_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4577,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "189ae9993a7b95620367cc6370289be32da5767a5552f9001cb007a2f9728a5b"
+    },
+    {
+      "path": "badges/inactive/png/email_verified_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4418,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8dd59039f8b9417aa6fc1d098b3d5bd3bf45f4229f4e73e006369f41e5e2ac53"
+    },
+    {
+      "path": "badges/inactive/png/phone_verified_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4121,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b234d387ff66f9afb7315b9ba0b66d3844f46d87b4143abe44197b0a96c123f4"
+    },
+    {
+      "path": "badges/inactive/png/protected_workspace_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4203,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "869396a1031e7176e548b8bf8a93c727fc0a992bed2eabe55021a36fe50b8509"
+    },
+    {
+      "path": "badges/inactive/png/restricted_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3238,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8f8f381e593605114dc3cd8db1195efd987d536c40f4c9d1e9b7e3cd9011aa8b"
+    },
+    {
+      "path": "badges/inactive/png/risky_account_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3938,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d2e1326e30d3bac1b909845ecbebcebe012cdebc22791a44b75ac0591e8761bf"
+    },
+    {
+      "path": "badges/inactive/png/trusted_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5095,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "7253350905a72b3898b2542e642daf620f8ea41413d6fde2bea6042e7e78887a"
+    },
+    {
+      "path": "badges/inactive/png/two_factor_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5073,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a26e9d9b090bce8cf139dbe6028df77463c42e4d126aeed920254bf9535098ca"
+    },
+    {
+      "path": "badges/inactive/png/verified_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4741,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2cb6dbcd4e5da9f140b80ea1ded27f6160a8693ccf21659de0ad185910901b1d"
+    },
+    {
+      "path": "badges/inactive/png/warning_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4181,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2a855fe59cc97e57c9926cca1f5a0e4f217250a086d5daf7b39d0b65699d7564"
+    },
+    {
+      "path": "badges/inactive/svg/banned.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1043,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "093b8331fc0fd748dc6c6c09cdb59998624529cd26dff0ca159c6147a53865aa"
+    },
+    {
+      "path": "badges/inactive/svg/email_verified.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1126,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "7e52c910845dafbb6b121b6300e41a2322bbaa3983d0b8d1338a2da8ad7150f1"
+    },
+    {
+      "path": "badges/inactive/svg/phone_verified.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1119,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "dd4d8a8107fea83ce88a3eccc8f62a6abc118f8a8b69aa0ce9407dd153ffb71f"
+    },
+    {
+      "path": "badges/inactive/svg/protected_workspace.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1102,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6342af693e0b53f14a4c4d42d10c7ea9c3b568b1dd450bcf32f87d07c0678d88"
+    },
+    {
+      "path": "badges/inactive/svg/restricted.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1108,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "bed8586e80463f559193c5f7f3b39de9a8cac05af618906cd0951e4d429e26f2"
+    },
+    {
+      "path": "badges/inactive/svg/risky_account.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1115,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "748f756ab57d70104f8eb15ff4da7ba53be4275b4a492b11850ba6e9344053eb"
+    },
+    {
+      "path": "badges/inactive/svg/trusted.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1106,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1cb0a8ef2241406e2fe38318ad88f635144841dfdf8d897a0de22cd6b8cfe366"
+    },
+    {
+      "path": "badges/inactive/svg/two_factor.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1169,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "9d082e0aef82df6f1b7887cdd8d89b502e613b0bf939d9bc114637636857b2ee"
+    },
+    {
+      "path": "badges/inactive/svg/verified.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1079,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "af954733962c815f532f070b1e30000f68f5f83723bba66a3aa6e61d25dbf18b"
+    },
+    {
+      "path": "badges/inactive/svg/warning.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1045,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "53b94d21fa00988e92d63939512d897e8cad40428bb3c90d26fa2ca398aee45e"
+    },
+    {
+      "path": "badges/inactive/webp/banned_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4006,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d424c7067a64b453a6b2a95db473dd063e76532e12a4efcd390e748e136a41b8"
+    },
+    {
+      "path": "badges/inactive/webp/email_verified_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4158,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bb456ad672d758128041881f22b7a6bf50f6207d7c0db3cba1fff0ccb174b1b5"
+    },
+    {
+      "path": "badges/inactive/webp/phone_verified_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3898,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5887e7a844161f4aeb60b24a5b9e5b90e27223110a69fbe78fe9da8d20563ff1"
+    },
+    {
+      "path": "badges/inactive/webp/protected_workspace_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4174,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "da8cad48b491329cc727fa2b6fec5ca1ceb090a6620680359b2b355f19932f7e"
+    },
+    {
+      "path": "badges/inactive/webp/restricted_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3204,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2e8dea3e20ec2c586b4ba82a5a89f1c30b0c6fdf324c87ba934b145ea76f6031"
+    },
+    {
+      "path": "badges/inactive/webp/risky_account_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4058,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ce9d47e55dd8f90a346ccda2347df9635fb63e34e29a5c00e24e457abca9dbab"
+    },
+    {
+      "path": "badges/inactive/webp/trusted_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4812,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fb6b3fad60e2e1ab70fffa1db327fcada8a43fe2fbc47969b16abd7298a2f98f"
+    },
+    {
+      "path": "badges/inactive/webp/two_factor_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4784,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "17852e4d5eadd9d115f940bb4b2f64986ffe769d79e2ec1b4a04266997ad05be"
+    },
+    {
+      "path": "badges/inactive/webp/verified_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4374,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5bbfd12bc5c815386ba8ee0e883d963ab95ba4b84c54c2c2a92c215748eadf54"
+    },
+    {
+      "path": "badges/inactive/webp/warning_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3610,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9515cfc01a10761fc4bfb5b7665046160b7b8c22cf57f49a734547f54df8890a"
+    },
+    {
+      "path": "brand/png/logo-dark_1040w.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 18353,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "41b299897e8d6afe3c212c8b20acfc9f7833f07ef37e6ffbe07db5a1e4a59c5c"
+    },
+    {
+      "path": "brand/png/logo-dark_520w.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 8656,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e26fa44e0e4fa5716372d43ecae38d565f1b88827b1467f747d649e56f02d1d3"
+    },
+    {
+      "path": "brand/png/logo-light_1040w.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 18722,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f536f9f592fc4e31b4f861a3d5d4315dd65bd859545695107545df3e0509a905"
+    },
+    {
+      "path": "brand/png/logo-light_520w.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 8843,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "cc55ef2618efc2b6e22242ba2f9b381a001474bf0c3adad721d27e0ce689baba"
+    },
+    {
+      "path": "brand/png/logo-monochrome_1040w.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 16700,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ef5a23b534b785154e476717bc7a038588da93aad28c0ff1a93c1654be691961"
+    },
+    {
+      "path": "brand/png/logo-monochrome_520w.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 7850,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "79f83e2225a4df7bb3eaebdb9e637efb4cc5d6642269faec02d7390aaf4ed736"
+    },
+    {
+      "path": "brand/png/logo-primary_1040w.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 18353,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "41b299897e8d6afe3c212c8b20acfc9f7833f07ef37e6ffbe07db5a1e4a59c5c"
+    },
+    {
+      "path": "brand/png/logo-primary_520w.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 8656,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e26fa44e0e4fa5716372d43ecae38d565f1b88827b1467f747d649e56f02d1d3"
+    },
+    {
+      "path": "brand/png/mark-monochrome_256.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3289,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f6d7ccbc4cceda3babdd83d2b491c78e4fed1dec68ef14d8eab654cd2d51b349"
+    },
+    {
+      "path": "brand/png/mark-monochrome_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 6884,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "7ac7a19ca759bcef7a134bba42b344ace6f19b251841cf9ea03179bbf43a0c67"
+    },
+    {
+      "path": "brand/png/mark-monochrome_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 886,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a1e3a5731b00e89ca46e98850d7efb2eb79725d7d42cc70ef398dfbb3e2d2cdb"
+    },
+    {
+      "path": "brand/png/mark-tile_256.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 12006,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "186b4adc4441ff1a41b8e3f0c093e2e1193a156f54b4aff8cdab534530b2af69"
+    },
+    {
+      "path": "brand/png/mark-tile_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 26789,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "269ce7f21c9035066a5453334bf0d2912e4d19db106303cb7e2362c3f1a94551"
+    },
+    {
+      "path": "brand/png/mark-tile_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3942,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bd4f0f349239068c3fbe6f0c0c776d0d7f31d206bd24e9d1bfba7ab7233aa849"
+    },
+    {
+      "path": "brand/png/mark_256.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5118,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5b48f1d3a6ae9b1de83a462f19b187874249f88b09cf1b3d65df03a8388a7b60"
+    },
+    {
+      "path": "brand/png/mark_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 10894,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1d9c2b83ce7a508f04e4f94523833ff18bc6d5eb496cebd7fdd0c4bbdef59f1b"
+    },
+    {
+      "path": "brand/png/mark_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 1570,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "99672bc80e9f587b829ae04bdff1ee4d4d4eaf3481141b581797a98a03303966"
+    },
+    {
+      "path": "brand/svg/logo-dark.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1745,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "cd9272bb98271726ad24bc54c02a790baabc785ef0af64ce58de10b05a010a3e"
+    },
+    {
+      "path": "brand/svg/logo-light.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1745,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "639f5fa61acb935794dc640a5dc6c970e33e819d3fd5d2f5b904cc5391b25556"
+    },
+    {
+      "path": "brand/svg/logo-monochrome.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1720,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "07917a4d0e8c3f9a428966fd54cd1889c4bb1bbfd16ec00d800a22fbd877e47a"
+    },
+    {
+      "path": "brand/svg/logo-primary.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1745,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "cd9272bb98271726ad24bc54c02a790baabc785ef0af64ce58de10b05a010a3e"
+    },
+    {
+      "path": "brand/svg/mark-monochrome.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 962,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "2b8c882d770f04ff3f611368bdc2a83c128186519029a861e137188823743658"
+    },
+    {
+      "path": "brand/svg/mark-tile.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1521,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "a386e54b82288138314c2e21c53ff6c86962b500d168908b1d4ddce757b5f82d"
+    },
+    {
+      "path": "brand/svg/mark.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1407,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "c1f65dfc2f3dec1ff9bfa945446436615d6c78c316d90e2a16b3673571d927d0"
+    },
+    {
+      "path": "brand/webp/logo-dark_1040w.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 33442,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "dde270ab6b7b9966adbf433e0479a243e544fa846cf8a210bfc6d4fd8dfe244b"
+    },
+    {
+      "path": "brand/webp/logo-dark_520w.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 11418,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "796685fac334dea56bb10c57225db1cf0e7fbe252728a71dd5be40c8946a1183"
+    },
+    {
+      "path": "brand/webp/logo-light_1040w.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 35650,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1556b619cb64c74902152aea9e1f3d5d3e6192d40c0f5c1b6b98a9c33c8dadcd"
+    },
+    {
+      "path": "brand/webp/logo-light_520w.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 12816,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d62c06e53d9b1563ee5cd1bfbc5adac0d81b5a463eb04066467dc4c3cffb8197"
+    },
+    {
+      "path": "brand/webp/logo-monochrome_1040w.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 31992,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2b1d7e08ddf8f05913ef7753ac480d591488d37c1fb77f340acd3e05c69abfa9"
+    },
+    {
+      "path": "brand/webp/logo-monochrome_520w.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 11080,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0a92223eb2e82827086fd9a127d2b1b4c9fa13c00f04ddce0c5885cb97071c6e"
+    },
+    {
+      "path": "brand/webp/logo-primary_1040w.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 33442,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "dde270ab6b7b9966adbf433e0479a243e544fa846cf8a210bfc6d4fd8dfe244b"
+    },
+    {
+      "path": "brand/webp/logo-primary_520w.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 11418,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "796685fac334dea56bb10c57225db1cf0e7fbe252728a71dd5be40c8946a1183"
+    },
+    {
+      "path": "brand/webp/mark-monochrome_256.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 8336,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1f35ddff3e59338a3e3c3555f605b1449b14516f46d9b63e3185bcd8db0d4e54"
+    },
+    {
+      "path": "brand/webp/mark-monochrome_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 15946,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2829d08efac44091c73ade645ab473857b428b48ae96d7a93fc3f68e62406538"
+    },
+    {
+      "path": "brand/webp/mark-monochrome_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 1168,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "25f88e1c493b491534e176f5a1071b34c4a7cbd04301a64ffcf13580312433ae"
+    },
+    {
+      "path": "brand/webp/mark-tile_256.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 9802,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "81477290b9cb331cc171fa05bb50fbb0e163d32e1115c87e295d88b4b5d242a8"
+    },
+    {
+      "path": "brand/webp/mark-tile_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 20700,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "94784fc1cd5d7caf31d7a2262c1160b5d0e9028b4e5a35789d547449f33486e2"
+    },
+    {
+      "path": "brand/webp/mark-tile_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3330,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "6e1461da585f2b9f8f5b4e773c12d1b9a0291126a73146cd34cfcbeb497d3596"
+    },
+    {
+      "path": "brand/webp/mark_256.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 9608,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "46df8d5841e9ea7fc145c4f0a6bea0ecf1d9e9639f58f2a369403d8fe3590f0b"
+    },
+    {
+      "path": "brand/webp/mark_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 18318,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fcf4ac06b2d9b53eaa9b7e86c5bd85086c8aeb1c9356d843309a1f95ddf227af"
+    },
+    {
+      "path": "brand/webp/mark_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 1366,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8614dcc97a19eecc5076f39457061d4c3070b68886ec771d2a8f668f74dd09fa"
+    },
+    {
+      "path": "documents/active/png/archive_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3235,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3a7d9cc3f245e726d0c4af75a1a586d037da32e72d4a10e7719406f5010eec58"
+    },
+    {
+      "path": "documents/active/png/audio_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3190,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1ddf4d09d56786fdabd26e134bcc245a56cee1d535e0a4f1d1b860e3da18deca"
+    },
+    {
+      "path": "documents/active/png/contract_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3471,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d44f2d7a3d4029c61cfa14530caf2e689c7663eed771fb99f121e33425078600"
+    },
+    {
+      "path": "documents/active/png/download_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3343,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a52fb9b01047c8068e2bb1011aa86d463542afb1ab9e921096bcfc96ec75795d"
+    },
+    {
+      "path": "documents/active/png/export_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3107,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5d83c3d6ec2a10f77e9bb08f478fffdc224c2182a010b303de8f55391869b104"
+    },
+    {
+      "path": "documents/active/png/image_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3771,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f0925bcfb592617dfbc10a4d8a52c3eca2105718f02b042471bd7d91acf3518a"
+    },
+    {
+      "path": "documents/active/png/offer_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3338,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "df342480d5babec15dead03259238331082a41e7b175f610c21503e9359d7730"
+    },
+    {
+      "path": "documents/active/png/pdf_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3329,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b0e5987039982a15697520134d12fde19d06cde00dd993dc93f6c2f4922e4623"
+    },
+    {
+      "path": "documents/active/png/private_file_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3564,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ddca7daf676f59f91c2f664ac94e25aee77675af2af761e66ddaa104536accf5"
+    },
+    {
+      "path": "documents/active/png/project_file_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4352,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2073652a90e57b06e1f257b1bab8af354f89e5430fac9f9451962148a2cdac8e"
+    },
+    {
+      "path": "documents/active/png/public_file_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4598,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "02501e621f7fbbc2ab121c67074337a3288952ff4d03eb0b80eb0c2fe8572d9b"
+    },
+    {
+      "path": "documents/active/png/rider_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3016,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2871f8afc61d40bb5f3e9de7876ebddb5242337376c75908daf55200fffd9442"
+    },
+    {
+      "path": "documents/active/png/setlist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3671,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "59b51966cfeb85d04ad5e7f9834f915d8fec37f9f42f67eab15efc3b4bac7fe6"
+    },
+    {
+      "path": "documents/active/png/stage_plot_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3032,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f3bdbf28d4f3057aa09dbf83ab136bd725179bc400a5c0e3303c3be7105db20e"
+    },
+    {
+      "path": "documents/active/png/template_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3143,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0d9fa2a0f24651139acc37a38d1cfcd6bac3b5e49fde5c8d7f8cdca22d27114e"
+    },
+    {
+      "path": "documents/active/png/upload_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3352,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "df8cb74544522853e10056e145a8d6d93e5c971391a6325c3869bcbb35648f2d"
+    },
+    {
+      "path": "documents/active/svg/archive.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1111,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "4f359493eb3a6b5c65f575f78717e174519b37504748cf64f2c637172a16ce46"
+    },
+    {
+      "path": "documents/active/svg/audio.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1098,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "244d3b63d2eb9d99022ac6f79c039a70a19a61b127f50a165607b8034edd7ea3"
+    },
+    {
+      "path": "documents/active/svg/contract.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1097,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "3e8a3b02cde16515a2cc5038c2d408fd1104540a4366bf73bc3ee287b32b068d"
+    },
+    {
+      "path": "documents/active/svg/download.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1098,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6aa2b1cdc6c5ec28b4545873221208a9cd6b134293d484ff7aa985b38ea6f501"
+    },
+    {
+      "path": "documents/active/svg/export.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1107,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "115ae5e93b7d8e0e569a2bfefc0d3bfd76cc23cbd65c3e3c215bcb2f48fb9e42"
+    },
+    {
+      "path": "documents/active/svg/image.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1118,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8f9dbc5044ca3da390bc3f195ce1025cb5430457ccff1c36331969ad5f937475"
+    },
+    {
+      "path": "documents/active/svg/offer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1111,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "7c52e81f83449d94228c1c4750e7334d2053c9268aba7fe8dff5e3e01a1f2ae7"
+    },
+    {
+      "path": "documents/active/svg/pdf.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1168,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "89d91da8f110365e5d8fc25de64bab766514d3604f08ff383ce74a9c42b5c1a4"
+    },
+    {
+      "path": "documents/active/svg/private_file.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1144,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "97b3505c80038b89f8298662a5d4bf691e5c36059e5809414cd371215f39ac3d"
+    },
+    {
+      "path": "documents/active/svg/project_file.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1106,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "9af02ccb124e7085da37422111738e52ceae9b6fbdfe3c004cb02ea2b200ce74"
+    },
+    {
+      "path": "documents/active/svg/public_file.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1144,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "034b87e6f8e2084faacb583e83d73dfcf51d7253fc04933f43a5068a83a770fb"
+    },
+    {
+      "path": "documents/active/svg/rider.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1089,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "b365f0dfce4143dab8e2b5ac83e701c8cd368dfa5b31d16666d764c2306db4d4"
+    },
+    {
+      "path": "documents/active/svg/setlist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1122,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8aa254dd54f15e7fd56e7c693c537128e30315f45ddee89ee37e5ec3749c1340"
+    },
+    {
+      "path": "documents/active/svg/stage_plot.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1096,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "bc8849a092fcf27c79ac5504dfd93619b48a79256eca44a8d19ddb51555c3cb5"
+    },
+    {
+      "path": "documents/active/svg/template.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1118,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "14bf3780812ba3c82c02a55a81e23836e2cbb0080cb06c2d6ae5819212f290e5"
+    },
+    {
+      "path": "documents/active/svg/upload.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1098,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "44c42d2d168b1dac344ce73dc20680ce7af2ac7dcfbc0df9a6adccd36110c466"
+    },
+    {
+      "path": "documents/active/webp/archive_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2804,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "40e07d0047cd7ccc9f181dfc8441e145fc402e3b250e5610a0e79d0d863099ce"
+    },
+    {
+      "path": "documents/active/webp/audio_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2880,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a1474198d822865818117b5c911940ab0416bad51c6b8fe14ff91e1b7fcb859b"
+    },
+    {
+      "path": "documents/active/webp/contract_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3144,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "cffe73f304a5493fd579b2ad7cbb989c72146f85ea85816b02a5af9cf07d766a"
+    },
+    {
+      "path": "documents/active/webp/download_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3086,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "168a6f661f0e153b979faa4c42f1c22abeeba0df35c640b4ee1d95d0f1c334bc"
+    },
+    {
+      "path": "documents/active/webp/export_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2952,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5715efcad150b74466dff27e1ba2a0868c55afe59d889472984cd13eb99cadaa"
+    },
+    {
+      "path": "documents/active/webp/image_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3368,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1be73281bc73fad683151ef4f714bad6cc58420863ec4d363e70c134bd7fa93f"
+    },
+    {
+      "path": "documents/active/webp/offer_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3142,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "574da145ab0fc111eccd3f5cf9ccad65b359162204c0b105ab9c2fb21b920f00"
+    },
+    {
+      "path": "documents/active/webp/pdf_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3358,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bd52dc1f1f6328988c6a2b09d44119ad9f8cdabb19dd5aa60713ec382613a9b5"
+    },
+    {
+      "path": "documents/active/webp/private_file_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3256,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fd4e864403ad212e0bf41c24e0b617dfe8b1112939b76f861a51b296ae60c146"
+    },
+    {
+      "path": "documents/active/webp/project_file_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3464,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "528c893cf656e371c2e0538094daf639848126d30856f5dd093456b2d1269c49"
+    },
+    {
+      "path": "documents/active/webp/public_file_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3828,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "421ff089bc1adad9e8ab777570b425253044c4c9a9bdcd5a38c784f17ed3b82f"
+    },
+    {
+      "path": "documents/active/webp/rider_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2788,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "56478b6b58695286a8a0f406ee094194358bc2c57826123538c595cb6c693fb0"
+    },
+    {
+      "path": "documents/active/webp/setlist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3240,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9f9c00c29baebb51269e05a6b3295c7b4a0ac31dd860e66cbd3af7691836f412"
+    },
+    {
+      "path": "documents/active/webp/stage_plot_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2750,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c183fcb672c62f570ffa79631b6a1b92608446aa2d6a4b22e3ade0ffb30f7dad"
+    },
+    {
+      "path": "documents/active/webp/template_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3106,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "7199b7135258ddaf37b702bcd3f741b30621500b6f14a0f46d4bb76d48d4248a"
+    },
+    {
+      "path": "documents/active/webp/upload_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3198,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "640a201ff1239a288fb5864dbd13cd46a34ef1c526769a78a3c237bb24173764"
+    },
+    {
+      "path": "documents/inactive/png/archive_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2323,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "7faf9e057c7037f86222e561eb8d8f45cc3241670d354c580d98adf02a349fb6"
+    },
+    {
+      "path": "documents/inactive/png/audio_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2298,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "830a7340d44f2b16c4ffb3fbc8f62add87f49f65659b0d6ce35d11b7a45fea85"
+    },
+    {
+      "path": "documents/inactive/png/contract_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2859,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "922cf8e1b24f1fbe50bab915bd7f8291c61cdbf3d4c8dc817df17eec3a262f79"
+    },
+    {
+      "path": "documents/inactive/png/download_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2529,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e60c6227955cee74cf1329cbf6ea301d148cfff1e405d52cc25f388cb9190933"
+    },
+    {
+      "path": "documents/inactive/png/export_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2448,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a793eb9a5ebf46ba7c27c0a411a2de91fdac6b58f2081b49be330c5f6e02af06"
+    },
+    {
+      "path": "documents/inactive/png/image_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3104,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b655019a4fd34581a2a12003663f434d8a3274bff3fa110c52222d94b76c6a90"
+    },
+    {
+      "path": "documents/inactive/png/offer_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2621,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "975459ce85f5483cd57331f067d97179489f91911e140926037475d5daaa563d"
+    },
+    {
+      "path": "documents/inactive/png/pdf_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2758,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "982bd744fc14682182a23f7b8647033d5889dcbff9e644a154e88f430df03bb8"
+    },
+    {
+      "path": "documents/inactive/png/private_file_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2912,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "043e9c79e5e7d879ac4911eff892bf519520ee9b16c2e29a0293f3eacf5a1ea4"
+    },
+    {
+      "path": "documents/inactive/png/project_file_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3189,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ff855af10b9e25800970725fecffe13bea4d9c139d2bced7924b6586d2542806"
+    },
+    {
+      "path": "documents/inactive/png/public_file_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4142,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d10a290588ee991162851a8381a94b1eacde9050e86de09b70a3581f85595128"
+    },
+    {
+      "path": "documents/inactive/png/rider_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2258,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "946879c9da75bf2850960cd84e221b7e5e5c9f0d0f9dfab9f322f3909af94008"
+    },
+    {
+      "path": "documents/inactive/png/setlist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3069,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "91b7ee2023021559d7aae39c6ee91bd041bffde37aaa3fcde2cf6cfcbb67827c"
+    },
+    {
+      "path": "documents/inactive/png/stage_plot_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2276,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fb8de6fc62da55df1cac20f72a0c142258d05689ec082da562b5ef3bbe00c21e"
+    },
+    {
+      "path": "documents/inactive/png/template_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2264,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5245363eaefd519e1b3e6f186dba1cbb78b6224332fe175e67d06aa47d48e5c7"
+    },
+    {
+      "path": "documents/inactive/png/upload_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2496,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c78fa1e5a23507c1874d7796cb1cf9a6420c03f2743d967650a467ab1e1e0752"
+    },
+    {
+      "path": "documents/inactive/svg/archive.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1106,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "fc171510e8ed48bcbd18fee522cc720d5e881d6900e0bce4095a842596fa6019"
+    },
+    {
+      "path": "documents/inactive/svg/audio.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1093,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "70e7b963dbaec56c337bf08297ff479ea4d183fc9239e7d77c48b0e7a0dd470d"
+    },
+    {
+      "path": "documents/inactive/svg/contract.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1092,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "4bbf5865583b19cbf0acf0df3b4320ed45a87606db26e1876e65e1e7ba1a6842"
+    },
+    {
+      "path": "documents/inactive/svg/download.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1093,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "a35c7009cba3fe5b2b71c5d60bf42d297405e948fbf07d1781b5b9fa10125f17"
+    },
+    {
+      "path": "documents/inactive/svg/export.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1102,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "a677f9ce395b47263adbb86cfad68ea6244669cbd3aa1ea31864d2bca722e4c7"
+    },
+    {
+      "path": "documents/inactive/svg/image.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1113,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "b7bcde92a1f2fbf953192e3c18b935f5db04327a4f72fc7310dadebf5914e326"
+    },
+    {
+      "path": "documents/inactive/svg/offer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1106,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0ffbf2abce69bc6528f2fff57666e968887f72a91966a67aa4472541e88e2fa5"
+    },
+    {
+      "path": "documents/inactive/svg/pdf.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1163,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1050b3044877aaa18bd080e51fb16abef01e62237762df2a19805eef5f93c849"
+    },
+    {
+      "path": "documents/inactive/svg/private_file.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1139,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6a770ed2edb7ae29383827083afb90f633289cfd4c27c10f0f92d27897ba77dc"
+    },
+    {
+      "path": "documents/inactive/svg/project_file.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1101,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8a4c883a1a17fcae87ba0e61e9db94aa23c27d52cbddac77aecb0b4c07ecda42"
+    },
+    {
+      "path": "documents/inactive/svg/public_file.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1139,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "cbc281cb478b5a6068ed1b9709fd7ecf976ad40350cbd6adbeb124c147fd8297"
+    },
+    {
+      "path": "documents/inactive/svg/rider.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1084,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "f2cb9f15dc92c5b0d22c8ed08c3c211524cdf38cbc623b1b3262074acd80b2ce"
+    },
+    {
+      "path": "documents/inactive/svg/setlist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1117,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1b496a593d669ca3179a87148fb2fae0ea2fc4ccbd0331b07eb0ff20aa6f8e19"
+    },
+    {
+      "path": "documents/inactive/svg/stage_plot.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1091,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "010a371fcc0ce6cfee4dcdb4e12312ca3a824b9fa5c31d40075d2f786bdac6c1"
+    },
+    {
+      "path": "documents/inactive/svg/template.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1113,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8fa40e22c97b4044d91c730f5cff62072aed3fdf0db09a6e442c673a5cdd18e1"
+    },
+    {
+      "path": "documents/inactive/svg/upload.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1093,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "5c20680deace11c79b281d3df3e6865dd4a643eeccf3827413a299cf1883dd24"
+    },
+    {
+      "path": "documents/inactive/webp/archive_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2618,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b5364f51ec529d20fd9bb37f85ba53010a0d444a4481feb884a879b01e9c9977"
+    },
+    {
+      "path": "documents/inactive/webp/audio_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2696,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "7b9ce707cd1c0d875aee19ee79acbfc97691c2e41f15a7f7b8baf378a64f32b0"
+    },
+    {
+      "path": "documents/inactive/webp/contract_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3052,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0c4fd4de8758f84056e2fceb9f383ccfbac04cef1d2350ff94951c1e5b522211"
+    },
+    {
+      "path": "documents/inactive/webp/download_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2958,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "01dc2221fe6ac5e7470e570353d33395f4cab898fd9c0d0f362d64e19b716bd8"
+    },
+    {
+      "path": "documents/inactive/webp/export_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2748,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "00fed55d0b14ffd3cddbebb27a91fc4259ca3551a545c19fa4ad9cea3f3e95c0"
+    },
+    {
+      "path": "documents/inactive/webp/image_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3312,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "66185c81c77c8cb088eede85282b3745dd2f1f5faae28f78a163af52b97218c2"
+    },
+    {
+      "path": "documents/inactive/webp/offer_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3098,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ec80211c690694cf0f5f7fc0b3e252821f9bf84d1cf1b1bd29f183e3d7b686bf"
+    },
+    {
+      "path": "documents/inactive/webp/pdf_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3094,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "38813b87cb3f44ae2da5445ed7903c465f10b4533c9288395b2d496aec86b2b7"
+    },
+    {
+      "path": "documents/inactive/webp/private_file_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3174,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "17aa1ffbab21428d6265514492ce99dffbec60358c79baa29f2e78aff9453120"
+    },
+    {
+      "path": "documents/inactive/webp/project_file_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3486,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "157b50d6396a3f8e5376babb50cd7ae60fae5a93650cd3dff794a00714d0b843"
+    },
+    {
+      "path": "documents/inactive/webp/public_file_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3840,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1391e30139d2dd6cef1e78fa0a885a74d187e59cafbf5a60da659dc19d45d1ec"
+    },
+    {
+      "path": "documents/inactive/webp/rider_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2568,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "41b74a9ca094247aa49287c5b23439c22b01e15bc28b129c4eaf20efad718ef8"
+    },
+    {
+      "path": "documents/inactive/webp/setlist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3186,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "aa594f1a1c6869bd20329aa0cc97b3ae81dbc5a0b17fca248c38fce99bcaef29"
+    },
+    {
+      "path": "documents/inactive/webp/stage_plot_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2620,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "832711c510c824d5f82c791140bad402ec632c4140b52dfd5bd3228e423e0487"
+    },
+    {
+      "path": "documents/inactive/webp/template_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2942,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0793932dd1721b22ada6300a9d96d0c549a5f5429a72d8a4e6dca1a66841bd58"
+    },
+    {
+      "path": "documents/inactive/webp/upload_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3058,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f333779ccac3aff8ffd3d78c916c76e2a50142dc294830d3a448b7b4dd515b63"
+    },
+    {
+      "path": "empty-states/png/account_restricted_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 21888,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f2aae557027b21b4715a329f8105ecb94940f19ee10135377fa93ad57fc0d646"
+    },
+    {
+      "path": "empty-states/png/no_access_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 22969,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bf67782028492b44b3ae7fb020e5449305844939077125e6f1bd378d52cc9114"
+    },
+    {
+      "path": "empty-states/png/no_events_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 18076,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a26bc0a8b26c13b707f36c0d54b1f869525f0dfd60e727a5b0100feec658870e"
+    },
+    {
+      "path": "empty-states/png/no_files_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 19661,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8ad6a477a18d815c7243c24d60545d8ab5cde1b99e7d2e716c03d1a8e1471dac"
+    },
+    {
+      "path": "empty-states/png/no_invitations_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 22141,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0c130d4b17768a99ecf6f51e55b71a1f5f66bbf41b443d8ed42b70d5359a1a69"
+    },
+    {
+      "path": "empty-states/png/no_messages_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 31487,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ec65e488e6ada432a7383eb1e850a737bd8509631456cb4730cbdf617c0a4ea0"
+    },
+    {
+      "path": "empty-states/png/no_musicians_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 26497,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a9086cd3809308468a64d7927d3ab118ba81f69a9565412c83b4ce9ea4e80bd6"
+    },
+    {
+      "path": "empty-states/png/no_posts_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 18715,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "52fbf1608d06f899cfea3071c05178c12ee3e634a3b2f3587c3ac8049a259141"
+    },
+    {
+      "path": "empty-states/png/no_studios_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 20296,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "81494b656c43f88467770867d57598fdf6fd65b35f321e2e2cd0686cf91f51c2"
+    },
+    {
+      "path": "empty-states/png/verification_required_512x320.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 19734,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c8de5a232259320365aa6ce2c22d27cc8a8079ddef1444eb8715f2a729db0b77"
+    },
+    {
+      "path": "empty-states/svg/account_restricted.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1193,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8d104f36162841e00b89e2cbc47f4b5df6a204ed35753bc43006c2b44665b259"
+    },
+    {
+      "path": "empty-states/svg/no_access.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1125,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "2631f3a53650e9462390ebb5a4af24731e298410fd114e20a5caf7972c9c8287"
+    },
+    {
+      "path": "empty-states/svg/no_events.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1922,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "f798d593997696051ebca0178414058e500278b38b1c59f602851fff3233436b"
+    },
+    {
+      "path": "empty-states/svg/no_files.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1137,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "f51d61f8f4b4d7ba09fa99e48432a43e83232c65cace3f7063560c953b239cf0"
+    },
+    {
+      "path": "empty-states/svg/no_invitations.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1170,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "e96cbbc8d55e11dc8411e113c303fa7f2b707a6e1671c4904d78558673344690"
+    },
+    {
+      "path": "empty-states/svg/no_messages.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1378,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0af3e0c98f2b144c2b4bdc91f228c51630e2663779ff4e941ca4636e158ed86f"
+    },
+    {
+      "path": "empty-states/svg/no_musicians.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1301,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "f8ffa208aca2207f8c99da4b004a3b73123e9bd52458a399ad99f94e4d900db1"
+    },
+    {
+      "path": "empty-states/svg/no_posts.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1847,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "12fb07d1d2acd3f8793bb58898156956d6f157bba4fa84d1619dd8119797e49b"
+    },
+    {
+      "path": "empty-states/svg/no_studios.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1380,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "e4ec2710a35b60e8d138569bfc8917374966a9cebbf8634531ef4cf4a2140b7b"
+    },
+    {
+      "path": "empty-states/svg/verification_required.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1211,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "055ab8fda24c345489fa0564e92932428a6e7e227d26f2ee12982d52637da3a2"
+    },
+    {
+      "path": "empty-states/webp/account_restricted_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 21824,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f0f2610fea2c4f114313908f8dc35337f0216c69e15a3a6497679f0315405cc7"
+    },
+    {
+      "path": "empty-states/webp/no_access_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 24230,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3c0444d0eac9a01d998e18d749a8e50c4538de88fdacb861ab55db8be198b26b"
+    },
+    {
+      "path": "empty-states/webp/no_events_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 22472,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "886993f6b75412ea25bdd46fc722b9c5b2705fd6251ae224282fbfd5cb2ddac1"
+    },
+    {
+      "path": "empty-states/webp/no_files_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 23544,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "14c0ace18e50b3828c25a14f284ff979d2e4b4c1365ad78b460508170276b1e9"
+    },
+    {
+      "path": "empty-states/webp/no_invitations_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 29278,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8910f3bb207832509e2044e1d416aa95b703ef674e413c68a25108a07c9e277a"
+    },
+    {
+      "path": "empty-states/webp/no_messages_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 31518,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8d4dfbd8681573341a3fbf23655efb79dbb6407a05ebff6d47a6177744ca892a"
+    },
+    {
+      "path": "empty-states/webp/no_musicians_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 32978,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8df76ea1b6ad2568c1cad7dcdfef56b323dcd3b38cdcde6cc704bc5d038e3bea"
+    },
+    {
+      "path": "empty-states/webp/no_posts_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 27506,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2a01eb6f8f8bbeb517f133b48289a077318e82e59a0a978ed95ff34c4c23ce8a"
+    },
+    {
+      "path": "empty-states/webp/no_studios_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 27108,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9f0d28b3259f8eb5488b98898c7e3119fa45391421c1cd5acb3155b311bb3b0f"
+    },
+    {
+      "path": "empty-states/webp/verification_required_512x320.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 25096,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "727e4baa09c44d995f25c962ff6b59afba2ffa9c621f1f3be35ad1ceec3331df"
+    },
+    {
+      "path": "fallbacks/avatars/png/bassist_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 54984,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8ebfa416cd176a79012db16941971d75e118f9d98ada42b7387cba680db6d7ec"
+    },
+    {
+      "path": "fallbacks/avatars/png/dj_producer_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 52536,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c45ebfa5880d5e62af5b5cf2ff64e3f7eb215387f61a12c5152ec548e6a4f887"
+    },
+    {
+      "path": "fallbacks/avatars/png/drummer_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 57270,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9495b5823a719081fac0e011d22a38cae4cd8d933fa9588e823b2583ae11422a"
+    },
+    {
+      "path": "fallbacks/avatars/png/guitarist_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 53874,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d2c577282047c9a52b1a0ce0f4948108e2116dc6d29b11623c550c0954c2dd82"
+    },
+    {
+      "path": "fallbacks/avatars/png/keyboardist_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 48516,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "dede2c43e3d9ccaa2233a712a19cf13d3b534b6a35ffa49c628d790b05e3956b"
+    },
+    {
+      "path": "fallbacks/avatars/png/organizer_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 49975,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "eb8bed6b4c6f63fd2597b60710d32ccd7ddd11ffedaaae600cc5838b8c491ef9"
+    },
+    {
+      "path": "fallbacks/avatars/png/sound_engineer_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 52782,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "43e39f3b22552d8d4a6ff5b3e66ab1bc97582314444d78bfc7ec3fc50bdfe026"
+    },
+    {
+      "path": "fallbacks/avatars/png/studio_owner_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 50548,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "566d1b31f4f4e23a2eda92bb253bdd707cf43ddc9657742aeb6207b56cfbcd08"
+    },
+    {
+      "path": "fallbacks/avatars/png/teacher_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 49307,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b89f36bebad47531c31d3f1839e46f2e49ab959e3fba21bcfc1ddcf43b912fc6"
+    },
+    {
+      "path": "fallbacks/avatars/png/user_musician_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 51086,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0e26fa6c8fcf1ab16e63bfb2422d80c18df3fc0cc178dcbc71474be1f5675d44"
+    },
+    {
+      "path": "fallbacks/avatars/png/vocalist_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 51653,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "217f3234c83c00f1dae1c3f2c1e63df8248b7fb6c615964282cf42b86e109b97"
+    },
+    {
+      "path": "fallbacks/avatars/svg/bassist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/dj_producer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/drummer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/guitarist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/keyboardist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/organizer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/sound_engineer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/studio_owner.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/teacher.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/user_musician.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/svg/vocalist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/avatars/webp/bassist_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 35882,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "953fa40c3e1466c7fd1658f049ea9f531f0bfa57497bfb2b3d3793508d0a5078"
+    },
+    {
+      "path": "fallbacks/avatars/webp/dj_producer_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 36078,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d725d3adecf745a614becb4abe928521d0e6b36a68130c1aae03a428c2478512"
+    },
+    {
+      "path": "fallbacks/avatars/webp/drummer_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 41556,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "141e67750212db4ae1a568101054b0de5a77d9d78f58af02d064e957705c352c"
+    },
+    {
+      "path": "fallbacks/avatars/webp/guitarist_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 35000,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "53e3485de4d6fa239486794f216f11ceed1c15486684165e994fbaab9da990d4"
+    },
+    {
+      "path": "fallbacks/avatars/webp/keyboardist_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 34256,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "56923a6402c2c06c324d20b4b2b2db4cab76f821e6d100513ef827cfea6e1383"
+    },
+    {
+      "path": "fallbacks/avatars/webp/organizer_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 35080,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "16b80bdd6ba7c8d1227e220f3d3ff2e0fbd134a43301d40aec83ceb1cae7e6c3"
+    },
+    {
+      "path": "fallbacks/avatars/webp/sound_engineer_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 35754,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "02e3b093470880716de8d2c6f8990641949b495f8d8026e0c80d7889b35674c6"
+    },
+    {
+      "path": "fallbacks/avatars/webp/studio_owner_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 35904,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "557a9e72124106a23be6eab1e76f3d577e15693919d33849b88473f74e1cd71b"
+    },
+    {
+      "path": "fallbacks/avatars/webp/teacher_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 32944,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d70b25ca4c14c25a71ded487084737d3cca119e7c6858861e22c7ae93fba5609"
+    },
+    {
+      "path": "fallbacks/avatars/webp/user_musician_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 35680,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "31e16462e3c36ae00bb800bea121e842c953d9bd4fac3773dda1378b7e70d8b4"
+    },
+    {
+      "path": "fallbacks/avatars/webp/vocalist_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 35046,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bc15166d67bc3e80e8607dd043709430b94eb5cfbf699381877e508d05508c0e"
+    },
+    {
+      "path": "fallbacks/covers/png/band_project_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 13139,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d81510bfd638b85fd94e65ed4f4b93d75ff34fc379f74b11641ea236954a3a9e"
+    },
+    {
+      "path": "fallbacks/covers/png/chat_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 12248,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1b72d7fc6999756fbd9473292bb503045bf9dd65f2dad02f23c9fcb746a5bf84"
+    },
+    {
+      "path": "fallbacks/covers/png/concert_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 13086,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5c1254ab9e291958dcab81c531513b6ca0511deec63361e3dc703d889198b127"
+    },
+    {
+      "path": "fallbacks/covers/png/document_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 12180,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e11b401e666a2c3bbd4735d5a0ae0bcfe1b15e992ba443e709ab66ba10b9b2cc"
+    },
+    {
+      "path": "fallbacks/covers/png/event_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 12665,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "955421eeb008dabed2cc87a3195b9774386cb3e64dd2e3b7d3b9187a1699da7a"
+    },
+    {
+      "path": "fallbacks/covers/png/media_folder_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 12163,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a50246c4fca5648447d0c98d0c465be110e4d2b94cac488d2e2bd3eba7c1fd7b"
+    },
+    {
+      "path": "fallbacks/covers/png/orchestra_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 14026,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8be92b38fa6c84934324a7583cf31e7a009bf3b8fb02ee1fd824beaebd99849c"
+    },
+    {
+      "path": "fallbacks/covers/png/rehearsal_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 12661,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2bac269cfa4705cb063857004bd345f3e6e10d1c33f1641ae372b9e2ee8a5659"
+    },
+    {
+      "path": "fallbacks/covers/png/studio_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 13586,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "53c70fee5cedaf9940f1587fbacb4cd1fecd6e5707bff4ce95fc48ce22ced3b6"
+    },
+    {
+      "path": "fallbacks/covers/png/user_profile_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 13425,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9d2f5f8bb295b75c675951fd9cd6a6448b2503219a0d51ef41507b48d4f74230"
+    },
+    {
+      "path": "fallbacks/covers/png/venue_1600x640.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 13624,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b7c8e22c740e1a025182d91f1a660804545e12eb848059f71bc62fd02f3a99b8"
+    },
+    {
+      "path": "fallbacks/covers/svg/band_project.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/chat.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/concert.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/document.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/event.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/media_folder.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/orchestra.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/rehearsal.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/studio.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/user_profile.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/svg/venue.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 974,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8349a49afa65ed444e099466b36d95064d965828f0d880ce7c12244a5397b30c"
+    },
+    {
+      "path": "fallbacks/covers/webp/band_project_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4328,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e392b5b2f358ca97187525d7955c510b57ffd3e5a907b701b25d78199dbd8a49"
+    },
+    {
+      "path": "fallbacks/covers/webp/chat_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3894,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3ce96df0a970caa1c356f8b17ed8f86e2a7314f13d742bdbb59f1887cfdff692"
+    },
+    {
+      "path": "fallbacks/covers/webp/concert_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4292,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c55ccef083b4cb36ebe106ccffeceb644963d91ad981aec49a467c7369c8a45e"
+    },
+    {
+      "path": "fallbacks/covers/webp/document_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3870,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9335e213159029e0ca1a13da88dfd81897ad6d81925154768c78e64b7f5b9c9d"
+    },
+    {
+      "path": "fallbacks/covers/webp/event_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4124,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9eddf2aca4a87d31a2a1d792c4a51f44892f699a39865eebcbacce6338247c94"
+    },
+    {
+      "path": "fallbacks/covers/webp/media_folder_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3872,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9ebcb14c7cee9eb54b4f107cde47e57812c2c1cd230b7beec1d680c90e1dbd60"
+    },
+    {
+      "path": "fallbacks/covers/webp/orchestra_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4554,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8ae0a2ed8584531f5bdee0ab94208b87ce27541b1820a8d84d5d7c8e28e31ede"
+    },
+    {
+      "path": "fallbacks/covers/webp/rehearsal_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4122,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "282170ebe0853765a60367d910417d2b8a7e86b09c19e471f908c608baf44f9a"
+    },
+    {
+      "path": "fallbacks/covers/webp/studio_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4302,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "7d913d99341148cd6125a0259f7e93e4f28f63672191a04b30fe7219fdd2f892"
+    },
+    {
+      "path": "fallbacks/covers/webp/user_profile_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4430,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "18dba58df0cc8543f15623e3cdf545d3d1d9b27c7d21c4b39acf6b0812abca84"
+    },
+    {
+      "path": "fallbacks/covers/webp/venue_1600x640.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4340,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f25f7403b3f3bd13753e749def9281a29c002ed697fe57fdbce2d27c11ded184"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/contract_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5455,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "55c7a6b586334f14ad7cf1d099097717ee174fea64e9d86c80416f38e8cc9024"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/document_file_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5435,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b3d486de690a770e7aa2a47b269f79ebfbeb1a323e58553c853e4c8780744c1a"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/empty_media_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 6076,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9e723908504afac4f6e5e19033f2ca5175b147fc0245f54ce086c2e64bf809fb"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/invoice_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5434,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ce5f3f421fb9ca5fa1ae7181ae70fdb22fa8c14f2d27a3298afcab1e41d6ee0b"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/photo_album_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 6700,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "21534de364bc4c8fd1b499c184823062e33c554d231303813c1beaf1147b9402"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/post_image_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 6699,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bfb0cbb6c04f8cce2ad70178d18c0b06dce52cd2be2a7fd3e1da6f5e0122884a"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/private_profile_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 6854,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "56f1e27810f1468b3873eb1fc544fffde0f407dcd9d68b61218e75ce69b8eabe"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/rider_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5457,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "eef750c88358213cef22a008b69b7615970614fa496b7f694a8a47b7a7d1d94d"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/track_audio_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 6635,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c245732788dfe9b1d953985b331e8c9c1d749b915c152c7c38703c5f5f881c06"
+    },
+    {
+      "path": "fallbacks/thumbnails/png/video_clip_512.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5666,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "40e0eeef6e335c7c94ab9d411fc117fc8f13bcfa33c5088786ded50dbfd46787"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/contract.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/document_file.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/empty_media.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/invoice.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/photo_album.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/post_image.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/private_profile.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/rider.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/track_audio.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/svg/video_clip.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 966,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a1b0b48acab2c75eec24b0e488096c260ca0a8e4fb6ab767ba97e38bfd1e098"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/contract_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 1898,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2500fdb77e28a5b98b8856dac338f5362a931543846aa5391d46ad9e17992d4e"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/document_file_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 1914,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "19b67b475f5564366bada8f5eaf0cc6ae3198e210608a0c05cfaac3045a29a77"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/empty_media_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2190,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5cc242b3b5c796122b96490236bb3c1402c03d79eafccb1c7bddb4ffcfae1e1e"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/invoice_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 1854,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f9e824f8ad99fd46ab9b9502a9204360fc4cd3522665f316e12ab3bfbee01f35"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/photo_album_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2522,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "4ed69f2cdecfadd51f9155584fb65146af05aad51912c0e2cf7d7226dfadeaff"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/post_image_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2518,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "cacd43b32067a0fb7442b35070a5acdbb838d649338d4fdb7367fe3c828a493f"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/private_profile_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2488,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "af0ae3f9daa4101a86d82f3e398c934f426a58eca0d829e30c2b010e82de43dc"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/rider_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 1900,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b512020851cade362c3d04c346d618c5ea3854977e68646989addba1196dc466"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/track_audio_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2384,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f6368c2fa868c835da601accc7bcad62a430c7850ee95ff0f506db45a680ec0e"
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/video_clip_512.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2028,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fec57fd973d07d6bf8eee04c7af4c1c909afa92bdb5ceb96fb0879866dd87fa6"
+    },
+    {
+      "path": "favicon/favicon-16.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 689,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1c6cda377a5a43c148ef4ae562034800b0165cbe97c3df2d3344cf7e31bea711"
+    },
+    {
+      "path": "favicon/favicon-32.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 1293,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0233f5c1cdc7f53982aaad05de0ee07c9404dcd37389329c4c55621e9ec24716"
+    },
+    {
+      "path": "favicon/favicon.ico",
+      "role": "asset",
+      "format": "ico",
+      "size_bytes": 711,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "7999aae9c89b8b2acbae2da85e198b38f2686ed73a1da077b952b5b30ed06c6a"
+    },
+    {
+      "path": "feature-illustrations/png/calendar_768x432.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 19956,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3d418b11a4cb1deda3816de85344f1d0d110ce9f1b82901ebc8c5eebe5a70de1"
+    },
+    {
+      "path": "feature-illustrations/png/chats_768x432.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 35342,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "07585d333b986c52455f70d92716004685ee05d921edcf3e287f0c7b080d59b1"
+    },
+    {
+      "path": "feature-illustrations/png/group_onboarding_768x432.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 32752,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "7593a1c6d9bb5a445f65e79be9333294bb0a2897847e2676ee9c0b923f3c5d03"
+    },
+    {
+      "path": "feature-illustrations/png/musician_onboarding_768x432.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 21268,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fdab659ca1dd128ba137a130116d64fc72284a5017703a08deab0b3f5f4eea2b"
+    },
+    {
+      "path": "feature-illustrations/png/portfolio_768x432.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 27631,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3afe5a47a08b3418d199cf0aa44b6dde1f264fdad6fe129b9609fcd8c3e29c2f"
+    },
+    {
+      "path": "feature-illustrations/png/replacement_search_768x432.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 27084,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "523c96e800ad7d3ff8560bb7ea2b2227dc0d7617cc3e1631a403ab0a35b0d848"
+    },
+    {
+      "path": "feature-illustrations/png/security_center_768x432.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 29063,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "4044c59efbd5f39d38d4fd58b4f49f94a152139170875e8eb35e39f4fbe3e92c"
+    },
+    {
+      "path": "feature-illustrations/png/studio_onboarding_768x432.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 24701,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "715572b553ef371548936e90c39514968193fcc81a9c23bd36f257895154f5d7"
+    },
+    {
+      "path": "feature-illustrations/svg/calendar.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1922,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "fb911e7a65ba32d18ac7a76a4bb33f5a31a15e3bb6e40b512180222a87d3d51e"
+    },
+    {
+      "path": "feature-illustrations/svg/chats.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1378,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "55ec33616e0b96d235bc8b450bff50481db8ff346cacf7f10110f19dc951a101"
+    },
+    {
+      "path": "feature-illustrations/svg/group_onboarding.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1301,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "00d9121957d0aa1db0f7f37080147896c6e81a2584730d36306423251db8285d"
+    },
+    {
+      "path": "feature-illustrations/svg/musician_onboarding.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1847,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8ea67bd62c13f000d4bbfd4f88e92dec0ce117b7229ebbdfb921c702931921b9"
+    },
+    {
+      "path": "feature-illustrations/svg/portfolio.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1279,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "e414e2584fecdb081b77a3e7d6ab90b0d01b0b2ac945a3fc33b32e7ddf648637"
+    },
+    {
+      "path": "feature-illustrations/svg/replacement_search.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1216,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "278ed1b4050825f8562813364c640f7b7342f6715bfbc078e4eca97f577b1116"
+    },
+    {
+      "path": "feature-illustrations/svg/security_center.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1193,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "277587c37cb3f9398969f3520c9727dcc866626e0aac16028d5aed26b72596ea"
+    },
+    {
+      "path": "feature-illustrations/svg/studio_onboarding.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1380,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "be3de8c912e50b7dc62baad112cc1b9a73c518b97f06ed30f3cda3bb686fe74e"
+    },
+    {
+      "path": "feature-illustrations/webp/calendar_768x432.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 33402,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "86181dfb50e9b2c91ca41197e7c1158c7d912228f2a07c6e889b9163b16eadec"
+    },
+    {
+      "path": "feature-illustrations/webp/chats_768x432.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 43170,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1e01e217b4d83cf4236ff495bf95b804383b68b2c4399ea1aede568fc7a29541"
+    },
+    {
+      "path": "feature-illustrations/webp/group_onboarding_768x432.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 48426,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "284a2694dfbadf9444a2d29c6b12a24dcb1d4cbabc17f78a34dc203a67544a37"
+    },
+    {
+      "path": "feature-illustrations/webp/musician_onboarding_768x432.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 42176,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0ef624a491f1b9732cf7bdeafb9e33fefd430ddc70cea8982c5a78c96104d956"
+    },
+    {
+      "path": "feature-illustrations/webp/portfolio_768x432.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 37430,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f8a4cbcbec2cdb58e0c3ee1134e37f372021851f6435c8c6bbc6fd64c96ca104"
+    },
+    {
+      "path": "feature-illustrations/webp/replacement_search_768x432.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 39092,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3525e761b595d83bddbec26b8b026402c3ac7055845e313875fd9a065628c583"
+    },
+    {
+      "path": "feature-illustrations/webp/security_center_768x432.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 35222,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2e510ba1920ab650b9adbef1c5f4c4061f2e74eb073de48d38b3cda9077b1bb1"
+    },
+    {
+      "path": "feature-illustrations/webp/studio_onboarding_768x432.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 44554,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "82e9a90f25f172e7db496c9bda46e0073c91acd6fc8b35abe22b2677b047f70e"
+    },
+    {
+      "path": "locales/en/admin.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 177,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "b488e6e45b35e8e2b00ee0e8f859a978ad96e4fd888f1e7d588293f023fe23b0"
+    },
+    {
+      "path": "locales/en/auth.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 320,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "cb7dfc92684e26157def3c95100637fee69c8082ecab61967e1e5f4355c4c0d2"
+    },
+    {
+      "path": "locales/en/chats.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 182,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "bd79f7e5b662650d7b3d8d199918bc141f33ad8055f7f4632d129ec71d5844e0"
+    },
+    {
+      "path": "locales/en/common.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 473,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "88af3ab9f26dc6aa2cf268c5814488003ca03682118194fbc2c5528b1124421d"
+    },
+    {
+      "path": "locales/en/documents.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 185,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "55b69d8bee265ac2bd4424c7dfef0627f60774403f82a4264065e3d9a930638f"
+    },
+    {
+      "path": "locales/en/errors.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 210,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "83ac81028f449300b500150439a427577cb0d3cb1a9134412fc703ca225f9020"
+    },
+    {
+      "path": "locales/en/events.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 233,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "5dedcfd64a693f31ba40c04ec8d14d8d576f854d2cb7f9445d6845807ef0f41b"
+    },
+    {
+      "path": "locales/en/feed.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 154,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "987a99005be374d1b72f271028d469cbd3d6da8691b53fed5f328aebbba7849d"
+    },
+    {
+      "path": "locales/en/marketplace.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 165,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "545d4b09db2477b67fb7211ed06158a05ba0934720fcd13c4f78c6243d9658a8"
+    },
+    {
+      "path": "locales/en/moderation.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 215,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "aa348083070af2237ee2915d0a09a1f696f5a413a64d018a69fa80677048096e"
+    },
+    {
+      "path": "locales/en/notifications.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 276,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "c78c51a2a48d29f2e706f067bdc2a1fbdc7bf92ac5ba2de2ed279c79df5be669"
+    },
+    {
+      "path": "locales/en/profile.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 316,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8dbeb5507d405aa373fbbb35c96bd73642bfd074c09452f4de491c897735a8b6"
+    },
+    {
+      "path": "locales/ru/admin.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 215,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "4e7d3d8e547250edd7dce66e3600323f3cba67ad98b0ef72a1a010dcbbf913c0"
+    },
+    {
+      "path": "locales/ru/auth.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 438,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0dd79428f311f4fae97d991654f9c0937567ba288c2fe88b998ab32194b3c359"
+    },
+    {
+      "path": "locales/ru/chats.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 230,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "237ff12bd4e4aed3815e94aa4aae0408e995d7c9247ccd201ce5257d6f433e91"
+    },
+    {
+      "path": "locales/ru/common.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 619,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "328de258c5d88a47dab5a9aef3ddb4b73ba9d9f3cd91479a6234533a1ece6ced"
+    },
+    {
+      "path": "locales/ru/documents.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 239,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "bf289305c7b0adbbc43647a40fed345ecca84e8660cbe4b777d4136d7591997b"
+    },
+    {
+      "path": "locales/ru/errors.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 293,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "3fbaaa9b800e73f08c75bbf77b9804759061f1ae9cc0e7bf63eb50ff650bbb60"
+    },
+    {
+      "path": "locales/ru/events.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 315,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6051970b415468b03dbea9360d6824ee915ed3d077fbda5536123d9636ea4b37"
+    },
+    {
+      "path": "locales/ru/feed.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 223,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "ed5cc500ce8f7739b6d09e3561bdacb9b631bd36d96149a38c2973d8af96e7c0"
+    },
+    {
+      "path": "locales/ru/marketplace.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 204,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "5f79cd20b35809f5b30ac9513f0e1b568656aa7b26bbf7edc3ef97f7c5428555"
+    },
+    {
+      "path": "locales/ru/moderation.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 299,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "7782912d5b31ba95b3ea87ca127383878a2588fb60305189d096b0250bee2cae"
+    },
+    {
+      "path": "locales/ru/notifications.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 362,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "2f1ae3c3a5f204b233b1e504751a59ee6d04ca81f4801965e2ce81c60cb8a1bb"
+    },
+    {
+      "path": "locales/ru/profile.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 400,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6dbd221f9f3381eeabb7bf37e39e36741ced67e24d1416e1798b62c0a297ba66"
+    },
+    {
+      "path": "metadata/alpha_channel_qa.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 66087,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "b6a43dbd9e8dbc2f0fedb20d3c6e552e645e7f5379d36f87d9b0287c1a199a93"
+    },
+    {
+      "path": "metadata/asset_manifest.csv",
+      "role": "metadata/documentation",
+      "format": "csv",
+      "size_bytes": 80779,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "4b43beed11df8c114fd25f8221e353266a9ff22e8f075dba8d5725a4ea7cc730"
+    },
+    {
+      "path": "metadata/asset_manifest.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 181094,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "9c745bca2b134e3dc45729bb5922f06dc8e42e8c9800dda79460f8bf427adb51"
+    },
+    {
+      "path": "metadata/design_tokens.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 1022,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "429b8bad635192f82d640661883ffb1e8846e8baf243332cec431b677b24b5b2"
+    },
+    {
+      "path": "metadata/i18n_rules.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 1095,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "e69de705036732156360d529eb1f49b3dc3464b411618c2780f8d32f40660a2b"
+    },
+    {
+      "path": "metadata/language_neutral_asset_audit.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 2784,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "39f6423ab4de828b9af712f889aff8a28614083e209db0d55dfd1d8815b58f37"
+    },
+    {
+      "path": "metadata/layout_contract.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 2519,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "3b49b1f78ae46634295715f7f9bd099fdac8e673aefb95fd920f699d44c45500"
+    },
+    {
+      "path": "metadata/localization_manifest.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 3035,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "85d718821820b58a9bd308410f5fdced57d881896091c4133112ff6d23e3ef75"
+    },
+    {
+      "path": "metadata/qa_summary.json",
+      "role": "metadata/documentation",
+      "format": "json",
+      "size_bytes": 720,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "2b02b6740326b6cd4e0d621df4355ef255d9628f997ccb0ef838627cd89921e4"
+    },
+    {
+      "path": "navigation/active/png/admin_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5523,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "6efd7abafddf56dcc30700f853238ef321818faeaa0719f79804238610ee9d4d"
+    },
+    {
+      "path": "navigation/active/png/calendar_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3558,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "570a025bf331a13b091a85aa389799d9659349cd84d8637b403db5f9ce6af6f2"
+    },
+    {
+      "path": "navigation/active/png/chats_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4644,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bef36cd361708aade6da8af98e76a908c8a0330a1edd7d52dc792d1b229c7c70"
+    },
+    {
+      "path": "navigation/active/png/events_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5140,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3db20c9abd38a36f333696726c108f27c4267c3bc6679a300120ea3736bb2ebf"
+    },
+    {
+      "path": "navigation/active/png/feed_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3775,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3996239e16ab3de78ceb41930682375b803092d24f2dca2e3de65c097581c5c4"
+    },
+    {
+      "path": "navigation/active/png/files_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2916,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "85fcac789a6f47e1669648d463dacea2fd9c1141b98785624e925ed9c87ffc97"
+    },
+    {
+      "path": "navigation/active/png/finance_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3156,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9784d69ab8a61921cb7cf27ef9983d3d96e5ec4a006fed87948aec121d148fb8"
+    },
+    {
+      "path": "navigation/active/png/groups_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5157,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "300b5dbe06cdfec53273442ab3bde172343bed89502866ab1b181d95049145b6"
+    },
+    {
+      "path": "navigation/active/png/musicians_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4893,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a4fa944fa731c146c3db120754667c296c5e679af5a23dcd882878909e861f1f"
+    },
+    {
+      "path": "navigation/active/png/notifications_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3697,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "15b90df1ca29c296bc774172e4068c7dd8f364b0902d040168d5dfe366bbb4cf"
+    },
+    {
+      "path": "navigation/active/png/offers_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3764,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ee01b55c9ae655ef94596f1b9c3c9b2a6c605e62f2926e0b18f10b4e08f247f2"
+    },
+    {
+      "path": "navigation/active/png/profile_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 7426,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2f1db272753f48cb46fcf1298d2b65e8040ddf2c62c4951aa58eee62d4f5368b"
+    },
+    {
+      "path": "navigation/active/png/projects_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3365,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3718cabb599c1d8ee2cbd870011121e270a5d8e2660163ea80bacc89e921135d"
+    },
+    {
+      "path": "navigation/active/png/rating_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2669,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "660692460cd181b2445e30552a1e6970ec511360ee009431e5fbeab1f21f1bea"
+    },
+    {
+      "path": "navigation/active/png/riders_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3775,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3996239e16ab3de78ceb41930682375b803092d24f2dca2e3de65c097581c5c4"
+    },
+    {
+      "path": "navigation/active/png/search_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4318,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a276fcc3d682f3f1dbb063a61e625fdb3019a04417b7bfae1f42e27cd4187ddd"
+    },
+    {
+      "path": "navigation/active/png/settings_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4122,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e8b7c68e10343df7913b065e0e93cc7c21a4717ca91a7249d845a984f27e911b"
+    },
+    {
+      "path": "navigation/active/png/studios_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3510,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fe0d3b4dcfad65163317adc2f0b7c71d4afed930dbecc062b0df81b6cdd97772"
+    },
+    {
+      "path": "navigation/active/svg/admin.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1085,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0dc276f28b95dabbdee28a3cbb3e694410feab33772fef413308f6f16472035c"
+    },
+    {
+      "path": "navigation/active/svg/calendar.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1148,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a6ea6c9f6e6aaf6c7fc004abaafd6ad60c14a949063c48f5870df60a852ea18"
+    },
+    {
+      "path": "navigation/active/svg/chats.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1117,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6d4bbdc2b7d8585b00fbdf23b899740723820ef27a423bd6a3d239f88fe0fecd"
+    },
+    {
+      "path": "navigation/active/svg/events.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1098,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0d2bd4dd2f386cedbc3458095fb448cf51600129726a8c9644a485363fc6772a"
+    },
+    {
+      "path": "navigation/active/svg/feed.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1123,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0ccf7e4ced7797ef156b317e536315ec32d2eacc727af96b647bffcb03a5919a"
+    },
+    {
+      "path": "navigation/active/svg/files.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1060,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "183d3254bd6d22fa463f30e565d40cd24dc19b12078583c5854b1c0498a11473"
+    },
+    {
+      "path": "navigation/active/svg/finance.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1108,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "e8ad4f1f40c35133eeb5ea5418b8a683ef91186a795aa04cc1ad1b3512fd72f1"
+    },
+    {
+      "path": "navigation/active/svg/groups.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1133,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "068eec222848188d19c72ad4dd84787c4e0ab9a0440b2793825f00c21de5f629"
+    },
+    {
+      "path": "navigation/active/svg/musicians.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1117,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a233d7616abdec9df2e1c8fb64c0efbd94fd5f161bb9a12a0e5a1a64c8bb244"
+    },
+    {
+      "path": "navigation/active/svg/notifications.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1087,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1fd1b64dec12010b833f902833eed8b35b3b8076eda9b5f704700b0c47e9aa8b"
+    },
+    {
+      "path": "navigation/active/svg/offers.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1121,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8996ba61ec43eaf83a2e8fa830d7676adf54111ef9a42d2b129c3e6292b96720"
+    },
+    {
+      "path": "navigation/active/svg/profile.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1102,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "023b07f41027314b9c8202b689e876f6b169c0a050977fc4f513f804de1592f8"
+    },
+    {
+      "path": "navigation/active/svg/projects.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1082,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "b1398cf72860f56d925a30ea310dd105b820996711fd038a9a062e98e3b3d5dc"
+    },
+    {
+      "path": "navigation/active/svg/rating.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1049,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "e294c311b3b2458bdf274485f6f409c61e84fa8e690009d83cca027c9d1414de"
+    },
+    {
+      "path": "navigation/active/svg/riders.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1123,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0ccf7e4ced7797ef156b317e536315ec32d2eacc727af96b647bffcb03a5919a"
+    },
+    {
+      "path": "navigation/active/svg/search.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1048,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "b67c62dc91a5e1cee65208693645ad01330d3758c7e20dca5a6a31733af019bd"
+    },
+    {
+      "path": "navigation/active/svg/settings.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1110,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "743a391d9a9f56cfdaecf188b417cf06c002246791d972bb61c767a5c26fcf89"
+    },
+    {
+      "path": "navigation/active/svg/studios.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1121,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8d3e17a69dac923fc1d80ddc7be126a891957b0b55fc5768dd146eefabf67d77"
+    },
+    {
+      "path": "navigation/active/webp/admin_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4546,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "7f4450677277164eae6f0b5cb9c43e9660d084a2ebf84be1ab63cf0e5dbda5f9"
+    },
+    {
+      "path": "navigation/active/webp/calendar_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3236,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2b14bb7604e4500ae3470a7fbd1e4bf2b2368781345e3790e88185af27434a27"
+    },
+    {
+      "path": "navigation/active/webp/chats_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3960,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f3e6e9eed31350c77022cc4b6858ddaf83d73370b0ce06af2e271bc0a49d3935"
+    },
+    {
+      "path": "navigation/active/webp/events_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4142,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f0d46ead07d8854441454a5f299bc4d4c3f1c91eebf64771926cb110a9224d4a"
+    },
+    {
+      "path": "navigation/active/webp/feed_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3472,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "59bca80cd6bf34a08b6849e9c071c42e3a211c0cba3b50a70384382813177142"
+    },
+    {
+      "path": "navigation/active/webp/files_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2828,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "6e2db388a262701bdb8d308480a865615324ac13c9cf71637d55aec5020b4c43"
+    },
+    {
+      "path": "navigation/active/webp/finance_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3052,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d4e6b286d49eb09186191bc1b844f00d7e9b3d82449d9b18a695e81106d24b0b"
+    },
+    {
+      "path": "navigation/active/webp/groups_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4086,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e3af1062212976d6eeda25096fff125f5327c83ec175820bf9ea65211b7b6eb0"
+    },
+    {
+      "path": "navigation/active/webp/musicians_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4016,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ba0bc8f436a93e60e6d55c3399e5ce3854e22fa3368d64e1d48c485db18c98b6"
+    },
+    {
+      "path": "navigation/active/webp/notifications_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3326,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8e1017b3225e0ae885ea4429681ecde62c97d8e12fbfbe0c94ced0305f028df2"
+    },
+    {
+      "path": "navigation/active/webp/offers_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3296,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f387612ad0663c33b1680be9cc5b78e5b65ad2c368d841188770fa4313442009"
+    },
+    {
+      "path": "navigation/active/webp/profile_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 6022,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "4028fee1fb7b5ca7529352b3f06f845e65b9f6f2524f1f08b5b5599dc319201a"
+    },
+    {
+      "path": "navigation/active/webp/projects_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3084,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8757ce2fb37c5a2f37f793ec996478619c4cbf0fee2d4ceca85f089d8ccc9ae8"
+    },
+    {
+      "path": "navigation/active/webp/rating_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2542,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c3371ca60798ad178cb37aa244ad35cb3b9e3f162c2e1adcf6555f7d494e2dd9"
+    },
+    {
+      "path": "navigation/active/webp/riders_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3472,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "59bca80cd6bf34a08b6849e9c071c42e3a211c0cba3b50a70384382813177142"
+    },
+    {
+      "path": "navigation/active/webp/search_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3436,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ba74c50ce33853bf08c699d20d896b87d252251e13d3097c955831f91158f728"
+    },
+    {
+      "path": "navigation/active/webp/settings_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3858,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fd519dc3bcb8c3f57377da6f5cb48e0970b8f54e78dd68542b052e50c5f148c6"
+    },
+    {
+      "path": "navigation/active/webp/studios_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3254,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "34edb2529d00229d650d143a8a1e7c0a95a95a286c83f0da7456c24646d4bd42"
+    },
+    {
+      "path": "navigation/inactive/png/admin_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4682,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e0450b146d3c9ef641ee8fc281ef80a61dfbf0641a11acdffc9a3cb9b304f036"
+    },
+    {
+      "path": "navigation/inactive/png/calendar_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2695,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "88200a4bd09268ec41ade3bc4c2c0c9d0fda29cf76e42f7f613588c60a38bca5"
+    },
+    {
+      "path": "navigation/inactive/png/chats_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4194,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d9d9f7e5ca13fbf5ac8c4efcdfe93bda9bbce0a83f138116733432fe7bfbedf5"
+    },
+    {
+      "path": "navigation/inactive/png/events_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4283,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "6bed25560b0ae9920765f7788282311c9e3434bcfcb42339308c36c7083d82b5"
+    },
+    {
+      "path": "navigation/inactive/png/feed_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3158,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d5f23f768ca863d07a80d1c0970fdb8b39abf410dc6e6757807db0160d5d725e"
+    },
+    {
+      "path": "navigation/inactive/png/files_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2323,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "6307f5000f3e574c45d87b3c28b633a06c3198f709ddd4c8bb285eb048468938"
+    },
+    {
+      "path": "navigation/inactive/png/finance_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2724,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "4bf877e87795c8207e94798632ff1da33ea93f082811d340e643c80919e6be34"
+    },
+    {
+      "path": "navigation/inactive/png/groups_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4197,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "cb9abb6f3438577c3059c4777edb8273b2cf78724e7669498dc161cb5e46d6d8"
+    },
+    {
+      "path": "navigation/inactive/png/musicians_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4537,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "90d3a8c4266e803d59f742fd5d2ba16f1a0a1bd6631e62ae5ba517ec50c2eb63"
+    },
+    {
+      "path": "navigation/inactive/png/notifications_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3284,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "92c8159edcaba5cf9b53f27487982ad198fe4a48c90035f6b0928632dca12a9f"
+    },
+    {
+      "path": "navigation/inactive/png/offers_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3091,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "1647ce8a8aed8ef2588b88e42c182cfd06491b7122f2c854e4eb921aee37b9c6"
+    },
+    {
+      "path": "navigation/inactive/png/profile_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 7074,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "57f83a07596aec6cb089a5aaee90fe0f845fc989aa8302f4f05470f9cee8c6f0"
+    },
+    {
+      "path": "navigation/inactive/png/projects_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2937,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c9f70e63e47e21245b5c16022088a318e0881d4979576dd5688a220bedf9b96a"
+    },
+    {
+      "path": "navigation/inactive/png/rating_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 1972,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "685951f8df6bc70437b56be416cfcc6bd202452869d1b561ba48d77871def239"
+    },
+    {
+      "path": "navigation/inactive/png/riders_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3158,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d5f23f768ca863d07a80d1c0970fdb8b39abf410dc6e6757807db0160d5d725e"
+    },
+    {
+      "path": "navigation/inactive/png/search_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3799,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "55857e637ab113f651ebbcd1fd8c7bd23f636a89399f8481bad53ff4e137c9ea"
+    },
+    {
+      "path": "navigation/inactive/png/settings_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3393,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "af8ed4bd2f5d4ab90e998a2758d1919eea458d86cf8dbdaacc0bbd719be9ff6e"
+    },
+    {
+      "path": "navigation/inactive/png/studios_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2721,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a3ced74e9349f65571dd1e30763c2314cae2733a90bad14f3bd04bf62652a15e"
+    },
+    {
+      "path": "navigation/inactive/svg/admin.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1080,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "c464561d79ef852a01892cc4e29480aa6b22edf424ff9edb44a021fa3e3f95fb"
+    },
+    {
+      "path": "navigation/inactive/svg/calendar.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1143,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0cd0927a1fbddc38ebfa740f5b118aa17e7f97fa28f1efe6c7846c3e8fdc5b34"
+    },
+    {
+      "path": "navigation/inactive/svg/chats.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1112,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "fa83bbcb712ce198058b9755007778cde3d35981990ca9bb606346de583347f1"
+    },
+    {
+      "path": "navigation/inactive/svg/events.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1093,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "eadd75e6bf0a5e8c786a51377def9d9ce62701c9eb09338d57e4274d2af9c9c8"
+    },
+    {
+      "path": "navigation/inactive/svg/feed.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1118,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "d46dd0db15b2390f68d945aa257fb621140f7534101d3d86784a20bc9b8a8859"
+    },
+    {
+      "path": "navigation/inactive/svg/files.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1055,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "c373be36746aae9216cdcfd7778acd0d98d69047ef951e7fd6865cd0b85bde2b"
+    },
+    {
+      "path": "navigation/inactive/svg/finance.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1103,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "134053991d87c7c1620f3ca85fe673b587c71b5925185a9255d712db4cd6a64c"
+    },
+    {
+      "path": "navigation/inactive/svg/groups.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1128,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8d0ab2d0f0bda17a1eaa57ac4ba1cd668030a3f01d413909eed3454c0e3233ee"
+    },
+    {
+      "path": "navigation/inactive/svg/musicians.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1112,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "77d7032d3ba64e1b8ae92903b0a64c432433c6a09f3cba4094c1e7e7070ad191"
+    },
+    {
+      "path": "navigation/inactive/svg/notifications.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1082,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "979ad600d9446cf5ae9b69d26a6841ac8c58643130b71a7ab41785475424bb97"
+    },
+    {
+      "path": "navigation/inactive/svg/offers.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1116,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "f968130a98c686db01ac4174d59d6f55a4bc4ba1485d95202639cfc184a2c630"
+    },
+    {
+      "path": "navigation/inactive/svg/profile.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1097,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0d48c55bcb6ad31caec7e2b27d06f50a7bb998fc0ee404e6c3991a2fca7a7915"
+    },
+    {
+      "path": "navigation/inactive/svg/projects.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1077,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6c8c3d6024c02e9f3d22bebe8eee8a40ce6459ca78995c7c57c7c931527a6027"
+    },
+    {
+      "path": "navigation/inactive/svg/rating.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1044,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "5cc171d3ed019df676f7361c03180acdeb82c4cc6f8a9e6d282826dd038386bd"
+    },
+    {
+      "path": "navigation/inactive/svg/riders.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1118,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "d46dd0db15b2390f68d945aa257fb621140f7534101d3d86784a20bc9b8a8859"
+    },
+    {
+      "path": "navigation/inactive/svg/search.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1043,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "40faaba1d248e75b65bc402a8af57c29ae0202498d857bb99f090109d36a62e3"
+    },
+    {
+      "path": "navigation/inactive/svg/settings.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1105,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6eb8e79f8063ab021527963adbc58f8cdbed3ba863caa230b0ed0d9152fad10f"
+    },
+    {
+      "path": "navigation/inactive/svg/studios.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1116,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "4efa84abe16b81cc3ced8a09e6a144a903105527f8ed7a693182cf5ef7204ad8"
+    },
+    {
+      "path": "navigation/inactive/webp/admin_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4414,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9f92b5bb5b9d331d5ae61e617052c6d1f1b9c1b3aaf8d8104155c548c16c42e0"
+    },
+    {
+      "path": "navigation/inactive/webp/calendar_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3016,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5dede3bba6f0b24f2dc825a61992f1afb47bdf77e1ec95420d81e01c824048c9"
+    },
+    {
+      "path": "navigation/inactive/webp/chats_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3912,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "935b0f8682b0d936e8bfe39b8919bf9fa40fae3e8df0ef8ff6d23929297be591"
+    },
+    {
+      "path": "navigation/inactive/webp/events_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4162,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "f2d46b4e93e215a72d8df95e1cc2a048666c436b6aa8a874bfe4ea761b59db46"
+    },
+    {
+      "path": "navigation/inactive/webp/feed_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3380,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fb69223da86a90c4a58d9c012c06722f132348cd9a3f5e62fb882b54798dd673"
+    },
+    {
+      "path": "navigation/inactive/webp/files_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2718,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0759ddf9af03a749a4d6a854856f1d9874361b689b47556ff227743a4ad49141"
+    },
+    {
+      "path": "navigation/inactive/webp/finance_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2980,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5818c378d0ce7d4f04c19c618798b668a7ccbfd4d41fb25286e0924d60f43ee1"
+    },
+    {
+      "path": "navigation/inactive/webp/groups_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4060,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "eb2d84f34433e20843e4072aedee2c4e3cc1edc734c00e70fbe51b81fac3c8e4"
+    },
+    {
+      "path": "navigation/inactive/webp/musicians_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3952,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d3890441650f57b98ac61e2dc3bee84a5cdbb5aef6492f9d6f847be494877149"
+    },
+    {
+      "path": "navigation/inactive/webp/notifications_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3194,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "4fa8ac92bbb5e1f302cb1e37743e77259512d9371107954c54f542ec74c95913"
+    },
+    {
+      "path": "navigation/inactive/webp/offers_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3212,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "326a4e4791188c04a6bbd9a9fc1c6cc5ad0105c9587a7bd301db4d4a46177dc6"
+    },
+    {
+      "path": "navigation/inactive/webp/profile_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 6012,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c374a3d46701f10e9bdc1b2372a64b54acc206527dcfa7465b914ce05b9430d4"
+    },
+    {
+      "path": "navigation/inactive/webp/projects_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2960,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bcf712c7f5c1f11e3c9bde9d6278c69f84e4c4beaaa737b353c79139c4c62eb8"
+    },
+    {
+      "path": "navigation/inactive/webp/rating_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2358,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9b46e2b586216cb1c2b1df2e3919b8e388281185ae6cf19150d59625bf5d4666"
+    },
+    {
+      "path": "navigation/inactive/webp/riders_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3380,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fb69223da86a90c4a58d9c012c06722f132348cd9a3f5e62fb882b54798dd673"
+    },
+    {
+      "path": "navigation/inactive/webp/search_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3376,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "580496600404f50cc3bc8c638455ba964b367cd553c80fe89bd54e5e0caad65c"
+    },
+    {
+      "path": "navigation/inactive/webp/settings_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3702,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "aab19e5b8e4ed43e743e62465fe52ceabe561194615ac9f436fe6ae7ffbea2a9"
+    },
+    {
+      "path": "navigation/inactive/webp/studios_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2988,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ca1ba1512ba2ab9de5ba1dc87d43cedfce09e08b4e026742651cb88b1f391ec5"
+    },
+    {
+      "path": "og/png/og-default_1200x630.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 47961,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ffa8e73d84493b5deedf99f4bf335be6012384da4aa2089c9d48c7b7ed81502d"
+    },
+    {
+      "path": "og/png/og-profile_1200x630.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 47961,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ffa8e73d84493b5deedf99f4bf335be6012384da4aa2089c9d48c7b7ed81502d"
+    },
+    {
+      "path": "og/png/og-workspace_1200x630.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 47961,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ffa8e73d84493b5deedf99f4bf335be6012384da4aa2089c9d48c7b7ed81502d"
+    },
+    {
+      "path": "og/svg/og-default.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 2192,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "4253bed1c84261e3f5b3035bf34f13869e9347d9ed8af410b25726751dc1f414"
+    },
+    {
+      "path": "og/svg/og-profile.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 2192,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "4253bed1c84261e3f5b3035bf34f13869e9347d9ed8af410b25726751dc1f414"
+    },
+    {
+      "path": "og/svg/og-workspace.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 2192,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "4253bed1c84261e3f5b3035bf34f13869e9347d9ed8af410b25726751dc1f414"
+    },
+    {
+      "path": "og/webp/og-default_1200x630.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 81552,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2f72df3c5c2c56e78035241ae6f92cf37b5feaa9c36413cf0c7fc74e27bfa2e7"
+    },
+    {
+      "path": "og/webp/og-profile_1200x630.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 81552,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2f72df3c5c2c56e78035241ae6f92cf37b5feaa9c36413cf0c7fc74e27bfa2e7"
+    },
+    {
+      "path": "og/webp/og-workspace_1200x630.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 81552,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2f72df3c5c2c56e78035241ae6f92cf37b5feaa9c36413cf0c7fc74e27bfa2e7"
+    },
+    {
+      "path": "roles/active/png/bassist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4355,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a59542be97a55d2284c067877104c6cdcd47ab6796ee95d5768e93de759d2050"
+    },
+    {
+      "path": "roles/active/png/conductor_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3230,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "fbbc2f0fb48938a85c810c458a2f86f41db0ba0db2059a9522f90680f1aba11c"
+    },
+    {
+      "path": "roles/active/png/drummer_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4719,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "abdb543a0d91d8c7aa3e2c934ff7cb949c91c46328677f297a0948fe53aede30"
+    },
+    {
+      "path": "roles/active/png/group_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5157,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "300b5dbe06cdfec53273442ab3bde172343bed89502866ab1b181d95049145b6"
+    },
+    {
+      "path": "roles/active/png/guitarist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4583,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "48b36202f2caf0b12c0105906a8eb666da4cd8fa38d1a9648869b68921f45a82"
+    },
+    {
+      "path": "roles/active/png/keyboardist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2964,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b42682ca8d089915df6774d1f6d8481424917cbe735d225c3300e432d41e3d8c"
+    },
+    {
+      "path": "roles/active/png/manager_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2995,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9d7cc038f8cb981505b5ac4435a7ced3539def8de4ef9af9a3de22fc278b3551"
+    },
+    {
+      "path": "roles/active/png/musician_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4893,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a4fa944fa731c146c3db120754667c296c5e679af5a23dcd882878909e861f1f"
+    },
+    {
+      "path": "roles/active/png/orchestra_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 6155,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "b3450425928c12f91c0d6500bfc37798320721a994724f725e3194cca3acf696"
+    },
+    {
+      "path": "roles/active/png/organization_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3613,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "62fe6e7b27a3cc47d332c694e24f428202c9bde525750fc0112e0129a17f292f"
+    },
+    {
+      "path": "roles/active/png/producer_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5228,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "56538102ad42c882ee66e13bb473ab3df229e1b027fed8be7b4837ac2ee95020"
+    },
+    {
+      "path": "roles/active/png/project_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3365,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3718cabb599c1d8ee2cbd870011121e270a5d8e2660163ea80bacc89e921135d"
+    },
+    {
+      "path": "roles/active/png/session_musician_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3987,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8166ee80534231263b14d6381420b5fcb88163d02834cb151d4d9ab7224a6544"
+    },
+    {
+      "path": "roles/active/png/sound_engineer_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3445,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3be2af9bb9bce99b049c7ff3fcaf2f62a01dea68cb8eb01bf887b409d975f29e"
+    },
+    {
+      "path": "roles/active/png/studio_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4281,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "933320fdb39c60a1ed9b594a5901d75d95931a9ce251fa8d0468e469af2ffc74"
+    },
+    {
+      "path": "roles/active/png/tour_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3869,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "511493c2350428aae6638067b1fdeaccc52e983961f0590752e683df4a44c8a7"
+    },
+    {
+      "path": "roles/active/png/violinist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4419,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "84ba65f97a0c8b6c67e6591600ec924e46aba71db33a829c3d427b3feccaef53"
+    },
+    {
+      "path": "roles/active/png/vocalist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4209,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "6b607a0dc7a752dc42aee3e3bffbbfef9c72bcd32954513af92368d30e0962ba"
+    },
+    {
+      "path": "roles/active/svg/bassist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1115,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "3f8ca22af4c47b8db2b63c1a1a3bd310725d98294550e66ee5133cabbcd2fe91"
+    },
+    {
+      "path": "roles/active/svg/conductor.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1072,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "c88ec47ae14259d365e45daec3fce4c654db178eab4c448e04cd560ac06e243f"
+    },
+    {
+      "path": "roles/active/svg/drummer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1129,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "21352572036776de9b9a0ed5486cd799b1c0ed1f8b945ac636cf397713f1ac60"
+    },
+    {
+      "path": "roles/active/svg/group.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1133,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "068eec222848188d19c72ad4dd84787c4e0ab9a0440b2793825f00c21de5f629"
+    },
+    {
+      "path": "roles/active/svg/guitarist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1135,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "13ade431ccf955207a18fe06a665213cc6302543b1a4358e173c0017e1077b9e"
+    },
+    {
+      "path": "roles/active/svg/keyboardist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1148,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0c2afabacaecb7303e3fde7517a87cb1727f35c8174f5b5ae05ea0a1acdb8454"
+    },
+    {
+      "path": "roles/active/svg/manager.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1087,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "5aa429349b79d7446f07fd029fd8224d2cea036da1216b9cf29fe52c753558c3"
+    },
+    {
+      "path": "roles/active/svg/musician.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1117,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1a233d7616abdec9df2e1c8fb64c0efbd94fd5f161bb9a12a0e5a1a64c8bb244"
+    },
+    {
+      "path": "roles/active/svg/orchestra.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1176,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0419fe562308df4f69d60b6b9d1801ad1c3971e0114df8494ca8242decaab7cd"
+    },
+    {
+      "path": "roles/active/svg/organization.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1073,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "62db4d82c26a0eb93405af1341a453df761f6162956cb729cc2b4695bafe27e5"
+    },
+    {
+      "path": "roles/active/svg/producer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1188,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "3e73b96e6fd70adcc7931cf45370ce157dec223ef79b36e33f9d5f6b9ac399e8"
+    },
+    {
+      "path": "roles/active/svg/project.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1082,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "b1398cf72860f56d925a30ea310dd105b820996711fd038a9a062e98e3b3d5dc"
+    },
+    {
+      "path": "roles/active/svg/session_musician.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1089,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "2522bbc17cdcac57cd77e3e7c0209141f47141e8978daabf33c57206e7eedef5"
+    },
+    {
+      "path": "roles/active/svg/sound_engineer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1156,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "5abf2ce09e6cc114f6aeb52b01f94ebc568ead3895313eb6cffa6cd0d7fefab2"
+    },
+    {
+      "path": "roles/active/svg/studio.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1136,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1cb705982fbb2ade6b2406df38dbb1899202c819058857cdfcf2473a820cee2d"
+    },
+    {
+      "path": "roles/active/svg/tour.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1170,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "b13fe04ec36d99757bd5c93b42d5d42f02be6dfb4aef72f28221b730063ba5ee"
+    },
+    {
+      "path": "roles/active/svg/violinist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1107,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "76e9a09828927b9fb75bf662f24dc40b548ea9f809dc9204335d37ab290b6956"
+    },
+    {
+      "path": "roles/active/svg/vocalist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1132,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "97611580eb1d59871aec51e989082d5e96da77e2240f609233ebe78af09fc054"
+    },
+    {
+      "path": "roles/active/webp/bassist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3708,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a60e859695c9d58e0957a1c80d12b1ce58c2bbcfe3b5638629b1d475a4aa1e50"
+    },
+    {
+      "path": "roles/active/webp/conductor_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3234,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "2fda907a279e25e3a0dfcaa75a037c037bc9a920e01f69648c8f508883808e51"
+    },
+    {
+      "path": "roles/active/webp/drummer_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4020,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e47ef001927ff90f07af1cb7593e73afc196e0cbd03cb9114debf32508b5e192"
+    },
+    {
+      "path": "roles/active/webp/group_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4086,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e3af1062212976d6eeda25096fff125f5327c83ec175820bf9ea65211b7b6eb0"
+    },
+    {
+      "path": "roles/active/webp/guitarist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3920,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "27c044630ce70d70a865b1298acc0d642dcd673388c245579e4516b98a19d84c"
+    },
+    {
+      "path": "roles/active/webp/keyboardist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3126,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "607c3db26691883c85aca4340616324da26bfdf60b312b31a73a6b0ec3881e08"
+    },
+    {
+      "path": "roles/active/webp/manager_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2866,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c59858b6a0e97951597079615d2f979595fb4cfd8ad136ae1ca6c1a2844d746f"
+    },
+    {
+      "path": "roles/active/webp/musician_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4016,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ba0bc8f436a93e60e6d55c3399e5ce3854e22fa3368d64e1d48c485db18c98b6"
+    },
+    {
+      "path": "roles/active/webp/orchestra_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4746,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8e71fc6b0d4413a7764ff227278372942a15a94de84c6bac103083f082eabd77"
+    },
+    {
+      "path": "roles/active/webp/organization_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3452,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "66910f164c7e0fb96f5a3a53a1b0e95c9ab5ef9381d04ac7ed00c644090fb462"
+    },
+    {
+      "path": "roles/active/webp/producer_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4180,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "76d561ac84ed350495145c2fbd6da5d0b8c16e227a4c99838c6a7b848dbf7abc"
+    },
+    {
+      "path": "roles/active/webp/project_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3084,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8757ce2fb37c5a2f37f793ec996478619c4cbf0fee2d4ceca85f089d8ccc9ae8"
+    },
+    {
+      "path": "roles/active/webp/session_musician_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3374,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "26e7e84c1fca14c21cf4be25dccb029c786e4fa2aed1eb0f8842f36ac27ada5a"
+    },
+    {
+      "path": "roles/active/webp/sound_engineer_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3402,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d9d3539cd3ed4eea3fc5116cfe24c997b4c1f5b5d55436b999fd6dc40ea4d532"
+    },
+    {
+      "path": "roles/active/webp/studio_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3684,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5f08a6494e7b2b568130cad5ca44baeb916d80dc472a7d176fe370a9959ca1fe"
+    },
+    {
+      "path": "roles/active/webp/tour_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3416,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c239fc98312600df52d58e282de99660f67a6516f888abea7d9fb02d91ecf278"
+    },
+    {
+      "path": "roles/active/webp/violinist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3750,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "9eff277a6d9dad45334bb4293f0f32ddf5ee2f4f3648d62b826aaf7cfb3632ee"
+    },
+    {
+      "path": "roles/active/webp/vocalist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3602,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "461de796a15a6378d9a7209a211155fb78e1f51d411249adce5d120808309035"
+    },
+    {
+      "path": "roles/inactive/png/bassist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4060,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a38f040e213ee4489fe71f15f8c719eee060a3af184993f6fb6e37d389693f37"
+    },
+    {
+      "path": "roles/inactive/png/conductor_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2577,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "42f112dcb47049bccf6a88a903f95037be487255e5600d01c539e58daf41ef07"
+    },
+    {
+      "path": "roles/inactive/png/drummer_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4023,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "11893a0df117e037fa77da9c1de51ec4dffffb6e326d76a899340a8c5e6f02b6"
+    },
+    {
+      "path": "roles/inactive/png/group_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4197,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "cb9abb6f3438577c3059c4777edb8273b2cf78724e7669498dc161cb5e46d6d8"
+    },
+    {
+      "path": "roles/inactive/png/guitarist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4208,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "a0bfdf79dc7e3fd90155e2bec8687b5c2e47e00eb7a2a91d0b3e9223dbd78e2f"
+    },
+    {
+      "path": "roles/inactive/png/keyboardist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2295,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "aa0464a269833deb830cb9ed73cb836723945c0c6dc1aa8cb3ac1fdb5bda728c"
+    },
+    {
+      "path": "roles/inactive/png/manager_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2584,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "ddba93a81cef2c52d00f7905f907ba74b095fb22dbe232253926a4a2db293a9f"
+    },
+    {
+      "path": "roles/inactive/png/musician_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4537,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "90d3a8c4266e803d59f742fd5d2ba16f1a0a1bd6631e62ae5ba517ec50c2eb63"
+    },
+    {
+      "path": "roles/inactive/png/orchestra_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 5288,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "14798cadb9b3481b7e707ec47bc75abfdc74da48d0b2de7d4e2e0d4caf3f1327"
+    },
+    {
+      "path": "roles/inactive/png/organization_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2498,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "41a7395c63edf1529d1cd857624e596210f908f6f7686894d7b3ad9cce718a81"
+    },
+    {
+      "path": "roles/inactive/png/producer_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4329,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "901f3f6d3df4be45fe0512047c69150dc4b8787d59a135a037b783518c80fb07"
+    },
+    {
+      "path": "roles/inactive/png/project_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2937,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c9f70e63e47e21245b5c16022088a318e0881d4979576dd5688a220bedf9b96a"
+    },
+    {
+      "path": "roles/inactive/png/session_musician_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3598,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "6895930d575763030eefbf0288cac0f058c449d804974e39beb2ccf8a6c5c239"
+    },
+    {
+      "path": "roles/inactive/png/sound_engineer_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 2815,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e6ad5b40571a4760c7adfd7516d7bd2fb9039228ad1f6397809af9b0030dc52f"
+    },
+    {
+      "path": "roles/inactive/png/studio_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3857,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "03c267ecd7f2045e1b3afa357405ef105bedccb6f4f15b69b045f1a38d77a419"
+    },
+    {
+      "path": "roles/inactive/png/tour_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 3095,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3bf69d96bf751560cdf7730fcf67440eaa154957f90339b563d29bd3e4057acd"
+    },
+    {
+      "path": "roles/inactive/png/violinist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4249,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "59da5f4c6a21b8a975c1cb7be6369a243c93e757c630f4d0d8d9a2d7f5270115"
+    },
+    {
+      "path": "roles/inactive/png/vocalist_96.png",
+      "role": "asset",
+      "format": "png",
+      "size_bytes": 4012,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "8e14c5619bb7bbb308970dd3a9d93867ed5be4bb09765dcd2852a3fa8edb01a2"
+    },
+    {
+      "path": "roles/inactive/svg/bassist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1110,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6646192d99457c40276f52b46021457171bceffc0341d481efff5691d27fad9e"
+    },
+    {
+      "path": "roles/inactive/svg/conductor.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1067,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "5d2f902ac2cc8999e1813a797469196dbd8332c1e8c3c36ba1d71514b4c07180"
+    },
+    {
+      "path": "roles/inactive/svg/drummer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1124,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "24ceaf39f240ac8fdb7d4d5376256c43fc6da977baf95a85324c157a34711c5b"
+    },
+    {
+      "path": "roles/inactive/svg/group.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1128,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "8d0ab2d0f0bda17a1eaa57ac4ba1cd668030a3f01d413909eed3454c0e3233ee"
+    },
+    {
+      "path": "roles/inactive/svg/guitarist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1130,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "b26ead4255a53378e7725602f835a53c1037610c1ef8a3d0d9173042be450351"
+    },
+    {
+      "path": "roles/inactive/svg/keyboardist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1143,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "82f993db39180c74bef5ef88d9a83b7ec26cdd8200a8cf97de27bc62c0cd933b"
+    },
+    {
+      "path": "roles/inactive/svg/manager.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1082,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "cc758cf604bcf462cab08dd4df7d761ebdef9f8cdd8bc21a635e01d2c6752045"
+    },
+    {
+      "path": "roles/inactive/svg/musician.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1112,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "77d7032d3ba64e1b8ae92903b0a64c432433c6a09f3cba4094c1e7e7070ad191"
+    },
+    {
+      "path": "roles/inactive/svg/orchestra.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1171,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "ca7ad7be7d2dd0194b031011e9075198af4ad49a3f59d767f0a4d270862bc1a9"
+    },
+    {
+      "path": "roles/inactive/svg/organization.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1068,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "a05c92a08623d3fd632887dde250040e1a7ef36e49681d263f57be377b0cd871"
+    },
+    {
+      "path": "roles/inactive/svg/producer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1183,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0a6e32d423f87363787b74bbccc9f8d7d482059737ac59709dbd0e888b124591"
+    },
+    {
+      "path": "roles/inactive/svg/project.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1077,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6c8c3d6024c02e9f3d22bebe8eee8a40ce6459ca78995c7c57c7c931527a6027"
+    },
+    {
+      "path": "roles/inactive/svg/session_musician.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1084,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "0c67a21f965491ff51045d20ed4dbe28460a5741e4e284a04312f1d5a3781839"
+    },
+    {
+      "path": "roles/inactive/svg/sound_engineer.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1151,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "d75475f682eef14ac055dbb7a28bc027a556a989ff72922350600e7de88fa390"
+    },
+    {
+      "path": "roles/inactive/svg/studio.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1131,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "1749278c8f044138efff2ff0323e9b5c2a99e9013903cab6a9e2c735150d671f"
+    },
+    {
+      "path": "roles/inactive/svg/tour.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1165,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "cbcc6d847f6746ee3a0ba953df18fcfe4954e903cdc691a3d3981b04b6316e41"
+    },
+    {
+      "path": "roles/inactive/svg/violinist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1102,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "02527a2be8618e2a0e185c476f2eef245d4da5e73902f4a8a50f1c470fcffd8b"
+    },
+    {
+      "path": "roles/inactive/svg/vocalist.svg",
+      "role": "asset",
+      "format": "svg",
+      "size_bytes": 1127,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "000c97e0a83c3392760890e7282754a415bacd001d192a85033b8550fe085b54"
+    },
+    {
+      "path": "roles/inactive/webp/bassist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3712,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "cb45f345d32a39fc3f2f4d4ee5e747b02472d5e1b4f1ac2baf7257b0c2e8ab5a"
+    },
+    {
+      "path": "roles/inactive/webp/conductor_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3046,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "5a5334203d5ca36e925c335744d1162cf896e196d0d25c79bf5e7d87f8d794bc"
+    },
+    {
+      "path": "roles/inactive/webp/drummer_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3886,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "c45ab94b6c5c5e00fe7bddd7772ffabc843ef96066186cc6776f92907fe4dd82"
+    },
+    {
+      "path": "roles/inactive/webp/group_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4060,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "eb2d84f34433e20843e4072aedee2c4e3cc1edc734c00e70fbe51b81fac3c8e4"
+    },
+    {
+      "path": "roles/inactive/webp/guitarist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3956,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3af8615184a1a5a3a617fc2ab3bc4a66643722d9fe71a5b778570a2141afbe90"
+    },
+    {
+      "path": "roles/inactive/webp/keyboardist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3112,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "0df2521b1ddb444c8f5474be08a1993423e2b8a749f0358984e8801229765511"
+    },
+    {
+      "path": "roles/inactive/webp/manager_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2774,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "32a46a317a9075fbff75775ae0352f6515bbaf95d31510efd285bc8eb25db778"
+    },
+    {
+      "path": "roles/inactive/webp/musician_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3952,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d3890441650f57b98ac61e2dc3bee84a5cdbb5aef6492f9d6f847be494877149"
+    },
+    {
+      "path": "roles/inactive/webp/orchestra_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4712,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "15060d85da82520f6125d18a8571378c42cee75e6b1d297529b5bde90ac8f4c4"
+    },
+    {
+      "path": "roles/inactive/webp/organization_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3234,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "642f23312578f27078e983c09f71e56dfe0392e9d7b0a370e774bf4538ddc63f"
+    },
+    {
+      "path": "roles/inactive/webp/producer_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 4194,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "cb945d51fb598f2460a9e268404742cefa8980235ae6a601901dbc08e901f0a4"
+    },
+    {
+      "path": "roles/inactive/webp/project_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 2960,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "bcf712c7f5c1f11e3c9bde9d6278c69f84e4c4beaaa737b353c79139c4c62eb8"
+    },
+    {
+      "path": "roles/inactive/webp/session_musician_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3254,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "62f14384f116828d986c81df3f65c54452d06833971f8ccdd3f4b3bcdb7d7671"
+    },
+    {
+      "path": "roles/inactive/webp/sound_engineer_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3500,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "3d61ebf155939dd35f05fc1ced4c40fc2ab89811483d4e671d4b7702b426e3d1"
+    },
+    {
+      "path": "roles/inactive/webp/studio_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3544,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "e90ddced50dd48eb4f5e7664c689e61a799f4ed4653db9df546c43c4f53b46ca"
+    },
+    {
+      "path": "roles/inactive/webp/tour_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3434,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "d6c740ab8ea4c5ae76d242c3eb954bb01951052456d0d5cbc214d21e992c35d4"
+    },
+    {
+      "path": "roles/inactive/webp/violinist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3708,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "427b39e4591293273f416bffaa990e3d386e780cceaf6f0a87ce34930b95ec99"
+    },
+    {
+      "path": "roles/inactive/webp/vocalist_96.webp",
+      "role": "asset",
+      "format": "webp",
+      "size_bytes": 3608,
+      "transparent_background": true,
+      "alpha_channel": true,
+      "sha256": "53fc0e534549044ec5e53814853feabca83f8a78256e5f5481e8c95f131aa5c0"
+    },
+    {
+      "path": "spec/BandKit_Interface_Layout_Contract_v1_0.md",
+      "role": "metadata/documentation",
+      "format": "md",
+      "size_bytes": 32960,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "2ec89b43d46d7b29feffbe3480c03a2e778612634c7871bc296a87ff1748485b"
+    },
+    {
+      "path": "spec/BandKit_TZ_v1_2.md",
+      "role": "metadata/documentation",
+      "format": "md",
+      "size_bytes": 38715,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "15dfb38ae58532307a809efb981b2dbea3def2b316f836a3e83068381d9dd46c"
+    },
+    {
+      "path": "spec/CHANGELOG_TZ_v1_1.md",
+      "role": "metadata/documentation",
+      "format": "md",
+      "size_bytes": 566,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "6070fb5bbb8440e507707e092a353d6c303213904a0c96fcd1d15799d57f7a26"
+    },
+    {
+      "path": "spec/CHANGELOG_TZ_v1_2.md",
+      "role": "metadata/documentation",
+      "format": "md",
+      "size_bytes": 705,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "c47fe0b7dc2d7cd7b22a4dbe7eb586687c757c6af0ec5207f722629ea53ab732"
+    },
+    {
+      "path": "spec/CHANGELOG_v1_3_layout_contract.md",
+      "role": "metadata/documentation",
+      "format": "md",
+      "size_bytes": 705,
+      "transparent_background": false,
+      "alpha_channel": false,
+      "sha256": "c47fe0b7dc2d7cd7b22a4dbe7eb586687c757c6af0ec5207f722629ea53ab732"
+    }
+  ]
+}

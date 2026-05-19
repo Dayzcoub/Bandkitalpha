@@ -1,0 +1,11 @@
+{
+  "settings.title": "Настройки",
+  "settings.subtitle": "Аккаунт, безопасность, язык, регион и future-ready workspace.",
+  "settings.securityTitle": "Настройки безопасности",
+  "settings.i18nTitle": "Язык и регион",
+  "settings.sessions": "Активные сессии",
+  "settings.logoutAll": "Выйти на всех устройствах",
+  "settings.locale": "Язык интерфейса",
+  "settings.timezone": "Часовой пояс",
+  "settings.privacy": "Приватность"
+}

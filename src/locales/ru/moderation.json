@@ -1,0 +1,17 @@
+{
+  "moderation.title": "Очередь модерации",
+  "moderation.subtitle": "Жалобы, приоритеты, действия модератора и audit trail.",
+  "moderation.caseTitle": "Карточка жалобы",
+  "moderation.queue": "Очередь",
+  "moderation.filters": "Фильтры",
+  "moderation.priority.high": "Высокий",
+  "moderation.priority.medium": "Средний",
+  "moderation.priority.low": "Низкий",
+  "moderation.reason.spam": "Спам",
+  "moderation.reason.fraud": "Мошенничество",
+  "moderation.reason.harassment": "Оскорбления",
+  "moderation.action.warn": "Предупредить",
+  "moderation.action.restrict": "Ограничить",
+  "moderation.action.hide": "Скрыть контент",
+  "moderation.auditTrail": "История аудита"
+}

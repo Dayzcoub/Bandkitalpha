@@ -1,0 +1,12 @@
+{
+  "admin.title": "System dashboard",
+  "admin.subtitle": "Admin area is separated from the regular App Shell.",
+  "admin.usersTitle": "Users",
+  "admin.rolesTitle": "Roles and access",
+  "admin.localizationTitle": "Localization",
+  "admin.auditTitle": "Action audit",
+  "admin.securityDashboard": "Security dashboard",
+  "admin.roleMatrix": "Role matrix",
+  "admin.localizationKeys": "Translation keys",
+  "admin.userStatus": "User status"
+}

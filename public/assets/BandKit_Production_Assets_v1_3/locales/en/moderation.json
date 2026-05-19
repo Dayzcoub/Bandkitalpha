@@ -1,0 +1,7 @@
+{
+  "moderation.reason.spam": "Spam",
+  "moderation.reason.fraud": "Fraud",
+  "moderation.reason.harassment": "Harassment or pressure",
+  "moderation.action.restrict": "Restrict",
+  "moderation.action.ban": "Ban"
+}

@@ -1,0 +1,17 @@
+{
+  "events.title": "События",
+  "events.subtitle": "Репетиции, концерты, студийные сессии, кастинги и RSVP.",
+  "events.create": "Создать событие",
+  "events.detailTitle": "Карточка события",
+  "events.settingsTitle": "Настройки события",
+  "events.rehearsal": "Репетиция",
+  "events.concert": "Концерт",
+  "events.session": "Студийная сессия",
+  "events.rsvp": "RSVP",
+  "events.participants": "Участники",
+  "events.documents": "Документы события",
+  "events.chatPreview": "Чат события",
+  "events.status.confirmed": "Подтверждено",
+  "events.status.draft": "Черновик",
+  "events.status.private": "Приватное"
+}

@@ -1,0 +1,120 @@
+{
+  "brand": "BandKit",
+  "document": "Interface Layout Contract",
+  "version": "1.0.0",
+  "status": "mandatory_development_contract",
+  "breakpoints": {
+    "mobile": "0-767px",
+    "desktop": ">=768px"
+  },
+  "spacing_scale_px": [
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    32,
+    40,
+    48,
+    64
+  ],
+  "shell": {
+    "desktop": {
+      "left_nav_rail_px": {
+        "collapsed": "72-88",
+        "expanded": "248-280"
+      },
+      "top_bar_height_px": 64,
+      "main_content_width_px": "680-820 for social/feed content",
+      "right_context_rail_px": "300-360",
+      "max_canvas_px": 1440
+    },
+    "mobile": {
+      "top_bar_height_px": 56,
+      "bottom_nav_height_px": "64-72 + safe-area inset",
+      "columns": 1,
+      "horizontal_scroll": "forbidden for main UI"
+    }
+  },
+  "radius_px": {
+    "controls": "10-12",
+    "cards": "18-24",
+    "panels_modals": "24-28",
+    "avatars": "rounded-square, not circular"
+  },
+  "module_patterns": {
+    "feed": [
+      "page header",
+      "composer",
+      "filter chips",
+      "post cards",
+      "right rail"
+    ],
+    "profile": [
+      "cover",
+      "avatar tile",
+      "identity",
+      "actions",
+      "tabs",
+      "content",
+      "right summary"
+    ],
+    "events": [
+      "event header",
+      "date/location",
+      "primary RSVP/status action",
+      "details",
+      "participants",
+      "documents"
+    ],
+    "chats_desktop": [
+      "rooms list",
+      "conversation",
+      "chat details"
+    ],
+    "chats_mobile": [
+      "rooms screen",
+      "conversation screen",
+      "details sheet"
+    ],
+    "documents": [
+      "header",
+      "toolbar",
+      "table/grid/list",
+      "preview/details panel"
+    ],
+    "admin": [
+      "queue",
+      "details panel",
+      "action footer",
+      "audit log"
+    ]
+  },
+  "anti_drift_rules": [
+    "No inline styles for one-off positioning.",
+    "No page-specific CSS hacks for 1-2px shifts.",
+    "Primary actions must remain in canonical zones.",
+    "Use shared components and tokens before screen-level changes.",
+    "Mobile is a dedicated one-column layout, not squeezed desktop.",
+    "No localized text inside production assets."
+  ],
+  "required_states": [
+    "loading",
+    "empty",
+    "error",
+    "no-access",
+    "restricted",
+    "archived",
+    "blocked/moderated"
+  ],
+  "asset_rules": {
+    "primary_ui_format": "svg",
+    "fallback_formats": [
+      "png",
+      "webp"
+    ],
+    "language_neutral": true,
+    "preview_boards_in_production": false
+  }
+}

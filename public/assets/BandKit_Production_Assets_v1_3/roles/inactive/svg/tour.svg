@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" fill="none">
+<defs>
+  <linearGradient id="bkGrad" x1="12" y1="12" x2="84" y2="84" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#a855ff"/>
+    <stop offset="1" stop-color="#f1f5f9"/>
+  </linearGradient>
+  <linearGradient id="bkCyanGrad" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a855ff"/>
+  </linearGradient>
+  <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2.6" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+  <rect x="6" y="6" width="84" height="84" rx="16" fill="rgba(10,18,30,.58)" stroke="rgba(241,245,249,.82)" stroke-width="1.6"/>
+  <g stroke="rgba(241,245,249,.82)" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" >
+<rect x="18" y="38" width="60" height="28" rx="5"/><path d="M28 38v-8h38v8M28 66a6 6 0 1 0 0 12 6 6 0 0 0 0-12zM66 66a6 6 0 1 0 0 12 6 6 0 0 0 0-12zM28 46h38M36 54h10M54 54h10"/>
+  </g>
+</svg>

@@ -1,0 +1,12 @@
+{
+  "errors.generic": "Что-то пошло не так",
+  "errors.network": "Нет соединения",
+  "errors.forbidden": "Недостаточно прав",
+  "errors.notFound": "Не найдено",
+  "errors.validation": "Проверьте заполнение полей",
+  "errors.permissionDenied": "Доступ запрещён",
+  "errors.requiresLogin": "Нужно войти",
+  "errors.requiresModerator": "Нужна роль модератора",
+  "errors.requiresAdmin": "Нужна роль администратора",
+  "errors.requiresSuperAdmin": "Нужна роль суперадмина"
+}

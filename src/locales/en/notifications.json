@@ -1,0 +1,8 @@
+{
+  "notifications.title": "Notification center",
+  "notifications.subtitle": "In-app notifications, push/email/SMS future-ready and safe lock-screen copy.",
+  "notifications.markRead": "Mark as read",
+  "notifications.empty": "No notifications yet",
+  "notifications.eventInvite": "Event invite",
+  "notifications.roleRequest": "Role request"
+}

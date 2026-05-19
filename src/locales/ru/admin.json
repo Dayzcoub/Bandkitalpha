@@ -1,0 +1,12 @@
+{
+  "admin.title": "Системная панель",
+  "admin.subtitle": "Админка отделена от обычного App Shell.",
+  "admin.usersTitle": "Пользователи",
+  "admin.rolesTitle": "Роли и доступы",
+  "admin.localizationTitle": "Локализация",
+  "admin.auditTitle": "Аудит действий",
+  "admin.securityDashboard": "Security dashboard",
+  "admin.roleMatrix": "Матрица ролей",
+  "admin.localizationKeys": "Ключи переводов",
+  "admin.userStatus": "Статус пользователя"
+}

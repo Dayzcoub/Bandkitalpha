@@ -1,0 +1,11 @@
+{
+  "settings.title": "Settings",
+  "settings.subtitle": "Account, security, language, region and future-ready workspace.",
+  "settings.securityTitle": "Security settings",
+  "settings.i18nTitle": "Language and region",
+  "settings.sessions": "Active sessions",
+  "settings.logoutAll": "Log out everywhere",
+  "settings.locale": "Interface language",
+  "settings.timezone": "Time zone",
+  "settings.privacy": "Privacy"
+}

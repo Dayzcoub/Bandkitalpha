@@ -1,0 +1,13 @@
+{
+  "documents.title": "Documents",
+  "documents.subtitle": "Riders, contracts, setlists, versions and PDF export placeholder.",
+  "documents.detailTitle": "Document viewer",
+  "documents.upload": "Upload document",
+  "documents.rider": "Rider",
+  "documents.contract": "Contract",
+  "documents.setlist": "Setlist",
+  "documents.stagePlot": "Stage plot",
+  "documents.version": "Version",
+  "documents.permissions": "Document permissions",
+  "documents.empty": "No documents yet"
+}

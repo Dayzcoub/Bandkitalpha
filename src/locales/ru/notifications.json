@@ -1,0 +1,8 @@
+{
+  "notifications.title": "Центр уведомлений",
+  "notifications.subtitle": "In-app уведомления, push/email/SMS future-ready и безопасный текст на lock screen.",
+  "notifications.markRead": "Отметить прочитанным",
+  "notifications.empty": "Уведомлений пока нет",
+  "notifications.eventInvite": "Приглашение в событие",
+  "notifications.roleRequest": "Заявка на роль"
+}

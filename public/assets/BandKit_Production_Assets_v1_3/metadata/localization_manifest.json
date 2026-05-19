@@ -1,0 +1,152 @@
+{
+  "brand": "BandKit",
+  "version": "1.1.0",
+  "total_locale_files": 24,
+  "modules": [
+    {
+      "language": "ru",
+      "module": "admin",
+      "path": "locales/ru/admin.json",
+      "keys": 5
+    },
+    {
+      "language": "ru",
+      "module": "auth",
+      "path": "locales/ru/auth.json",
+      "keys": 8
+    },
+    {
+      "language": "ru",
+      "module": "chats",
+      "path": "locales/ru/chats.json",
+      "keys": 5
+    },
+    {
+      "language": "ru",
+      "module": "common",
+      "path": "locales/ru/common.json",
+      "keys": 15
+    },
+    {
+      "language": "ru",
+      "module": "documents",
+      "path": "locales/ru/documents.json",
+      "keys": 5
+    },
+    {
+      "language": "ru",
+      "module": "errors",
+      "path": "locales/ru/errors.json",
+      "keys": 5
+    },
+    {
+      "language": "ru",
+      "module": "events",
+      "path": "locales/ru/events.json",
+      "keys": 6
+    },
+    {
+      "language": "ru",
+      "module": "feed",
+      "path": "locales/ru/feed.json",
+      "keys": 5
+    },
+    {
+      "language": "ru",
+      "module": "marketplace",
+      "path": "locales/ru/marketplace.json",
+      "keys": 4
+    },
+    {
+      "language": "ru",
+      "module": "moderation",
+      "path": "locales/ru/moderation.json",
+      "keys": 5
+    },
+    {
+      "language": "ru",
+      "module": "notifications",
+      "path": "locales/ru/notifications.json",
+      "keys": 4
+    },
+    {
+      "language": "ru",
+      "module": "profile",
+      "path": "locales/ru/profile.json",
+      "keys": 8
+    },
+    {
+      "language": "en",
+      "module": "admin",
+      "path": "locales/en/admin.json",
+      "keys": 5
+    },
+    {
+      "language": "en",
+      "module": "auth",
+      "path": "locales/en/auth.json",
+      "keys": 8
+    },
+    {
+      "language": "en",
+      "module": "chats",
+      "path": "locales/en/chats.json",
+      "keys": 5
+    },
+    {
+      "language": "en",
+      "module": "common",
+      "path": "locales/en/common.json",
+      "keys": 15
+    },
+    {
+      "language": "en",
+      "module": "documents",
+      "path": "locales/en/documents.json",
+      "keys": 5
+    },
+    {
+      "language": "en",
+      "module": "errors",
+      "path": "locales/en/errors.json",
+      "keys": 5
+    },
+    {
+      "language": "en",
+      "module": "events",
+      "path": "locales/en/events.json",
+      "keys": 6
+    },
+    {
+      "language": "en",
+      "module": "feed",
+      "path": "locales/en/feed.json",
+      "keys": 5
+    },
+    {
+      "language": "en",
+      "module": "marketplace",
+      "path": "locales/en/marketplace.json",
+      "keys": 4
+    },
+    {
+      "language": "en",
+      "module": "moderation",
+      "path": "locales/en/moderation.json",
+      "keys": 5
+    },
+    {
+      "language": "en",
+      "module": "notifications",
+      "path": "locales/en/notifications.json",
+      "keys": 4
+    },
+    {
+      "language": "en",
+      "module": "profile",
+      "path": "locales/en/profile.json",
+      "keys": 8
+    }
+  ],
+  "package_version": "1.3"
+}

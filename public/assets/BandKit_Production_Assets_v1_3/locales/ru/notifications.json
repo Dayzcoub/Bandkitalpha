@@ -1,0 +1,6 @@
+{
+  "notifications.event_invite": "{{sender}} приглашает вас в событие «{{event}}»",
+  "notifications.chat_message": "Новое сообщение от {{sender}}",
+  "notifications.complaint_status_changed": "Статус вашей жалобы изменён",
+  "notifications.role_request": "Новая заявка на роль"
+}

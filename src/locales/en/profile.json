@@ -1,0 +1,21 @@
+{
+  "profile.title": "Profile",
+  "profile.meTitle": "My profile",
+  "profile.subtitle": "Public/private profile areas, roles, badges and reliability rating.",
+  "profile.role.musician": "Musician",
+  "profile.role.teacher": "Teacher",
+  "profile.role.studio": "Studio",
+  "profile.role.venue": "Venue",
+  "profile.role.organizer": "Organizer",
+  "profile.role.sound_engineer": "Technician",
+  "profile.rating": "Reliability rating",
+  "profile.stats.posts": "Posts",
+  "profile.stats.events": "Events",
+  "profile.stats.projects": "Projects",
+  "profile.tabs.activity": "Activity",
+  "profile.tabs.about": "About",
+  "profile.tabs.reviews": "Reviews",
+  "profile.contact": "Contact",
+  "profile.invite": "Invite",
+  "profile.openProfile": "Open full profile"
+}

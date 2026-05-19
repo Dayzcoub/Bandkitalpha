@@ -1,0 +1,21 @@
+{
+  "profile.title": "Профиль",
+  "profile.meTitle": "Мой профиль",
+  "profile.subtitle": "Публичная и приватная часть профиля, роли, бейджи и рейтинг надёжности.",
+  "profile.role.musician": "Музыкант",
+  "profile.role.teacher": "Преподаватель",
+  "profile.role.studio": "Студия",
+  "profile.role.venue": "Площадка",
+  "profile.role.organizer": "Организатор",
+  "profile.role.sound_engineer": "Техспециалист",
+  "profile.rating": "Рейтинг надёжности",
+  "profile.stats.posts": "Посты",
+  "profile.stats.events": "События",
+  "profile.stats.projects": "Проекты",
+  "profile.tabs.activity": "Активность",
+  "profile.tabs.about": "О профиле",
+  "profile.tabs.reviews": "Отзывы",
+  "profile.contact": "Связаться",
+  "profile.invite": "Пригласить",
+  "profile.openProfile": "Подробнее в профиль"
+}

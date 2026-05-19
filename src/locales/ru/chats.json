@@ -1,0 +1,13 @@
+{
+  "chats.title": "Чаты",
+  "chats.subtitle": "Личные, групповые, проектные и event-чаты с link policy.",
+  "chats.roomTitle": "Комната чата",
+  "chats.rooms": "Список чатов",
+  "chats.messages": "Сообщения",
+  "chats.composer": "Сообщение",
+  "chats.attachments": "Вложения",
+  "chats.direct": "Личный чат",
+  "chats.group": "Групповой чат",
+  "chats.send": "Отправить",
+  "chats.empty": "Сообщений пока нет"
+}

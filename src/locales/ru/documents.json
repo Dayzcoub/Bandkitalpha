@@ -1,0 +1,13 @@
+{
+  "documents.title": "Документы",
+  "documents.subtitle": "Райдеры, договоры, setlist, версии и PDF export placeholder.",
+  "documents.detailTitle": "Просмотр документа",
+  "documents.upload": "Загрузить документ",
+  "documents.rider": "Райдер",
+  "documents.contract": "Договор",
+  "documents.setlist": "Сетлист",
+  "documents.stagePlot": "Stage plot",
+  "documents.version": "Версия",
+  "documents.permissions": "Права документа",
+  "documents.empty": "Документов пока нет"
+}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" width="520" height="150" fill="none">
+<defs>
+  <linearGradient id="bkGrad" x1="12" y1="12" x2="84" y2="84" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#a855ff"/>
+    <stop offset="1" stop-color="#5b7cff"/>
+  </linearGradient>
+  <linearGradient id="bkCyanGrad" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a855ff"/>
+  </linearGradient>
+  <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2.6" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<g transform="translate(20 27)" filter="url(#softGlow)">
+  <rect x="20" y="40" width="6" height="16" rx="3" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="32" y="28" width="8" height="40" rx="4" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="46" y="16" width="8" height="64" rx="4" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="60" y="28" width="8" height="40" rx="4" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="74" y="40" width="6" height="16" rx="3" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="48.8" y="41" width="3.2" height="14" rx="1.6" fill="#07111f" stroke="none" opacity=".88"/>
+  <rect x="55" y="39" width="3.2" height="18" rx="1.6" fill="#07111f" stroke="none" opacity=".88"/>
+</g>
+<text x="134" y="80" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#f7f7fb" letter-spacing="-2">BandKit</text>
+<text x="138" y="116" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#a5adba" letter-spacing="4">CONNECT. PERFORM. TOGETHER.</text>
+</svg>

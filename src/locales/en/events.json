@@ -1,0 +1,17 @@
+{
+  "events.title": "Events",
+  "events.subtitle": "Rehearsals, gigs, studio sessions, castings and RSVP.",
+  "events.create": "Create event",
+  "events.detailTitle": "Event card",
+  "events.settingsTitle": "Event settings",
+  "events.rehearsal": "Rehearsal",
+  "events.concert": "Concert",
+  "events.session": "Studio session",
+  "events.rsvp": "RSVP",
+  "events.participants": "Participants",
+  "events.documents": "Event documents",
+  "events.chatPreview": "Event chat",
+  "events.status.confirmed": "Confirmed",
+  "events.status.draft": "Draft",
+  "events.status.private": "Private"
+}

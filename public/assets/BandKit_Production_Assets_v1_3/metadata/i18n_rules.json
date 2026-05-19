@@ -1,0 +1,41 @@
+{
+  "brand": "BandKit",
+  "version": "1.1.0",
+  "baseline_languages": [
+    "ru",
+    "en"
+  ],
+  "future_language_slots": [
+    "fi",
+    "de",
+    "es",
+    "fr",
+    "it",
+    "pl",
+    "uk",
+    "kk"
+  ],
+  "fallback_order": [
+    "user_selected_language",
+    "device_or_browser_language",
+    "workspace_default_language",
+    "en",
+    "ru"
+  ],
+  "rules": [
+    "Do not hard-code user-facing strings in UI or backend notifications.",
+    "Use t(\"module.key\") for interface copy and locale templates for push/email/SMS/PDF.",
+    "Keep production assets language-neutral.",
+    "If text inside graphics is unavoidable, place it under assets/localized/{lang}/ and record it in the localized asset manifest.",
+    "UI layouts must tolerate long translations and must not rely on fixed Russian string lengths."
+  ],
+  "date_time_currency": "Use locale-aware formatting for dates, time, numbers, currencies, time zones and measurement units.",
+  "template_variables": [
+    "{{sender}}",
+    "{{event}}",
+    "{{workspace}}",
+    "{{date}}",
+    "{{role}}"
+  ],
+  "package_version": "1.3"
+}

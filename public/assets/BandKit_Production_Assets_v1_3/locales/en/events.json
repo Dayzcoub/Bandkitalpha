@@ -1,0 +1,8 @@
+{
+  "events.create": "Create event",
+  "events.rehearsal": "Rehearsal",
+  "events.concert": "Concert",
+  "events.invite_members": "Invite members",
+  "events.status.confirmed": "Confirmed",
+  "events.status.cancelled": "Cancelled"
+}

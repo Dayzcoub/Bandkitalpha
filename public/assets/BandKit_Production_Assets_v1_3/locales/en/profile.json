@@ -1,0 +1,10 @@
+{
+  "profile.role.musician": "Musician",
+  "profile.role.band": "Band",
+  "profile.role.orchestra": "Orchestra",
+  "profile.role.studio": "Studio",
+  "profile.role.venue": "Venue",
+  "profile.role.organizer": "Organizer",
+  "profile.rating.title": "Reliability rating",
+  "profile.cover.fallback": "Profile cover"
+}

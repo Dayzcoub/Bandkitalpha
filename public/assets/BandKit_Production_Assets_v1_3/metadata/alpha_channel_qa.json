@@ -1,0 +1,2791 @@
+{
+  "png_webp_alpha_files_checked": 398,
+  "files": [
+    {
+      "path": "app-icons/icon-180.png",
+      "format": "png",
+      "size": "180x180",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "app-icons/icon-180.webp",
+      "format": "webp",
+      "size": "180x180",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "app-icons/icon-192.png",
+      "format": "png",
+      "size": "192x192",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "app-icons/icon-192.webp",
+      "format": "webp",
+      "size": "192x192",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "app-icons/icon-512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "app-icons/icon-512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "app-icons/maskable-512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "app-icons/maskable-512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/banned_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/email_verified_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/phone_verified_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/protected_workspace_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/restricted_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/risky_account_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/trusted_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/two_factor_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/verified_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/png/warning_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/banned_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/email_verified_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/phone_verified_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/protected_workspace_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/restricted_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/risky_account_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/trusted_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/two_factor_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/verified_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/active/webp/warning_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/banned_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/email_verified_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/phone_verified_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/protected_workspace_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/restricted_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/risky_account_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/trusted_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/two_factor_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/verified_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/png/warning_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/banned_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/email_verified_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/phone_verified_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/protected_workspace_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/restricted_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/risky_account_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/trusted_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/two_factor_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/verified_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "badges/inactive/webp/warning_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/logo-dark_1040w.png",
+      "format": "png",
+      "size": "1040x300",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/logo-dark_520w.png",
+      "format": "png",
+      "size": "520x150",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/logo-light_1040w.png",
+      "format": "png",
+      "size": "1040x300",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/logo-light_520w.png",
+      "format": "png",
+      "size": "520x150",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/logo-monochrome_1040w.png",
+      "format": "png",
+      "size": "1040x300",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/logo-monochrome_520w.png",
+      "format": "png",
+      "size": "520x150",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/logo-primary_1040w.png",
+      "format": "png",
+      "size": "1040x300",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/logo-primary_520w.png",
+      "format": "png",
+      "size": "520x150",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/mark-monochrome_256.png",
+      "format": "png",
+      "size": "256x256",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/mark-monochrome_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/mark-monochrome_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/mark-tile_256.png",
+      "format": "png",
+      "size": "256x256",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/mark-tile_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/mark-tile_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/mark_256.png",
+      "format": "png",
+      "size": "256x256",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/mark_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/png/mark_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/logo-dark_1040w.webp",
+      "format": "webp",
+      "size": "1040x300",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/logo-dark_520w.webp",
+      "format": "webp",
+      "size": "520x150",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/logo-light_1040w.webp",
+      "format": "webp",
+      "size": "1040x300",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/logo-light_520w.webp",
+      "format": "webp",
+      "size": "520x150",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/logo-monochrome_1040w.webp",
+      "format": "webp",
+      "size": "1040x300",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/logo-monochrome_520w.webp",
+      "format": "webp",
+      "size": "520x150",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/logo-primary_1040w.webp",
+      "format": "webp",
+      "size": "1040x300",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/logo-primary_520w.webp",
+      "format": "webp",
+      "size": "520x150",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/mark-monochrome_256.webp",
+      "format": "webp",
+      "size": "256x256",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/mark-monochrome_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/mark-monochrome_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/mark-tile_256.webp",
+      "format": "webp",
+      "size": "256x256",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/mark-tile_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/mark-tile_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/mark_256.webp",
+      "format": "webp",
+      "size": "256x256",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/mark_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "brand/webp/mark_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/archive_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/audio_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/contract_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/download_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/export_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/image_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/offer_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/pdf_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/private_file_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/project_file_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/public_file_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/rider_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/setlist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/stage_plot_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/template_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/png/upload_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/archive_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/audio_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/contract_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/download_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/export_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/image_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/offer_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/pdf_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/private_file_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/project_file_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/public_file_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/rider_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/setlist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/stage_plot_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/template_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/active/webp/upload_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/archive_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/audio_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/contract_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/download_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/export_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/image_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/offer_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/pdf_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/private_file_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/project_file_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/public_file_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/rider_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/setlist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/stage_plot_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/template_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/png/upload_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/archive_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/audio_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/contract_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/download_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/export_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/image_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/offer_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/pdf_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/private_file_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/project_file_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/public_file_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/rider_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/setlist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/stage_plot_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/template_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "documents/inactive/webp/upload_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/account_restricted_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/no_access_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/no_events_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/no_files_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/no_invitations_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/no_messages_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/no_musicians_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/no_posts_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/no_studios_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/png/verification_required_512x320.png",
+      "format": "png",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/account_restricted_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/no_access_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/no_events_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/no_files_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/no_invitations_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/no_messages_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/no_musicians_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/no_posts_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/no_studios_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "empty-states/webp/verification_required_512x320.webp",
+      "format": "webp",
+      "size": "512x320",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/bassist_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/dj_producer_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/drummer_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/guitarist_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/keyboardist_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/organizer_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/sound_engineer_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/studio_owner_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/teacher_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/user_musician_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/png/vocalist_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/bassist_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/dj_producer_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/drummer_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/guitarist_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/keyboardist_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/organizer_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/sound_engineer_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/studio_owner_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/teacher_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/user_musician_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/avatars/webp/vocalist_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/band_project_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/chat_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/concert_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/document_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/event_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/media_folder_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/orchestra_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/rehearsal_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/studio_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/user_profile_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/png/venue_1600x640.png",
+      "format": "png",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/band_project_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/chat_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/concert_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/document_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/event_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/media_folder_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/orchestra_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/rehearsal_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/studio_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/user_profile_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/covers/webp/venue_1600x640.webp",
+      "format": "webp",
+      "size": "1600x640",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/contract_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/document_file_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/empty_media_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/invoice_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/photo_album_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/post_image_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/private_profile_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/rider_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/track_audio_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/png/video_clip_512.png",
+      "format": "png",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/contract_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/document_file_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/empty_media_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/invoice_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/photo_album_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/post_image_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/private_profile_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/rider_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/track_audio_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "fallbacks/thumbnails/webp/video_clip_512.webp",
+      "format": "webp",
+      "size": "512x512",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "favicon/favicon-16.png",
+      "format": "png",
+      "size": "16x16",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "favicon/favicon-32.png",
+      "format": "png",
+      "size": "32x32",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/png/calendar_768x432.png",
+      "format": "png",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/png/chats_768x432.png",
+      "format": "png",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/png/group_onboarding_768x432.png",
+      "format": "png",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/png/musician_onboarding_768x432.png",
+      "format": "png",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/png/portfolio_768x432.png",
+      "format": "png",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/png/replacement_search_768x432.png",
+      "format": "png",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/png/security_center_768x432.png",
+      "format": "png",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/png/studio_onboarding_768x432.png",
+      "format": "png",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/webp/calendar_768x432.webp",
+      "format": "webp",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/webp/chats_768x432.webp",
+      "format": "webp",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/webp/group_onboarding_768x432.webp",
+      "format": "webp",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/webp/musician_onboarding_768x432.webp",
+      "format": "webp",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/webp/portfolio_768x432.webp",
+      "format": "webp",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/webp/replacement_search_768x432.webp",
+      "format": "webp",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/webp/security_center_768x432.webp",
+      "format": "webp",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "feature-illustrations/webp/studio_onboarding_768x432.webp",
+      "format": "webp",
+      "size": "768x432",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/admin_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/calendar_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/chats_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/events_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/feed_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/files_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/finance_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/groups_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/musicians_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/notifications_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/offers_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/profile_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/projects_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/rating_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/riders_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/search_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/settings_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/png/studios_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/admin_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/calendar_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/chats_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/events_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/feed_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/files_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/finance_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/groups_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/musicians_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/notifications_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/offers_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/profile_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/projects_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/rating_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/riders_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/search_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/settings_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/active/webp/studios_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/admin_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/calendar_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/chats_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/events_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/feed_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/files_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/finance_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/groups_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/musicians_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/notifications_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/offers_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/profile_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/projects_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/rating_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/riders_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/search_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/settings_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/png/studios_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/admin_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/calendar_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/chats_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/events_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/feed_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/files_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/finance_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/groups_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/musicians_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/notifications_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/offers_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/profile_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/projects_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/rating_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/riders_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/search_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/settings_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "navigation/inactive/webp/studios_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "og/png/og-default_1200x630.png",
+      "format": "png",
+      "size": "1200x630",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "og/png/og-profile_1200x630.png",
+      "format": "png",
+      "size": "1200x630",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "og/png/og-workspace_1200x630.png",
+      "format": "png",
+      "size": "1200x630",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "og/webp/og-default_1200x630.webp",
+      "format": "webp",
+      "size": "1200x630",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "og/webp/og-profile_1200x630.webp",
+      "format": "webp",
+      "size": "1200x630",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "og/webp/og-workspace_1200x630.webp",
+      "format": "webp",
+      "size": "1200x630",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/bassist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/conductor_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/drummer_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/group_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/guitarist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/keyboardist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/manager_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/musician_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/orchestra_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/organization_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/producer_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/project_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/session_musician_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/sound_engineer_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/studio_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/tour_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/violinist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/png/vocalist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/bassist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/conductor_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/drummer_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/group_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/guitarist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/keyboardist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/manager_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/musician_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/orchestra_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/organization_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/producer_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/project_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/session_musician_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/sound_engineer_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/studio_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/tour_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/violinist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/active/webp/vocalist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/bassist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/conductor_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/drummer_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/group_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/guitarist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/keyboardist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/manager_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/musician_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/orchestra_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/organization_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/producer_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/project_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/session_musician_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/sound_engineer_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/studio_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/tour_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/violinist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/png/vocalist_96.png",
+      "format": "png",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/bassist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/conductor_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/drummer_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/group_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/guitarist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/keyboardist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/manager_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/musician_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/orchestra_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/organization_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/producer_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/project_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/session_musician_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/sound_engineer_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/studio_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/tour_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/violinist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    },
+    {
+      "path": "roles/inactive/webp/vocalist_96.webp",
+      "format": "webp",
+      "size": "96x96",
+      "mode": "RGBA",
+      "alpha_channel": true
+    }
+  ]
+}

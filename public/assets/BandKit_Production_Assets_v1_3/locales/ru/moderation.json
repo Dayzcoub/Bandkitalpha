@@ -1,0 +1,7 @@
+{
+  "moderation.reason.spam": "Спам",
+  "moderation.reason.fraud": "Мошенничество",
+  "moderation.reason.harassment": "Оскорбления или давление",
+  "moderation.action.restrict": "Ограничить",
+  "moderation.action.ban": "Заблокировать"
+}

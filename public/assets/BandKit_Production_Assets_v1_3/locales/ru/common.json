@@ -1,0 +1,17 @@
+{
+  "app.name": "BandKit",
+  "actions.save": "Сохранить",
+  "actions.cancel": "Отмена",
+  "actions.create": "Создать",
+  "actions.edit": "Редактировать",
+  "actions.delete": "Удалить",
+  "actions.invite": "Пригласить",
+  "actions.report": "Пожаловаться",
+  "navigation.feed": "Лента",
+  "navigation.events": "События",
+  "navigation.chats": "Чаты",
+  "navigation.profile": "Профиль",
+  "navigation.documents": "Документы",
+  "state.empty.title": "Здесь пока пусто",
+  "state.loading": "Загрузка…"
+}

@@ -1,0 +1,12 @@
+{
+  "errors.generic": "Something went wrong",
+  "errors.network": "No connection",
+  "errors.forbidden": "Insufficient permissions",
+  "errors.notFound": "Not found",
+  "errors.validation": "Check the fields",
+  "errors.permissionDenied": "Access denied",
+  "errors.requiresLogin": "Sign-in required",
+  "errors.requiresModerator": "Moderator role required",
+  "errors.requiresAdmin": "Admin role required",
+  "errors.requiresSuperAdmin": "Super admin role required"
+}

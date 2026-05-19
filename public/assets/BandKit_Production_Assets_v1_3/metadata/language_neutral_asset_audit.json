@@ -1,0 +1,110 @@
+{
+  "visible_text_svg_entries": [
+    {
+      "path": "og/svg/og-default.svg",
+      "text": "BandKit",
+      "allowed_exception": true
+    },
+    {
+      "path": "og/svg/og-default.svg",
+      "text": "CONNECT. PERFORM. TOGETHER.",
+      "allowed_exception": true
+    },
+    {
+      "path": "og/svg/og-default.svg",
+      "text": "Professional music network and workspace.",
+      "allowed_exception": true
+    },
+    {
+      "path": "og/svg/og-profile.svg",
+      "text": "BandKit",
+      "allowed_exception": true
+    },
+    {
+      "path": "og/svg/og-profile.svg",
+      "text": "CONNECT. PERFORM. TOGETHER.",
+      "allowed_exception": true
+    },
+    {
+      "path": "og/svg/og-profile.svg",
+      "text": "Professional music network and workspace.",
+      "allowed_exception": true
+    },
+    {
+      "path": "og/svg/og-workspace.svg",
+      "text": "BandKit",
+      "allowed_exception": true
+    },
+    {
+      "path": "og/svg/og-workspace.svg",
+      "text": "CONNECT. PERFORM. TOGETHER.",
+      "allowed_exception": true
+    },
+    {
+      "path": "og/svg/og-workspace.svg",
+      "text": "Professional music network and workspace.",
+      "allowed_exception": true
+    },
+    {
+      "path": "documents/inactive/svg/pdf.svg",
+      "text": "PDF",
+      "allowed_exception": true
+    },
+    {
+      "path": "documents/active/svg/pdf.svg",
+      "text": "PDF",
+      "allowed_exception": true
+    },
+    {
+      "path": "brand/svg/logo-dark.svg",
+      "text": "BandKit",
+      "allowed_exception": true
+    },
+    {
+      "path": "brand/svg/logo-dark.svg",
+      "text": "CONNECT. PERFORM. TOGETHER.",
+      "allowed_exception": true
+    },
+    {
+      "path": "brand/svg/logo-light.svg",
+      "text": "BandKit",
+      "allowed_exception": true
+    },
+    {
+      "path": "brand/svg/logo-light.svg",
+      "text": "CONNECT. PERFORM. TOGETHER.",
+      "allowed_exception": true
+    },
+    {
+      "path": "brand/svg/logo-monochrome.svg",
+      "text": "BandKit",
+      "allowed_exception": true
+    },
+    {
+      "path": "brand/svg/logo-monochrome.svg",
+      "text": "CONNECT. PERFORM. TOGETHER.",
+      "allowed_exception": true
+    },
+    {
+      "path": "brand/svg/logo-primary.svg",
+      "text": "BandKit",
+      "allowed_exception": true
+    },
+    {
+      "path": "brand/svg/logo-primary.svg",
+      "text": "CONNECT. PERFORM. TOGETHER.",
+      "allowed_exception": true
+    },
+    {
+      "path": "badges/inactive/svg/two_factor.svg",
+      "text": "2FA",
+      "allowed_exception": true
+    },
+    {
+      "path": "badges/active/svg/two_factor.svg",
+      "text": "2FA",
+      "allowed_exception": true
+    }
+  ],
+  "notes": "Brand marks, OG templates and technical abbreviations PDF/2FA are whitelisted. Fallback assets added in v1.1 contain no visible text."
+}

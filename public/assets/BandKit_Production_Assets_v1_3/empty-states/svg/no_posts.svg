@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 320" width="512" height="320" fill="none"><defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a855ff"/><stop offset="1" stop-color="#5b7cff"/></linearGradient>
+    <radialGradient id="glow" cx="50%" cy="70%" r="60%"><stop offset="0" stop-color="#a855ff" stop-opacity=".45"/><stop offset="1" stop-color="#a855ff" stop-opacity="0"/></radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="10"/></filter>
+    <filter id="soft"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#a855ff" flood-opacity=".35"/></filter>
+  </defs><ellipse cx="256.0" cy="244" rx="230" ry="46" fill="url(#glow)" filter="url(#blur)"/><rect x="250" y="110" width="268" height="170" rx="24" fill="rgba(18,26,44,.78)" stroke="rgba(148,163,184,.35)" stroke-width="2" filter="url(#soft)"/><path d="M285 150h90M285 178h150M285 206h110" stroke="#64748b" stroke-width="9" stroke-linecap="round"/><g transform="translate(338 204) scale(1.35)">
+  <rect x="20" y="40" width="6" height="16" rx="3" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="32" y="28" width="8" height="40" rx="4" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="46" y="16" width="8" height="64" rx="4" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="60" y="28" width="8" height="40" rx="4" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="74" y="40" width="6" height="16" rx="3" fill="url(#bkGrad)" stroke="none"/>
+  <rect x="48.8" y="41" width="3.2" height="14" rx="1.6" fill="#07111f" stroke="none" opacity=".88"/>
+  <rect x="55" y="39" width="3.2" height="18" rx="1.6" fill="#07111f" stroke="none" opacity=".88"/>
+</g><circle cx="514" cy="252" r="36" fill="url(#g)"/><path d="M500 252l11 11 21-26" stroke="white" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>

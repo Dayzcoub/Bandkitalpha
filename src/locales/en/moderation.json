@@ -1,0 +1,17 @@
+{
+  "moderation.title": "Moderation queue",
+  "moderation.subtitle": "Reports, priorities, moderator actions and audit trail.",
+  "moderation.caseTitle": "Complaint case",
+  "moderation.queue": "Queue",
+  "moderation.filters": "Filters",
+  "moderation.priority.high": "High",
+  "moderation.priority.medium": "Medium",
+  "moderation.priority.low": "Low",
+  "moderation.reason.spam": "Spam",
+  "moderation.reason.fraud": "Fraud",
+  "moderation.reason.harassment": "Harassment",
+  "moderation.action.warn": "Warn",
+  "moderation.action.restrict": "Restrict",
+  "moderation.action.hide": "Hide content",
+  "moderation.auditTrail": "Audit trail"
+}

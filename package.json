@@ -1,0 +1,18 @@
+{
+  "name": "bandkit-mvp-shell",
+  "version": "1.10.0",
+  "private": true,
+  "type": "module",
+  "description": "BandKit MVP Shell v1.10 mobile reference UI patch: dedicated mobile feed surface, reference-style top/bottom navigation, and preserved v1.9 runtime CSS sync.",
+  "scripts": {
+    "build": "node scripts/generate-locales.mjs && tsc && node scripts/copy-static.mjs",
+    "check": "tsc --noEmit",
+    "serve": "node scripts/serve-dist.mjs",
+    "dev": "npm run build && node scripts/serve-dist.mjs",
+    "preview": "node scripts/serve-dist.mjs",
+    "local:health": "node scripts/local-health.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
