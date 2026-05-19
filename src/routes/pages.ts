@@ -171,13 +171,36 @@ function renderChatRoom(ctx: AppContext): string {
 }
 
 function renderDocuments(ctx: AppContext): string {
-  const hub = card(`<div class="bk-kpi-grid">${kpi(documents.length, ctx.t('documents.total'))}${kpi('2', ctx.t('documents.shared'))}${kpi('1', ctx.t('documents.reviewQueue'))}</div>`, 'bk-doc-hub-card');
-  return contentGrid([pageHeader(ctx, 'documents.title', 'documents.subtitle', 'documents.upload'), hub, card(`<div class="bk-card-grid bk-card-grid-3">${documents.map((doc) => documentCard(ctx, doc)).join('')}</div>`, 'bk-grid-card')].join(''), defaultRightRail(ctx));
+  const hub = card(`<div class="bk-kpi-grid">${kpi(documents.length + 4, ctx.t('documents.total'))}${kpi('5', ctx.t('documents.shared'))}${kpi('2', ctx.t('documents.reviewQueue'))}${kpi('4', 'Утверждено')}</div>`, 'bk-doc-hub-card');
+  const filters = card(`<input class="bk-search" type="search" aria-label="${ctx.t('common.search')}" placeholder="Поиск по райдерам, договорам, setlist и медиа" /><div class="bk-chip-row">${badge('Все документы', 'positive')}${badge('Райдеры')}${badge('Setlist')}${badge('Договоры')}${badge('Медиа / промо')}${badge(ctx.t('marketplace.filter.safeOnly'), 'warning')}</div>`, 'bk-doc-filter-card');
+  const projectRows = [
+    listRow('Технический райдер v3', 'Событие: Клубный концерт · Статус: утверждено · Доступ: участники события', 'docSetlist', badge('Утверждено', 'positive')),
+    listRow('Контракт на клубный концерт', 'Проект: Northern Lights Band · Статус: на проверке · Доступ: владелец и менеджер', 'docSetlist', badge('На проверке', 'warning')),
+    listRow('Основной setlist', 'Событие: Главная репетиция · Статус: черновик · Доступ: участники проекта', 'docSetlist', badge('Черновик')),
+    listRow('Промо-фото и описание', 'Профиль: Alex Rhythm · Статус: опубликовано · Доступ: публично', 'docSetlist', badge('Публично', 'positive')),
+  ].join('');
+  const accessRows = [
+    listRow('Проектные документы', 'Доступ через роль в группе/проекте, не через личную дружбу', 'badgeRestricted', badge(ctx.t('permission.read'))),
+    listRow('Документы события', 'Доступ получают участники события, менеджер и владелец проекта', 'badgeRestricted', badge(ctx.t('security.twoFactorRequired'), 'warning')),
+    listRow('Публичные материалы', 'Промо, портфолио, пресс-кит и медиа могут быть доступны подписчикам и гостям', 'badgeRestricted', badge('Public', 'positive')),
+  ].join('');
+  const documentCards = card(`<div class="bk-card-grid bk-card-grid-3">${documents.map((doc) => documentCard(ctx, doc)).join('')}</div>`, 'bk-grid-card');
+  const main = [
+    pageHeader(ctx, 'documents.title', 'documents.subtitle', 'documents.upload'),
+    hub,
+    filters,
+    card(`<h3 class="bk-card-title">Документы проектов и событий</h3><p class="bk-state-copy">Райдеры, setlist, договоры, медиа и промо-файлы с привязкой к группе, событию или профилю.</p><div class="bk-list">${projectRows}</div>`, 'bk-doc-workflow-card'),
+    card(`<h3 class="bk-card-title">Права доступа</h3><p class="bk-state-copy">Документы не открываются автоматически друзьям или подписчикам. Доступ задаётся через проект, событие, роль и статус безопасности.</p><div class="bk-list">${accessRows}</div>${securityBadges(ctx)}`, 'bk-doc-access-card'),
+    documentCards,
+  ].join('');
+  return contentGrid(main, defaultRightRail(ctx));
 }
 
 function renderDocumentDetail(ctx: AppContext): string {
   const doc = documents.find((item) => item.id === ctx.match.params.documentId) ?? documents[0];
-  return contentGrid([pageHeader(ctx, 'documents.detailTitle', 'documents.subtitle', 'actions.exportPdf'), documentCard(ctx, doc), permissionMatrix(ctx), card(`<h3 class="bk-card-title">${ctx.t('documents.versionHistory')}</h3><div class="bk-audit">${auditEvents.map((event) => auditEventRow(ctx, event)).join('')}</div>`)].join(''), defaultRightRail(ctx));
+  const linkedContext = card(`<h3 class="bk-card-title">Привязка документа</h3><div class="bk-kpi-grid">${kpi('Northern Lights Band', 'Проект')}${kpi('Клубный концерт', 'Событие')}${kpi(ctx.t(doc.statusKey), 'Статус')}</div>`, 'bk-doc-context-card');
+  const access = card(`<h3 class="bk-card-title">Доступ и безопасность</h3><div class="bk-list">${listRow('Владелец / менеджер', 'Полный доступ, редактирование, экспорт и управление версиями', 'navAdminInactive', badge(ctx.t('security.twoFactorRequired'), 'warning'))}${listRow('Участники события', 'Просмотр актуальной версии и подтверждение ознакомления', 'roleMusician', badge(ctx.t('permission.read'), 'neutral'))}${listRow('Подписчики и друзья', 'Нет доступа, если документ не опубликован как публичный материал', 'badgeRestricted', badge('Ограничено', 'warning'))}</div>`, 'bk-doc-access-card');
+  return contentGrid([pageHeader(ctx, 'documents.detailTitle', 'documents.subtitle', 'actions.exportPdf'), documentCard(ctx, doc), linkedContext, access, card(`<h3 class="bk-card-title">${ctx.t('documents.versionHistory')}</h3><div class="bk-audit">${auditEvents.map((event) => auditEventRow(ctx, event)).join('')}</div>`)].join(''), defaultRightRail(ctx));
 }
 
 function renderMarketplace(ctx: AppContext): string {
