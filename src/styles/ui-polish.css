@@ -1,0 +1,71 @@
+/* Global UI polish pass: shared card footer spacing and compact state illustrations. */
+
+.bk-card > .bk-list + .bk-action-row {
+  margin-top: var(--bk-space-4);
+  padding-top: var(--bk-space-3);
+  border-top: 1px solid var(--bk-border);
+}
+
+.bk-empty,
+.bk-loading,
+.bk-error,
+.bk-restricted {
+  min-height: auto;
+  align-content: center;
+  padding-block: clamp(var(--bk-space-5), 5vw, var(--bk-space-7));
+  overflow: hidden;
+}
+
+.bk-empty .bk-illustration,
+.bk-error .bk-illustration,
+.bk-restricted .bk-illustration,
+.bk-loading .bk-illustration {
+  width: min(100%, 188px);
+  max-height: 132px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.bk-loading .bk-illustration {
+  width: min(100%, 172px);
+  max-height: 112px;
+}
+
+.bk-empty .bk-state-title,
+.bk-loading .bk-state-title,
+.bk-error .bk-state-title,
+.bk-restricted .bk-state-title {
+  margin-top: var(--bk-space-1);
+}
+
+@media (max-width: 767px) {
+  .bk-card > .bk-list + .bk-action-row {
+    margin-top: var(--bk-space-3);
+    padding-top: var(--bk-space-3);
+  }
+
+  .bk-empty,
+  .bk-loading,
+  .bk-error,
+  .bk-restricted {
+    padding-block: var(--bk-space-5);
+  }
+
+  .bk-empty .bk-illustration,
+  .bk-error .bk-illustration,
+  .bk-restricted .bk-illustration,
+  .bk-loading .bk-illustration {
+    width: min(100%, 156px);
+    max-height: 108px;
+  }
+}
+
+@media (max-height: 620px) {
+  .bk-empty .bk-illustration,
+  .bk-error .bk-illustration,
+  .bk-restricted .bk-illustration,
+  .bk-loading .bk-illustration {
+    width: min(100%, 140px);
+    max-height: 94px;
+  }
+}
