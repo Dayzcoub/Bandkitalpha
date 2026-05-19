@@ -41,7 +41,7 @@ export function workspaceRailCard(ctx: AppContext): string {
 export function qaControlCard(ctx: AppContext): string {
   const roleSwitcher = select(ctx, 'role', ctx.t('common.role'), ['guest', 'user', 'moderator', 'admin', 'super_admin'], ctx.state.role);
   if (!canSeeDiagnostics(ctx)) {
-    return card(`<details class="bk-qa-details"><summary>${ctx.t('rightRail.qa')}</summary><div class="bk-qa-grid">${roleSwitcher}</div></details>`, 'bk-rail-card bk-qa-card');
+    return card(`<details class="bk-qa-details"><summary>${ctx.t('rightRail.rolePreview')}</summary><div class="bk-qa-grid">${roleSwitcher}</div></details>`, 'bk-rail-card bk-qa-card');
   }
   return card(`<details class="bk-qa-details" open><summary>${ctx.t('rightRail.qa')}</summary><p class="bk-state-copy">${ctx.t('qa.controlsCopy')}</p><div class="bk-qa-grid">${select(ctx, 'locale', ctx.t('common.language'), ['ru', 'en'], ctx.state.locale)}${roleSwitcher}${select(ctx, 'verification', ctx.t('common.security'), ['verified', 'emailPending', 'phonePending', 'twoFactorRequired', 'restrictedAccount'], ctx.state.verification)}${select(ctx, 'uiState', ctx.t('common.state'), ['normal', 'loading', 'empty', 'error', 'restricted', 'long'], ctx.state.uiState)}${select(ctx, 'theme', ctx.t('common.theme'), ['dark', 'light'], ctx.state.theme)}</div></details>`, 'bk-rail-card bk-qa-card');
 }
