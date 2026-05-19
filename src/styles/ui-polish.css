@@ -1,9 +1,17 @@
-/* Global UI polish pass: shared card footer spacing and compact state illustrations. */
+/* Global UI polish pass: shared card footer spacing and compact state surfaces. */
 
 .bk-card > .bk-list + .bk-action-row {
   margin-top: var(--bk-space-4);
   padding-top: var(--bk-space-3);
   border-top: 1px solid var(--bk-border);
+}
+
+.bk-main-column > .bk-empty,
+.bk-main-column > .bk-loading,
+.bk-main-column > .bk-error,
+.bk-main-column > .bk-restricted {
+  width: min(100%, 640px);
+  justify-self: center;
 }
 
 .bk-empty,
@@ -12,7 +20,7 @@
 .bk-restricted {
   min-height: auto;
   align-content: center;
-  padding-block: clamp(var(--bk-space-5), 5vw, var(--bk-space-7));
+  padding: clamp(var(--bk-space-4), 4vw, var(--bk-space-6));
   overflow: hidden;
 }
 
@@ -20,15 +28,15 @@
 .bk-error .bk-illustration,
 .bk-restricted .bk-illustration,
 .bk-loading .bk-illustration {
-  width: min(100%, 188px);
-  max-height: 132px;
+  width: min(100%, 172px);
+  max-height: 118px;
   object-fit: contain;
   object-position: center;
 }
 
 .bk-loading .bk-illustration {
-  width: min(100%, 172px);
-  max-height: 112px;
+  width: min(100%, 156px);
+  max-height: 100px;
 }
 
 .bk-empty .bk-state-title,
@@ -38,10 +46,24 @@
   margin-top: var(--bk-space-1);
 }
 
+.bk-empty .bk-state-copy,
+.bk-loading .bk-state-copy,
+.bk-error .bk-state-copy,
+.bk-restricted .bk-state-copy {
+  max-width: 42ch;
+}
+
 @media (max-width: 767px) {
   .bk-card > .bk-list + .bk-action-row {
     margin-top: var(--bk-space-3);
     padding-top: var(--bk-space-3);
+  }
+
+  .bk-main-column > .bk-empty,
+  .bk-main-column > .bk-loading,
+  .bk-main-column > .bk-error,
+  .bk-main-column > .bk-restricted {
+    width: 100%;
   }
 
   .bk-empty,
@@ -55,17 +77,24 @@
   .bk-error .bk-illustration,
   .bk-restricted .bk-illustration,
   .bk-loading .bk-illustration {
-    width: min(100%, 156px);
-    max-height: 108px;
+    width: min(100%, 140px);
+    max-height: 96px;
   }
 }
 
 @media (max-height: 620px) {
+  .bk-main-column > .bk-empty,
+  .bk-main-column > .bk-loading,
+  .bk-main-column > .bk-error,
+  .bk-main-column > .bk-restricted {
+    width: min(100%, 560px);
+  }
+
   .bk-empty .bk-illustration,
   .bk-error .bk-illustration,
   .bk-restricted .bk-illustration,
   .bk-loading .bk-illustration {
-    width: min(100%, 140px);
-    max-height: 94px;
+    width: min(100%, 128px);
+    max-height: 84px;
   }
 }
