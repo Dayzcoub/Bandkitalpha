@@ -35,9 +35,13 @@ export const adminNavItems: NavItem[] = [
   { path: '/admin/audit', labelKey: 'nav.audit', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
 ];
 
-export function sideNav(ctx: AppContext, mode: 'app' | 'admin'): string {
+function filteredNavItems(ctx: AppContext, mode: 'app' | 'admin'): NavItem[] {
   const items = mode === 'admin' ? adminNavItems : appNavItems;
-  const filtered = items.filter((item) => !item.adminOnly || hasRole(ctx.state, 'admin')).filter((item) => !item.moderatorOnly || hasRole(ctx.state, 'moderator'));
+  return items.filter((item) => !item.adminOnly || hasRole(ctx.state, 'admin')).filter((item) => !item.moderatorOnly || hasRole(ctx.state, 'moderator'));
+}
+
+export function sideNav(ctx: AppContext, mode: 'app' | 'admin'): string {
+  const filtered = filteredNavItems(ctx, mode);
   const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${ctx.t('common.mock')}</span></div>` : '';
   return `<aside class="bk-side-nav"><a class="bk-brand-row" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><img class="bk-brand-logo" src="${getAsset('logoPrimary')}" alt="${ctx.t('asset.alt.logo')}" /></a><nav class="bk-nav-list" aria-label="${ctx.t('common.actions')}">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><div class="bk-nav-spacer"></div><section class="bk-card bk-workspace-card"><div class="bk-meta">${ctx.t('common.workspace')}</div><strong>${ctx.t('mock.workspaceName')}</strong>${workspaceDiagnostics}</section></aside>`;
 }
@@ -64,8 +68,15 @@ export function bottomNav(ctx: AppContext): string {
   }).join('')}</nav>`;
 }
 
-export function mobileTopBar(ctx: AppContext): string {
-  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${ctx.t('app.name')}</span></a><div class="bk-mobile-top-actions"><button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button></div></header>`;
+export function mobileTopBar(ctx: AppContext, mode: 'app' | 'admin' = 'app'): string {
+  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${ctx.t('app.name')}</span></a><div class="bk-mobile-top-actions"><button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button>${mobileMenu(ctx, mode)}</div></header>`;
+}
+
+function mobileMenu(ctx: AppContext, mode: 'app' | 'admin'): string {
+  const filtered = filteredNavItems(ctx, mode);
+  const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${ctx.t('common.mock')}</span></div>` : '';
+  const menuTitle = mode === 'admin' ? ctx.t('nav.admin') : ctx.t('common.workspace');
+  return `<details class="bk-mobile-menu"><summary class="bk-button bk-icon-button bk-mobile-menu-trigger" aria-label="${ctx.t('common.actions')}"><span aria-hidden="true">☰</span></summary><div class="bk-mobile-menu-backdrop"></div><aside class="bk-mobile-menu-panel" aria-label="${ctx.t('common.actions')}"><div class="bk-mobile-menu-head"><div><div class="bk-meta">${menuTitle}</div><strong>${ctx.t('app.name')}</strong></div><span class="bk-badge">Menu</span></div><nav class="bk-mobile-menu-list">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><section class="bk-card bk-mobile-menu-workspace"><div class="bk-meta">${ctx.t('common.workspace')}</div><strong>${ctx.t('mock.workspaceName')}</strong>${workspaceDiagnostics}</section></aside></details>`;
 }
 
 export function topBar(ctx: AppContext): string {
