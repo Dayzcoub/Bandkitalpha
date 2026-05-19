@@ -56,12 +56,12 @@ export function bottomNav(ctx: AppContext): string {
   const items = [
     appNavItems[0],
     appNavItems[1],
-    { path: '/events/new', labelKey: 'nav.events', activeIcon: 'navEventsActive', inactiveIcon: 'navEventsActive' } as NavItem,
+    { path: '/feed', labelKey: 'feed.createPost', activeIcon: 'navFeedActive', inactiveIcon: 'navFeedActive' } as NavItem,
     appNavItems[4],
     appNavItems[7],
   ];
   return `<nav class="bk-bottom-nav" aria-label="${ctx.t('common.actions')}">${items.map((item, index) => {
-    const active = ctx.path === item.path || (item.path !== '/events/new' && ctx.path.startsWith(`${item.path}/`));
+    const active = index === 2 ? false : ctx.path === item.path || (item.path !== '/feed' && ctx.path.startsWith(`${item.path}/`));
     const icon = active ? item.activeIcon : item.inactiveIcon;
     const createClass = index === 2 ? ' class="bk-bottom-create"' : '';
     return `<a${createClass} href="${item.path}" data-route="${item.path}" ${active ? 'aria-current="page"' : ''}><img class="bk-nav-icon" src="${getAsset(icon)}" alt="" /><span>${ctx.t(item.labelKey)}</span></a>`;
