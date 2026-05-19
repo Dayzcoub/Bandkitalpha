@@ -15,12 +15,11 @@ const srcStyles = path.join(root, 'src', 'styles');
 const distStyles = path.join(dist, 'styles');
 if (fs.existsSync(srcStyles)) {
   fs.mkdirSync(distStyles, { recursive: true });
-  for (const name of ['tokens.css', 'global.css']) {
+  const styleNames = fs.readdirSync(srcStyles).filter((name) => name.endsWith('.css')).sort();
+  for (const name of styleNames) {
     const srcStyle = path.join(srcStyles, name);
-    if (fs.existsSync(srcStyle)) {
-      fs.copyFileSync(srcStyle, path.join(distStyles, name));
-      fs.copyFileSync(srcStyle, path.join(publicDir, 'styles', name));
-    }
+    fs.copyFileSync(srcStyle, path.join(distStyles, name));
+    fs.copyFileSync(srcStyle, path.join(publicDir, 'styles', name));
   }
 }
 console.log('copied public assets and synchronized runtime styles to dist');
