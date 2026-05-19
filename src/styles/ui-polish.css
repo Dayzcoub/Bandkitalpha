@@ -205,6 +205,31 @@
     grid-column: auto;
   }
 
+  .bk-event-wizard-card .bk-list-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: var(--bk-space-3);
+  }
+
+  .bk-event-wizard-card .bk-list-row > :last-child:not(:nth-child(2)) {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: calc(var(--bk-space-1) * -1);
+  }
+
+  .bk-event-wizard-card .bk-list-row strong,
+  .bk-event-wizard-card .bk-list-row span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .bk-event-wizard-card .bk-list-row .bk-badge {
+    width: fit-content;
+    max-width: 100%;
+    line-height: 1.25;
+  }
+
   .bk-flow-card,
   .bk-onboarding-card,
   .bk-card:has(.bk-action-footer) {
