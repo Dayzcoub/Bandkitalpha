@@ -117,6 +117,37 @@
   margin-top: var(--bk-space-1);
 }
 
+.bk-event-wizard-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--bk-space-4);
+}
+
+.bk-event-wizard-card {
+  min-height: auto;
+  display: grid;
+  gap: var(--bk-space-3);
+  align-content: start;
+}
+
+.bk-event-wizard-card .bk-list-row {
+  align-items: flex-start;
+}
+
+.bk-event-wizard-card .bk-list-row .bk-badge {
+  flex: 0 0 auto;
+  max-width: 100%;
+  white-space: normal;
+}
+
+.bk-event-wizard-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bk-event-wizard-form .bk-field:first-child,
+.bk-event-wizard-form .bk-field:last-child {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 767px) {
   .bk-card > .bk-list + .bk-action-row {
     margin-top: var(--bk-space-3);
@@ -163,6 +194,15 @@
 
   .bk-profile-card > .bk-kpi-grid .bk-kpi {
     min-height: 76px;
+  }
+
+  .bk-event-wizard-form {
+    grid-template-columns: 1fr;
+  }
+
+  .bk-event-wizard-form .bk-field:first-child,
+  .bk-event-wizard-form .bk-field:last-child {
+    grid-column: auto;
   }
 
   .bk-flow-card,
