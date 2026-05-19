@@ -1,6 +1,7 @@
 import type { AppContext } from '../../app/types.js';
 import { getAsset, type AssetKey } from '../../lib/assets/assetRegistry.js';
 import { hasRole } from '../../lib/permissions/permissions.js';
+import { canSeeDiagnostics } from '../../lib/permissions/diagnostics.js';
 
 interface NavItem {
   path: string;
@@ -37,7 +38,8 @@ export const adminNavItems: NavItem[] = [
 export function sideNav(ctx: AppContext, mode: 'app' | 'admin'): string {
   const items = mode === 'admin' ? adminNavItems : appNavItems;
   const filtered = items.filter((item) => !item.adminOnly || hasRole(ctx.state, 'admin')).filter((item) => !item.moderatorOnly || hasRole(ctx.state, 'moderator'));
-  return `<aside class="bk-side-nav"><a class="bk-brand-row" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><img class="bk-brand-logo" src="${getAsset('logoPrimary')}" alt="${ctx.t('asset.alt.logo')}" /></a><nav class="bk-nav-list" aria-label="${ctx.t('common.actions')}">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><div class="bk-nav-spacer"></div><section class="bk-card bk-workspace-card"><div class="bk-meta">${ctx.t('common.workspace')}</div><strong>${ctx.t('mock.workspaceName')}</strong><div class="bk-chip-row"><span class="bk-badge">${ctx.t('common.mock')}</span></div></section></aside>`;
+  const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${ctx.t('common.mock')}</span></div>` : '';
+  return `<aside class="bk-side-nav"><a class="bk-brand-row" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><img class="bk-brand-logo" src="${getAsset('logoPrimary')}" alt="${ctx.t('asset.alt.logo')}" /></a><nav class="bk-nav-list" aria-label="${ctx.t('common.actions')}">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><div class="bk-nav-spacer"></div><section class="bk-card bk-workspace-card"><div class="bk-meta">${ctx.t('common.workspace')}</div><strong>${ctx.t('mock.workspaceName')}</strong>${workspaceDiagnostics}</section></aside>`;
 }
 
 function navLink(ctx: AppContext, item: NavItem): string {
