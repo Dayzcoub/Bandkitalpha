@@ -19,13 +19,24 @@ import {
   type MockAuditEvent,
 } from '../../mocks/mockData.js';
 
+function profileRoute(profile: MockProfile): string {
+  return `/profile/${encodeURIComponent(profile.id)}`;
+}
+
+function profileLinkHeader(ctx: AppContext, profile: MockProfile, meta: string, extraClass = ''): string {
+  const route = profileRoute(profile);
+  const className = `bk-card-header bk-profile-link${extraClass ? ` ${extraClass}` : ''}`;
+  return `<a class="${className}" href="${route}" data-route="${route}" aria-label="Открыть профиль ${escapeHtml(profile.name)}">${img(profile.avatar, 'bk-avatar', ctx.t('asset.alt.avatar'))}<div><h3 class="bk-card-title">${escapeHtml(profile.name)}</h3><div class="bk-meta">${meta}</div></div></a>`;
+}
+
 export function postCard(ctx: AppContext, post: MockPost): string {
   const author = profiles.find((p) => p.id === post.authorId) ?? profiles[0];
   const body = ctx.t(post.bodyKey);
   const linkPolicy = checkLinkPolicy(body);
   const warning = linkPolicy.hasBlockedLink ? `<div class="bk-blocked-link">${ctx.t('security.linkBlocked')}</div>` : '';
   const flag = post.flagged ? badge(ctx.t('badge.warning'), 'warning') : badge(ctx.t(post.scopeKey));
-  return card(`${cardHeader(author.name, `${author.handle} · ${ctx.t(author.profileTypeKey)} · ${ctx.t(post.scopeKey)} · ${formatDateTime(post.createdAt, ctx.state.locale)}`, author.avatar)}<div class="bk-card-body"><p>${escapeHtml(body)}</p>${warning}</div><footer class="bk-action-row bk-social-actions"><span>${flag}</span>${button(`${ctx.t('feed.like')} · ${formatNumber(post.likes, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.comment')} · ${formatNumber(post.comments, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.repost')} · ${formatNumber(post.reposts, ctx.state.locale)}`, 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</footer>`, 'bk-social-card');
+  const authorMeta = `${escapeHtml(author.handle)} · ${ctx.t(author.profileTypeKey)} · ${ctx.t(post.scopeKey)} · ${formatDateTime(post.createdAt, ctx.state.locale)}`;
+  return card(`${profileLinkHeader(ctx, author, authorMeta)}<div class="bk-card-body"><p>${escapeHtml(body)}</p>${warning}</div><footer class="bk-action-row bk-social-actions"><span>${flag}</span>${button(`${ctx.t('feed.like')} · ${formatNumber(post.likes, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.comment')} · ${formatNumber(post.comments, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.repost')} · ${formatNumber(post.reposts, ctx.state.locale)}`, 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</footer>`, 'bk-social-card');
 }
 
 function profileStatusBadges(ctx: AppContext, profile: MockProfile): string {
@@ -48,7 +59,7 @@ export function profileHeader(ctx: AppContext, profile: MockProfile): string {
 }
 
 export function profileCompactCard(ctx: AppContext, profile: MockProfile): string {
-  return card(`${cardHeader(profile.name, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`, profile.avatar)}<div class="bk-chip-row">${profileStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(`${ctx.t('profile.rating')}: ${formatNumber(profile.reputation, ctx.state.locale)}`, 'positive')}${badge(ctx.t(profile.availabilityKey))}${badge('Подписка доступна')}</div><div class="bk-action-row">${button('Добавить в друзья', 'secondary')}${button('Подписаться', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-compact-card');
+  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profileStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(`${ctx.t('profile.rating')}: ${formatNumber(profile.reputation, ctx.state.locale)}`, 'positive')}${badge(ctx.t(profile.availabilityKey))}${badge('Подписка доступна')}</div><div class="bk-action-row">${button('Профиль', 'secondary', profileRoute(profile))}${button('Добавить в друзья', 'secondary')}${button('Подписаться', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-compact-card');
 }
 
 export function bandCard(ctx: AppContext, band: MockBand): string {
@@ -91,7 +102,8 @@ export function trustCheckCard(ctx: AppContext, check: MockTrustCheck): string {
 
 export function offerCard(ctx: AppContext, offer: MockOffer): string {
   const owner = profiles.find((p) => p.id === offer.ownerId) ?? profiles[0];
-  return card(`${cardHeader(ctx.t(offer.titleKey), `${ctx.t(offer.metaKey)} · ${owner.name} · ${ctx.t(owner.profileTypeKey)}`, offer.icon)}<div class="bk-chip-row">${profileStatusBadges(ctx, owner)}${badge(ctx.t(offer.trustKey), 'positive')}${badge(`${ctx.t('profile.rating')}: ${formatNumber(owner.reputation, ctx.state.locale)}`, 'positive')}</div><div class="bk-action-row">${button(ctx.t('marketplace.contact'), 'primary')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-offer-card');
+  const ownerMeta = `${ctx.t(offer.metaKey)} · ${escapeHtml(owner.name)} · ${ctx.t(owner.profileTypeKey)}`;
+  return card(`${cardHeader(ctx.t(offer.titleKey), ownerMeta, offer.icon)}${profileLinkHeader(ctx, owner, `${escapeHtml(owner.handle)} · ${ctx.t(owner.profileTypeKey)}`, 'bk-offer-owner-link')}<div class="bk-chip-row">${profileStatusBadges(ctx, owner)}${badge(ctx.t(offer.trustKey), 'positive')}${badge(`${ctx.t('profile.rating')}: ${formatNumber(owner.reputation, ctx.state.locale)}`, 'positive')}</div><div class="bk-action-row">${button('Профиль', 'secondary', profileRoute(owner))}${button(ctx.t('marketplace.contact'), 'primary')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-offer-card');
 }
 
 export function auditEventRow(ctx: AppContext, event: MockAuditEvent): string {
