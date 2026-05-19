@@ -165,13 +165,35 @@
     min-height: 76px;
   }
 
+  .bk-flow-card,
+  .bk-onboarding-card,
+  .bk-card:has(.bk-action-footer) {
+    overflow: visible;
+  }
+
+  .bk-flow-card {
+    display: grid;
+    gap: var(--bk-space-3);
+    align-content: start;
+  }
+
+  .bk-flow-card .bk-state-copy {
+    margin-bottom: var(--bk-space-2);
+  }
+
   .bk-action-footer {
+    position: static;
+    inset: auto;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--bk-space-2);
     margin-top: var(--bk-space-4);
     padding-top: var(--bk-space-3);
     border-top: 1px solid var(--bk-border);
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    z-index: auto;
   }
 
   .bk-action-footer .bk-button {
