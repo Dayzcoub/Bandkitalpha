@@ -1,11 +1,11 @@
 # BandKit Current Baseline
 
-## Fixed repository baseline
+## Current working baseline
 
 - Repository: `Dayzcoub/Bandkitalpha`
 - Branch: `main`
-- First clean project baseline commit: `a178eb6`
-- Current documentation cleanup commit: `5b793e3`
+- Current source baseline: GitHub `main`
+- First clean GitHub baseline commit: `a178eb6`
 - Package version: `1.10.0`
 - Local preview: `http://127.0.0.1:5199`
 
@@ -25,6 +25,8 @@ Current stable baseline includes:
 - runtime CSS synchronization from `src/styles` to `public/styles` and `dist/styles` during build;
 - mock permissions, role guards, moderation/security placeholders;
 - mobile reference UI pass applied to the feed shell.
+
+Historical archive labels such as `BandKit_MVP_Shell_v1_1_local_dev_kit.zip` and notes from the `v1.7` mobile stabilization pass are retained only as history. They are not the current working baseline.
 
 ## Local workflow
 
@@ -72,6 +74,7 @@ README.md
 ## Main source-of-truth documents
 
 ```txt
+docs/CURRENT_BASELINE.md
 docs/handoff/README_START_HERE.md
 docs/handoff/spec/BandKit_TZ_v1_2.md
 docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md
