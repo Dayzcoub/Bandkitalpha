@@ -243,7 +243,22 @@ function renderBandWizard(ctx: AppContext): string {
 }
 
 function renderEventWizard(ctx: AppContext): string {
-  return renderWizard(ctx, 'events.create', 'events.subtitle', ['events.wizard.basic', 'events.wizard.participants', 'events.wizard.documents']);
+  const eventTypeSelect = `<select class="bk-select"><option>${ctx.t('events.rehearsal')}</option><option>${ctx.t('events.concert')}</option><option>${ctx.t('events.session')}</option></select>`;
+  const projectSelect = `<select class="bk-select"><option>${bands[0].name}</option><option>${bands[1].name}</option><option>${bands[2].name}</option></select>`;
+  const visibilitySelect = `<select class="bk-select"><option>${ctx.t('feed.visibility.workspace')}</option><option>${ctx.t('feed.visibility.noExternalLinks')}</option><option>${ctx.t('marketplace.filter.safeOnly')}</option></select>`;
+  const notificationSelect = `<select class="bk-select"><option>In-app + push future-ready</option><option>Email digest</option><option>SMS future-ready</option></select>`;
+  const participantRows = profiles.map((profile) => listRow(profile.name, `${ctx.t(profile.profileTypeKey)} · ${ctx.t(profile.availabilityKey)}`, profile.avatar, badge(ctx.t(profile.trustLevelKey), profile.reputation > 90 ? 'positive' : 'neutral'))).join('');
+  const documentRows = documents.slice(0, 3).map((doc) => listRow(ctx.t(doc.titleKey), `${ctx.t(doc.typeKey)} · ${ctx.t(doc.statusKey)}`, doc.icon)).join('');
+  const quickSummary = card(`<div class="bk-kpi-grid">${kpi(ctx.t('events.concert'), ctx.t('common.type'))}${kpi('25 мая · 21:00', ctx.t('common.date'))}${kpi('6', ctx.t('events.participants'))}</div>`, 'bk-event-wizard-summary');
+  const basicStep = card(`<div class="bk-step-index">1</div><h3 class="bk-card-title">${ctx.t('events.wizard.basic')}</h3><p class="bk-state-copy">Название, тип, проект, дата и место. Это mock-форма для будущего create-event flow.</p><div class="bk-form bk-event-wizard-form">${formField('Название события', '<input class="bk-input" value="Клубный концерт" />')}${formField(ctx.t('common.type'), eventTypeSelect)}${formField('Проект / группа', projectSelect)}${formField(ctx.t('common.date'), '<input class="bk-input" type="datetime-local" value="2026-06-02T20:30" />')}${formField('Место', '<input class="bk-input" value="Клубная сцена" />')}${formField('Видимость', visibilitySelect)}</div>`, 'bk-flow-card bk-event-wizard-card');
+  const participantsStep = card(`<div class="bk-step-index">2</div><h3 class="bk-card-title">${ctx.t('events.wizard.participants')}</h3><p class="bk-state-copy">Роли и участники события: музыканты, техник, менеджер или организатор.</p><div class="bk-list">${participantRows}</div><div class="bk-action-row">${button(ctx.t('actions.invite'), 'secondary')}${button(ctx.t('marketplace.filter.safeOnly'), 'ghost')}</div>`, 'bk-flow-card bk-event-wizard-card');
+  const documentsStep = card(`<div class="bk-step-index">3</div><h3 class="bk-card-title">${ctx.t('events.wizard.documents')}</h3><p class="bk-state-copy">Документы, напоминания и будущие push/email/SMS уведомления привязаны к событию.</p><div class="bk-list">${documentRows}</div>${formField(ctx.t('common.notifications'), notificationSelect)}<div class="bk-chip-row">${badge(ctx.t('security.linkNotice'), 'warning')}${badge(ctx.t('security.reportAvailable'), 'positive')}</div>`, 'bk-flow-card bk-event-wizard-card');
+  const main = [
+    pageHeader(ctx, 'events.create', 'events.subtitle'),
+    quickSummary,
+    card(`<div class="bk-eyebrow">${ctx.t('flow.wizardPattern')}</div><div class="bk-flow-grid bk-event-wizard-grid">${basicStep}${participantsStep}${documentsStep}</div><div class="bk-action-footer">${button(ctx.t('actions.back'), 'secondary')}${button(ctx.t('actions.save'), 'secondary')}${button(ctx.t('actions.next'), 'primary')}</div>`, 'bk-event-wizard-shell'),
+  ].join('');
+  return contentGrid(main, defaultRightRail(ctx));
 }
 
 function renderWizard(ctx: AppContext, titleKey: string, subtitleKey: string, steps: string[]): string {
