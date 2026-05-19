@@ -52,7 +52,7 @@ export function bottomNav(ctx: AppContext): string {
   const items = [
     appNavItems[0],
     appNavItems[1],
-    { path: '/events/new', labelKey: 'common.quickCreate', activeIcon: 'navEventsActive', inactiveIcon: 'navEventsActive' } as NavItem,
+    { path: '/events/new', labelKey: 'nav.createEventShort', activeIcon: 'navEventsActive', inactiveIcon: 'navEventsActive' } as NavItem,
     appNavItems[4],
     appNavItems[7],
   ];
