@@ -1,4 +1,4 @@
-/* Global UI polish pass: shared card footer spacing and compact state surfaces. */
+/* Global UI polish pass: shared card footer spacing, compact state surfaces and profile cards. */
 
 .bk-card > .bk-list + .bk-action-row {
   margin-top: var(--bk-space-4);
@@ -53,6 +53,68 @@
   max-width: 42ch;
 }
 
+.bk-profile-card {
+  gap: var(--bk-space-3);
+}
+
+.bk-profile-card .bk-cover {
+  aspect-ratio: 7 / 2;
+  max-height: 168px;
+  object-position: center;
+}
+
+.bk-profile-card .bk-profile-head {
+  align-items: center;
+  gap: var(--bk-space-3);
+  margin-top: calc(var(--bk-space-6) * -1);
+  margin-bottom: var(--bk-space-2);
+}
+
+.bk-profile-card .bk-avatar-lg {
+  width: 86px;
+  height: 86px;
+  border-radius: 22px;
+  border-width: 3px;
+}
+
+.bk-profile-card .bk-title {
+  font-size: clamp(1.45rem, 2.2vw, 2.05rem);
+  line-height: 1.05;
+}
+
+.bk-profile-card .bk-meta {
+  margin-top: var(--bk-space-1);
+}
+
+.bk-profile-card .bk-chip-row {
+  margin-top: var(--bk-space-2);
+}
+
+.bk-profile-card > .bk-kpi-grid {
+  gap: var(--bk-space-3);
+}
+
+.bk-profile-card > .bk-kpi-grid .bk-kpi {
+  min-height: 92px;
+  padding: var(--bk-space-4);
+  display: grid;
+  align-content: center;
+}
+
+.bk-profile-card > .bk-kpi-grid .bk-kpi-value {
+  font-size: clamp(1.28rem, 1.7vw, 1.7rem);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.bk-profile-card > .bk-kpi-grid .bk-kpi-label {
+  margin-top: var(--bk-space-2);
+}
+
+.bk-profile-card > .bk-action-row {
+  margin-top: var(--bk-space-1);
+}
+
 @media (max-width: 767px) {
   .bk-card > .bk-list + .bk-action-row {
     margin-top: var(--bk-space-3);
@@ -79,6 +141,36 @@
   .bk-loading .bk-illustration {
     width: min(100%, 140px);
     max-height: 96px;
+  }
+
+  .bk-profile-card .bk-cover {
+    aspect-ratio: 3 / 1;
+    max-height: 132px;
+  }
+
+  .bk-profile-card .bk-profile-head {
+    align-items: flex-start;
+    margin-top: calc(var(--bk-space-5) * -1);
+  }
+
+  .bk-profile-card .bk-avatar-lg {
+    width: 76px;
+    height: 76px;
+    border-radius: 20px;
+  }
+
+  .bk-profile-card > .bk-kpi-grid .bk-kpi {
+    min-height: 76px;
+  }
+}
+
+@media (max-width: 520px) {
+  .bk-profile-card .bk-profile-head {
+    display: grid;
+  }
+
+  .bk-profile-card .bk-avatar-lg {
+    margin-bottom: calc(var(--bk-space-2) * -1);
   }
 }
 
