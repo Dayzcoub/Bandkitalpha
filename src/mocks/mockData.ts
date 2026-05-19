@@ -180,6 +180,20 @@ export const profiles: MockProfile[] = [
   },
 ];
 
+const defaultForeignProfile = profiles[1];
+const mockProfilesById = new Map(profiles.map((profile) => [profile.id, profile]));
+
+Object.defineProperty(profiles, '1', {
+  configurable: true,
+  enumerable: true,
+  get() {
+    if (typeof window === 'undefined') return defaultForeignProfile;
+    const match = window.location.pathname.match(/^\/profile\/([^/]+)$/);
+    if (!match?.[1]) return defaultForeignProfile;
+    return mockProfilesById.get(decodeURIComponent(match[1])) ?? defaultForeignProfile;
+  },
+});
+
 export const posts: MockPost[] = [
   { id: 'post-1', authorId: 'p1', scopeKey: 'mock.post.scope.band', createdAt: '2026-05-18T12:30:00Z', bodyKey: 'mock.post.body.rehearsal', likes: 18, comments: 4, reposts: 2 },
   { id: 'post-2', authorId: 'p2', scopeKey: 'mock.post.scope.studio', createdAt: '2026-05-17T18:15:00Z', bodyKey: 'mock.post.body.drummerSearch', likes: 31, comments: 9, reposts: 5 },
