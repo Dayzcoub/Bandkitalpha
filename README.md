@@ -1,98 +1,146 @@
 # BandKit MVP Shell
 
-Version: v1.7.0 mobile stabilization pass
+## Current working baseline
 
-Рабочая база: `BandKit_MVP_Shell_v1_3_visual_alignment.zip`.
+- GitHub repo: `Dayzcoub/Bandkitalpha`
+- Branch: `main`
+- Baseline commit: `a178eb6`
+- Package version: `1.10.0`
+- Local preview port: `http://127.0.0.1:5199`
+- Current stage: MVP Shell / stable frontend skeleton before real social-network business logic
 
-Это всё ещё **не полная соцсеть**, а стабильный MVP shell-фундамент перед началом настоящей бизнес-логики: архитектура, routing map, layout shells, i18n RU/EN, production assets, базовые UI-компоненты, mock permissions, role guards, moderation/security placeholders и живые mock-экраны.
+BandKit is currently **not a full social network implementation**. This repository contains the stable MVP shell foundation: architecture, routing, layout shells, i18n RU/EN, production assets, basic UI components, mock permissions, role guards, moderation/security placeholders, and live mock screens.
 
-## Что добавлено в v1.4
+## Quick start on Windows
 
-- Главная `/feed` стала похожа на рабочий dashboard: workspace hero, quick actions, KPI, composer, фильтры и лента.
-- Mock-контент переведён в i18n-ключи, чтобы не плодить хардкод пользовательских текстов.
-- Усилены разделы профиля, групп, событий, чатов, документов, marketplace, настроек и админки.
-- Добавлены trust checks, permission matrix, audit rows, safer chat policy block и moderation queue summary.
-- Добавлены richer cards: quick action, compact profile, offer, timeline, document status, audit event.
-- Сохранены правила: без inline styles, без pixel hacks, без backend, без тяжёлой соцсетевой логики.
-- Local dev kit сохранён: фиксированный порт `127.0.0.1:5199`, bat-запускалки, health endpoint.
+From the project folder:
 
-## Самый простой запуск на Windows
-
-1. Распаковать архив.
-2. Открыть папку проекта.
-3. Дважды кликнуть:
-
-```txt
-START_BANDKIT_PREVIEW.bat
+```powershell
+git pull
+npm install
+npm run build
+.\RESET_CACHE_AND_START.bat
 ```
 
-4. Открыть:
+Open:
 
 ```txt
 http://127.0.0.1:5199
 ```
 
-Если браузер показывает старый/чужой проект, запустить:
+Alternative launchers:
 
 ```txt
+START_BANDKIT_PREVIEW.bat
+START_BANDKIT_DEV.bat
+BUILD_BANDKIT.bat
+CHECK_BANDKIT.bat
 RESET_CACHE_AND_START.bat
 ```
 
-Подробная инструкция:
+PowerShell requires `./` or `.\` before local batch files, for example:
+
+```powershell
+.\START_BANDKIT_PREVIEW.bat
+```
+
+## Git hygiene
+
+Committed to GitHub:
 
 ```txt
-docs/local/LOCAL_PREVIEW_WINDOWS.md
+public/
+src/
+scripts/
+docs/
+checks/
+package.json
+package-lock.json
+tsconfig.json
+README.md
+*.bat
 ```
 
-## Ручной запуск через терминал
+Ignored by `.gitignore`:
 
-```bash
+```txt
+node_modules/
+dist/
+*.zip
+*.log
+.DS_Store
+.env
+.env.*
+```
+
+`dist/` is generated locally by:
+
+```powershell
+npm run build
+```
+
+`node_modules/` is restored locally by:
+
+```powershell
 npm install
-npm run build
-npm run serve
 ```
 
-## Проверки
+## Source of truth documents
 
-```bash
-npm run check
-npm run build
-npm run local:health
-find dist/js -name '*.js' -print -exec node --check {} \;
-unzip -t BandKit_MVP_Shell_v1_4_content_flow.zip
+Start here:
+
+```txt
+docs/handoff/README_START_HERE.md
 ```
 
-## Главные входные источники
+Main specs:
 
-- `docs/handoff/README_START_HERE.md`
-- `docs/handoff/spec/BandKit_TZ_v1_2.md`
-- `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md`
-- `docs/handoff/spec/BandKit_App_Architecture_v1_0.md`
-- `docs/handoff/spec/BandKit_Routing_Map_v1_0.md`
-- `docs/handoff/spec/BandKit_Database_RLS_Model_v1_0.md`
-- `docs/handoff/spec/BandKit_API_Backend_Contract_v1_0.md`
-- `docs/handoff/spec/BandKit_Component_Inventory_v1_0.md`
-- `docs/handoff/spec/BandKit_Security_AntiFraud_v1_0.md`
-- `docs/handoff/spec/BandKit_Development_Handoff_v1_0.md`
-- `docs/handoff/spec/BandKit_QA_Acceptance_Checklist_v1_0.md`
-- `docs/handoff/prompts/Codex_MVP_Shell_Prompt_v1_0.md`
+```txt
+docs/handoff/spec/BandKit_TZ_v1_2.md
+docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md
+docs/handoff/spec/BandKit_App_Architecture_v1_0.md
+docs/handoff/spec/BandKit_Routing_Map_v1_0.md
+docs/handoff/spec/BandKit_Database_RLS_Model_v1_0.md
+docs/handoff/spec/BandKit_API_Backend_Contract_v1_0.md
+docs/handoff/spec/BandKit_Component_Inventory_v1_0.md
+docs/handoff/spec/BandKit_Security_AntiFraud_v1_0.md
+docs/handoff/spec/BandKit_Development_Handoff_v1_0.md
+docs/handoff/spec/BandKit_QA_Acceptance_Checklist_v1_0.md
+```
 
-Production assets:
+MVP shell prompt:
+
+```txt
+docs/handoff/prompts/Codex_MVP_Shell_Prompt_v1_0.md
+```
+
+Current baseline note:
+
+```txt
+docs/CURRENT_BASELINE.md
+```
+
+## Production assets
+
+The original pre-code handoff referenced a ZIP asset pack. In this repo, the current production assets are stored unpacked and ready for runtime use:
 
 ```txt
 public/assets/BandKit_Production_Assets_v1_3/
 ```
 
+Assets must remain language-neutral. Localized text belongs in i18n files, not inside images.
 
-## v1.5 visual bugfix
+## Non-negotiable development rules
 
-- Normalized typography to avoid accidental italic rendering from local fonts.
-- Made quick-create cards compact and aligned.
-- Reduced oversized restricted/error illustrations.
-- Tightened profile cover/header spacing and right rail inspector density.
-- Kept i18n, routing, permissions, local preview kit, and mock-shell architecture unchanged.
+- No hardcoded user-facing text in components; use i18n.
+- No inline styles.
+- No pixel hacks or one-off local CSS patches.
+- Use shared tokens, shared components, and approved layout patterns.
+- Desktop contract: `left nav → main content → right rail`.
+- Mobile contract: `top bar → content → bottom nav`.
+- Do not add heavy social-network business logic before permission/RLS/backend contracts are implemented.
+- Frontend guards are placeholders only; backend/RLS must become the real source of truth later.
 
+## Current next task
 
-## v1.9 Runtime CSS / Mobile Contract Fix
-
-Исправлена причина, из-за которой mobile-проходы v1.7/v1.8 не отображались в локальном preview: build pipeline показывал старые runtime CSS из `public/styles`. Теперь canonical CSS синхронизируется из `src/styles` в `public/styles` и `dist/styles`.
+Continue visual alignment of the shell against the approved dark professional backstage SaaS reference, while preserving the architecture, routing, i18n, security/moderation placeholders, and local launch flow.
