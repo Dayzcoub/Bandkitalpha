@@ -2,14 +2,17 @@
 
 ## Current working baseline
 
-- GitHub repo: `Dayzcoub/Bandkitalpha`
+- Repository: `Dayzcoub/Bandkitalpha`
 - Branch: `main`
-- Baseline commit: `a178eb6`
+- Current source baseline: GitHub `main`
+- First clean GitHub baseline commit: `a178eb6`
 - Package version: `1.10.0`
 - Local preview port: `http://127.0.0.1:5199`
 - Current stage: MVP Shell / stable frontend skeleton before real social-network business logic
 
 BandKit is currently **not a full social network implementation**. This repository contains the stable MVP shell foundation: architecture, routing, layout shells, i18n RU/EN, production assets, basic UI components, mock permissions, role guards, moderation/security placeholders, and live mock screens.
+
+Older archive labels such as `v1.1` local dev kit or `v1.7` mobile stabilization pass are kept only as historical handoff notes. They are **not** the current working baseline. New work must continue from GitHub `main` unless a newer accepted baseline is explicitly created.
 
 ## Quick start on Windows
 
@@ -90,6 +93,7 @@ npm install
 Start here:
 
 ```txt
+docs/CURRENT_BASELINE.md
 docs/handoff/README_START_HERE.md
 ```
 
@@ -112,12 +116,6 @@ MVP shell prompt:
 
 ```txt
 docs/handoff/prompts/Codex_MVP_Shell_Prompt_v1_0.md
-```
-
-Current baseline note:
-
-```txt
-docs/CURRENT_BASELINE.md
 ```
 
 ## Production assets
