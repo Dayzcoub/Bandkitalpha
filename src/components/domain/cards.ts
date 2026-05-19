@@ -1,5 +1,6 @@
 import type { AppContext } from '../../app/types.js';
 import { card, cardHeader, badge, button, img, listRow, kpi } from '../ui/primitives.js';
+import { canSeeDiagnostics } from '../../lib/permissions/diagnostics.js';
 import { checkLinkPolicy, escapeHtml } from '../../lib/security/linkPolicy.js';
 import { formatDateTime, formatNumber } from '../../lib/format/format.js';
 import {
@@ -69,7 +70,8 @@ export function complaintCard(ctx: AppContext, complaint: MockComplaint): string
 }
 
 export function quickActionCard(ctx: AppContext, action: MockQuickAction): string {
-  return card(`${img(action.icon, 'bk-action-icon', ctx.t('asset.alt.icon'))}<h3 class="bk-card-title">${ctx.t(action.titleKey)}</h3><p class="bk-state-copy">${ctx.t(action.copyKey)}</p><div class="bk-action-row">${badge(ctx.t(action.accessKey))}${button(ctx.t('actions.open'), 'secondary', action.route)}</div>`, 'bk-action-card');
+  const diagnostics = canSeeDiagnostics(ctx) ? badge(ctx.t(action.accessKey)) : '';
+  return card(`${img(action.icon, 'bk-action-icon', ctx.t('asset.alt.icon'))}<h3 class="bk-card-title">${ctx.t(action.titleKey)}</h3><p class="bk-state-copy">${ctx.t(action.copyKey)}</p><div class="bk-action-row">${diagnostics}${button(ctx.t('actions.open'), 'secondary', action.route)}</div>`, 'bk-action-card');
 }
 
 export function trustCheckCard(ctx: AppContext, check: MockTrustCheck): string {
@@ -86,5 +88,6 @@ export function auditEventRow(ctx: AppContext, event: MockAuditEvent): string {
 }
 
 export function statusStrip(ctx: AppContext): string {
+  if (!canSeeDiagnostics(ctx)) return '';
   return card(`<div class="bk-status-strip"><div>${kpi('3', ctx.t('trust.checks'))}</div><div>${kpi(ctx.t('qa.allowed'), ctx.t('qa.guard'))}</div><div>${kpi(ctx.t('common.i18nReady'), ctx.t('common.language'))}</div></div>`, 'bk-status-card');
 }
