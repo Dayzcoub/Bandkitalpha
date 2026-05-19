@@ -87,8 +87,19 @@ function renderOnboarding(ctx: AppContext): string {
     ['2', 'onboarding.step.verification.title', 'onboarding.step.verification.copy'],
     ['3', 'onboarding.step.workspace.title', 'onboarding.step.workspace.copy'],
   ] as const;
+  const profileTypes = [
+    ['avatarMusician', 'profile.type.personalUser'],
+    ['avatarVocalist', 'profile.type.soloPerformer'],
+    ['roleMusician', 'profile.type.musician'],
+    ['roleDrummer', 'profile.type.sessionMusician'],
+    ['roleGroup', 'bands.type.bandProject'],
+    ['roleManager', 'profile.type.managerBooking'],
+    ['roleStudio', 'profile.type.organizationRepresentative'],
+    ['roleSoundEngineer', 'profile.type.technicalSpecialist'],
+    ['coverStudio', 'profile.type.teacherCoach'],
+  ] as const;
   const stepCards = steps.map(([num, title, copy]) => card(`<div class="bk-step-index">${num}</div><h3 class="bk-card-title">${ctx.t(title)}</h3><p class="bk-state-copy">${ctx.t(copy)}</p>`, 'bk-flow-card')).join('');
-  const roleGrid = card(`<h3 class="bk-card-title">${ctx.t('onboarding.rolePicker')}</h3><div class="bk-card-grid bk-card-grid-3">${['roleMusician','roleGroup','roleStudio'].map((key) => `<div class="bk-select-card">${img(key as never, 'bk-action-icon', ctx.t('asset.alt.icon'))}<span>${ctx.t(`onboarding.${key}`)}</span></div>`).join('')}</div>`, 'bk-onboarding-card');
+  const roleGrid = card(`<h3 class="bk-card-title">${ctx.t('onboarding.rolePicker')}</h3><p class="bk-state-copy">${ctx.t('onboarding.step.profile.copy')}</p><div class="bk-card-grid bk-card-grid-3">${profileTypes.map(([key, label]) => `<div class="bk-select-card">${img(key as never, 'bk-action-icon', ctx.t('asset.alt.icon'))}<span>${ctx.t(label)}</span></div>`).join('')}</div>`, 'bk-onboarding-card');
   const main = [pageHeader(ctx, 'onboarding.title', 'onboarding.subtitle', 'actions.continue'), card(`${img('illustrationSecurity', 'bk-illustration', ctx.t('asset.alt.empty'))}<div class="bk-flow-grid">${stepCards}</div><div class="bk-action-footer">${button(ctx.t('actions.back'), 'secondary')}${button(ctx.t('actions.next'), 'primary')}</div>`), roleGrid].join('');
   return contentGrid(main, defaultRightRail(ctx));
 }
