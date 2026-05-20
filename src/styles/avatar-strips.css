@@ -1,0 +1,126 @@
+/* Avatar strips: compact horizontal people previews for entity/profile sections. */
+
+.bk-card:has(.bk-compact-card) > .bk-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.bk-card:has(.bk-compact-card) > .bk-card-title::after {
+  content: "3";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  min-height: 22px;
+  padding: 2px 7px;
+  border: 1px solid rgba(148, 163, 184, .18);
+  border-radius: 999px;
+  background: rgba(148, 163, 184, .045);
+  color: rgba(203, 213, 225, .72);
+  font-size: .72rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.bk-card:has(.bk-compact-card) > .bk-card-grid {
+  display: flex;
+  grid-template-columns: none;
+  gap: 8px;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 8px;
+  margin-inline: -2px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.bk-card:has(.bk-compact-card) > .bk-card-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.bk-card:has(.bk-compact-card) > .bk-card-grid::after {
+  content: "";
+  flex: 0 0 2px;
+  width: 2px;
+  height: 1px;
+}
+
+.bk-compact-card {
+  flex: 0 0 auto;
+  display: block;
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  min-height: 46px;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  box-shadow: none;
+  scroll-snap-align: start;
+}
+
+.bk-compact-card:hover {
+  background: transparent;
+}
+
+.bk-compact-card .bk-profile-link {
+  display: block;
+  width: 46px;
+  height: 46px;
+  min-height: 0;
+  margin: 0;
+  border-radius: 14px;
+}
+
+.bk-compact-card .bk-profile-link > div,
+.bk-compact-card .bk-meta-chip-row,
+.bk-compact-card .bk-profile-compact-actions,
+.bk-compact-card > .bk-report-link {
+  display: none !important;
+}
+
+.bk-compact-card .bk-avatar {
+  display: block;
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow:
+    0 0 0 1px rgba(96, 165, 250, .22),
+    0 10px 26px rgba(15, 23, 42, .26);
+}
+
+.bk-compact-card .bk-profile-link:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, .72);
+  outline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+  .bk-card:has(.bk-compact-card) {
+    padding: 14px;
+  }
+
+  .bk-card:has(.bk-compact-card) > .bk-card-title {
+    margin-bottom: 8px;
+  }
+
+  .bk-card:has(.bk-compact-card) > .bk-card-grid {
+    gap: 7px;
+    padding-bottom: 6px;
+  }
+
+  .bk-compact-card,
+  .bk-compact-card .bk-profile-link,
+  .bk-compact-card .bk-avatar {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 13px;
+  }
+}
