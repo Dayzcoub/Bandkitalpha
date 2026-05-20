@@ -48,6 +48,31 @@ jobs:
           npm config --userconfig .npmrc get registry
           npm config --userconfig .npmrc get replace-registry-host
 
+      - name: Normalize package lock registry URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f package-lock.json ]; then
+            python3 - <<'PY'
+          from pathlib import Path
+          path = Path('package-lock.json')
+          text = path.read_text()
+          replacements = {
+              'https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/': 'https://registry.npmjs.org/',
+              'https://packages.applied-caas-gateway.internal.api.openai.org/artifactory/api/npm/npm-public/': 'https://registry.npmjs.org/',
+              'http://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/': 'https://registry.npmjs.org/',
+              'http://packages.applied-caas-gateway.internal.api.openai.org/artifactory/api/npm/npm-public/': 'https://registry.npmjs.org/',
+          }
+          for old, new in replacements.items():
+              text = text.replace(old, new)
+          path.write_text(text)
+          PY
+          fi
+          if grep -R "applied-caas-gateway" package-lock.json package.json 2>/dev/null; then
+            echo "Internal registry URLs remain in package files" >&2
+            exit 1
+          fi
+
       - name: Install dependencies
         shell: bash
         env:
