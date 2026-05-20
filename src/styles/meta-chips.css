@@ -1,7 +1,7 @@
 .bk-meta-chip-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   align-content: start;
   min-width: 0;
@@ -12,31 +12,32 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  min-width: 24px;
-  min-height: 22px;
-  padding: 2px 7px;
-  border: 1px solid rgba(148, 163, 184, .22);
+  min-width: 28px;
+  min-height: 24px;
+  padding: 3px 8px;
+  border: 1px solid rgba(148, 163, 184, .2);
   border-radius: 999px;
-  background: rgba(15, 23, 42, .36);
-  color: rgba(203, 213, 225, .68);
+  background: rgba(15, 23, 42, .34);
+  color: rgba(203, 213, 225, .64);
   font-size: .72rem;
-  font-weight: 800;
+  font-weight: 850;
   line-height: 1;
   white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .035);
 }
 
 .bk-meta-chip-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 12px;
-  font-size: .72rem;
+  min-width: 14px;
+  font-size: .7rem;
   line-height: 1;
 }
 
 .bk-meta-chip-value {
   color: rgba(248, 250, 252, .82);
-  font-size: .7rem;
+  font-size: .72rem;
   letter-spacing: .01em;
 }
 
@@ -53,18 +54,18 @@
 }
 
 .bk-meta-chip-neutral {
-  border-color: rgba(148, 163, 184, .2);
-  background: rgba(148, 163, 184, .045);
-  color: rgba(203, 213, 225, .58);
+  border-color: rgba(148, 163, 184, .18);
+  background: rgba(148, 163, 184, .04);
+  color: rgba(203, 213, 225, .56);
 }
 
 .bk-compact-card .bk-meta-chip-row {
-  min-height: 46px;
+  min-height: 48px;
   margin-top: -2px;
 }
 
 .bk-profile-social-card .bk-meta-chip-row {
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .bk-offer-card .bk-meta-chip-row {
@@ -73,22 +74,48 @@
 
 @media (max-width: 767px) {
   .bk-meta-chip-row {
-    gap: 5px;
+    gap: 7px;
   }
 
   .bk-meta-chip {
-    min-width: 22px;
-    min-height: 20px;
-    padding: 2px 6px;
+    min-width: 30px;
+    min-height: 26px;
+    padding: 3px 8px;
+    font-size: .68rem;
+  }
+
+  .bk-meta-chip-icon {
+    min-width: 13px;
     font-size: .66rem;
   }
 
-  .bk-meta-chip-icon,
   .bk-meta-chip-value {
-    font-size: .66rem;
+    font-size: .68rem;
   }
 
   .bk-compact-card .bk-meta-chip-row {
     min-height: 0;
+  }
+
+  .bk-profile-social-card .bk-profile-social-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .bk-profile-social-card .bk-profile-social-kpis .bk-kpi {
+    min-height: 58px;
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .bk-profile-social-card .bk-profile-social-kpis .bk-kpi-value {
+    font-size: 1.08rem;
+    line-height: 1.05;
+  }
+
+  .bk-profile-social-card .bk-profile-social-kpis .bk-kpi-label {
+    margin-top: 4px;
+    font-size: .7rem;
+    line-height: 1.1;
   }
 }
