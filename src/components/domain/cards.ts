@@ -41,13 +41,13 @@ function profileStatusIcon(labelKey: string): string {
   if (labelKey.includes('technicalSpecialist')) return '⚙';
   if (labelKey.includes('performerPremium')) return '✦';
   if (labelKey.includes('performerPro')) return '★';
-  if (labelKey.includes('freeBasic')) return '○';
+  if (labelKey.includes('freeBasic')) return 'B';
   return '•';
 }
 
 function availabilityIcon(key: string): string {
-  if (key.includes('open')) return '◌';
-  if (key.includes('session')) return '◒';
+  if (key.includes('open')) return '↗';
+  if (key.includes('session')) return '◐';
   if (key.includes('busy')) return '◷';
   return '○';
 }
@@ -231,7 +231,7 @@ export function profileHeader(ctx: AppContext, profile: MockProfile): string {
     ? metaIconChip('Лента: друзья + подписки', '▦', 'positive')
     : metaIconChip('Публичная лента', '▤', 'neutral');
   const feedPolicyChips = diagnostics ? `<div class="bk-meta-chip-row">${metaIconChip('Public', 'P')}${metaIconChip('Friends', 'F')}${metaIconChip('Workspace', 'W')}${metaIconChip('Draft', 'D')}</div>` : '';
-  return card(`${profileCover(ctx)}<div class="bk-card-header bk-profile-head">${img(profile.avatar, 'bk-avatar bk-avatar-lg', ctx.t('asset.alt.avatar'))}<div><h2 class="bk-title">${escapeHtml(profile.name)}</h2><div class="bk-meta">${escapeHtml(profile.handle)} · ${ctx.t(profile.roleKey)} · ${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}</div><div class="bk-meta-chip-row">${profileMetaChips(ctx, profile, 'full')}${relationshipIcon}${feedIcon}</div></div></div><div class="bk-kpi-grid bk-profile-social-kpis"><div class="bk-kpi"><div class="bk-kpi-value">${formatNumber(profile.reputation, ctx.state.locale)}</div><div class="bk-kpi-label">${ctx.t('profile.rating')}</div></div><div class="bk-kpi"><div class="bk-kpi-value">128</div><div class="bk-kpi-label">Друзья</div></div><div class="bk-kpi"><div class="bk-kpi-value">2.4K</div><div class="bk-kpi-label">Подписчики</div></div><div class="bk-kpi"><div class="bk-kpi-value">36</div><div class="bk-kpi-label">Посты</div></div></div><section class="bk-profile-feed-policy"><div><strong>Личная лента</strong><span>Посты идут по времени публикации. Приватные черновики видит только автор.</span></div>${feedPolicyChips}</section>${profileRelationshipActions(ctx, profile)}`, 'bk-profile-card bk-profile-social-card');
+  return card(`${profileCover(ctx)}<div class="bk-card-header bk-profile-head">${img(profile.avatar, 'bk-avatar bk-avatar-lg', ctx.t('asset.alt.avatar'))}<div><h2 class="bk-title">${escapeHtml(profile.name)}</h2><div class="bk-meta">${escapeHtml(profile.handle)} · ${ctx.t(profile.roleKey)} · ${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}</div><div class="bk-meta-chip-row">${profileMetaChips(ctx, profile, 'full')}${relationshipIcon}${feedIcon}</div></div></div><div class="bk-kpi-grid bk-profile-social-kpis"><div class="bk-kpi"><div class="bk-kpi-value">★ ${formatNumber(profile.reputation, ctx.state.locale)}</div><div class="bk-kpi-label">Рейтинг</div></div><div class="bk-kpi"><div class="bk-kpi-value">128</div><div class="bk-kpi-label">Друзья</div></div><div class="bk-kpi"><div class="bk-kpi-value">2.4K</div><div class="bk-kpi-label">Подписчики</div></div><div class="bk-kpi"><div class="bk-kpi-value">36</div><div class="bk-kpi-label">Посты</div></div></div><section class="bk-profile-feed-policy"><div><strong>Личная лента</strong><span>Посты идут по времени публикации. Приватные черновики видит только автор.</span></div>${feedPolicyChips}</section>${profileRelationshipActions(ctx, profile)}`, 'bk-profile-card bk-profile-social-card');
 }
 
 export function profileCompactCard(ctx: AppContext, profile: MockProfile): string {
