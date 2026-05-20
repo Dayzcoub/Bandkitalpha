@@ -156,6 +156,41 @@ function chatUnreadIndex(ctx: AppContext): number {
   return 1;
 }
 
+function chatHistoryFilters(ctx: AppContext): string[] {
+  const base = ['Все', 'Непрочитанные', 'Упоминания', 'Файлы', 'Документы', 'Закреплённые'];
+  if (chatContextMeta(ctx).kind === 'safety') return [...base, 'Риски', 'Ссылки', 'Жалобы'];
+  return base;
+}
+
+function chatPinnedText(ctx: AppContext): { title: string; body: string; meta: string } {
+  const kind = chatContextMeta(ctx).kind;
+  if (kind === 'direct') {
+    return {
+      title: 'Закреплено: обмен файлами',
+      body: 'Вокальные демо и материалы обсуждаются в личном контексте, без открытия доступа к проектному workspace.',
+      meta: 'Pinned · личный чат',
+    };
+  }
+  if (kind === 'safety') {
+    return {
+      title: 'Закреплено: безопасность',
+      body: 'Не переходить по внешним ссылкам и не переводить оплату вне платформы. При риске — оформить жалобу с контекстом сообщения.',
+      meta: 'Pinned · safety',
+    };
+  }
+  return {
+    title: 'Закреплено: рабочее решение',
+    body: 'Репетиция привязана к событию, актуальный райдер лежит в документах, спорные изменения обсуждаем в этом чате.',
+    meta: 'Pinned · проект/событие',
+  };
+}
+
+function chatHistoryChrome(ctx: AppContext): string {
+  const filters = chatHistoryFilters(ctx).map((item, index) => `<button class="bk-chat-history-filter${index === 0 ? ' is-active' : ''}" type="button">${item}</button>`).join('');
+  const pinned = chatPinnedText(ctx);
+  return `<section class="bk-chat-history-toolbar" aria-label="Навигация по истории чата"><div class="bk-chat-history-search"><span aria-hidden="true">⌕</span><input type="search" aria-label="Поиск в чате" placeholder="Поиск в чате, документах и решениях" /></div><div class="bk-chat-history-filters">${filters}</div></section><section class="bk-chat-pinned-summary"><div><span>${pinned.meta}</span><strong>${pinned.title}</strong><p>${pinned.body}</p></div></section><button class="bk-chat-load-older" type="button">Загрузить старые сообщения</button><div class="bk-chat-date-divider">18 мая 2026</div>`;
+}
+
 function addDirectChatNavigation(root: HTMLElement, ctx: AppContext): void {
   if (ctx.match.route.path !== '/chats' && ctx.match.route.path !== '/chats/:chatId') return;
   const chatRows = Array.from(root.querySelectorAll<HTMLElement>('.bk-chat-room-card .bk-list > .bk-list-row, .bk-chat-policy-card + .bk-card .bk-list > .bk-list-row'));
@@ -190,12 +225,17 @@ function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
   const thread = root.querySelector<HTMLElement>('.bk-chat-thread');
   if (!chatRoom || !thread) return;
 
+  if (!thread.querySelector('.bk-chat-history-toolbar')) {
+    thread.insertAdjacentHTML('afterbegin', chatHistoryChrome(ctx));
+  }
+
   const messages = Array.from(thread.querySelectorAll<HTMLElement>('.bk-social-card'));
   const unreadIndex = Math.min(chatUnreadIndex(ctx), Math.max(messages.length - 1, 0));
 
   messages.forEach((message, index) => {
     message.classList.add('bk-chat-message-card');
     message.dataset.messageIndex = String(index);
+    message.id = `chat-message-m${index + 1}`;
     message.dataset.replyAuthor = message.querySelector('.bk-card-title')?.textContent?.trim() ?? 'Сообщение';
     message.dataset.replyBody = message.querySelector('.bk-card-body')?.textContent?.trim() ?? '';
 
@@ -208,7 +248,7 @@ function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
     }
 
     if (!message.querySelector('.bk-chat-message-actions')) {
-      message.insertAdjacentHTML('beforeend', `<footer class="bk-chat-message-actions"><button class="bk-chat-reply-action" type="button" data-chat-reply-index="${index}">↩ Ответить</button></footer>`);
+      message.insertAdjacentHTML('beforeend', `<footer class="bk-chat-message-actions"><a class="bk-chat-anchor-link" href="#chat-message-m${index + 1}" aria-label="Ссылка на сообщение">#m${index + 1}</a><button class="bk-chat-reply-action" type="button" data-chat-reply-index="${index}">↩ Ответить</button></footer>`);
     }
   });
 
