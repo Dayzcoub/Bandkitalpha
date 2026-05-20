@@ -42,18 +42,18 @@ jobs:
           rm -f "$HOME/.npmrc" .npmrc
           cat > .npmrc <<'NPMRC'
           registry=https://registry.npmjs.org/
-          proxy=
-          https-proxy=
           always-auth=false
+          replace-registry-host=always
           NPMRC
           npm config --userconfig .npmrc get registry
+          npm config --userconfig .npmrc get replace-registry-host
 
       - name: Install dependencies
         shell: bash
         env:
           NPM_CONFIG_USERCONFIG: .npmrc
           NODE_AUTH_TOKEN: ''
-        run: npm ci --userconfig .npmrc --registry=https://registry.npmjs.org/
+        run: npm ci --userconfig .npmrc --registry=https://registry.npmjs.org/ --replace-registry-host=always
 
       - name: Build static app
         run: npm run build
