@@ -98,11 +98,16 @@ function entitySubscriptionBadge(ctx: AppContext, state: EntityFeedMock['subscri
   return badge('Можно подписаться');
 }
 
+function entityPrimaryAction(feed: EntityFeedMock): { label: string; variant: 'primary' | 'secondary' | 'ghost' } {
+  if (feed.subscriptionState === 'subscribed') return { label: '⚙ Уведомления', variant: 'ghost' };
+  if (feed.subscriptionState === 'request') return { label: 'Запросить', variant: 'primary' };
+  return { label: 'Подписаться', variant: 'primary' };
+}
+
 function entityFeedPreview(ctx: AppContext, band: MockBand, mode: 'compact' | 'full'): string {
   const feed = entityFeedMock(band);
   const diagnostics = canSeeDiagnostics(ctx);
-  const primaryAction = feed.subscriptionState === 'subscribed' ? 'Настроить уведомления' : feed.subscriptionState === 'request' ? 'Запросить подписку' : 'Подписаться';
-  const primaryVariant: 'primary' | 'secondary' = feed.subscriptionState === 'subscribed' ? 'secondary' : 'primary';
+  const primaryAction = entityPrimaryAction(feed);
   const meta = diagnostics ? feed.adminMeta : feed.latestMeta;
   const headChips = diagnostics
     ? `${entitySubscriptionBadge(ctx, feed.subscriptionState)}${badge(feed.visibility)}${badge(feed.notificationLevel)}`
@@ -111,10 +116,10 @@ function entityFeedPreview(ctx: AppContext, band: MockBand, mode: 'compact' | 'f
   const eyebrow = diagnostics ? '<div class="bk-eyebrow">Entity public feed</div>' : '';
 
   if (mode === 'compact') {
-    return `<section class="bk-entity-feed-preview bk-entity-feed-preview-compact"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div><div class="bk-chip-row">${headChips}</div></div><p class="bk-state-copy">${escapeHtml(feed.shortBody)}</p><div class="bk-entity-feed-stats"><span>${escapeHtml(feed.subscribers)} подписчиков</span><span>${formatNumber(feed.posts, ctx.state.locale)} постов</span><span>${escapeHtml(feed.notificationLabel)}</span></div><div class="bk-action-row bk-entity-actions">${button(primaryAction, primaryVariant)}${button('Открыть', 'secondary', `/bands/${band.id}`)}</div></section>`;
+    return `<section class="bk-entity-feed-preview bk-entity-feed-preview-compact"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div><div class="bk-chip-row">${headChips}</div></div><p class="bk-state-copy">${escapeHtml(feed.shortBody)}</p><div class="bk-entity-feed-stats"><span>${escapeHtml(feed.subscribers)} подписчиков</span><span>${formatNumber(feed.posts, ctx.state.locale)} постов</span><span>${escapeHtml(feed.notificationLabel)}</span></div></section>`;
   }
 
-  return `<section class="bk-entity-feed-preview"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div><div class="bk-chip-row">${headChips}</div></div><p class="bk-state-copy">${escapeHtml(feed.latestBody)}</p><div class="bk-kpi-grid bk-entity-kpi-grid">${kpi(feed.subscribers, 'Подписчики')}${kpi(feed.posts, 'Посты')}${kpi(feed.notificationLabel, 'Уведомления')}</div><div class="bk-entity-feed-policy"><span>Подписка не даёт членство, доступ к workspace, приватным чатам и документам.</span>${policyChips}</div><div class="bk-action-row bk-entity-actions">${button(primaryAction, primaryVariant)}${button('Открыть ленту', 'secondary', `/bands/${band.id}`)}${button('Заглушить', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div></section>`;
+  return `<section class="bk-entity-feed-preview"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div><div class="bk-chip-row">${headChips}</div></div><p class="bk-state-copy">${escapeHtml(feed.latestBody)}</p><div class="bk-kpi-grid bk-entity-kpi-grid">${kpi(feed.subscribers, 'Подписчики')}${kpi(feed.posts, 'Посты')}${kpi(feed.notificationLabel, 'Уведомления')}</div><div class="bk-entity-feed-policy"><span>Подписка не даёт членство, доступ к workspace, приватным чатам и документам.</span>${policyChips}</div><div class="bk-action-row bk-entity-actions">${button(primaryAction.label, primaryAction.variant)}${button('Открыть ленту', 'secondary', `/bands/${band.id}`)}${button('Заглушить', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div></section>`;
 }
 
 export function postCard(ctx: AppContext, post: MockPost): string {
@@ -157,7 +162,11 @@ export function bandCard(ctx: AppContext, band: MockBand): string {
   const diagnostics = canSeeDiagnostics(ctx);
   const isDetail = Boolean(ctx.match.params.bandId);
   const entityDebugBadge = diagnostics ? badge('Entity feed') : '';
-  return card(`${img(band.cover, 'bk-cover', ctx.t('asset.alt.cover'))}<div class="bk-card-header bk-card-header-tight"><div><h3 class="bk-card-title">${escapeHtml(band.name)}</h3><div class="bk-meta">${ctx.t(band.typeKey)} · ${band.members} ${ctx.t('bands.members')}</div></div></div><div class="bk-chip-row">${badge(ctx.t(band.statusKey), band.statusKey.includes('active') ? 'positive' : 'warning')}${badge(ctx.t(band.roleKey))}${entitySubscriptionBadge(ctx, feed.subscriptionState)}${entityDebugBadge}</div>${entityFeedPreview(ctx, band, isDetail ? 'full' : 'compact')}<div class="bk-action-row">${button(ctx.t('actions.view'), 'secondary', `/bands/${band.id}`)}${button(feed.subscriptionState === 'subscribed' ? 'Уведомления' : 'Подписаться', feed.subscriptionState === 'subscribed' ? 'ghost' : 'primary')}${button(ctx.t('actions.invite'), 'ghost')}</div>`, 'bk-band-card bk-entity-card');
+  const route = `/bands/${band.id}`;
+  const summary = `${img(band.cover, 'bk-cover', ctx.t('asset.alt.cover'))}<div class="bk-card-header bk-card-header-tight"><div><h3 class="bk-card-title">${escapeHtml(band.name)}</h3><div class="bk-meta">${ctx.t(band.typeKey)} · ${band.members} ${ctx.t('bands.members')}</div></div></div><div class="bk-chip-row">${badge(ctx.t(band.statusKey), band.statusKey.includes('active') ? 'positive' : 'warning')}${badge(ctx.t(band.roleKey))}${entitySubscriptionBadge(ctx, feed.subscriptionState)}${entityDebugBadge}</div>${entityFeedPreview(ctx, band, isDetail ? 'full' : 'compact')}`;
+  const surface = isDetail ? summary : `<a class="bk-band-card-link-surface" href="${route}" data-route="${route}" aria-label="Открыть ${escapeHtml(band.name)}">${summary}</a>`;
+  const primaryAction = entityPrimaryAction(feed);
+  return card(`${surface}<div class="bk-action-row bk-band-card-actions">${button(ctx.t('actions.view'), 'secondary', route)}${button(primaryAction.label, primaryAction.variant)}${button(ctx.t('actions.invite'), 'ghost')}</div>`, 'bk-band-card bk-entity-card');
 }
 
 export function eventCard(ctx: AppContext, event: MockEvent): string {
