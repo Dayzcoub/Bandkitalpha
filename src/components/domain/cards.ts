@@ -195,7 +195,7 @@ export function profileHeader(ctx: AppContext, profile: MockProfile): string {
 export function profileCompactCard(ctx: AppContext, profile: MockProfile): string {
   const diagnostics = canSeeDiagnostics(ctx);
   const diagnosticsBadge = diagnostics ? badge('Подписка доступна') : '';
-  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${diagnosticsBadge}</div><div class="bk-action-row bk-profile-compact-actions">${button('👤 Профиль', 'secondary', profileRoute(profile))}${button('＋ В друзья', 'secondary')}${button('＋ Подписка', 'ghost')}${button('⚑ Жалоба', 'danger', '/complaints/new')}</div>`, 'bk-compact-card');
+  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${diagnosticsBadge}</div><div class="bk-action-row bk-profile-compact-actions">${button('👤 Профиль', 'secondary', profileRoute(profile))}${button('＋ В друзья', 'secondary')}${button('＋ Подписка', 'ghost')}</div><a class="bk-participant-report-link" href="/complaints/new" data-route="/complaints/new">⚑ Пожаловаться</a>`, 'bk-compact-card');
 }
 
 export function bandCard(ctx: AppContext, band: MockBand): string {
