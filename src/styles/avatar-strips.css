@@ -1,11 +1,13 @@
 /* Avatar strips: compact horizontal people previews for entity/profile sections. */
 
 .bk-avatar-strip-card,
+.bk-card:has(.bk-avatar-strip-item),
 .bk-card:has(.bk-compact-card) {
   overflow: hidden;
 }
 
 .bk-avatar-strip-heading,
+.bk-card:has(.bk-avatar-strip-item) > .bk-card-title,
 .bk-card:has(.bk-compact-card) > .bk-card-title {
   display: flex;
   align-items: center;
@@ -30,6 +32,7 @@
 }
 
 .bk-avatar-strip,
+.bk-card:has(.bk-avatar-strip-item) > .bk-card-grid,
 .bk-card:has(.bk-compact-card) > .bk-card-grid {
   display: flex;
   grid-template-columns: none;
@@ -45,11 +48,13 @@
 }
 
 .bk-avatar-strip::-webkit-scrollbar,
+.bk-card:has(.bk-avatar-strip-item) > .bk-card-grid::-webkit-scrollbar,
 .bk-card:has(.bk-compact-card) > .bk-card-grid::-webkit-scrollbar {
   display: none;
 }
 
 .bk-avatar-strip::after,
+.bk-card:has(.bk-avatar-strip-item) > .bk-card-grid::after,
 .bk-card:has(.bk-compact-card) > .bk-card-grid::after {
   content: "";
   flex: 0 0 2px;
@@ -117,16 +122,19 @@
 
 @media (max-width: 767px) {
   .bk-avatar-strip-card,
+  .bk-card:has(.bk-avatar-strip-item),
   .bk-card:has(.bk-compact-card) {
     padding: 14px;
   }
 
   .bk-avatar-strip-heading,
+  .bk-card:has(.bk-avatar-strip-item) > .bk-card-title,
   .bk-card:has(.bk-compact-card) > .bk-card-title {
     margin-bottom: 8px;
   }
 
   .bk-avatar-strip,
+  .bk-card:has(.bk-avatar-strip-item) > .bk-card-grid,
   .bk-card:has(.bk-compact-card) > .bk-card-grid {
     gap: 7px;
     padding-bottom: 6px;
