@@ -198,6 +198,15 @@ export const posts: MockPost[] = [
   { id: 'post-1', authorId: 'p1', scopeKey: 'mock.post.scope.band', createdAt: '2026-05-18T12:30:00Z', bodyKey: 'mock.post.body.rehearsal', likes: 18, comments: 4, reposts: 2 },
   { id: 'post-2', authorId: 'p2', scopeKey: 'mock.post.scope.studio', createdAt: '2026-05-17T18:15:00Z', bodyKey: 'mock.post.body.drummerSearch', likes: 31, comments: 9, reposts: 5 },
   { id: 'post-3', authorId: 'p3', scopeKey: 'mock.post.scope.security', createdAt: '2026-05-16T10:05:00Z', bodyKey: 'mock.post.body.suspicious', flagged: true, likes: 2, comments: 1, reposts: 0 },
+  { id: 'post-4', authorId: 'p1', scopeKey: 'mock.post.scope.band', createdAt: '2026-05-15T19:40:00Z', bodyKey: 'mock.post.body.rehearsal', likes: 24, comments: 7, reposts: 3 },
+  { id: 'post-5', authorId: 'p2', scopeKey: 'mock.post.scope.studio', createdAt: '2026-05-15T14:20:00Z', bodyKey: 'mock.post.body.drummerSearch', likes: 42, comments: 11, reposts: 6 },
+  { id: 'post-6', authorId: 'p3', scopeKey: 'mock.post.scope.band', createdAt: '2026-05-14T21:10:00Z', bodyKey: 'mock.post.body.rehearsal', likes: 16, comments: 5, reposts: 1 },
+  { id: 'post-7', authorId: 'p1', scopeKey: 'mock.post.scope.studio', createdAt: '2026-05-14T11:00:00Z', bodyKey: 'mock.post.body.drummerSearch', likes: 28, comments: 8, reposts: 4 },
+  { id: 'post-8', authorId: 'p2', scopeKey: 'mock.post.scope.band', createdAt: '2026-05-13T18:35:00Z', bodyKey: 'mock.post.body.rehearsal', likes: 37, comments: 10, reposts: 2 },
+  { id: 'post-9', authorId: 'p3', scopeKey: 'mock.post.scope.band', createdAt: '2026-05-12T20:15:00Z', bodyKey: 'mock.post.body.rehearsal', likes: 21, comments: 6, reposts: 2 },
+  { id: 'post-10', authorId: 'p2', scopeKey: 'mock.post.scope.studio', createdAt: '2026-05-12T15:05:00Z', bodyKey: 'mock.post.body.drummerSearch', likes: 33, comments: 12, reposts: 5 },
+  { id: 'post-11', authorId: 'p1', scopeKey: 'mock.post.scope.band', createdAt: '2026-05-11T22:25:00Z', bodyKey: 'mock.post.body.rehearsal', likes: 19, comments: 4, reposts: 1 },
+  { id: 'post-12', authorId: 'p2', scopeKey: 'mock.post.scope.studio', createdAt: '2026-05-11T13:45:00Z', bodyKey: 'mock.post.body.drummerSearch', likes: 26, comments: 7, reposts: 3 },
 ];
 
 export const bands: MockBand[] = [
