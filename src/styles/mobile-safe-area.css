@@ -1,0 +1,70 @@
+/* Real-device mobile safe-area corrections.
+   This file intentionally loads last and normalizes fixed bottom chrome on iOS Safari/Chrome. */
+
+@media (max-width: 767px) {
+  :root {
+    --bk-real-mobile-bottom-nav: calc(var(--bk-shell-mobile-bottom-nav) + max(env(safe-area-inset-bottom), 24px));
+  }
+
+  .bk-app-shell,
+  .bk-admin-shell {
+    padding-bottom: calc(var(--bk-real-mobile-bottom-nav) + 16px);
+  }
+
+  .bk-page {
+    padding-bottom: calc(var(--bk-space-4) + max(env(safe-area-inset-bottom), 24px));
+  }
+
+  .bk-bottom-nav {
+    min-height: var(--bk-real-mobile-bottom-nav);
+    padding: 8px 10px calc(12px + max(env(safe-area-inset-bottom), 24px));
+    align-items: start;
+    background:
+      linear-gradient(180deg, rgba(7, 12, 22, .82), rgba(7, 12, 22, .98)),
+      var(--bk-shell-chrome-strong);
+  }
+
+  .bk-bottom-nav a {
+    min-height: 58px;
+    align-content: start;
+    padding-top: 4px;
+    padding-bottom: 2px;
+    line-height: 1.16;
+  }
+
+  .bk-bottom-nav a span {
+    display: block;
+    max-width: 100%;
+    line-height: 1.16;
+  }
+
+  .bk-bottom-nav .bk-bottom-create {
+    transform: translateY(-8px);
+  }
+
+  .bk-bottom-nav .bk-bottom-create .bk-nav-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 18px;
+  }
+
+  .bk-bottom-nav .bk-bottom-create span {
+    margin-top: 2px;
+  }
+
+  .bk-action-footer {
+    bottom: var(--bk-real-mobile-bottom-nav);
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 767px) {
+    .bk-bottom-nav {
+      padding-bottom: calc(14px + max(env(safe-area-inset-bottom), 30px));
+    }
+
+    .bk-bottom-nav .bk-bottom-create {
+      transform: translateY(-10px);
+    }
+  }
+}
