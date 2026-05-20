@@ -1,5 +1,11 @@
 /* Avatar strips: compact horizontal people previews for entity/profile sections. */
 
+.bk-avatar-strip-card,
+.bk-card:has(.bk-compact-card) {
+  overflow: hidden;
+}
+
+.bk-avatar-strip-heading,
 .bk-card:has(.bk-compact-card) > .bk-card-title {
   display: flex;
   align-items: center;
@@ -7,8 +13,7 @@
   margin-bottom: 10px;
 }
 
-.bk-card:has(.bk-compact-card) > .bk-card-title::after {
-  content: "3";
+.bk-avatar-strip-count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -24,6 +29,7 @@
   line-height: 1;
 }
 
+.bk-avatar-strip,
 .bk-card:has(.bk-compact-card) > .bk-card-grid {
   display: flex;
   grid-template-columns: none;
@@ -35,12 +41,15 @@
   margin-inline: -2px;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
+.bk-avatar-strip::-webkit-scrollbar,
 .bk-card:has(.bk-compact-card) > .bk-card-grid::-webkit-scrollbar {
   display: none;
 }
 
+.bk-avatar-strip::after,
 .bk-card:has(.bk-compact-card) > .bk-card-grid::after {
   content: "";
   flex: 0 0 2px;
@@ -48,6 +57,7 @@
   height: 1px;
 }
 
+.bk-avatar-strip-item,
 .bk-compact-card {
   flex: 0 0 auto;
   display: block;
@@ -64,10 +74,12 @@
   scroll-snap-align: start;
 }
 
+.bk-avatar-strip-item:hover,
 .bk-compact-card:hover {
   background: transparent;
 }
 
+.bk-avatar-strip-link,
 .bk-compact-card .bk-profile-link {
   display: block;
   width: 46px;
@@ -84,6 +96,7 @@
   display: none !important;
 }
 
+.bk-avatar-strip-link .bk-avatar,
 .bk-compact-card .bk-avatar {
   display: block;
   width: 46px;
@@ -96,25 +109,32 @@
     0 10px 26px rgba(15, 23, 42, .26);
 }
 
+.bk-avatar-strip-link:focus-visible,
 .bk-compact-card .bk-profile-link:focus-visible {
   outline: 2px solid rgba(56, 189, 248, .72);
   outline-offset: 3px;
 }
 
 @media (max-width: 767px) {
+  .bk-avatar-strip-card,
   .bk-card:has(.bk-compact-card) {
     padding: 14px;
   }
 
+  .bk-avatar-strip-heading,
   .bk-card:has(.bk-compact-card) > .bk-card-title {
     margin-bottom: 8px;
   }
 
+  .bk-avatar-strip,
   .bk-card:has(.bk-compact-card) > .bk-card-grid {
     gap: 7px;
     padding-bottom: 6px;
   }
 
+  .bk-avatar-strip-item,
+  .bk-avatar-strip-link,
+  .bk-avatar-strip-link .bk-avatar,
   .bk-compact-card,
   .bk-compact-card .bk-profile-link,
   .bk-compact-card .bk-avatar {
