@@ -1,0 +1,123 @@
+/* Chat internal window layout: separate scroll for room list and messages, composer inside thread. */
+
+.bk-chat-room-card {
+  display: block;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.bk-chat-layout {
+  min-height: min(64vh, 680px);
+  max-height: min(70vh, 760px);
+  overflow: hidden;
+}
+
+.bk-chat-layout > .bk-list {
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bk-chat-thread {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 0;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bk-chat-composer-inside-thread {
+  position: sticky;
+  bottom: 0;
+  flex: 0 0 auto;
+  margin-top: auto;
+  margin-inline: -2px;
+  border-radius: 16px 16px 0 0;
+  background: rgba(8, 14, 24, .96);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 -16px 42px rgba(0, 0, 0, .28);
+}
+
+.bk-chat-composer-inside-thread .bk-label {
+  display: none;
+}
+
+.bk-chat-composer-inside-thread .bk-field {
+  margin: 0;
+}
+
+.bk-chat-composer-inside-thread .bk-textarea {
+  min-height: 42px;
+  max-height: 96px;
+  resize: none;
+}
+
+.bk-chat-composer-inside-thread .bk-blocked-link {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: .72rem;
+  line-height: 1.25;
+}
+
+.bk-chat-composer-inside-thread .bk-action-row {
+  margin: 0;
+}
+
+.bk-chat-composer-inside-thread .bk-button {
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: .78rem;
+}
+
+.bk-chat-thread > .bk-chat-message-card:last-of-type {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 900px) {
+  .bk-chat-layout {
+    min-height: min(68vh, 720px);
+    max-height: min(74vh, 780px);
+  }
+
+  .bk-chat-layout > .bk-list {
+    max-height: 92px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .bk-chat-thread {
+    height: calc(min(74vh, 780px) - 104px);
+    max-height: calc(min(74vh, 780px) - 104px);
+  }
+}
+
+@media (max-width: 767px) {
+  .bk-chat-layout {
+    min-height: min(72vh, 720px);
+    max-height: min(76vh, 760px);
+  }
+
+  .bk-chat-layout > .bk-list {
+    max-height: 84px;
+  }
+
+  .bk-chat-thread {
+    height: calc(min(76vh, 760px) - 94px);
+    max-height: calc(min(76vh, 760px) - 94px);
+  }
+
+  .bk-chat-composer-inside-thread {
+    bottom: 0;
+    margin-inline: -4px;
+    padding: 8px;
+  }
+}
