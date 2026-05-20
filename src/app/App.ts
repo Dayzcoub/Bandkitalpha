@@ -149,6 +149,13 @@ function chatRoomLogisticsContext(ctx: AppContext): string {
   return `<section class="bk-card bk-chat-context-card" data-chat-kind="${meta.kind}" aria-label="Контекст чата"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Контекст чата</div><h3 class="bk-card-title">${meta.title}</h3></div><div class="bk-chip-row">${chipHtml}</div></div><p class="bk-state-copy">${meta.copy}</p><div class="bk-card-grid bk-card-grid-3">${linkHtml}</div><section class="bk-profile-feed-policy"><div><strong>${meta.visibilityTitle}</strong><span>${meta.visibilityCopy}</span></div><div class="bk-chip-row">${visibilityChips}</div></section></section>`;
 }
 
+function chatUnreadIndex(ctx: AppContext): number {
+  const id = currentChatId(ctx);
+  if (id === 'c3') return 2;
+  if (id === 'c2') return 0;
+  return 1;
+}
+
 function addDirectChatNavigation(root: HTMLElement, ctx: AppContext): void {
   if (ctx.match.route.path !== '/chats' && ctx.match.route.path !== '/chats/:chatId') return;
   const chatRows = Array.from(root.querySelectorAll<HTMLElement>('.bk-chat-room-card .bk-list > .bk-list-row, .bk-chat-policy-card + .bk-card .bk-list > .bk-list-row'));
@@ -177,6 +184,71 @@ function addDirectChatNavigation(root: HTMLElement, ctx: AppContext): void {
   });
 }
 
+function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
+  if (ctx.match.route.path !== '/chats/:chatId') return;
+  const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
+  const thread = root.querySelector<HTMLElement>('.bk-chat-thread');
+  if (!chatRoom || !thread) return;
+
+  const messages = Array.from(thread.querySelectorAll<HTMLElement>('.bk-social-card'));
+  const unreadIndex = Math.min(chatUnreadIndex(ctx), Math.max(messages.length - 1, 0));
+
+  messages.forEach((message, index) => {
+    message.classList.add('bk-chat-message-card');
+    message.dataset.messageIndex = String(index);
+    message.dataset.replyAuthor = message.querySelector('.bk-card-title')?.textContent?.trim() ?? 'Сообщение';
+    message.dataset.replyBody = message.querySelector('.bk-card-body')?.textContent?.trim() ?? '';
+
+    if (index === unreadIndex) {
+      message.classList.add('bk-chat-first-unread');
+      message.dataset.chatUnreadAnchor = 'true';
+      if (!message.previousElementSibling?.classList.contains('bk-chat-unread-divider')) {
+        message.insertAdjacentHTML('beforebegin', '<div class="bk-chat-unread-divider" data-chat-unread-anchor>Новые сообщения</div>');
+      }
+    }
+
+    if (!message.querySelector('.bk-chat-message-actions')) {
+      message.insertAdjacentHTML('beforeend', `<footer class="bk-chat-message-actions"><button class="bk-chat-reply-action" type="button" data-chat-reply-index="${index}">↩ Ответить</button></footer>`);
+    }
+  });
+
+  const composerCard = chatRoom.nextElementSibling instanceof HTMLElement ? chatRoom.nextElementSibling : null;
+  if (composerCard && !composerCard.querySelector('[data-chat-reply-context]')) {
+    composerCard.classList.add('bk-chat-composer-card');
+    composerCard.insertAdjacentHTML('afterbegin', '<div class="bk-chat-reply-context" data-chat-reply-context hidden><div><span>Ответ с контекстом</span><strong data-chat-reply-author></strong><p data-chat-reply-body></p></div><button type="button" data-chat-reply-clear aria-label="Убрать контекст ответа">×</button></div>');
+  }
+
+  thread.querySelectorAll<HTMLButtonElement>('[data-chat-reply-index]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const index = Number(button.dataset.chatReplyIndex ?? '-1');
+      const source = messages[index];
+      const replyContext = root.querySelector<HTMLElement>('[data-chat-reply-context]');
+      if (!source || !replyContext) return;
+      replyContext.hidden = false;
+      const authorNode = replyContext.querySelector<HTMLElement>('[data-chat-reply-author]');
+      const bodyNode = replyContext.querySelector<HTMLElement>('[data-chat-reply-body]');
+      if (authorNode) authorNode.textContent = source.dataset.replyAuthor ?? 'Сообщение';
+      if (bodyNode) bodyNode.textContent = source.dataset.replyBody ?? '';
+      composerCard?.querySelector<HTMLTextAreaElement>('textarea')?.focus();
+    });
+  });
+
+  root.querySelector<HTMLButtonElement>('[data-chat-reply-clear]')?.addEventListener('click', () => {
+    const replyContext = root.querySelector<HTMLElement>('[data-chat-reply-context]');
+    if (replyContext) replyContext.hidden = true;
+  });
+}
+
+function scrollChatToUnread(root: HTMLElement): void {
+  const target = root.querySelector<HTMLElement>('[data-chat-unread-anchor]');
+  if (!target) return;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ block: 'center', behavior: 'auto' });
+    });
+  });
+}
+
 function decorateRenderedPage(root: HTMLElement, ctx: AppContext): void {
   if (ctx.match.route.path === '/chats/:chatId') {
     const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
@@ -185,6 +257,7 @@ function decorateRenderedPage(root: HTMLElement, ctx: AppContext): void {
     }
   }
   addDirectChatNavigation(root, ctx);
+  decorateChatMessageHistory(root, ctx);
 }
 
 export function createBandKitApp(root: HTMLElement) {
@@ -205,7 +278,9 @@ export function createBandKitApp(root: HTMLElement) {
     decorateRenderedPage(root, ctx);
     bindEvents();
 
-    if (options.scrollMode === 'top') {
+    if (ctx.match.route.path === '/chats/:chatId' && options.scrollMode !== 'restore') {
+      scrollChatToUnread(root);
+    } else if (options.scrollMode === 'top') {
       window.scrollTo({ left: 0, top: 0, behavior: 'auto' });
     }
     if (options.scrollMode === 'restore' && options.restoreKey) {
