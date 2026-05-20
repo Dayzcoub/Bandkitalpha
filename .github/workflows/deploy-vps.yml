@@ -1,0 +1,76 @@
+name: Deploy BandKit preview to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: bandkit-vps-preview
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and deploy static preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      VPS_HOST: ${{ secrets.VPS_HOST }}
+      VPS_USER: ${{ secrets.VPS_USER }}
+      VPS_PORT: ${{ secrets.VPS_PORT }}
+      VPS_DEPLOY_PATH: ${{ secrets.VPS_DEPLOY_PATH }}
+      SSH_KEY_PATH: ~/.ssh/bandkit_deploy_key
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static app
+        run: npm run build
+
+      - name: Validate VPS secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${VPS_HOST:?Missing VPS_HOST secret}"
+          : "${VPS_USER:?Missing VPS_USER secret}"
+          : "${{ secrets.VPS_SSH_KEY }}"
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          PORT="${VPS_PORT:-22}"
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > "$SSH_KEY_PATH"
+          chmod 600 "$SSH_KEY_PATH"
+          ssh-keyscan -p "$PORT" "$VPS_HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy dist to VPS
+        shell: bash
+        run: |
+          set -euo pipefail
+          PORT="${VPS_PORT:-22}"
+          DEPLOY_PATH="${VPS_DEPLOY_PATH:-/var/www/bandkit}"
+          RELEASE_ID="${GITHUB_SHA::12}"
+          REMOTE_RELEASE="$DEPLOY_PATH/releases/$RELEASE_ID"
+          SSH_CMD="ssh -i $SSH_KEY_PATH -p $PORT -o IdentitiesOnly=yes"
+
+          $SSH_CMD "$VPS_USER@$VPS_HOST" "mkdir -p '$REMOTE_RELEASE' '$DEPLOY_PATH/releases'"
+          rsync -az --delete -e "$SSH_CMD" dist/ "$VPS_USER@$VPS_HOST:$REMOTE_RELEASE/"
+          $SSH_CMD "$VPS_USER@$VPS_HOST" "ln -sfn '$REMOTE_RELEASE' '$DEPLOY_PATH/current' && find '$DEPLOY_PATH/releases' -maxdepth 1 -mindepth 1 -type d | sort | head -n -5 | xargs -r rm -rf"
+
+      - name: Deployment summary
+        run: |
+          echo "BandKit preview deployed to VPS path: ${VPS_DEPLOY_PATH:-/var/www/bandkit}/current"
