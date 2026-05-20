@@ -243,12 +243,11 @@ function injectChatListSearchAndRooms(root: HTMLElement, ctx: AppContext): void 
       list.insertAdjacentHTML('beforeend', CHAT_STRESS_ROOMS.map(chatRoomRowHtml).join(''));
       list.dataset.chatStressReady = 'true';
     }
-    const parent = list.parentElement;
-    if (!parent || parent.querySelector('.bk-chat-list-search')) return;
+    if (list.querySelector('.bk-chat-list-search')) return;
     const search = document.createElement('label');
     search.className = 'bk-chat-list-search';
     search.innerHTML = `<span aria-hidden="true">⌕</span><input type="search" placeholder="Поиск по чатам" aria-label="Поиск по списку чатов" data-chat-list-search="${listIndex}" />`;
-    parent.insertBefore(search, list);
+    list.prepend(search);
     const input = search.querySelector<HTMLInputElement>('input');
     input?.addEventListener('input', () => {
       const value = input.value.trim().toLowerCase();
