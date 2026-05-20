@@ -261,7 +261,7 @@
 
   .bk-profile-social-card .bk-profile-head {
     grid-template-columns: 60px minmax(0, 1fr);
-    align-items: end;
+    align-items: start;
     gap: 12px;
     margin-top: var(--bk-space-3);
   }
