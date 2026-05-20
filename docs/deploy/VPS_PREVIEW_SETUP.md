@@ -2,6 +2,29 @@
 
 This document describes the GitHub → VPS preview flow for BandKit.
 
+## Current preview status
+
+Current temporary public preview URL:
+
+```text
+http://141.98.87.9
+```
+
+Current status:
+
+```text
+GitHub main → GitHub Actions → build → VPS → Nginx → public preview
+```
+
+The preview is intentionally served by IP for now. A domain name and HTTPS certificate will be connected in a separate stage after the final domain/brand direction is selected.
+
+This temporary IP preview is used for:
+
+- desktop UI checks;
+- mobile UI checks from real devices;
+- direct SPA route checks such as `/feed`, `/bands`, `/profile/p2`;
+- demonstration of the current mock/prototype without local launch.
+
 ## Target scheme
 
 ```text
@@ -106,6 +129,14 @@ For SPA deep links, this should also return the app instead of Nginx 404:
 
 ```bash
 curl -I http://demo.bandkit.example/profile/p2
+```
+
+For the temporary IP preview, use:
+
+```bash
+curl -I http://141.98.87.9/feed
+curl -I http://141.98.87.9/bands
+curl -I http://141.98.87.9/profile/p2
 ```
 
 ## Local development remains unchanged
