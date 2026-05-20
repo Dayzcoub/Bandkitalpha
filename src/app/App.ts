@@ -74,6 +74,17 @@ function restoreScrollPosition(key: string): void {
   });
 }
 
+function chatRoomLogisticsContext(): string {
+  return `<section class="bk-card bk-chat-context-card" aria-label="Контекст чата"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Контекст чата</div><h3 class="bk-card-title">Групповой чат проекта и события</h3></div><div class="bk-chip-row"><span class="bk-badge bk-badge-positive">Проектный</span><span class="bk-badge">Событие</span><span class="bk-badge">Документы</span></div></div><p class="bk-state-copy">Этот чат связан с проектом, ближайшим событием и рабочими документами. Сообщения видят только участники соответствующего контекста, а внешние ссылки ограничены политикой безопасности.</p><div class="bk-card-grid bk-card-grid-3"><a class="bk-chat-context-link" href="/bands/b1" data-route="/bands/b1"><span class="bk-chat-context-icon" aria-hidden="true">♬</span><span><strong>Northern Lights Band</strong><small>Проект · участники и менеджеры</small></span></a><a class="bk-chat-context-link" href="/events/e1" data-route="/events/e1"><span class="bk-chat-context-icon" aria-hidden="true">◷</span><span><strong>Главная репетиция</strong><small>Событие · участники события</small></span></a><a class="bk-chat-context-link" href="/documents/d1" data-route="/documents/d1"><span class="bk-chat-context-icon" aria-hidden="true">▤</span><span><strong>Технический райдер</strong><small>Документ · чтение по роли</small></span></a></div><section class="bk-profile-feed-policy"><div><strong>Кто видит сообщения</strong><span>Участники проекта/события с нужной ролью. Подписка или дружба сами по себе доступ к чату не дают.</span></div><div class="bk-chip-row"><span class="bk-badge bk-badge-positive">Участники</span><span class="bk-badge">Менеджер</span><span class="bk-badge bk-badge-warning">Без внешних ссылок</span></div></section></section>`;
+}
+
+function decorateRenderedPage(root: HTMLElement, ctx: AppContext): void {
+  if (ctx.match.route.path !== '/chats/:chatId') return;
+  const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
+  if (!chatRoom || root.querySelector('.bk-chat-context-card')) return;
+  chatRoom.insertAdjacentHTML('beforebegin', chatRoomLogisticsContext());
+}
+
 export function createBandKitApp(root: HTMLElement) {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual';
@@ -89,6 +100,7 @@ export function createBandKitApp(root: HTMLElement) {
     document.documentElement.lang = state.locale;
     document.documentElement.dataset.theme = state.theme;
     root.innerHTML = renderShell(ctx, renderPage(ctx));
+    decorateRenderedPage(root, ctx);
     bindEvents();
 
     if (options.scrollMode === 'top') {
