@@ -191,6 +191,56 @@
     padding-inline: 11px;
   }
 
+  .bk-mobile-reference-home {
+    display: none !important;
+  }
+
+  .bk-feed-desktop-block {
+    display: block !important;
+  }
+
+  .bk-composer-card,
+  .bk-dashboard-greeting-card,
+  .bk-dashboard-card-reference,
+  .bk-quick-actions-card,
+  .bk-feed-filter-card,
+  .bk-social-card {
+    border-radius: 18px;
+  }
+
+  .bk-dashboard-greeting-card,
+  .bk-dashboard-card-reference,
+  .bk-quick-actions-card {
+    display: grid;
+    gap: 12px;
+  }
+
+  .bk-feed-filter-card .bk-chip-row,
+  .bk-social-card .bk-social-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .bk-social-card .bk-social-actions > span,
+  .bk-social-card .bk-social-actions .bk-button,
+  .bk-social-card .bk-social-actions > span .bk-badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .bk-social-card .bk-card-header {
+    align-items: flex-start;
+  }
+
+  .bk-social-card .bk-card-title,
+  .bk-social-card .bk-meta,
+  .bk-social-card .bk-card-body,
+  .bk-social-card .bk-card-body p {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   .bk-profile-social-card .bk-profile-head {
     grid-template-columns: 60px minmax(0, 1fr);
     align-items: end;
