@@ -4,6 +4,7 @@ import { canSeeDiagnostics } from '../../lib/permissions/diagnostics.js';
 import { checkLinkPolicy, escapeHtml } from '../../lib/security/linkPolicy.js';
 import { formatDateTime, formatNumber } from '../../lib/format/format.js';
 import {
+  bands,
   profiles,
   type MockPost,
   type MockProfile,
@@ -42,6 +43,9 @@ interface EntityFeedMock {
   shortBody: string;
   visibility: string;
   visibilityLabel: string;
+  subscriptionMode: string;
+  commentPolicy: string;
+  feedSource: string;
 }
 
 function entityFeedMock(band: MockBand): EntityFeedMock {
@@ -59,6 +63,9 @@ function entityFeedMock(band: MockBand): EntityFeedMock {
       shortBody: 'Анонсы концертов, репетиции и новости проекта для подписчиков.',
       visibility: 'Public + Subscribers',
       visibilityLabel: 'Публичная лента',
+      subscriptionMode: 'Открытая подписка',
+      commentPolicy: 'Комментарии: подписчики',
+      feedSource: 'profile',
     },
     b2: {
       subscribers: '820',
@@ -73,6 +80,9 @@ function entityFeedMock(band: MockBand): EntityFeedMock {
       shortBody: 'Открытые наборы, события и публичные обновления оркестра.',
       visibility: 'Public',
       visibilityLabel: 'Открытая лента',
+      subscriptionMode: 'Открытая подписка',
+      commentPolicy: 'Комментарии: verified',
+      feedSource: 'search',
     },
     b3: {
       subscribers: '146',
@@ -87,6 +97,9 @@ function entityFeedMock(band: MockBand): EntityFeedMock {
       shortBody: 'Студийные слоты, правила коммуникации и обновления команды.',
       visibility: 'Subscribers',
       visibilityLabel: 'Для подписчиков',
+      subscriptionMode: 'Запрос подписки',
+      commentPolicy: 'Комментарии: отключены',
+      feedSource: 'recommendation',
     },
   };
   return map[band.id] ?? map.b1;
@@ -104,24 +117,38 @@ function entityPrimaryAction(feed: EntityFeedMock): { label: string; variant: 'p
   return { label: 'Подписаться', variant: 'primary' };
 }
 
+function entitySubscriptionControls(ctx: AppContext, band: MockBand, feed: EntityFeedMock): string {
+  const primaryAction = entityPrimaryAction(feed);
+  const unsubscribe = feed.subscriptionState === 'subscribed' ? button('Отписаться', 'ghost') : '';
+  const hideOrMute = feed.subscriptionState === 'subscribed' ? button('Скрыть из ленты', 'ghost') : button('Заглушить', 'ghost');
+  return `<div class="bk-action-row bk-entity-actions">${button(primaryAction.label, primaryAction.variant)}${unsubscribe}${button('Открыть ленту', 'secondary', `/bands/${band.id}`)}${hideOrMute}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`;
+}
+
 function entityFeedPreview(ctx: AppContext, band: MockBand, mode: 'compact' | 'full'): string {
   const feed = entityFeedMock(band);
   const diagnostics = canSeeDiagnostics(ctx);
-  const primaryAction = entityPrimaryAction(feed);
   const meta = diagnostics ? feed.adminMeta : feed.latestMeta;
   const headChips = diagnostics
     ? `${entitySubscriptionBadge(ctx, feed.subscriptionState)}${badge(feed.visibility)}${badge(feed.notificationLevel)}`
     : feed.subscriptionState === 'subscribed' ? badge('Подписан', 'positive') : '';
   const headChipsHtml = headChips ? `<div class="bk-chip-row">${headChips}</div>` : '';
   const policyChips = diagnostics ? `<div class="bk-chip-row">${badge('Public')}${badge('Subscribers')}${badge('Members locked', 'warning')}</div>` : '';
-  const eyebrow = diagnostics ? '<div class="bk-eyebrow">Entity public feed</div>' : '';
+  const eyebrow = diagnostics ? '<div class="bk-eyebrow">Entity public feed</div>' : '<div class="bk-eyebrow">Лента проекта</div>';
 
   if (mode === 'compact') {
     const stats = `${feed.subscribers} подписчиков · ${formatNumber(feed.posts, ctx.state.locale)} постов · ${feed.notificationLabel}`;
     return `<section class="bk-entity-feed-preview bk-entity-feed-preview-compact"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div>${headChipsHtml}</div><p class="bk-state-copy">${escapeHtml(feed.shortBody)}</p><div class="bk-entity-feed-stats">${escapeHtml(stats)}</div></section>`;
   }
 
-  return `<section class="bk-entity-feed-preview"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div>${headChipsHtml}</div><p class="bk-state-copy">${escapeHtml(feed.latestBody)}</p><div class="bk-kpi-grid bk-entity-kpi-grid">${kpi(feed.subscribers, 'Подписчики')}${kpi(feed.posts, 'Посты')}${kpi(feed.notificationLabel, 'Уведомления')}</div><div class="bk-entity-feed-policy"><span>Подписка не даёт членство, доступ к workspace, приватным чатам и документам.</span>${policyChips}</div><div class="bk-action-row bk-entity-actions">${button(primaryAction.label, primaryAction.variant)}${button('Открыть ленту', 'secondary', `/bands/${band.id}`)}${button('Заглушить', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div></section>`;
+  return `<section class="bk-entity-feed-preview"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div>${headChipsHtml}</div><p class="bk-state-copy">${escapeHtml(feed.latestBody)}</p><div class="bk-kpi-grid bk-entity-kpi-grid">${kpi(feed.subscribers, 'Подписчики')}${kpi(feed.posts, 'Посты')}${kpi(feed.notificationLabel, 'Уведомления')}</div><div class="bk-entity-feed-settings"><div>${badge(feed.visibilityLabel, 'positive')}${badge(feed.subscriptionMode)}${badge(feed.commentPolicy)}</div><p>Подписка показывает публичные и subscriber-only обновления, но не открывает workspace, приватные чаты, документы и управление проектом.</p></div><div class="bk-entity-feed-policy"><span>Подписка не даёт членство, доступ к workspace, приватным чатам и документам.</span>${policyChips}</div>${entitySubscriptionControls(ctx, band, feed)}</section>`;
+}
+
+function entityPostOrigin(ctx: AppContext, post: MockPost): string {
+  if (post.scopeKey === 'mock.post.scope.security') return '';
+  const band = post.scopeKey === 'mock.post.scope.studio' ? bands[2] : bands[0];
+  const feed = entityFeedMock(band);
+  const visibilityBadge = feed.visibility === 'Subscribers' ? badge('Для подписчиков', 'warning') : badge('Public', 'positive');
+  return `<section class="bk-entity-post-origin"><div><div class="bk-eyebrow">Лента проекта</div><strong>${escapeHtml(band.name)}</strong><p class="bk-meta">${escapeHtml(feed.latestMeta)} · ${escapeHtml(feed.notificationLabel)}</p></div><div class="bk-chip-row">${badge('Из подписки', 'positive')}${visibilityBadge}</div></section>`;
 }
 
 export function postCard(ctx: AppContext, post: MockPost): string {
@@ -131,7 +158,7 @@ export function postCard(ctx: AppContext, post: MockPost): string {
   const warning = linkPolicy.hasBlockedLink ? `<div class="bk-blocked-link">${ctx.t('security.linkBlocked')}</div>` : '';
   const flag = post.flagged ? badge(ctx.t('badge.warning'), 'warning') : badge(ctx.t(post.scopeKey));
   const authorMeta = `${escapeHtml(author.handle)} · ${ctx.t(author.profileTypeKey)} · ${ctx.t(post.scopeKey)} · ${formatDateTime(post.createdAt, ctx.state.locale)}`;
-  return card(`${profileLinkHeader(ctx, author, authorMeta)}<div class="bk-card-body"><p>${escapeHtml(body)}</p>${warning}</div><footer class="bk-action-row bk-social-actions"><span>${flag}</span>${button(`${ctx.t('feed.like')} · ${formatNumber(post.likes, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.comment')} · ${formatNumber(post.comments, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.repost')} · ${formatNumber(post.reposts, ctx.state.locale)}`, 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</footer>`, 'bk-social-card');
+  return card(`${profileLinkHeader(ctx, author, authorMeta)}<div class="bk-card-body"><p>${escapeHtml(body)}</p>${warning}${entityPostOrigin(ctx, post)}</div><footer class="bk-action-row bk-social-actions"><span>${flag}</span>${button(`${ctx.t('feed.like')} · ${formatNumber(post.likes, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.comment')} · ${formatNumber(post.comments, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.repost')} · ${formatNumber(post.reposts, ctx.state.locale)}`, 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</footer>`, 'bk-social-card');
 }
 
 function profileStatusBadges(ctx: AppContext, profile: MockProfile): string {
