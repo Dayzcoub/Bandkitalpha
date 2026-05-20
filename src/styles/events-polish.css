@@ -322,6 +322,18 @@
   margin-top: 0;
 }
 
+.bk-chat-nav-row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto auto;
+  align-items: center;
+}
+
+.bk-chat-nav-row .bk-chat-nav-open {
+  min-height: 36px;
+  padding-inline: 12px;
+  white-space: nowrap;
+}
+
 @media (max-width: 767px) {
   .bk-event-card-polished {
     gap: 10px;
@@ -404,6 +416,15 @@
   .bk-context-card .bk-list-row .bk-button,
   .bk-doc-context-card .bk-list-row .bk-button,
   .bk-doc-access-card .bk-list-row .bk-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .bk-chat-nav-row {
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+  }
+
+  .bk-chat-nav-row .bk-chat-nav-open {
     grid-column: 1 / -1;
     width: 100%;
   }
