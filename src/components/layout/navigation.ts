@@ -40,6 +40,16 @@ function filteredNavItems(ctx: AppContext, mode: 'app' | 'admin'): NavItem[] {
   return items.filter((item) => !item.adminOnly || hasRole(ctx.state, 'admin')).filter((item) => !item.moderatorOnly || hasRole(ctx.state, 'moderator'));
 }
 
+function shouldShowProfileBack(ctx: AppContext): boolean {
+  return ctx.path.startsWith('/profile/') && ctx.path !== '/profile/me';
+}
+
+function shellProfileBackButton(ctx: AppContext, placement: 'desktop' | 'mobile'): string {
+  if (!shouldShowProfileBack(ctx)) return '';
+  const className = placement === 'mobile' ? 'bk-shell-profile-back bk-shell-profile-back-mobile' : 'bk-shell-profile-back bk-shell-profile-back-desktop';
+  return `<button class="bk-button bk-button-ghost ${className}" type="button" data-history-back aria-label="Вернуться назад">← Назад</button>`;
+}
+
 export function sideNav(ctx: AppContext, mode: 'app' | 'admin'): string {
   const filtered = filteredNavItems(ctx, mode);
   const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${ctx.t('common.mock')}</span></div>` : '';
@@ -69,7 +79,7 @@ export function bottomNav(ctx: AppContext): string {
 }
 
 export function mobileTopBar(ctx: AppContext, mode: 'app' | 'admin' = 'app'): string {
-  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${ctx.t('app.name')}</span></a><div class="bk-mobile-top-actions"><button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button><button class="bk-button bk-icon-button bk-mobile-menu-trigger" type="button" data-mobile-menu-open aria-label="${ctx.t('common.actions')}"><span aria-hidden="true">☰</span></button></div></header>`;
+  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${ctx.t('app.name')}</span></a><div class="bk-mobile-top-actions">${shellProfileBackButton(ctx, 'mobile')}<button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button><button class="bk-button bk-icon-button bk-mobile-menu-trigger" type="button" data-mobile-menu-open aria-label="${ctx.t('common.actions')}"><span aria-hidden="true">☰</span></button></div></header>`;
 }
 
 export function mobileMenuDrawer(ctx: AppContext, mode: 'app' | 'admin'): string {
@@ -80,5 +90,5 @@ export function mobileMenuDrawer(ctx: AppContext, mode: 'app' | 'admin'): string
 }
 
 export function topBar(ctx: AppContext): string {
-  return `<header class="bk-top-bar"><input class="bk-search" type="search" aria-label="${ctx.t('common.search')}" placeholder="${ctx.t('common.searchPlaceholder')}" /><div class="bk-top-actions"><button class="bk-button bk-button-primary" data-route="/events/new">${ctx.t('events.create')}</button><button class="bk-button bk-button-secondary" data-route="/settings">${ctx.t('nav.settings')}</button><button class="bk-button bk-icon-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /></button></div></header>`;
+  return `<header class="bk-top-bar"><input class="bk-search" type="search" aria-label="${ctx.t('common.search')}" placeholder="${ctx.t('common.searchPlaceholder')}" /><div class="bk-top-actions">${shellProfileBackButton(ctx, 'desktop')}<button class="bk-button bk-button-primary" data-route="/events/new">${ctx.t('events.create')}</button><button class="bk-button bk-button-secondary" data-route="/settings">${ctx.t('nav.settings')}</button><button class="bk-button bk-icon-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /></button></div></header>`;
 }
