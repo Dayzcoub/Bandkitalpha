@@ -1,0 +1,220 @@
+/* Events UI polish: shared event card/schedule layout without backend changes. */
+
+.bk-event-card-polished,
+.bk-event-card-polished * {
+  min-width: 0;
+}
+
+.bk-event-card-polished {
+  display: grid;
+  gap: var(--bk-space-3);
+}
+
+.bk-event-card-surface {
+  display: grid;
+  gap: var(--bk-space-3);
+  color: inherit;
+  text-decoration: none;
+  border-radius: 22px;
+}
+
+.bk-event-card-surface:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, .72);
+  outline-offset: 4px;
+}
+
+.bk-event-card-surface:hover .bk-card-title {
+  color: var(--bk-accent);
+}
+
+.bk-event-media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 92px;
+  overflow: hidden;
+  border: 1px solid rgba(96, 165, 250, .24);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 70% 0%, rgba(34, 211, 238, .16), transparent 58%),
+    linear-gradient(135deg, rgba(20, 28, 48, .94), rgba(9, 16, 28, .92));
+}
+
+.bk-event-media .bk-cover {
+  width: 100%;
+  height: 100%;
+  min-height: 92px;
+  border: 0;
+  border-radius: 0;
+  object-fit: cover;
+  object-position: center;
+  opacity: .72;
+}
+
+.bk-event-main {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  gap: var(--bk-space-3);
+  align-items: center;
+}
+
+.bk-event-date-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(96, 165, 250, .24);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, .72);
+  color: var(--bk-muted);
+  font-size: .76rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.bk-event-title-block {
+  display: grid;
+  gap: 3px;
+}
+
+.bk-event-title-block .bk-card-title {
+  line-height: 1.18;
+}
+
+.bk-event-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--bk-space-2);
+}
+
+.bk-event-meta-grid .bk-kpi {
+  min-height: 60px;
+  padding: 10px;
+  border-radius: 14px;
+}
+
+.bk-event-meta-grid .bk-kpi-value {
+  font-size: .92rem;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.bk-event-meta-grid .bk-kpi-label {
+  margin-top: 5px;
+  font-size: .68rem;
+  line-height: 1.1;
+}
+
+.bk-event-chips {
+  align-content: start;
+}
+
+.bk-event-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--bk-space-2);
+  margin-top: auto;
+}
+
+.bk-event-actions .bk-button {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  text-align: center;
+}
+
+.bk-schedule-card .bk-timeline {
+  gap: var(--bk-space-3);
+}
+
+.bk-schedule-card .bk-timeline-item {
+  display: grid;
+  grid-template-columns: minmax(120px, .32fr) minmax(0, 1fr);
+  gap: var(--bk-space-3);
+  align-items: start;
+}
+
+.bk-schedule-card .bk-timeline-date {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  padding: 10px 12px;
+  border: 1px solid rgba(96, 165, 250, .18);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, .55);
+  color: var(--bk-muted);
+  font-size: .78rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+@media (max-width: 767px) {
+  .bk-event-card-polished {
+    gap: 10px;
+  }
+
+  .bk-event-card-surface {
+    gap: 10px;
+  }
+
+  .bk-event-media,
+  .bk-event-media .bk-cover {
+    min-height: 78px;
+  }
+
+  .bk-event-main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .bk-event-date-pill {
+    justify-self: start;
+    min-height: 30px;
+    padding: 6px 9px;
+    font-size: .7rem;
+  }
+
+  .bk-event-meta-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .bk-event-meta-grid .bk-kpi {
+    min-height: 50px;
+    padding: 8px 7px;
+  }
+
+  .bk-event-meta-grid .bk-kpi-value {
+    font-size: .82rem;
+  }
+
+  .bk-event-meta-grid .bk-kpi-label {
+    font-size: .62rem;
+  }
+
+  .bk-event-actions .bk-button {
+    min-height: 36px;
+    padding-inline: 8px;
+    font-size: .82rem;
+  }
+
+  .bk-schedule-card .bk-timeline-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .bk-schedule-card .bk-timeline-date {
+    position: static;
+    padding: 8px 10px;
+    font-size: .72rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .bk-event-meta-grid,
+  .bk-event-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
