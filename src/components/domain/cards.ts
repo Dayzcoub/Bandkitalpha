@@ -112,16 +112,16 @@ function entitySubscriptionBadge(ctx: AppContext, state: EntityFeedMock['subscri
 }
 
 function entityPrimaryAction(feed: EntityFeedMock): { label: string; variant: 'primary' | 'secondary' | 'ghost' } {
-  if (feed.subscriptionState === 'subscribed') return { label: '⚙ Уведомления', variant: 'ghost' };
-  if (feed.subscriptionState === 'request') return { label: 'Запросить', variant: 'primary' };
-  return { label: 'Подписаться', variant: 'primary' };
+  if (feed.subscriptionState === 'subscribed') return { label: '⚙ Уведомл.', variant: 'ghost' };
+  if (feed.subscriptionState === 'request') return { label: '＋ Запрос', variant: 'primary' };
+  return { label: '＋ Подписка', variant: 'primary' };
 }
 
 function entitySubscriptionControls(ctx: AppContext, band: MockBand, feed: EntityFeedMock): string {
   const primaryAction = entityPrimaryAction(feed);
-  const unsubscribe = feed.subscriptionState === 'subscribed' ? button('Отписаться', 'ghost') : '';
-  const hideOrMute = feed.subscriptionState === 'subscribed' ? button('Скрыть из ленты', 'ghost') : button('Заглушить', 'ghost');
-  return `<div class="bk-action-row bk-entity-actions">${button(primaryAction.label, primaryAction.variant)}${unsubscribe}${button('Открыть ленту', 'secondary', `/bands/${band.id}`)}${hideOrMute}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`;
+  const unsubscribe = feed.subscriptionState === 'subscribed' ? button('− Отписка', 'ghost') : '';
+  const hideOrMute = feed.subscriptionState === 'subscribed' ? button('◌ Скрыть', 'ghost') : button('◌ Заглушить', 'ghost');
+  return `<div class="bk-action-row bk-entity-actions">${button(primaryAction.label, primaryAction.variant)}${unsubscribe}${button('▤ Лента', 'secondary', `/bands/${band.id}`)}${hideOrMute}${button('⚑ Жалоба', 'danger', '/complaints/new')}</div>`;
 }
 
 function entityFeedPreview(ctx: AppContext, band: MockBand, mode: 'compact' | 'full'): string {
@@ -195,7 +195,7 @@ export function profileHeader(ctx: AppContext, profile: MockProfile): string {
 export function profileCompactCard(ctx: AppContext, profile: MockProfile): string {
   const diagnostics = canSeeDiagnostics(ctx);
   const diagnosticsBadge = diagnostics ? badge('Подписка доступна') : '';
-  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${diagnosticsBadge}</div><div class="bk-action-row bk-profile-compact-actions">${button('Профиль', 'secondary', profileRoute(profile))}${button('В друзья', 'secondary')}${button('Подписаться', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-compact-card');
+  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${diagnosticsBadge}</div><div class="bk-action-row bk-profile-compact-actions">${button('👤 Профиль', 'secondary', profileRoute(profile))}${button('＋ В друзья', 'secondary')}${button('＋ Подписка', 'ghost')}${button('⚑ Жалоба', 'danger', '/complaints/new')}</div>`, 'bk-compact-card');
 }
 
 export function bandCard(ctx: AppContext, band: MockBand): string {
