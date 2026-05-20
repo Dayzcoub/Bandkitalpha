@@ -35,6 +35,12 @@ function metaIconChip(label: string, icon: string, tone: 'neutral' | 'positive' 
   return `<span class="bk-meta-chip bk-meta-chip-${tone}" title="${safeLabel}" aria-label="${safeLabel}"><span class="bk-meta-chip-icon" aria-hidden="true">${icon}</span>${safeValue}</span>`;
 }
 
+function socialMetricChip(label: string, icon: string, value: string | number): string {
+  const safeLabel = escapeHtml(label);
+  const safeValue = escapeHtml(String(value));
+  return `<button class="bk-social-metric-chip" type="button" title="${safeLabel}: ${safeValue}" aria-label="${safeLabel}: ${safeValue}"><span class="bk-social-metric-icon" aria-hidden="true">${icon}</span><span class="bk-social-metric-value">${safeValue}</span></button>`;
+}
+
 function profileStatusIcon(labelKey: string): string {
   if (labelKey.includes('verified')) return '✓';
   if (labelKey.includes('soloPerformer')) return '♪';
@@ -206,7 +212,7 @@ export function postCard(ctx: AppContext, post: MockPost): string {
   const warning = linkPolicy.hasBlockedLink ? `<div class="bk-blocked-link">${ctx.t('security.linkBlocked')}</div>` : '';
   const flag = post.flagged ? badge(ctx.t('badge.warning'), 'warning') : badge(ctx.t(post.scopeKey));
   const authorMeta = `${escapeHtml(author.handle)} · ${ctx.t(author.profileTypeKey)} · ${ctx.t(post.scopeKey)} · ${formatDateTime(post.createdAt, ctx.state.locale)}`;
-  return card(`${profileLinkHeader(ctx, author, authorMeta)}<div class="bk-card-body"><p>${escapeHtml(body)}</p>${warning}${entityPostOrigin(ctx, post)}</div><footer class="bk-action-row bk-social-actions"><span>${flag}</span>${button(`${ctx.t('feed.like')} · ${formatNumber(post.likes, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.comment')} · ${formatNumber(post.comments, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.repost')} · ${formatNumber(post.reposts, ctx.state.locale)}`, 'ghost')}</footer>`, 'bk-social-card');
+  return card(`${profileLinkHeader(ctx, author, authorMeta)}<div class="bk-card-body"><p>${escapeHtml(body)}</p>${warning}${entityPostOrigin(ctx, post)}</div><footer class="bk-action-row bk-social-actions bk-social-metric-row"><span class="bk-social-scope-chip">${flag}</span>${socialMetricChip(ctx.t('feed.like'), '♥', formatNumber(post.likes, ctx.state.locale))}${socialMetricChip(ctx.t('feed.comment'), '☰', formatNumber(post.comments, ctx.state.locale))}${socialMetricChip(ctx.t('feed.repost'), '↻', formatNumber(post.reposts, ctx.state.locale))}</footer>`, 'bk-social-card');
 }
 
 function profileRelationshipActions(ctx: AppContext, profile: MockProfile): string {
