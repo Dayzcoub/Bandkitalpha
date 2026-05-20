@@ -195,7 +195,7 @@ export function profileHeader(ctx: AppContext, profile: MockProfile): string {
 export function profileCompactCard(ctx: AppContext, profile: MockProfile): string {
   const diagnostics = canSeeDiagnostics(ctx);
   const diagnosticsBadge = diagnostics ? badge('Подписка доступна') : '';
-  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${diagnosticsBadge}</div><div class="bk-action-row bk-profile-compact-actions">${button('Профиль', 'secondary', profileRoute(profile))}${button('Добавить в друзья', 'secondary')}${button('Подписаться', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-compact-card');
+  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${diagnosticsBadge}</div><div class="bk-action-row bk-profile-compact-actions">${button('Профиль', 'secondary', profileRoute(profile))}${button('В друзья', 'secondary')}${button('Подписаться', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-compact-card');
 }
 
 export function bandCard(ctx: AppContext, band: MockBand): string {
@@ -206,7 +206,7 @@ export function bandCard(ctx: AppContext, band: MockBand): string {
   const roleBadge = diagnostics ? badge(ctx.t(band.roleKey)) : '';
   const subscriptionBadge = diagnostics || feed.subscriptionState === 'subscribed' ? entitySubscriptionBadge(ctx, feed.subscriptionState) : '';
   const route = `/bands/${band.id}`;
-  const summary = `${img(band.cover, 'bk-cover', ctx.t('asset.alt.cover'))}<div class="bk-card-header bk-card-header-tight"><div><h3 class="bk-card-title">${escapeHtml(band.name)}</h3><div class="bk-meta">${ctx.t(band.typeKey)} · ${band.members} ${ctx.t('bands.members')}</div></div></div><div class="bk-chip-row">${badge(ctx.t(band.statusKey), band.statusKey.includes('active') ? 'positive' : 'warning')}${roleBadge}${subscriptionBadge}${entityDebugBadge}</div>${entityFeedPreview(ctx, band, isDetail ? 'full' : 'compact')}`;
+  const summary = `<div class="bk-band-media">${img(band.cover, 'bk-cover', ctx.t('asset.alt.cover'))}</div><div class="bk-card-header bk-card-header-tight"><div><h3 class="bk-card-title">${escapeHtml(band.name)}</h3><div class="bk-meta">${ctx.t(band.typeKey)} · ${band.members} ${ctx.t('bands.members')}</div></div></div><div class="bk-chip-row">${badge(ctx.t(band.statusKey), band.statusKey.includes('active') ? 'positive' : 'warning')}${roleBadge}${subscriptionBadge}${entityDebugBadge}</div>${entityFeedPreview(ctx, band, isDetail ? 'full' : 'compact')}`;
   const surface = isDetail ? summary : `<a class="bk-band-card-link-surface" href="${route}" data-route="${route}" aria-label="Открыть ${escapeHtml(band.name)}">${summary}</a>`;
   const primaryAction = entityPrimaryAction(feed);
   return card(`${surface}<div class="bk-action-row bk-band-card-actions">${button(ctx.t('actions.view'), 'secondary', route)}${button(primaryAction.label, primaryAction.variant)}${button(ctx.t('actions.invite'), 'ghost')}</div>`, 'bk-band-card bk-entity-card');
