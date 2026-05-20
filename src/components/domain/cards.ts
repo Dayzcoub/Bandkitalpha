@@ -29,6 +29,49 @@ function reportLink(extraClass = ''): string {
   return `<a class="${className}" href="/complaints/new" data-route="/complaints/new">⚑ Пожаловаться</a>`;
 }
 
+function metaIconChip(label: string, icon: string, tone: 'neutral' | 'positive' | 'warning' = 'neutral', value = ''): string {
+  const safeLabel = escapeHtml(label);
+  const safeValue = value ? `<span class="bk-meta-chip-value">${escapeHtml(value)}</span>` : '';
+  return `<span class="bk-meta-chip bk-meta-chip-${tone}" title="${safeLabel}" aria-label="${safeLabel}"><span class="bk-meta-chip-icon" aria-hidden="true">${icon}</span>${safeValue}</span>`;
+}
+
+function profileStatusIcon(labelKey: string): string {
+  if (labelKey.includes('verified')) return '✓';
+  if (labelKey.includes('soloPerformer')) return '♪';
+  if (labelKey.includes('technicalSpecialist')) return '⚙';
+  if (labelKey.includes('performerPremium')) return '✦';
+  if (labelKey.includes('performerPro')) return '★';
+  if (labelKey.includes('freeBasic')) return '○';
+  return '•';
+}
+
+function availabilityIcon(key: string): string {
+  if (key.includes('open')) return '◌';
+  if (key.includes('session')) return '◒';
+  if (key.includes('busy')) return '◷';
+  return '○';
+}
+
+function trustIcon(key: string): string {
+  if (key.includes('trusted')) return '◆';
+  if (key.includes('verified')) return '✓';
+  return '◇';
+}
+
+function profileMetaChips(ctx: AppContext, profile: MockProfile, mode: 'compact' | 'full' = 'compact'): string {
+  const diagnostics = canSeeDiagnostics(ctx);
+  const statusSource = mode === 'full' || diagnostics
+    ? profile.statusBadges
+    : profile.statusBadges.filter((item) => item.labelKey === 'badge.verified');
+  const statusChips = statusSource
+    .map((item) => metaIconChip(ctx.t(item.labelKey), profileStatusIcon(item.labelKey), item.tone === 'danger' ? 'warning' : item.tone))
+    .join('');
+  const trust = metaIconChip(ctx.t(profile.trustLevelKey), trustIcon(profile.trustLevelKey), 'positive');
+  const availability = metaIconChip(ctx.t(profile.availabilityKey), availabilityIcon(profile.availabilityKey), 'neutral');
+  const rating = metaIconChip(`${ctx.t('profile.rating')}: ${formatNumber(profile.reputation, ctx.state.locale)}`, '★', 'positive', formatNumber(profile.reputation, ctx.state.locale));
+  return `${statusChips}${trust}${availability}${rating}`;
+}
+
 function profileLinkHeader(ctx: AppContext, profile: MockProfile, meta: string, extraClass = ''): string {
   const route = profileRoute(profile);
   const className = `bk-card-header bk-profile-link${extraClass ? ` ${extraClass}` : ''}`;
@@ -166,16 +209,6 @@ export function postCard(ctx: AppContext, post: MockPost): string {
   return card(`${profileLinkHeader(ctx, author, authorMeta)}<div class="bk-card-body"><p>${escapeHtml(body)}</p>${warning}${entityPostOrigin(ctx, post)}</div><footer class="bk-action-row bk-social-actions"><span>${flag}</span>${button(`${ctx.t('feed.like')} · ${formatNumber(post.likes, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.comment')} · ${formatNumber(post.comments, ctx.state.locale)}`, 'ghost')}${button(`${ctx.t('feed.repost')} · ${formatNumber(post.reposts, ctx.state.locale)}`, 'ghost')}</footer>`, 'bk-social-card');
 }
 
-function profileStatusBadges(ctx: AppContext, profile: MockProfile): string {
-  return profile.statusBadges.map((item) => badge(ctx.t(item.labelKey), item.tone)).join('');
-}
-
-function profilePublicStatusBadges(ctx: AppContext, profile: MockProfile): string {
-  const diagnostics = canSeeDiagnostics(ctx);
-  const source = diagnostics ? profile.statusBadges : profile.statusBadges.filter((item) => item.labelKey === 'badge.verified');
-  return source.map((item) => badge(ctx.t(item.labelKey), item.tone)).join('');
-}
-
 function profileRelationshipActions(ctx: AppContext, profile: MockProfile): string {
   const isOwnProfile = ctx.path === '/profile/me' || profile.id === ctx.state.currentUser?.profileId;
   if (isOwnProfile) {
@@ -191,16 +224,18 @@ function profileCover(ctx: AppContext): string {
 export function profileHeader(ctx: AppContext, profile: MockProfile): string {
   const isOwnProfile = ctx.path === '/profile/me' || profile.id === ctx.state.currentUser?.profileId;
   const diagnostics = canSeeDiagnostics(ctx);
-  const relationshipBadge = isOwnProfile ? badge('Мой профиль', 'positive') : badge('Не в друзьях');
-  const feedStateBadge = isOwnProfile ? badge('Лента: друзья + подписки', 'positive') : badge('Публичная лента');
-  const feedPolicyChips = diagnostics ? `<div class="bk-chip-row">${badge('Public')}${badge('Friends')}${badge('Workspace')}${badge('Draft')}</div>` : '';
-  return card(`${profileCover(ctx)}<div class="bk-card-header bk-profile-head">${img(profile.avatar, 'bk-avatar bk-avatar-lg', ctx.t('asset.alt.avatar'))}<div><h2 class="bk-title">${escapeHtml(profile.name)}</h2><div class="bk-meta">${escapeHtml(profile.handle)} · ${ctx.t(profile.roleKey)} · ${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}</div><div class="bk-chip-row">${profileStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${relationshipBadge}${feedStateBadge}</div></div></div><div class="bk-kpi-grid bk-profile-social-kpis"><div class="bk-kpi"><div class="bk-kpi-value">${formatNumber(profile.reputation, ctx.state.locale)}</div><div class="bk-kpi-label">${ctx.t('profile.rating')}</div></div><div class="bk-kpi"><div class="bk-kpi-value">128</div><div class="bk-kpi-label">Друзья</div></div><div class="bk-kpi"><div class="bk-kpi-value">2.4K</div><div class="bk-kpi-label">Подписчики</div></div><div class="bk-kpi"><div class="bk-kpi-value">36</div><div class="bk-kpi-label">Посты</div></div></div><section class="bk-profile-feed-policy"><div><strong>Личная лента</strong><span>Посты идут по времени публикации. Приватные черновики видит только автор.</span></div>${feedPolicyChips}</section>${profileRelationshipActions(ctx, profile)}`, 'bk-profile-card bk-profile-social-card');
+  const relationshipIcon = isOwnProfile
+    ? metaIconChip('Мой профиль', '●', 'positive')
+    : metaIconChip('Не в друзьях', '◇', 'neutral');
+  const feedIcon = isOwnProfile
+    ? metaIconChip('Лента: друзья + подписки', '▦', 'positive')
+    : metaIconChip('Публичная лента', '▤', 'neutral');
+  const feedPolicyChips = diagnostics ? `<div class="bk-meta-chip-row">${metaIconChip('Public', 'P')}${metaIconChip('Friends', 'F')}${metaIconChip('Workspace', 'W')}${metaIconChip('Draft', 'D')}</div>` : '';
+  return card(`${profileCover(ctx)}<div class="bk-card-header bk-profile-head">${img(profile.avatar, 'bk-avatar bk-avatar-lg', ctx.t('asset.alt.avatar'))}<div><h2 class="bk-title">${escapeHtml(profile.name)}</h2><div class="bk-meta">${escapeHtml(profile.handle)} · ${ctx.t(profile.roleKey)} · ${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}</div><div class="bk-meta-chip-row">${profileMetaChips(ctx, profile, 'full')}${relationshipIcon}${feedIcon}</div></div></div><div class="bk-kpi-grid bk-profile-social-kpis"><div class="bk-kpi"><div class="bk-kpi-value">${formatNumber(profile.reputation, ctx.state.locale)}</div><div class="bk-kpi-label">${ctx.t('profile.rating')}</div></div><div class="bk-kpi"><div class="bk-kpi-value">128</div><div class="bk-kpi-label">Друзья</div></div><div class="bk-kpi"><div class="bk-kpi-value">2.4K</div><div class="bk-kpi-label">Подписчики</div></div><div class="bk-kpi"><div class="bk-kpi-value">36</div><div class="bk-kpi-label">Посты</div></div></div><section class="bk-profile-feed-policy"><div><strong>Личная лента</strong><span>Посты идут по времени публикации. Приватные черновики видит только автор.</span></div>${feedPolicyChips}</section>${profileRelationshipActions(ctx, profile)}`, 'bk-profile-card bk-profile-social-card');
 }
 
 export function profileCompactCard(ctx: AppContext, profile: MockProfile): string {
-  const diagnostics = canSeeDiagnostics(ctx);
-  const diagnosticsBadge = diagnostics ? badge('Подписка доступна') : '';
-  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${diagnosticsBadge}</div><div class="bk-action-row bk-profile-compact-actions">${button('👤 Профиль', 'secondary', profileRoute(profile))}${button('＋ В друзья', 'secondary')}${button('＋ Подписка', 'ghost')}</div>`, 'bk-compact-card');
+  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-meta-chip-row">${profileMetaChips(ctx, profile, 'compact')}</div><div class="bk-action-row bk-profile-compact-actions">${button('👤 Профиль', 'secondary', profileRoute(profile))}${button('＋ В друзья', 'secondary')}${button('＋ Подписка', 'ghost')}</div>`, 'bk-compact-card');
 }
 
 export function bandCard(ctx: AppContext, band: MockBand): string {
@@ -257,7 +292,7 @@ export function trustCheckCard(ctx: AppContext, check: MockTrustCheck): string {
 export function offerCard(ctx: AppContext, offer: MockOffer): string {
   const owner = profiles.find((p) => p.id === offer.ownerId) ?? profiles[0];
   const ownerMeta = `${ctx.t(offer.metaKey)} · ${escapeHtml(owner.name)} · ${ctx.t(owner.profileTypeKey)}`;
-  return card(`${cardHeader(ctx.t(offer.titleKey), ownerMeta, offer.icon)}${profileLinkHeader(ctx, owner, `${escapeHtml(owner.handle)} · ${ctx.t(owner.profileTypeKey)}`, 'bk-offer-owner-link')}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, owner)}${badge(ctx.t(offer.trustKey), 'positive')}${badge(`${ctx.t('profile.rating')}: ${formatNumber(owner.reputation, ctx.state.locale)}`, 'positive')}</div><div class="bk-action-row">${button('Профиль', 'secondary', profileRoute(owner))}${button(ctx.t('marketplace.contact'), 'primary')}</div>`, 'bk-offer-card');
+  return card(`${cardHeader(ctx.t(offer.titleKey), ownerMeta, offer.icon)}${profileLinkHeader(ctx, owner, `${escapeHtml(owner.handle)} · ${ctx.t(owner.profileTypeKey)}`, 'bk-offer-owner-link')}<div class="bk-meta-chip-row">${profileMetaChips(ctx, owner, 'compact')}</div><div class="bk-action-row">${button('Профиль', 'secondary', profileRoute(owner))}${button(ctx.t('marketplace.contact'), 'primary')}</div>`, 'bk-offer-card');
 }
 
 export function auditEventRow(ctx: AppContext, event: MockAuditEvent): string {
