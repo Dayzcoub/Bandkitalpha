@@ -218,7 +218,10 @@ export function bandCard(ctx: AppContext, band: MockBand): string {
 }
 
 export function eventCard(ctx: AppContext, event: MockEvent): string {
-  return card(`${img(event.cover, 'bk-cover bk-cover-compact', ctx.t('asset.alt.cover'))}${cardHeader(ctx.t(event.titleKey), `${ctx.t(event.typeKey)} · ${formatDateTime(event.startsAt, ctx.state.locale)}`, 'navEventsInactive')}<div class="bk-chip-row">${badge(ctx.t(event.statusKey), event.statusKey.includes('confirmed') ? 'positive' : 'warning')}${badge(`${event.participants} ${ctx.t('events.participants')}`)}${badge(ctx.t(event.locationKey))}</div><div class="bk-action-row">${button(ctx.t('actions.view'), 'secondary', `/events/${event.id}`)}${button(ctx.t('events.rsvp'), 'primary')}</div>`, 'bk-event-card');
+  const route = `/events/${event.id}`;
+  const startsAt = formatDateTime(event.startsAt, ctx.state.locale);
+  const statusTone = event.statusKey.includes('confirmed') ? 'positive' : 'warning';
+  return card(`<a class="bk-event-card-surface" href="${route}" data-route="${route}" aria-label="Открыть событие ${escapeHtml(ctx.t(event.titleKey))}"><div class="bk-event-media">${img(event.cover, 'bk-cover bk-cover-compact', ctx.t('asset.alt.cover'))}</div><div class="bk-event-main"><div class="bk-event-date-pill"><span>${escapeHtml(startsAt)}</span></div><div class="bk-event-title-block"><h3 class="bk-card-title">${ctx.t(event.titleKey)}</h3><p class="bk-meta">${ctx.t(event.typeKey)} · ${ctx.t(event.locationKey)}</p></div></div><div class="bk-event-meta-grid">${kpi(event.participants, ctx.t('events.participants'))}${kpi(ctx.t(event.statusKey), ctx.t('common.status'))}${kpi(ctx.t(event.locationKey), 'Локация')}</div><div class="bk-chip-row bk-event-chips">${badge(ctx.t(event.statusKey), statusTone)}${badge(ctx.t(event.typeKey))}</div></a><div class="bk-action-row bk-event-actions">${button(ctx.t('actions.view'), 'secondary', route)}${button(ctx.t('events.rsvp'), 'primary')}</div>`, 'bk-event-card bk-event-card-polished');
 }
 
 export function chatRow(ctx: AppContext, chat: MockChat): string {
