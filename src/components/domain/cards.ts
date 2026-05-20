@@ -84,6 +84,16 @@ function profileLinkHeader(ctx: AppContext, profile: MockProfile, meta: string, 
   return `<a class="${className}" href="${route}" data-route="${route}" aria-label="Открыть профиль ${escapeHtml(profile.name)}">${img(profile.avatar, 'bk-avatar', ctx.t('asset.alt.avatar'))}<div><h3 class="bk-card-title">${escapeHtml(profile.name)}</h3><div class="bk-meta">${meta}</div></div></a>`;
 }
 
+function profileAvatarStripItem(ctx: AppContext, profile: MockProfile): string {
+  const route = profileRoute(profile);
+  const label = `Открыть профиль ${profile.name}`;
+  return `<article class="bk-avatar-strip-item"><a class="bk-avatar-strip-link" href="${route}" data-route="${route}" aria-label="${escapeHtml(label)}">${img(profile.avatar, 'bk-avatar', `${ctx.t('asset.alt.avatar')}: ${profile.name}`)}</a></article>`;
+}
+
+function shouldRenderAvatarOnlyProfilePreview(ctx: AppContext): boolean {
+  return ctx.match.route.path === '/bands/:bandId' || ctx.match.route.path === '/events/:eventId';
+}
+
 interface EntityFeedMock {
   subscribers: string;
   posts: number;
@@ -241,6 +251,9 @@ export function profileHeader(ctx: AppContext, profile: MockProfile): string {
 }
 
 export function profileCompactCard(ctx: AppContext, profile: MockProfile): string {
+  if (shouldRenderAvatarOnlyProfilePreview(ctx)) {
+    return profileAvatarStripItem(ctx, profile);
+  }
   return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-meta-chip-row">${profileMetaChips(ctx, profile, 'compact')}</div><div class="bk-action-row bk-profile-compact-actions">${button('👤 Профиль', 'secondary', profileRoute(profile))}${button('＋ В друзья', 'secondary')}${button('＋ Подписка', 'ghost')}</div>`, 'bk-compact-card');
 }
 
