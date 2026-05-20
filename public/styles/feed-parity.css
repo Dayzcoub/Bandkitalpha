@@ -1,0 +1,99 @@
+/* Feed/profile parity layer: keep mobile and desktop feed data aligned and polish profile return UX. */
+
+.bk-profile-social-card {
+  position: relative;
+}
+
+.bk-profile-return-row {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 4;
+  display: inline-flex;
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--bk-muted);
+}
+
+.bk-profile-return-row span {
+  display: none;
+}
+
+.bk-profile-return-button {
+  min-height: 34px;
+  width: auto;
+  padding-inline: 12px;
+  border-radius: 999px;
+  border-color: rgba(148, 163, 184, .28);
+  background: rgba(7, 12, 22, .68);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
+}
+
+@media (max-width: 767px) {
+  .bk-profile-return-row {
+    top: 10px;
+    left: 10px;
+    align-items: center;
+    border-radius: 999px;
+  }
+
+  .bk-profile-return-button {
+    min-height: 32px;
+    width: auto;
+    justify-content: center;
+    padding-inline: 11px;
+  }
+
+  .bk-mobile-reference-home {
+    display: none !important;
+  }
+
+  .bk-feed-desktop-block {
+    display: block !important;
+  }
+
+  .bk-composer-card,
+  .bk-dashboard-greeting-card,
+  .bk-dashboard-card-reference,
+  .bk-quick-actions-card,
+  .bk-feed-filter-card,
+  .bk-social-card {
+    border-radius: 18px;
+  }
+
+  .bk-dashboard-greeting-card,
+  .bk-dashboard-card-reference,
+  .bk-quick-actions-card {
+    display: grid;
+    gap: 12px;
+  }
+
+  .bk-feed-filter-card .bk-chip-row,
+  .bk-social-card .bk-social-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .bk-social-card .bk-social-actions > span,
+  .bk-social-card .bk-social-actions .bk-button,
+  .bk-social-card .bk-social-actions > span .bk-badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .bk-social-card .bk-card-header {
+    align-items: flex-start;
+  }
+
+  .bk-social-card .bk-card-title,
+  .bk-social-card .bk-meta,
+  .bk-social-card .bk-card-body,
+  .bk-social-card .bk-card-body p {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
