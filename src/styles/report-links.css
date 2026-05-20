@@ -1,4 +1,4 @@
-/* Muted report links: keep safety actions available without making them primary CTA. */
+@import url('/styles/meta-chips.css');
 
 .bk-report-link {
   display: inline-flex;
