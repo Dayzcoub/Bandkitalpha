@@ -1,0 +1,115 @@
+/* Entity subscriptions and public feed preview layer. */
+
+.bk-entity-card {
+  display: grid;
+  gap: var(--bk-space-3);
+}
+
+.bk-entity-feed-preview {
+  display: grid;
+  gap: var(--bk-space-3);
+  padding: var(--bk-space-4);
+  border: 1px solid var(--bk-border);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(34, 211, 238, .09), transparent 16rem),
+    linear-gradient(145deg, rgba(255, 255, 255, .04), rgba(59, 130, 246, .035));
+}
+
+.bk-entity-feed-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--bk-space-3);
+  align-items: start;
+}
+
+.bk-entity-feed-head > div,
+.bk-entity-feed-preview .bk-state-copy,
+.bk-entity-feed-policy,
+.bk-entity-actions {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.bk-entity-feed-head .bk-chip-row {
+  justify-content: flex-end;
+}
+
+.bk-entity-kpi-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bk-entity-kpi-grid .bk-kpi {
+  min-height: 74px;
+  padding: var(--bk-space-3);
+}
+
+.bk-entity-kpi-grid .bk-kpi-value {
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.bk-entity-feed-policy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--bk-space-3);
+  align-items: center;
+  padding: var(--bk-space-3);
+  border: 1px solid rgba(251, 191, 36, .24);
+  border-radius: var(--bk-radius-control);
+  background: rgba(251, 191, 36, .06);
+  color: var(--bk-muted);
+  font-size: .86rem;
+  line-height: 1.45;
+}
+
+.bk-entity-feed-policy .bk-chip-row {
+  justify-content: flex-end;
+}
+
+.bk-entity-actions .bk-button {
+  flex: 1 1 140px;
+}
+
+@media (max-width: 1180px) and (min-width: 768px) {
+  .bk-entity-feed-head,
+  .bk-entity-feed-policy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bk-entity-feed-head .bk-chip-row,
+  .bk-entity-feed-policy .bk-chip-row {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 767px) {
+  .bk-entity-feed-preview {
+    padding: var(--bk-space-3);
+    border-radius: 16px;
+  }
+
+  .bk-entity-feed-head,
+  .bk-entity-feed-policy {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--bk-space-2);
+  }
+
+  .bk-entity-feed-head .bk-chip-row,
+  .bk-entity-feed-policy .bk-chip-row {
+    justify-content: flex-start;
+  }
+
+  .bk-entity-kpi-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bk-entity-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bk-entity-actions .bk-button {
+    width: 100%;
+  }
+}
