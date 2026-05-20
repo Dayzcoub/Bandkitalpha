@@ -154,16 +154,26 @@ function addDirectChatNavigation(root: HTMLElement, ctx: AppContext): void {
   const chatRows = Array.from(root.querySelectorAll<HTMLElement>('.bk-chat-room-card .bk-list > .bk-list-row, .bk-chat-policy-card + .bk-card .bk-list > .bk-list-row'));
   const activeChatId = currentChatId(ctx);
   chatRows.slice(0, CHAT_ROOM_IDS.length).forEach((row, index) => {
-    if (row.dataset.chatNavigationReady === 'true') return;
     const chatId = CHAT_ROOM_IDS[index];
     const route = `/chats/${chatId}`;
     row.dataset.chatNavigationReady = 'true';
+    row.dataset.route = route;
+    row.setAttribute('role', 'link');
+    row.setAttribute('tabindex', '0');
     row.classList.add('bk-chat-nav-row');
     if (ctx.match.route.path === '/chats/:chatId' && chatId === activeChatId) {
       row.classList.add('is-active');
       row.setAttribute('aria-current', 'true');
+    } else {
+      row.classList.remove('is-active');
+      row.removeAttribute('aria-current');
     }
-    row.insertAdjacentHTML('beforeend', `<button class="bk-button bk-button-secondary bk-chat-nav-open" type="button" data-route="${route}">Открыть</button>`);
+    row.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        row.click();
+      }
+    });
   });
 }
 
