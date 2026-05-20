@@ -267,8 +267,8 @@
 
 .bk-compact-card {
   display: grid;
-  grid-template-rows: auto minmax(84px, auto) auto;
-  gap: var(--bk-space-3);
+  grid-template-rows: auto minmax(84px, auto) auto auto;
+  gap: var(--bk-space-2);
 }
 
 .bk-compact-card .bk-profile-link {
@@ -292,16 +292,34 @@
 .bk-profile-compact-actions .bk-button {
   width: 100%;
   min-width: 0;
-  min-height: 36px;
-  padding-inline: 7px;
+  min-height: 34px;
+  padding-inline: 5px;
   white-space: normal;
   text-align: center;
-  font-size: .78rem;
-  line-height: 1.08;
+  font-size: .7rem;
+  line-height: 1.05;
 }
 
-.bk-profile-compact-actions .bk-button:last-child {
-  grid-column: 1 / -1;
+.bk-participant-report-link {
+  justify-self: end;
+  align-self: end;
+  max-width: max-content;
+  margin-top: -2px;
+  padding: 2px 4px;
+  border-radius: 999px;
+  color: rgba(148, 163, 184, .56);
+  font-size: .68rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  opacity: .72;
+}
+
+.bk-participant-report-link:hover,
+.bk-participant-report-link:focus-visible {
+  color: rgba(251, 113, 133, .9);
+  opacity: 1;
+  outline: none;
 }
 
 @media (max-width: 1180px) and (min-width: 768px) {
@@ -419,16 +437,18 @@
   }
 
   .bk-compact-card {
-    grid-template-rows: auto auto auto;
-    gap: 10px;
+    grid-template-rows: auto auto auto auto;
+    gap: 8px;
   }
 
   .bk-compact-card .bk-chip-row {
     min-height: 0;
   }
 
-  .bk-profile-compact-actions .bk-button:last-child {
-    grid-column: auto;
+  .bk-participant-report-link {
+    justify-self: start;
+    margin-top: -4px;
+    font-size: .66rem;
   }
 
   .bk-entity-feed-head,
