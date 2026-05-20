@@ -8,6 +8,7 @@ export type AccessLevel = 'any' | 'guest' | 'pending' | 'user' | 'verified' | 'b
 
 export interface CurrentUser {
   id: string;
+  profileId?: string;
   displayName: string;
   handle: string;
   roles: Role[];
