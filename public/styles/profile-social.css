@@ -23,16 +23,17 @@
 }
 
 .bk-profile-cover-back {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 4;
+  position: fixed;
+  top: calc((var(--bk-shell-topbar) - 34px) / 2);
+  right: clamp(320px, 24vw, 520px);
+  left: auto;
+  z-index: 35;
   min-height: 34px;
   width: auto;
   padding-inline: 12px;
   border-radius: 999px;
   border-color: rgba(148, 163, 184, .28);
-  background: rgba(7, 12, 22, .68);
+  background: rgba(7, 12, 22, .72);
   backdrop-filter: blur(18px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
 }
@@ -146,6 +147,10 @@
 }
 
 @media (max-width: 1180px) and (min-width: 768px) {
+  .bk-profile-cover-back {
+    right: clamp(180px, 18vw, 280px);
+  }
+
   .bk-profile-social-card .bk-profile-head {
     grid-template-columns: 82px minmax(0, 1fr);
     gap: var(--bk-space-3);
@@ -175,8 +180,11 @@
   }
 
   .bk-profile-cover-back {
-    top: 10px;
-    left: 10px;
+    position: fixed;
+    top: calc(var(--bk-shell-mobile-topbar) + env(safe-area-inset-top) + 8px);
+    right: 12px;
+    left: auto;
+    z-index: 70;
     min-height: 32px;
     justify-content: center;
     padding-inline: 11px;
@@ -308,6 +316,10 @@
 }
 
 @media (max-width: 420px) {
+  .bk-profile-cover-back {
+    right: 10px;
+  }
+
   .bk-profile-social-card .bk-profile-head {
     grid-template-columns: 54px minmax(0, 1fr);
     gap: 10px;
