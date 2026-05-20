@@ -8,7 +8,7 @@ import { renderShell } from '../layouts/shells.js';
 const NAVIGATION_STATE_KEY = 'bkNavigationKey';
 const SCROLL_STORAGE_KEY = 'bandkit.scrollPositions.v1';
 
-type BandKitHistoryState = HistoryState & {
+type BandKitHistoryState = Record<string, unknown> & {
   [NAVIGATION_STATE_KEY]?: string;
 };
 
