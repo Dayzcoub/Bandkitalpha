@@ -109,8 +109,10 @@
 .bk-entity-feed-head > div,
 .bk-entity-feed-preview .bk-state-copy,
 .bk-entity-feed-policy,
+.bk-entity-feed-settings,
 .bk-entity-actions,
-.bk-entity-feed-stats {
+.bk-entity-feed-stats,
+.bk-entity-post-origin {
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -152,6 +154,28 @@
   line-height: 1.2;
 }
 
+.bk-entity-feed-settings {
+  display: grid;
+  gap: var(--bk-space-2);
+  padding: var(--bk-space-3);
+  border: 1px solid rgba(34, 211, 238, .22);
+  border-radius: var(--bk-radius-control);
+  background: rgba(34, 211, 238, .055);
+}
+
+.bk-entity-feed-settings > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bk-space-2);
+}
+
+.bk-entity-feed-settings p {
+  margin: 0;
+  color: var(--bk-muted);
+  font-size: .86rem;
+  line-height: 1.45;
+}
+
 .bk-entity-feed-policy {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -167,6 +191,31 @@
 }
 
 .bk-entity-feed-policy .bk-chip-row {
+  justify-content: flex-end;
+}
+
+.bk-entity-post-origin {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--bk-space-3);
+  align-items: start;
+  margin-top: var(--bk-space-3);
+  padding: var(--bk-space-3);
+  border: 1px solid rgba(59, 130, 246, .24);
+  border-radius: var(--bk-radius-control);
+  background: rgba(59, 130, 246, .055);
+}
+
+.bk-entity-post-origin strong {
+  display: block;
+  line-height: 1.25;
+}
+
+.bk-entity-post-origin p {
+  margin: var(--bk-space-1) 0 0;
+}
+
+.bk-entity-post-origin .bk-chip-row {
   justify-content: flex-end;
 }
 
@@ -201,12 +250,14 @@
 
 @media (max-width: 1180px) and (min-width: 768px) {
   .bk-entity-feed-head,
-  .bk-entity-feed-policy {
+  .bk-entity-feed-policy,
+  .bk-entity-post-origin {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .bk-entity-feed-head .bk-chip-row,
-  .bk-entity-feed-policy .bk-chip-row {
+  .bk-entity-feed-policy .bk-chip-row,
+  .bk-entity-post-origin .bk-chip-row {
     justify-content: flex-start;
   }
 }
@@ -246,13 +297,15 @@
   }
 
   .bk-entity-feed-head,
-  .bk-entity-feed-policy {
+  .bk-entity-feed-policy,
+  .bk-entity-post-origin {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--bk-space-2);
   }
 
   .bk-entity-feed-head .bk-chip-row,
-  .bk-entity-feed-policy .bk-chip-row {
+  .bk-entity-feed-policy .bk-chip-row,
+  .bk-entity-post-origin .bk-chip-row {
     justify-content: flex-start;
   }
 
