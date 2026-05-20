@@ -29,6 +29,66 @@ function profileLinkHeader(ctx: AppContext, profile: MockProfile, meta: string, 
   return `<a class="${className}" href="${route}" data-route="${route}" aria-label="Открыть профиль ${escapeHtml(profile.name)}">${img(profile.avatar, 'bk-avatar', ctx.t('asset.alt.avatar'))}<div><h3 class="bk-card-title">${escapeHtml(profile.name)}</h3><div class="bk-meta">${meta}</div></div></a>`;
 }
 
+interface EntityFeedMock {
+  subscribers: string;
+  posts: number;
+  notificationLevel: string;
+  subscriptionState: 'subscribed' | 'open' | 'request';
+  latestTitle: string;
+  latestMeta: string;
+  latestBody: string;
+  visibility: string;
+}
+
+function entityFeedMock(band: MockBand): EntityFeedMock {
+  const map: Record<string, EntityFeedMock> = {
+    b1: {
+      subscribers: '2.4K',
+      posts: 36,
+      notificationLevel: 'Important only',
+      subscriptionState: 'subscribed',
+      latestTitle: 'Открытая репетиция и концертный сет',
+      latestMeta: 'Public · концертные новости · 2 часа назад',
+      latestBody: 'Публичный пост проекта: анонс концерта, короткий отчёт с репетиции и приглашение подписчикам следить за ближайшими событиями.',
+      visibility: 'Public + Subscribers',
+    },
+    b2: {
+      subscribers: '820',
+      posts: 18,
+      notificationLevel: 'Events only',
+      subscriptionState: 'open',
+      latestTitle: 'Прослушивание в оркестровую лабораторию',
+      latestMeta: 'Public · open roles · вчера',
+      latestBody: 'Оркестр публикует открытый набор и ближайшие публичные даты. Подписка не даёт доступа к внутренним документам или чатам.',
+      visibility: 'Public',
+    },
+    b3: {
+      subscribers: '146',
+      posts: 9,
+      notificationLevel: 'Silent',
+      subscriptionState: 'request',
+      latestTitle: 'Студийное окно и правила безопасного контакта',
+      latestMeta: 'Subscribers · studio update · 3 дня назад',
+      latestBody: 'Полупубличное обновление студийной команды: свободные слоты, правила коммуникации и антифрод-ограничение внешних ссылок.',
+      visibility: 'Subscribers',
+    },
+  };
+  return map[band.id] ?? map.b1;
+}
+
+function entitySubscriptionBadge(ctx: AppContext, state: EntityFeedMock['subscriptionState']): string {
+  if (state === 'subscribed') return badge('Подписан', 'positive');
+  if (state === 'request') return badge('Запрос подписки', 'warning');
+  return badge('Открытая подписка');
+}
+
+function entityFeedPreview(ctx: AppContext, band: MockBand): string {
+  const feed = entityFeedMock(band);
+  const primaryAction = feed.subscriptionState === 'subscribed' ? 'Настроить уведомления' : feed.subscriptionState === 'request' ? 'Запросить подписку' : 'Подписаться';
+  const primaryVariant = feed.subscriptionState === 'subscribed' ? 'secondary' : 'primary';
+  return `<section class="bk-entity-feed-preview"><div class="bk-entity-feed-head"><div><div class="bk-eyebrow">Entity public feed</div><h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(feed.latestMeta)}</p></div><div class="bk-chip-row">${entitySubscriptionBadge(ctx, feed.subscriptionState)}${badge(feed.visibility)}${badge(feed.notificationLevel)}</div></div><p class="bk-state-copy">${escapeHtml(feed.latestBody)}</p><div class="bk-kpi-grid bk-entity-kpi-grid">${kpi(feed.subscribers, 'Подписчики')}${kpi(feed.posts, 'Посты')}${kpi(feed.notificationLevel, 'Уведомления')}</div><div class="bk-entity-feed-policy"><span>Подписка не даёт членство, доступ к workspace, приватным чатам и документам.</span><div class="bk-chip-row">${badge('Public')}${badge('Subscribers')}${badge('Members locked', 'warning')}</div></div><div class="bk-action-row bk-entity-actions">${button(primaryAction, primaryVariant)}${button('Открыть ленту', 'secondary', `/bands/${band.id}`)}${button('Заглушить', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div></section>`;
+}
+
 export function postCard(ctx: AppContext, post: MockPost): string {
   const author = profiles.find((p) => p.id === post.authorId) ?? profiles[0];
   const body = ctx.t(post.bodyKey);
@@ -63,7 +123,8 @@ export function profileCompactCard(ctx: AppContext, profile: MockProfile): strin
 }
 
 export function bandCard(ctx: AppContext, band: MockBand): string {
-  return card(`${img(band.cover, 'bk-cover', ctx.t('asset.alt.cover'))}<div class="bk-card-header bk-card-header-tight"><div><h3 class="bk-card-title">${escapeHtml(band.name)}</h3><div class="bk-meta">${ctx.t(band.typeKey)} · ${band.members} ${ctx.t('bands.members')}</div></div></div><div class="bk-chip-row">${badge(ctx.t(band.statusKey), band.statusKey.includes('active') ? 'positive' : 'warning')}${badge(ctx.t(band.roleKey))}</div><div class="bk-action-row">${button(ctx.t('actions.view'), 'secondary', `/bands/${band.id}`)}${button(ctx.t('actions.invite'), 'ghost')}</div>`, 'bk-band-card');
+  const feed = entityFeedMock(band);
+  return card(`${img(band.cover, 'bk-cover', ctx.t('asset.alt.cover'))}<div class="bk-card-header bk-card-header-tight"><div><h3 class="bk-card-title">${escapeHtml(band.name)}</h3><div class="bk-meta">${ctx.t(band.typeKey)} · ${band.members} ${ctx.t('bands.members')}</div></div></div><div class="bk-chip-row">${badge(ctx.t(band.statusKey), band.statusKey.includes('active') ? 'positive' : 'warning')}${badge(ctx.t(band.roleKey))}${entitySubscriptionBadge(ctx, feed.subscriptionState)}${badge('Entity feed')}</div>${entityFeedPreview(ctx, band)}<div class="bk-action-row">${button(ctx.t('actions.view'), 'secondary', `/bands/${band.id}`)}${button(feed.subscriptionState === 'subscribed' ? 'Уведомления' : 'Подписаться', feed.subscriptionState === 'subscribed' ? 'ghost' : 'primary')}${button(ctx.t('actions.invite'), 'ghost')}</div>`, 'bk-band-card bk-entity-card');
 }
 
 export function eventCard(ctx: AppContext, event: MockEvent): string {
