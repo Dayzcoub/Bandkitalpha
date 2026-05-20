@@ -111,16 +111,17 @@ function entityFeedPreview(ctx: AppContext, band: MockBand, mode: 'compact' | 'f
   const meta = diagnostics ? feed.adminMeta : feed.latestMeta;
   const headChips = diagnostics
     ? `${entitySubscriptionBadge(ctx, feed.subscriptionState)}${badge(feed.visibility)}${badge(feed.notificationLevel)}`
-    : `${entitySubscriptionBadge(ctx, feed.subscriptionState)}${badge(feed.visibilityLabel)}`;
+    : feed.subscriptionState === 'subscribed' ? badge('Подписан', 'positive') : '';
+  const headChipsHtml = headChips ? `<div class="bk-chip-row">${headChips}</div>` : '';
   const policyChips = diagnostics ? `<div class="bk-chip-row">${badge('Public')}${badge('Subscribers')}${badge('Members locked', 'warning')}</div>` : '';
   const eyebrow = diagnostics ? '<div class="bk-eyebrow">Entity public feed</div>' : '';
 
   if (mode === 'compact') {
     const stats = `${feed.subscribers} подписчиков · ${formatNumber(feed.posts, ctx.state.locale)} постов · ${feed.notificationLabel}`;
-    return `<section class="bk-entity-feed-preview bk-entity-feed-preview-compact"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div><div class="bk-chip-row">${headChips}</div></div><p class="bk-state-copy">${escapeHtml(feed.shortBody)}</p><div class="bk-entity-feed-stats">${escapeHtml(stats)}</div></section>`;
+    return `<section class="bk-entity-feed-preview bk-entity-feed-preview-compact"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div>${headChipsHtml}</div><p class="bk-state-copy">${escapeHtml(feed.shortBody)}</p><div class="bk-entity-feed-stats">${escapeHtml(stats)}</div></section>`;
   }
 
-  return `<section class="bk-entity-feed-preview"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div><div class="bk-chip-row">${headChips}</div></div><p class="bk-state-copy">${escapeHtml(feed.latestBody)}</p><div class="bk-kpi-grid bk-entity-kpi-grid">${kpi(feed.subscribers, 'Подписчики')}${kpi(feed.posts, 'Посты')}${kpi(feed.notificationLabel, 'Уведомления')}</div><div class="bk-entity-feed-policy"><span>Подписка не даёт членство, доступ к workspace, приватным чатам и документам.</span>${policyChips}</div><div class="bk-action-row bk-entity-actions">${button(primaryAction.label, primaryAction.variant)}${button('Открыть ленту', 'secondary', `/bands/${band.id}`)}${button('Заглушить', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div></section>`;
+  return `<section class="bk-entity-feed-preview"><div class="bk-entity-feed-head"><div>${eyebrow}<h4 class="bk-card-title">${escapeHtml(feed.latestTitle)}</h4><p class="bk-meta">${escapeHtml(meta)}</p></div>${headChipsHtml}</div><p class="bk-state-copy">${escapeHtml(feed.latestBody)}</p><div class="bk-kpi-grid bk-entity-kpi-grid">${kpi(feed.subscribers, 'Подписчики')}${kpi(feed.posts, 'Посты')}${kpi(feed.notificationLabel, 'Уведомления')}</div><div class="bk-entity-feed-policy"><span>Подписка не даёт членство, доступ к workspace, приватным чатам и документам.</span>${policyChips}</div><div class="bk-action-row bk-entity-actions">${button(primaryAction.label, primaryAction.variant)}${button('Открыть ленту', 'secondary', `/bands/${band.id}`)}${button('Заглушить', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div></section>`;
 }
 
 export function postCard(ctx: AppContext, post: MockPost): string {
@@ -135,6 +136,12 @@ export function postCard(ctx: AppContext, post: MockPost): string {
 
 function profileStatusBadges(ctx: AppContext, profile: MockProfile): string {
   return profile.statusBadges.map((item) => badge(ctx.t(item.labelKey), item.tone)).join('');
+}
+
+function profilePublicStatusBadges(ctx: AppContext, profile: MockProfile): string {
+  const diagnostics = canSeeDiagnostics(ctx);
+  const source = diagnostics ? profile.statusBadges : profile.statusBadges.filter((item) => item.labelKey === 'badge.verified');
+  return source.map((item) => badge(ctx.t(item.labelKey), item.tone)).join('');
 }
 
 function profileRelationshipActions(ctx: AppContext, profile: MockProfile): string {
@@ -155,7 +162,9 @@ export function profileHeader(ctx: AppContext, profile: MockProfile): string {
 }
 
 export function profileCompactCard(ctx: AppContext, profile: MockProfile): string {
-  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profileStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(`${ctx.t('profile.rating')}: ${formatNumber(profile.reputation, ctx.state.locale)}`, 'positive')}${badge(ctx.t(profile.availabilityKey))}${badge('Подписка доступна')}</div><div class="bk-action-row">${button('Профиль', 'secondary', profileRoute(profile))}${button('Добавить в друзья', 'secondary')}${button('Подписаться', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-compact-card');
+  const diagnostics = canSeeDiagnostics(ctx);
+  const diagnosticsBadge = diagnostics ? badge('Подписка доступна') : '';
+  return card(`${profileLinkHeader(ctx, profile, `${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}`)}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${diagnosticsBadge}</div><div class="bk-action-row bk-profile-compact-actions">${button('Профиль', 'secondary', profileRoute(profile))}${button('Добавить в друзья', 'secondary')}${button('Подписаться', 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-compact-card');
 }
 
 export function bandCard(ctx: AppContext, band: MockBand): string {
@@ -163,8 +172,10 @@ export function bandCard(ctx: AppContext, band: MockBand): string {
   const diagnostics = canSeeDiagnostics(ctx);
   const isDetail = Boolean(ctx.match.params.bandId);
   const entityDebugBadge = diagnostics ? badge('Entity feed') : '';
+  const roleBadge = diagnostics ? badge(ctx.t(band.roleKey)) : '';
+  const subscriptionBadge = diagnostics || feed.subscriptionState === 'subscribed' ? entitySubscriptionBadge(ctx, feed.subscriptionState) : '';
   const route = `/bands/${band.id}`;
-  const summary = `${img(band.cover, 'bk-cover', ctx.t('asset.alt.cover'))}<div class="bk-card-header bk-card-header-tight"><div><h3 class="bk-card-title">${escapeHtml(band.name)}</h3><div class="bk-meta">${ctx.t(band.typeKey)} · ${band.members} ${ctx.t('bands.members')}</div></div></div><div class="bk-chip-row">${badge(ctx.t(band.statusKey), band.statusKey.includes('active') ? 'positive' : 'warning')}${badge(ctx.t(band.roleKey))}${entitySubscriptionBadge(ctx, feed.subscriptionState)}${entityDebugBadge}</div>${entityFeedPreview(ctx, band, isDetail ? 'full' : 'compact')}`;
+  const summary = `${img(band.cover, 'bk-cover', ctx.t('asset.alt.cover'))}<div class="bk-card-header bk-card-header-tight"><div><h3 class="bk-card-title">${escapeHtml(band.name)}</h3><div class="bk-meta">${ctx.t(band.typeKey)} · ${band.members} ${ctx.t('bands.members')}</div></div></div><div class="bk-chip-row">${badge(ctx.t(band.statusKey), band.statusKey.includes('active') ? 'positive' : 'warning')}${roleBadge}${subscriptionBadge}${entityDebugBadge}</div>${entityFeedPreview(ctx, band, isDetail ? 'full' : 'compact')}`;
   const surface = isDetail ? summary : `<a class="bk-band-card-link-surface" href="${route}" data-route="${route}" aria-label="Открыть ${escapeHtml(band.name)}">${summary}</a>`;
   const primaryAction = entityPrimaryAction(feed);
   return card(`${surface}<div class="bk-action-row bk-band-card-actions">${button(ctx.t('actions.view'), 'secondary', route)}${button(primaryAction.label, primaryAction.variant)}${button(ctx.t('actions.invite'), 'ghost')}</div>`, 'bk-band-card bk-entity-card');
@@ -207,7 +218,7 @@ export function trustCheckCard(ctx: AppContext, check: MockTrustCheck): string {
 export function offerCard(ctx: AppContext, offer: MockOffer): string {
   const owner = profiles.find((p) => p.id === offer.ownerId) ?? profiles[0];
   const ownerMeta = `${ctx.t(offer.metaKey)} · ${escapeHtml(owner.name)} · ${ctx.t(owner.profileTypeKey)}`;
-  return card(`${cardHeader(ctx.t(offer.titleKey), ownerMeta, offer.icon)}${profileLinkHeader(ctx, owner, `${escapeHtml(owner.handle)} · ${ctx.t(owner.profileTypeKey)}`, 'bk-offer-owner-link')}<div class="bk-chip-row">${profileStatusBadges(ctx, owner)}${badge(ctx.t(offer.trustKey), 'positive')}${badge(`${ctx.t('profile.rating')}: ${formatNumber(owner.reputation, ctx.state.locale)}`, 'positive')}</div><div class="bk-action-row">${button('Профиль', 'secondary', profileRoute(owner))}${button(ctx.t('marketplace.contact'), 'primary')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-offer-card');
+  return card(`${cardHeader(ctx.t(offer.titleKey), ownerMeta, offer.icon)}${profileLinkHeader(ctx, owner, `${escapeHtml(owner.handle)} · ${ctx.t(owner.profileTypeKey)}`, 'bk-offer-owner-link')}<div class="bk-chip-row">${profilePublicStatusBadges(ctx, owner)}${badge(ctx.t(offer.trustKey), 'positive')}${badge(`${ctx.t('profile.rating')}: ${formatNumber(owner.reputation, ctx.state.locale)}`, 'positive')}</div><div class="bk-action-row">${button('Профиль', 'secondary', profileRoute(owner))}${button(ctx.t('marketplace.contact'), 'primary')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-offer-card');
 }
 
 export function auditEventRow(ctx: AppContext, event: MockAuditEvent): string {
