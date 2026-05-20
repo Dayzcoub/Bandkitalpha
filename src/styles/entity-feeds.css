@@ -5,8 +5,63 @@
   gap: var(--bk-space-3);
 }
 
-.bk-entity-card > .bk-action-row {
+.bk-entity-card > .bk-action-row,
+.bk-band-card-actions {
   margin-top: auto;
+}
+
+.bk-band-card-link-surface {
+  display: grid;
+  gap: var(--bk-space-3);
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 22px;
+}
+
+.bk-band-card-link-surface:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, .72);
+  outline-offset: 4px;
+}
+
+.bk-band-card-link-surface:hover .bk-card-title {
+  color: var(--bk-accent);
+}
+
+.bk-band-card .bk-cover {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 72px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.bk-band-card .bk-card-header-tight,
+.bk-band-card .bk-card-header-tight > div {
+  min-width: 0;
+}
+
+.bk-band-card .bk-card-title,
+.bk-band-card .bk-meta {
+  overflow-wrap: anywhere;
+}
+
+.bk-band-card-actions {
+  display: grid;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.1fr) minmax(0, .9fr);
+  gap: var(--bk-space-2);
+}
+
+.bk-band-card-actions .bk-button {
+  min-width: 0;
+  width: 100%;
+  min-height: 38px;
+  padding-inline: 10px;
+  white-space: nowrap;
+  font-size: .82rem;
 }
 
 .bk-entity-feed-preview {
@@ -111,18 +166,6 @@
   flex: 1 1 140px;
 }
 
-.bk-entity-feed-preview-compact .bk-entity-actions {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
-  gap: var(--bk-space-2);
-}
-
-.bk-entity-feed-preview-compact .bk-entity-actions .bk-button {
-  width: 100%;
-  min-height: 38px;
-  padding-inline: var(--bk-space-2);
-}
-
 @media (max-width: 1180px) and (min-width: 768px) {
   .bk-entity-feed-head,
   .bk-entity-feed-policy {
@@ -155,6 +198,15 @@
     border-radius: 16px;
   }
 
+  .bk-band-card-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bk-band-card-actions .bk-button,
+  .bk-entity-actions .bk-button {
+    width: 100%;
+  }
+
   .bk-entity-feed-head,
   .bk-entity-feed-policy {
     grid-template-columns: minmax(0, 1fr);
@@ -170,13 +222,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .bk-entity-actions,
-  .bk-entity-feed-preview-compact .bk-entity-actions {
+  .bk-entity-actions {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .bk-entity-actions .bk-button {
-    width: 100%;
   }
 }
