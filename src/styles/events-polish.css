@@ -150,6 +150,113 @@
   line-height: 1.25;
 }
 
+/* Logistics polish: detail context cards must stay readable inside the central column with a right rail. */
+.bk-band-logistics-card,
+.bk-event-logistics-card,
+.bk-doc-context-card,
+.bk-doc-access-card,
+.bk-doc-next-actions-card {
+  overflow: hidden;
+}
+
+.bk-band-logistics-card > .bk-card-grid-3,
+.bk-event-logistics-card > .bk-card-grid-3 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.bk-band-logistics-card > .bk-card-grid-3 > .bk-context-card:nth-child(3),
+.bk-event-logistics-card > .bk-card-grid-3 > .bk-context-card:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.bk-context-card {
+  display: grid;
+  gap: var(--bk-space-3);
+  min-width: 0;
+  align-content: start;
+  padding: var(--bk-space-4);
+}
+
+.bk-context-card .bk-card-title {
+  font-size: .94rem;
+  line-height: 1.2;
+}
+
+.bk-context-card .bk-list,
+.bk-doc-context-card .bk-list,
+.bk-doc-access-card .bk-list {
+  gap: var(--bk-space-2);
+}
+
+.bk-context-card .bk-list-row,
+.bk-doc-context-card .bk-list-row,
+.bk-doc-access-card .bk-list-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px;
+}
+
+.bk-context-card .bk-list-row .bk-avatar,
+.bk-doc-context-card .bk-list-row .bk-avatar,
+.bk-doc-access-card .bk-list-row .bk-avatar,
+.bk-context-card .bk-list-row .bk-nav-icon,
+.bk-doc-context-card .bk-list-row .bk-nav-icon,
+.bk-doc-access-card .bk-list-row .bk-nav-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  flex-basis: 40px;
+  border-radius: 13px;
+}
+
+.bk-context-card .bk-list-row-title,
+.bk-doc-context-card .bk-list-row-title,
+.bk-doc-access-card .bk-list-row-title {
+  font-size: .9rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.bk-context-card .bk-meta,
+.bk-doc-context-card .bk-meta,
+.bk-doc-access-card .bk-meta {
+  font-size: .78rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.bk-context-card .bk-button,
+.bk-doc-context-card .bk-button,
+.bk-doc-access-card .bk-button {
+  min-height: 36px;
+  padding-inline: 12px;
+  white-space: nowrap;
+}
+
+.bk-band-logistics-card .bk-profile-feed-policy,
+.bk-event-logistics-card .bk-profile-feed-policy {
+  margin-top: var(--bk-space-3);
+}
+
+.bk-doc-next-actions-card {
+  display: grid;
+  gap: var(--bk-space-3);
+}
+
+.bk-doc-next-actions-card .bk-action-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bk-doc-next-actions-card .bk-button {
+  width: 100%;
+  min-width: 0;
+}
+
 @media (max-width: 767px) {
   .bk-event-card-polished {
     gap: 10px;
@@ -209,6 +316,30 @@
     position: static;
     padding: 8px 10px;
     font-size: .72rem;
+  }
+
+  .bk-band-logistics-card > .bk-card-grid-3,
+  .bk-event-logistics-card > .bk-card-grid-3,
+  .bk-doc-next-actions-card .bk-action-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bk-band-logistics-card > .bk-card-grid-3 > .bk-context-card:nth-child(3),
+  .bk-event-logistics-card > .bk-card-grid-3 > .bk-context-card:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .bk-context-card .bk-list-row,
+  .bk-doc-context-card .bk-list-row,
+  .bk-doc-access-card .bk-list-row {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .bk-context-card .bk-list-row .bk-button,
+  .bk-doc-context-card .bk-list-row .bk-button,
+  .bk-doc-access-card .bk-list-row .bk-button {
+    grid-column: 1 / -1;
+    width: 100%;
   }
 }
 
