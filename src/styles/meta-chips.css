@@ -1,0 +1,94 @@
+.bk-meta-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  align-content: start;
+  min-width: 0;
+}
+
+.bk-meta-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 24px;
+  min-height: 22px;
+  padding: 2px 7px;
+  border: 1px solid rgba(148, 163, 184, .22);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, .36);
+  color: rgba(203, 213, 225, .68);
+  font-size: .72rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.bk-meta-chip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 12px;
+  font-size: .72rem;
+  line-height: 1;
+}
+
+.bk-meta-chip-value {
+  color: rgba(248, 250, 252, .82);
+  font-size: .7rem;
+  letter-spacing: .01em;
+}
+
+.bk-meta-chip-positive {
+  border-color: rgba(52, 211, 153, .22);
+  background: rgba(16, 185, 129, .055);
+  color: rgba(110, 231, 183, .68);
+}
+
+.bk-meta-chip-warning {
+  border-color: rgba(251, 191, 36, .24);
+  background: rgba(251, 191, 36, .055);
+  color: rgba(253, 224, 71, .72);
+}
+
+.bk-meta-chip-neutral {
+  border-color: rgba(148, 163, 184, .2);
+  background: rgba(148, 163, 184, .045);
+  color: rgba(203, 213, 225, .58);
+}
+
+.bk-compact-card .bk-meta-chip-row {
+  min-height: 46px;
+  margin-top: -2px;
+}
+
+.bk-profile-social-card .bk-meta-chip-row {
+  margin-top: 8px;
+}
+
+.bk-offer-card .bk-meta-chip-row {
+  margin-top: -2px;
+}
+
+@media (max-width: 767px) {
+  .bk-meta-chip-row {
+    gap: 5px;
+  }
+
+  .bk-meta-chip {
+    min-width: 22px;
+    min-height: 20px;
+    padding: 2px 6px;
+    font-size: .66rem;
+  }
+
+  .bk-meta-chip-icon,
+  .bk-meta-chip-value {
+    font-size: .66rem;
+  }
+
+  .bk-compact-card .bk-meta-chip-row {
+    min-height: 0;
+  }
+}
