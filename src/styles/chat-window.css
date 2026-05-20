@@ -7,18 +7,36 @@
 }
 
 .bk-chat-layout {
-  min-height: min(64vh, 680px);
-  max-height: min(70vh, 760px);
+  display: grid;
+  grid-template-columns: minmax(176px, 220px) minmax(0, 1fr);
+  gap: 12px;
+  height: min(70vh, 760px);
+  min-height: 520px;
+  max-height: 760px;
   overflow: hidden;
+  align-items: stretch;
 }
 
 .bk-chat-layout > .bk-list {
   min-height: 0;
+  height: 100%;
   max-height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   scrollbar-width: thin;
   -webkit-overflow-scrolling: touch;
+}
+
+.bk-chat-layout > .bk-list::-webkit-scrollbar,
+.bk-chat-thread::-webkit-scrollbar {
+  width: 8px;
+}
+
+.bk-chat-layout > .bk-list::-webkit-scrollbar-thumb,
+.bk-chat-thread::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(148, 163, 184, .24);
 }
 
 .bk-chat-thread {
@@ -28,6 +46,7 @@
   height: 100%;
   max-height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   padding-bottom: 0;
   scrollbar-width: thin;
@@ -84,35 +103,50 @@
 
 @media (max-width: 900px) {
   .bk-chat-layout {
-    min-height: min(68vh, 720px);
-    max-height: min(74vh, 780px);
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    height: min(74vh, 780px);
+    min-height: 560px;
+    max-height: 780px;
   }
 
   .bk-chat-layout > .bk-list {
+    display: flex;
+    gap: 8px;
+    height: 92px;
+    min-height: 92px;
     max-height: 92px;
     overflow-x: auto;
     overflow-y: hidden;
+    padding-bottom: 4px;
+  }
+
+  .bk-chat-layout > .bk-list .bk-chat-nav-row {
+    flex: 0 0 220px;
   }
 
   .bk-chat-thread {
-    height: calc(min(74vh, 780px) - 104px);
-    max-height: calc(min(74vh, 780px) - 104px);
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
   }
 }
 
 @media (max-width: 767px) {
   .bk-chat-layout {
-    min-height: min(72vh, 720px);
-    max-height: min(76vh, 760px);
+    height: min(76vh, 760px);
+    min-height: 540px;
+    max-height: 760px;
   }
 
   .bk-chat-layout > .bk-list {
+    height: 84px;
+    min-height: 84px;
     max-height: 84px;
   }
 
-  .bk-chat-thread {
-    height: calc(min(76vh, 760px) - 94px);
-    max-height: calc(min(76vh, 760px) - 94px);
+  .bk-chat-layout > .bk-list .bk-chat-nav-row {
+    flex-basis: 196px;
   }
 
   .bk-chat-composer-inside-thread {
