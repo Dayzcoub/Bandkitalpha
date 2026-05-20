@@ -109,6 +109,15 @@ export function createBandKitApp(root: HTMLElement) {
     render({ scrollMode: 'top' });
   }
 
+  function goBack(): void {
+    saveScrollPosition(activeNavigationKey);
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    navigate('/feed');
+  }
+
   function closeMobileMenu(): void {
     const layer = root.querySelector<HTMLElement>('[data-mobile-menu-layer]');
     layer?.classList.remove('is-open');
@@ -130,6 +139,13 @@ export function createBandKitApp(root: HTMLElement) {
           closeMobileMenu();
           navigate(nextPath);
         }
+      });
+    });
+    root.querySelectorAll<HTMLElement>('[data-history-back]').forEach((node) => {
+      node.addEventListener('click', (event) => {
+        event.preventDefault();
+        closeMobileMenu();
+        goBack();
       });
     });
     root.querySelectorAll<HTMLElement>('[data-mobile-menu-open]').forEach((node) => {
