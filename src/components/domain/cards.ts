@@ -152,13 +152,8 @@ function profileRelationshipActions(ctx: AppContext, profile: MockProfile): stri
   return `<div class="bk-action-row bk-profile-social-actions">${button('Добавить в друзья', 'primary')}${button('Подписаться', 'secondary')}${button(ctx.t('profile.contact'), 'ghost')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`;
 }
 
-function profileBackControl(isOwnProfile: boolean): string {
-  if (isOwnProfile) return '';
-  return `<button class="bk-button bk-button-ghost bk-profile-cover-back" type="button" data-history-back aria-label="Вернуться назад">← Назад</button>`;
-}
-
-function profileCover(ctx: AppContext, isOwnProfile: boolean): string {
-  return `<div class="bk-profile-cover-stack">${img('coverProfile', 'bk-cover', ctx.t('asset.alt.cover'))}${profileBackControl(isOwnProfile)}</div>`;
+function profileCover(ctx: AppContext): string {
+  return `<div class="bk-profile-cover-stack">${img('coverProfile', 'bk-cover', ctx.t('asset.alt.cover'))}</div>`;
 }
 
 export function profileHeader(ctx: AppContext, profile: MockProfile): string {
@@ -167,7 +162,7 @@ export function profileHeader(ctx: AppContext, profile: MockProfile): string {
   const relationshipBadge = isOwnProfile ? badge('Мой профиль', 'positive') : badge('Не в друзьях');
   const feedStateBadge = isOwnProfile ? badge('Лента: друзья + подписки', 'positive') : badge('Публичная лента');
   const feedPolicyChips = diagnostics ? `<div class="bk-chip-row">${badge('Public')}${badge('Friends')}${badge('Workspace')}${badge('Draft')}</div>` : '';
-  return card(`${profileCover(ctx, isOwnProfile)}<div class="bk-card-header bk-profile-head">${img(profile.avatar, 'bk-avatar bk-avatar-lg', ctx.t('asset.alt.avatar'))}<div><h2 class="bk-title">${escapeHtml(profile.name)}</h2><div class="bk-meta">${escapeHtml(profile.handle)} · ${ctx.t(profile.roleKey)} · ${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}</div><div class="bk-chip-row">${profileStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${relationshipBadge}${feedStateBadge}</div></div></div><div class="bk-kpi-grid bk-profile-social-kpis"><div class="bk-kpi"><div class="bk-kpi-value">${formatNumber(profile.reputation, ctx.state.locale)}</div><div class="bk-kpi-label">${ctx.t('profile.rating')}</div></div><div class="bk-kpi"><div class="bk-kpi-value">128</div><div class="bk-kpi-label">Друзья</div></div><div class="bk-kpi"><div class="bk-kpi-value">2.4K</div><div class="bk-kpi-label">Подписчики</div></div><div class="bk-kpi"><div class="bk-kpi-value">36</div><div class="bk-kpi-label">Посты</div></div></div><section class="bk-profile-feed-policy"><div><strong>Личная лента</strong><span>Посты идут по времени публикации. Приватные черновики видит только автор.</span></div>${feedPolicyChips}</section>${profileRelationshipActions(ctx, profile)}`, 'bk-profile-card bk-profile-social-card');
+  return card(`${profileCover(ctx)}<div class="bk-card-header bk-profile-head">${img(profile.avatar, 'bk-avatar bk-avatar-lg', ctx.t('asset.alt.avatar'))}<div><h2 class="bk-title">${escapeHtml(profile.name)}</h2><div class="bk-meta">${escapeHtml(profile.handle)} · ${ctx.t(profile.roleKey)} · ${ctx.t(profile.profileTypeKey)} · ${escapeHtml(profile.city)}</div><div class="bk-chip-row">${profileStatusBadges(ctx, profile)}${badge(ctx.t(profile.trustLevelKey), 'positive')}${badge(ctx.t(profile.availabilityKey))}${relationshipBadge}${feedStateBadge}</div></div></div><div class="bk-kpi-grid bk-profile-social-kpis"><div class="bk-kpi"><div class="bk-kpi-value">${formatNumber(profile.reputation, ctx.state.locale)}</div><div class="bk-kpi-label">${ctx.t('profile.rating')}</div></div><div class="bk-kpi"><div class="bk-kpi-value">128</div><div class="bk-kpi-label">Друзья</div></div><div class="bk-kpi"><div class="bk-kpi-value">2.4K</div><div class="bk-kpi-label">Подписчики</div></div><div class="bk-kpi"><div class="bk-kpi-value">36</div><div class="bk-kpi-label">Посты</div></div></div><section class="bk-profile-feed-policy"><div><strong>Личная лента</strong><span>Посты идут по времени публикации. Приватные черновики видит только автор.</span></div>${feedPolicyChips}</section>${profileRelationshipActions(ctx, profile)}`, 'bk-profile-card bk-profile-social-card');
 }
 
 export function profileCompactCard(ctx: AppContext, profile: MockProfile): string {
