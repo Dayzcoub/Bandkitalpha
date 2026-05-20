@@ -21,7 +21,7 @@ jobs:
       VPS_USER: ${{ secrets.VPS_USER }}
       VPS_PORT: ${{ secrets.VPS_PORT }}
       VPS_DEPLOY_PATH: ${{ secrets.VPS_DEPLOY_PATH }}
-      SSH_KEY_PATH: ~/.ssh/bandkit_deploy_key
+      SSH_KEY_PATH: /home/runner/.ssh/bandkit_deploy_key
 
     steps:
       - name: Checkout repository
@@ -96,10 +96,10 @@ jobs:
         run: |
           set -euo pipefail
           PORT="${VPS_PORT:-22}"
-          mkdir -p ~/.ssh
+          mkdir -p "$HOME/.ssh"
           printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > "$SSH_KEY_PATH"
           chmod 600 "$SSH_KEY_PATH"
-          ssh-keyscan -p "$PORT" "$VPS_HOST" >> ~/.ssh/known_hosts
+          ssh-keyscan -p "$PORT" "$VPS_HOST" >> "$HOME/.ssh/known_hosts"
 
       - name: Deploy dist to VPS
         shell: bash
