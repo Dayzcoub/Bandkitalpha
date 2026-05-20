@@ -219,6 +219,19 @@ function addDirectChatNavigation(root: HTMLElement, ctx: AppContext): void {
   });
 }
 
+function moveComposerIntoChatThread(chatRoom: HTMLElement, thread: HTMLElement): HTMLElement | null {
+  const existingComposer = thread.querySelector<HTMLElement>('[data-chat-composer="true"]');
+  if (existingComposer) return existingComposer;
+
+  const externalComposer = chatRoom.nextElementSibling instanceof HTMLElement ? chatRoom.nextElementSibling : null;
+  if (!externalComposer || !externalComposer.querySelector('textarea')) return null;
+
+  externalComposer.dataset.chatComposer = 'true';
+  externalComposer.classList.add('bk-chat-composer-card', 'bk-chat-composer-inside-thread');
+  thread.appendChild(externalComposer);
+  return externalComposer;
+}
+
 function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
   if (ctx.match.route.path !== '/chats/:chatId') return;
   const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
@@ -229,6 +242,7 @@ function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
     thread.insertAdjacentHTML('afterbegin', chatHistoryChrome(ctx));
   }
 
+  const composerCard = moveComposerIntoChatThread(chatRoom, thread);
   const messages = Array.from(thread.querySelectorAll<HTMLElement>('.bk-social-card'));
   const unreadIndex = Math.min(chatUnreadIndex(ctx), Math.max(messages.length - 1, 0));
 
@@ -252,9 +266,7 @@ function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
     }
   });
 
-  const composerCard = chatRoom.nextElementSibling instanceof HTMLElement ? chatRoom.nextElementSibling : null;
   if (composerCard && !composerCard.querySelector('[data-chat-reply-context]')) {
-    composerCard.classList.add('bk-chat-composer-card');
     composerCard.insertAdjacentHTML('afterbegin', '<div class="bk-chat-reply-context" data-chat-reply-context hidden><div><span>Ответ с контекстом</span><strong data-chat-reply-author></strong><p data-chat-reply-body></p></div><button type="button" data-chat-reply-clear aria-label="Убрать контекст ответа">×</button></div>');
   }
 
