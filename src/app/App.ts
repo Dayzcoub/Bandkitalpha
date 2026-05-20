@@ -8,7 +8,46 @@ import { renderShell } from '../layouts/shells.js';
 const NAVIGATION_STATE_KEY = 'bkNavigationKey';
 const SCROLL_STORAGE_KEY = 'bandkit.scrollPositions.v1';
 
-const CHAT_ROOM_IDS = ['c1', 'c2', 'c3'] as const;
+const CHAT_ROOM_IDS = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15'] as const;
+
+const CHAT_STRESS_ROOMS = [
+  { id: 'c4', title: 'Stage Crew Helsinki', meta: 'Проектный чат · монтаж сцены сегодня', icon: '◇', badge: '6' },
+  { id: 'c5', title: 'Jazz Night Booking', meta: 'Событие · ожидает подтверждения', icon: '♪', badge: '2' },
+  { id: 'c6', title: 'Vocal Session Files', meta: 'Личный чат · файлы готовы', icon: '●', badge: '' },
+  { id: 'c7', title: 'Rider Review', meta: 'Документы · правки райдера', icon: '▤', badge: '4' },
+  { id: 'c8', title: 'Drum Tech Support', meta: 'Технический чат · backline', icon: '⚙', badge: '' },
+  { id: 'c9', title: 'Moderation Watch', meta: 'Safety · проверка жалобы', icon: '!', badge: '1' },
+  { id: 'c10', title: 'Festival Volunteers', meta: 'Групповой чат · волонтёры', icon: '◎', badge: '12' },
+  { id: 'c11', title: 'Studio A Booking', meta: 'Организация · бронь студии', icon: '□', badge: '' },
+  { id: 'c12', title: 'Setlist Sync', meta: 'Событие · сетлист обновлён', icon: '≡', badge: '3' },
+  { id: 'c13', title: 'Payment Safety Check', meta: 'Safety · оплата вне платформы', icon: '!', badge: '2' },
+  { id: 'c14', title: 'Orchestra Admins', meta: 'Админский чат · роли', icon: '♜', badge: '' },
+  { id: 'c15', title: 'New Guitarist Trial', meta: 'Личный чат · прослушивание', icon: '●', badge: '5' },
+] as const;
+
+const CHAT_STRESS_MESSAGES = [
+  ['Mira Voice', '18 мая 2026 г., 13:08', 'Ок, тогда я отмечу в событии перенос и приложу обновлённый файл с вокальными партиями.'],
+  ['Alex Rhythm', '18 мая 2026 г., 13:12', 'Проверил документы. Райдер лучше оставить закреплённым, чтобы новые участники сразу видели актуальную версию.'],
+  ['Stage Manager', '18 мая 2026 г., 13:18', 'По сцене: загрузка в 18:00, саундчек в 19:30. Нужен ответ от барабанщика по стойкам.'],
+  ['Mira Voice', '18 мая 2026 г., 13:24', 'Файлы отправила. В названии оставила дату, чтобы потом не путаться между версиями.'],
+  ['Alex Rhythm', '18 мая 2026 г., 13:31', 'Добавил участников события. У кого нет подтверждения, пусть нажмут RSVP до вечера.'],
+  ['Drum Tech', '18 мая 2026 г., 13:37', 'По железу всё ок, но нужно уточнить ковёр и дополнительную стойку под райд.'],
+  ['Band Manager', '18 мая 2026 г., 13:45', 'Важное: внешние ссылки не кидаем, все документы и файлы ведём через BandKit.'],
+  ['Mira Voice', '18 мая 2026 г., 13:52', 'Я могу приехать на 20 минут раньше, если нужно прогнать бэки отдельно.'],
+  ['Alex Rhythm', '18 мая 2026 г., 14:03', 'Да, давай так. Я обновлю тайминг в событии и отмечу это в закрепе.'],
+  ['Sound Engineer', '18 мая 2026 г., 14:15', 'Проверил входы. Если будет второй вокал, нужен ещё один канал и стойка.'],
+  ['Mira Voice', '18 мая 2026 г., 14:22', 'Второй вокал будет только на двух песнях, могу отметить это в setlist.'],
+  ['Stage Manager', '18 мая 2026 г., 14:35', 'Тогда оставляю один дополнительный канал в резерве.'],
+  ['Alex Rhythm', '18 мая 2026 г., 14:50', 'Отлично. Это как раз хороший пример, почему чат должен быть связан с документами и событием.'],
+  ['Band Manager', '18 мая 2026 г., 15:04', 'Согласен. Когда будет backend, это сообщение можно будет закрепить как решение.'],
+  ['Suspicious account', '18 мая 2026 г., 15:20', 'Я снова получил внешнюю ссылку от подозрительного контакта. Это надо уводить в safety flow.'],
+  ['Moderator', '18 мая 2026 г., 15:31', 'Да, такое сообщение должно сохранять anchor и контекст жалобы.'],
+  ['Alex Rhythm', '18 мая 2026 г., 15:48', 'Тестируем длинную историю: список чатов и окно сообщений должны скроллиться отдельно.'],
+  ['Mira Voice', '18 мая 2026 г., 16:03', 'Если сообщений станет много, composer всё равно должен оставаться внутри окна переписки снизу.'],
+  ['Drum Tech', '18 мая 2026 г., 16:19', 'Проверяю, как ведёт себя длинная строка: нужно чтобы текст переносился и не ломал ширину окна сообщений.'],
+  ['Band Manager', '18 мая 2026 г., 16:44', 'Ещё одно тестовое сообщение для проверки прокрутки. Старые сообщения должны уходить вверх, поле ввода не уезжает.'],
+  ['Alex Rhythm', '18 мая 2026 г., 17:02', 'Финальный тестовый блок: если всё нормально, список комнат слева тоже должен иметь собственный scroll.'],
+] as const;
 
 type BandKitHistoryState = Record<string, unknown> & {
   [NAVIGATION_STATE_KEY]?: string;
@@ -109,7 +148,7 @@ function chatContextMeta(ctx: AppContext): ChatContextMeta {
       visibilityChips: ['Личный чат', 'Trusted', 'Без внешних ссылок'],
     };
   }
-  if (id === 'c3') {
+  if (id === 'c3' || id === 'c9' || id === 'c13') {
     return {
       kind: 'safety',
       title: 'Проверка подозрительного контакта',
@@ -151,9 +190,9 @@ function chatRoomLogisticsContext(ctx: AppContext): string {
 
 function chatUnreadIndex(ctx: AppContext): number {
   const id = currentChatId(ctx);
-  if (id === 'c3') return 2;
-  if (id === 'c2') return 0;
-  return 1;
+  if (id === 'c3' || id === 'c9' || id === 'c13') return 16;
+  if (id === 'c2') return 8;
+  return 12;
 }
 
 function chatHistoryFilters(ctx: AppContext): string[] {
@@ -189,6 +228,36 @@ function chatHistoryChrome(ctx: AppContext): string {
   const filters = chatHistoryFilters(ctx).map((item, index) => `<button class="bk-chat-history-filter${index === 0 ? ' is-active' : ''}" type="button">${item}</button>`).join('');
   const pinned = chatPinnedText(ctx);
   return `<section class="bk-chat-history-toolbar" aria-label="Навигация по истории чата"><div class="bk-chat-history-search"><span aria-hidden="true">⌕</span><input type="search" aria-label="Поиск в чате" placeholder="Поиск в чате, документах и решениях" /></div><div class="bk-chat-history-filters">${filters}</div></section><section class="bk-chat-pinned-summary"><div><span>${pinned.meta}</span><strong>${pinned.title}</strong><p>${pinned.body}</p></div></section><button class="bk-chat-load-older" type="button">Загрузить старые сообщения</button><div class="bk-chat-date-divider">18 мая 2026</div>`;
+}
+
+function chatRoomRowHtml(room: (typeof CHAT_STRESS_ROOMS)[number]): string {
+  const badgeHtml = room.badge ? `<span class="bk-badge bk-badge-warning">${room.badge}</span>` : '';
+  return `<div class="bk-list-row bk-chat-stress-row" data-chat-stress-room="true"><span class="bk-nav-icon" aria-hidden="true">${room.icon}</span><span><span class="bk-list-row-title">${room.title}</span><span class="bk-meta">${room.meta}</span></span>${badgeHtml}</div>`;
+}
+
+function injectChatListSearchAndRooms(root: HTMLElement, ctx: AppContext): void {
+  if (ctx.match.route.path !== '/chats' && ctx.match.route.path !== '/chats/:chatId') return;
+  const lists = Array.from(root.querySelectorAll<HTMLElement>('.bk-chat-room-card .bk-list, .bk-chat-policy-card + .bk-card .bk-list'));
+  lists.forEach((list, listIndex) => {
+    if (!list.dataset.chatStressReady) {
+      list.insertAdjacentHTML('beforeend', CHAT_STRESS_ROOMS.map(chatRoomRowHtml).join(''));
+      list.dataset.chatStressReady = 'true';
+    }
+    const parent = list.parentElement;
+    if (!parent || parent.querySelector('.bk-chat-list-search')) return;
+    const search = document.createElement('label');
+    search.className = 'bk-chat-list-search';
+    search.innerHTML = `<span aria-hidden="true">⌕</span><input type="search" placeholder="Поиск по чатам" aria-label="Поиск по списку чатов" data-chat-list-search="${listIndex}" />`;
+    parent.insertBefore(search, list);
+    const input = search.querySelector<HTMLInputElement>('input');
+    input?.addEventListener('input', () => {
+      const value = input.value.trim().toLowerCase();
+      Array.from(list.querySelectorAll<HTMLElement>('.bk-list-row')).forEach((row) => {
+        const matched = !value || row.textContent?.toLowerCase().includes(value);
+        row.hidden = !matched;
+      });
+    });
+  });
 }
 
 function addDirectChatNavigation(root: HTMLElement, ctx: AppContext): void {
@@ -232,6 +301,16 @@ function moveComposerIntoChatThread(chatRoom: HTMLElement, thread: HTMLElement):
   return externalComposer;
 }
 
+function injectStressMessages(thread: HTMLElement): void {
+  if (thread.dataset.chatStressMessagesReady === 'true') return;
+  const firstMessage = thread.querySelector<HTMLElement>('.bk-social-card');
+  const anchor = firstMessage?.parentElement === thread ? firstMessage : null;
+  const html = CHAT_STRESS_MESSAGES.map(([author, time, body]) => `<article class="bk-card bk-social-card bk-chat-stress-message"><div class="bk-card-header"><span class="bk-avatar" aria-hidden="true">${author.slice(0, 1)}</span><div><h3 class="bk-card-title">${author}</h3><div class="bk-meta">${time}</div></div></div><div class="bk-card-body"><p>${body}</p></div></article>`).join('');
+  if (anchor) anchor.insertAdjacentHTML('beforebegin', html);
+  else thread.insertAdjacentHTML('beforeend', html);
+  thread.dataset.chatStressMessagesReady = 'true';
+}
+
 function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
   if (ctx.match.route.path !== '/chats/:chatId') return;
   const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
@@ -242,6 +321,7 @@ function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
     thread.insertAdjacentHTML('afterbegin', chatHistoryChrome(ctx));
   }
 
+  injectStressMessages(thread);
   const composerCard = moveComposerIntoChatThread(chatRoom, thread);
   const messages = Array.from(thread.querySelectorAll<HTMLElement>('.bk-social-card'));
   const unreadIndex = Math.min(chatUnreadIndex(ctx), Math.max(messages.length - 1, 0));
@@ -308,6 +388,7 @@ function decorateRenderedPage(root: HTMLElement, ctx: AppContext): void {
       chatRoom.insertAdjacentHTML('beforebegin', chatRoomLogisticsContext(ctx));
     }
   }
+  injectChatListSearchAndRooms(root, ctx);
   addDirectChatNavigation(root, ctx);
   decorateChatMessageHistory(root, ctx);
 }
