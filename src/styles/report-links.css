@@ -8,29 +8,23 @@
   align-self: center;
   max-width: max-content;
   min-width: 0;
-  padding: 2px 4px;
+  padding: 1px 3px;
   border-radius: 999px;
-  color: rgba(148, 163, 184, .54);
-  font-size: .68rem;
+  color: rgba(148, 163, 184, .38);
+  font-size: .66rem;
   font-weight: 700;
   line-height: 1;
   text-decoration: none;
-  opacity: .7;
+  opacity: .58;
   transition: color .16s ease, opacity .16s ease, background .16s ease;
 }
 
 .bk-report-link:hover,
 .bk-report-link:focus-visible {
-  color: rgba(251, 113, 133, .9);
-  background: rgba(251, 113, 133, .08);
-  opacity: 1;
+  color: rgba(251, 113, 133, .72);
+  background: rgba(251, 113, 133, .045);
+  opacity: .86;
   outline: none;
-}
-
-.bk-compact-card > .bk-report-link {
-  justify-self: end;
-  align-self: end;
-  margin-top: -2px;
 }
 
 .bk-entity-actions .bk-report-link,
@@ -38,13 +32,11 @@
 .bk-profile-social-actions .bk-report-link,
 .bk-offer-card .bk-report-link {
   align-self: center;
-  min-height: 28px;
+  min-height: 24px;
 }
 
 @media (max-width: 767px) {
-  .bk-compact-card > .bk-report-link {
-    justify-self: start;
-    margin-top: -4px;
-    font-size: .66rem;
+  .bk-report-link {
+    font-size: .64rem;
   }
 }
