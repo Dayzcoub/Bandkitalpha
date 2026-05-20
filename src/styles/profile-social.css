@@ -10,26 +10,23 @@
   min-width: 0;
 }
 
-.bk-profile-return-row {
+.bk-profile-cover-stack {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.bk-profile-cover-stack .bk-cover {
+  display: block;
+  width: 100%;
+  max-width: none;
+}
+
+.bk-profile-cover-back {
   position: absolute;
   top: 12px;
   left: 12px;
   z-index: 4;
-  display: inline-flex;
-  width: auto;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--bk-muted);
-  font-size: .84rem;
-  line-height: 1.25;
-}
-
-.bk-profile-return-row span {
-  display: none;
-}
-
-.bk-profile-return-button {
   min-height: 34px;
   width: auto;
   padding-inline: 12px;
@@ -38,6 +35,10 @@
   background: rgba(7, 12, 22, .68);
   backdrop-filter: blur(18px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
+}
+
+.bk-profile-return-row {
+  display: none;
 }
 
 .bk-profile-social-card .bk-profile-head {
@@ -68,10 +69,6 @@
 .bk-social-card .bk-chip-row,
 .bk-social-card .bk-action-row {
   max-width: 100%;
-}
-
-.bk-profile-social-card .bk-cover {
-  max-width: none;
 }
 
 .bk-profile-social-kpis {
@@ -177,16 +174,10 @@
     gap: 12px;
   }
 
-  .bk-profile-return-row {
+  .bk-profile-cover-back {
     top: 10px;
     left: 10px;
-    align-items: center;
-    border-radius: 999px;
-  }
-
-  .bk-profile-return-button {
     min-height: 32px;
-    width: auto;
     justify-content: center;
     padding-inline: 11px;
   }
