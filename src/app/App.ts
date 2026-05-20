@@ -8,6 +8,8 @@ import { renderShell } from '../layouts/shells.js';
 const NAVIGATION_STATE_KEY = 'bkNavigationKey';
 const SCROLL_STORAGE_KEY = 'bandkit.scrollPositions.v1';
 
+const CHAT_ROOM_IDS = ['c1', 'c2', 'c3'] as const;
+
 type BandKitHistoryState = Record<string, unknown> & {
   [NAVIGATION_STATE_KEY]?: string;
 };
@@ -78,11 +80,26 @@ function chatRoomLogisticsContext(): string {
   return `<section class="bk-card bk-chat-context-card" aria-label="Контекст чата"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Контекст чата</div><h3 class="bk-card-title">Групповой чат проекта и события</h3></div><div class="bk-chip-row"><span class="bk-badge bk-badge-positive">Проектный</span><span class="bk-badge">Событие</span><span class="bk-badge">Документы</span></div></div><p class="bk-state-copy">Этот чат связан с проектом, ближайшим событием и рабочими документами. Сообщения видят только участники соответствующего контекста, а внешние ссылки ограничены политикой безопасности.</p><div class="bk-card-grid bk-card-grid-3"><a class="bk-chat-context-link" href="/bands/b1" data-route="/bands/b1"><span class="bk-chat-context-icon" aria-hidden="true">♬</span><span><strong>Northern Lights Band</strong><small>Проект · участники и менеджеры</small></span></a><a class="bk-chat-context-link" href="/events/e1" data-route="/events/e1"><span class="bk-chat-context-icon" aria-hidden="true">◷</span><span><strong>Главная репетиция</strong><small>Событие · участники события</small></span></a><a class="bk-chat-context-link" href="/documents/d1" data-route="/documents/d1"><span class="bk-chat-context-icon" aria-hidden="true">▤</span><span><strong>Технический райдер</strong><small>Документ · чтение по роли</small></span></a></div><section class="bk-profile-feed-policy"><div><strong>Кто видит сообщения</strong><span>Участники проекта/события с нужной ролью. Подписка или дружба сами по себе доступ к чату не дают.</span></div><div class="bk-chip-row"><span class="bk-badge bk-badge-positive">Участники</span><span class="bk-badge">Менеджер</span><span class="bk-badge bk-badge-warning">Без внешних ссылок</span></div></section></section>`;
 }
 
+function addDirectChatNavigation(root: HTMLElement, ctx: AppContext): void {
+  if (ctx.match.route.path !== '/chats' && ctx.match.route.path !== '/chats/:chatId') return;
+  const chatRows = Array.from(root.querySelectorAll<HTMLElement>('.bk-chat-room-card .bk-list > .bk-list-row, .bk-chat-policy-card + .bk-card .bk-list > .bk-list-row'));
+  chatRows.slice(0, CHAT_ROOM_IDS.length).forEach((row, index) => {
+    if (row.dataset.chatNavigationReady === 'true') return;
+    const route = `/chats/${CHAT_ROOM_IDS[index]}`;
+    row.dataset.chatNavigationReady = 'true';
+    row.classList.add('bk-chat-nav-row');
+    row.insertAdjacentHTML('beforeend', `<button class="bk-button bk-button-secondary bk-chat-nav-open" type="button" data-route="${route}">Открыть</button>`);
+  });
+}
+
 function decorateRenderedPage(root: HTMLElement, ctx: AppContext): void {
-  if (ctx.match.route.path !== '/chats/:chatId') return;
-  const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
-  if (!chatRoom || root.querySelector('.bk-chat-context-card')) return;
-  chatRoom.insertAdjacentHTML('beforebegin', chatRoomLogisticsContext());
+  if (ctx.match.route.path === '/chats/:chatId') {
+    const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
+    if (chatRoom && !root.querySelector('.bk-chat-context-card')) {
+      chatRoom.insertAdjacentHTML('beforebegin', chatRoomLogisticsContext());
+    }
+  }
+  addDirectChatNavigation(root, ctx);
 }
 
 export function createBandKitApp(root: HTMLElement) {
