@@ -19,6 +19,17 @@ type RenderOptions = {
   restoreKey?: string;
 };
 
+type ChatContextMeta = {
+  kind: 'project' | 'direct' | 'safety';
+  title: string;
+  chips: string[];
+  copy: string;
+  links: Array<{ route: string; icon: string; title: string; meta: string }>;
+  visibilityTitle: string;
+  visibilityCopy: string;
+  visibilityChips: string[];
+};
+
 function createNavigationKey(): string {
   return `bk-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
 }
@@ -76,18 +87,82 @@ function restoreScrollPosition(key: string): void {
   });
 }
 
-function chatRoomLogisticsContext(): string {
-  return `<section class="bk-card bk-chat-context-card" aria-label="Контекст чата"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Контекст чата</div><h3 class="bk-card-title">Групповой чат проекта и события</h3></div><div class="bk-chip-row"><span class="bk-badge bk-badge-positive">Проектный</span><span class="bk-badge">Событие</span><span class="bk-badge">Документы</span></div></div><p class="bk-state-copy">Этот чат связан с проектом, ближайшим событием и рабочими документами. Сообщения видят только участники соответствующего контекста, а внешние ссылки ограничены политикой безопасности.</p><div class="bk-card-grid bk-card-grid-3"><a class="bk-chat-context-link" href="/bands/b1" data-route="/bands/b1"><span class="bk-chat-context-icon" aria-hidden="true">♬</span><span><strong>Northern Lights Band</strong><small>Проект · участники и менеджеры</small></span></a><a class="bk-chat-context-link" href="/events/e1" data-route="/events/e1"><span class="bk-chat-context-icon" aria-hidden="true">◷</span><span><strong>Главная репетиция</strong><small>Событие · участники события</small></span></a><a class="bk-chat-context-link" href="/documents/d1" data-route="/documents/d1"><span class="bk-chat-context-icon" aria-hidden="true">▤</span><span><strong>Технический райдер</strong><small>Документ · чтение по роли</small></span></a></div><section class="bk-profile-feed-policy"><div><strong>Кто видит сообщения</strong><span>Участники проекта/события с нужной ролью. Подписка или дружба сами по себе доступ к чату не дают.</span></div><div class="bk-chip-row"><span class="bk-badge bk-badge-positive">Участники</span><span class="bk-badge">Менеджер</span><span class="bk-badge bk-badge-warning">Без внешних ссылок</span></div></section></section>`;
+function currentChatId(ctx: AppContext): string {
+  return ctx.match.params.chatId ?? ctx.path.split('/').filter(Boolean).at(-1) ?? 'c1';
+}
+
+function chatContextMeta(ctx: AppContext): ChatContextMeta {
+  const id = currentChatId(ctx);
+  if (id === 'c2') {
+    return {
+      kind: 'direct',
+      title: 'Личный чат с Mira Voice',
+      chips: ['Личный', 'Trusted', 'Файлы'],
+      copy: 'Это личный диалог. Он не даёт доступ к проектным документам или workspace, но может быть связан с будущим приглашением или обменом файлами.',
+      links: [
+        { route: '/profile/p2', icon: '●', title: 'Mira Voice', meta: 'Профиль · доверенный контакт' },
+        { route: '/documents/d3', icon: '▤', title: 'Вокальные файлы', meta: 'Документ · личный обмен' },
+        { route: '/events/e2', icon: '◷', title: 'Клубный концерт', meta: 'Возможное событие · без автодоступа' },
+      ],
+      visibilityTitle: 'Кто видит сообщения',
+      visibilityCopy: 'Только участники личного диалога. Дружба или подписка не открывают этот чат другим пользователям.',
+      visibilityChips: ['Личный чат', 'Trusted', 'Без внешних ссылок'],
+    };
+  }
+  if (id === 'c3') {
+    return {
+      kind: 'safety',
+      title: 'Проверка подозрительного контакта',
+      chips: ['Личный', 'Safety', 'Link policy'],
+      copy: 'Этот чат помечен как потенциально подозрительный. Он нужен для проверки контакта, блокировки внешних ссылок и передачи жалобы в модерацию при необходимости.',
+      links: [
+        { route: '/complaints/new', icon: '!', title: 'Пожаловаться', meta: 'Safety flow · сохранить контекст' },
+        { route: '/moderation', icon: '⚑', title: 'Очередь модерации', meta: 'Для модераторов · проверка риска' },
+        { route: '/settings/security', icon: '◇', title: 'Безопасность', meta: '2FA · защита аккаунта' },
+      ],
+      visibilityTitle: 'Что ограничено',
+      visibilityCopy: 'Внешние ссылки, просьбы об оплате вне платформы и подозрительные контакты должны блокироваться или отправляться на проверку.',
+      visibilityChips: ['Ссылка заблокирована', 'Report ready', 'Не платить вне платформы'],
+    };
+  }
+  return {
+    kind: 'project',
+    title: 'Групповой чат проекта и события',
+    chips: ['Проектный', 'Событие', 'Документы'],
+    copy: 'Этот чат связан с проектом, ближайшим событием и рабочими документами. Сообщения видят только участники соответствующего контекста, а внешние ссылки ограничены политикой безопасности.',
+    links: [
+      { route: '/bands/b1', icon: '♬', title: 'Northern Lights Band', meta: 'Проект · участники и менеджеры' },
+      { route: '/events/e1', icon: '◷', title: 'Главная репетиция', meta: 'Событие · участники события' },
+      { route: '/documents/d1', icon: '▤', title: 'Технический райдер', meta: 'Документ · чтение по роли' },
+    ],
+    visibilityTitle: 'Кто видит сообщения',
+    visibilityCopy: 'Участники проекта/события с нужной ролью. Подписка или дружба сами по себе доступ к чату не дают.',
+    visibilityChips: ['Участники', 'Менеджер', 'Без внешних ссылок'],
+  };
+}
+
+function chatRoomLogisticsContext(ctx: AppContext): string {
+  const meta = chatContextMeta(ctx);
+  const chipHtml = meta.chips.map((chip, index) => `<span class="bk-badge${index === 0 ? ' bk-badge-positive' : ''}">${chip}</span>`).join('');
+  const linkHtml = meta.links.map((link) => `<a class="bk-chat-context-link" href="${link.route}" data-route="${link.route}"><span class="bk-chat-context-icon" aria-hidden="true">${link.icon}</span><span><strong>${link.title}</strong><small>${link.meta}</small></span></a>`).join('');
+  const visibilityChips = meta.visibilityChips.map((chip, index) => `<span class="bk-badge${index === 0 ? ' bk-badge-positive' : index === 2 ? ' bk-badge-warning' : ''}">${chip}</span>`).join('');
+  return `<section class="bk-card bk-chat-context-card" data-chat-kind="${meta.kind}" aria-label="Контекст чата"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Контекст чата</div><h3 class="bk-card-title">${meta.title}</h3></div><div class="bk-chip-row">${chipHtml}</div></div><p class="bk-state-copy">${meta.copy}</p><div class="bk-card-grid bk-card-grid-3">${linkHtml}</div><section class="bk-profile-feed-policy"><div><strong>${meta.visibilityTitle}</strong><span>${meta.visibilityCopy}</span></div><div class="bk-chip-row">${visibilityChips}</div></section></section>`;
 }
 
 function addDirectChatNavigation(root: HTMLElement, ctx: AppContext): void {
   if (ctx.match.route.path !== '/chats' && ctx.match.route.path !== '/chats/:chatId') return;
   const chatRows = Array.from(root.querySelectorAll<HTMLElement>('.bk-chat-room-card .bk-list > .bk-list-row, .bk-chat-policy-card + .bk-card .bk-list > .bk-list-row'));
+  const activeChatId = currentChatId(ctx);
   chatRows.slice(0, CHAT_ROOM_IDS.length).forEach((row, index) => {
     if (row.dataset.chatNavigationReady === 'true') return;
-    const route = `/chats/${CHAT_ROOM_IDS[index]}`;
+    const chatId = CHAT_ROOM_IDS[index];
+    const route = `/chats/${chatId}`;
     row.dataset.chatNavigationReady = 'true';
     row.classList.add('bk-chat-nav-row');
+    if (ctx.match.route.path === '/chats/:chatId' && chatId === activeChatId) {
+      row.classList.add('is-active');
+      row.setAttribute('aria-current', 'true');
+    }
     row.insertAdjacentHTML('beforeend', `<button class="bk-button bk-button-secondary bk-chat-nav-open" type="button" data-route="${route}">Открыть</button>`);
   });
 }
@@ -96,7 +171,7 @@ function decorateRenderedPage(root: HTMLElement, ctx: AppContext): void {
   if (ctx.match.route.path === '/chats/:chatId') {
     const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
     if (chatRoom && !root.querySelector('.bk-chat-context-card')) {
-      chatRoom.insertAdjacentHTML('beforebegin', chatRoomLogisticsContext());
+      chatRoom.insertAdjacentHTML('beforebegin', chatRoomLogisticsContext(ctx));
     }
   }
   addDirectChatNavigation(root, ctx);
