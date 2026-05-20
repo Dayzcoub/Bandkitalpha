@@ -1,6 +1,7 @@
 /* Profile social layer: friendship, follows, personal feed policy and relationship controls. */
 
 .bk-profile-social-card {
+  position: relative;
   overflow: hidden;
 }
 
@@ -10,23 +11,33 @@
 }
 
 .bk-profile-return-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--bk-space-2);
-  padding: var(--bk-space-2) var(--bk-space-3);
-  border: 1px solid var(--bk-border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .035);
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 4;
+  display: inline-flex;
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--bk-muted);
   font-size: .84rem;
   line-height: 1.25;
 }
 
+.bk-profile-return-row span {
+  display: none;
+}
+
 .bk-profile-return-button {
-  min-height: 32px;
+  min-height: 34px;
+  width: auto;
   padding-inline: 12px;
   border-radius: 999px;
+  border-color: rgba(148, 163, 184, .28);
+  background: rgba(7, 12, 22, .68);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
 }
 
 .bk-profile-social-card .bk-profile-head {
@@ -167,13 +178,17 @@
   }
 
   .bk-profile-return-row {
-    align-items: stretch;
-    border-radius: 18px;
+    top: 10px;
+    left: 10px;
+    align-items: center;
+    border-radius: 999px;
   }
 
   .bk-profile-return-button {
-    width: 100%;
+    min-height: 32px;
+    width: auto;
     justify-content: center;
+    padding-inline: 11px;
   }
 
   .bk-profile-social-card .bk-profile-head {
