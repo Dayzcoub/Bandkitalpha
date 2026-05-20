@@ -83,6 +83,14 @@ jobs:
       - name: Build static app
         run: npm run build
 
+      - name: Validate local build output
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f dist/index.html
+          test -d dist/js
+          test -d dist/styles
+
       - name: Validate VPS secrets
         shell: bash
         run: |
@@ -109,11 +117,23 @@ jobs:
           DEPLOY_PATH="${VPS_DEPLOY_PATH:-/var/www/bandkit}"
           RELEASE_ID="${GITHUB_SHA::12}"
           REMOTE_RELEASE="$DEPLOY_PATH/releases/$RELEASE_ID"
+          REMOTE_TMP="$DEPLOY_PATH/releases/.tmp-$RELEASE_ID"
           SSH_CMD="ssh -i $SSH_KEY_PATH -p $PORT -o IdentitiesOnly=yes"
 
-          $SSH_CMD "$VPS_USER@$VPS_HOST" "mkdir -p '$REMOTE_RELEASE' '$DEPLOY_PATH/releases'"
-          rsync -az --delete -e "$SSH_CMD" dist/ "$VPS_USER@$VPS_HOST:$REMOTE_RELEASE/"
-          $SSH_CMD "$VPS_USER@$VPS_HOST" "ln -sfn '$REMOTE_RELEASE' '$DEPLOY_PATH/current' && find '$DEPLOY_PATH/releases' -maxdepth 1 -mindepth 1 -type d | sort | head -n -5 | xargs -r rm -rf"
+          $SSH_CMD "$VPS_USER@$VPS_HOST" "set -euo pipefail; mkdir -p '$DEPLOY_PATH/releases'; rm -rf '$REMOTE_TMP'; mkdir -p '$REMOTE_TMP'"
+          rsync -az --delete -e "$SSH_CMD" dist/ "$VPS_USER@$VPS_HOST:$REMOTE_TMP/"
+          $SSH_CMD "$VPS_USER@$VPS_HOST" "set -euo pipefail
+            test -f '$REMOTE_TMP/index.html'
+            test -d '$REMOTE_TMP/js'
+            test -d '$REMOTE_TMP/styles'
+            rm -rf '$REMOTE_RELEASE'
+            mv '$REMOTE_TMP' '$REMOTE_RELEASE'
+            test -f '$REMOTE_RELEASE/index.html'
+            ln -sfn '$REMOTE_RELEASE' '$DEPLOY_PATH/current'
+            test -f '$DEPLOY_PATH/current/index.html'
+            CURRENT_REAL=\$(readlink -f '$DEPLOY_PATH/current')
+            find '$DEPLOY_PATH/releases' -maxdepth 1 -mindepth 1 -type d ! -path \"\$CURRENT_REAL\" -printf '%T@ %p\\n' | sort -rn | awk 'NR>5 {print substr(\$0, index(\$0, \$2))}' | xargs -r rm -rf
+          "
 
       - name: Deployment summary
         run: |
