@@ -1,12 +1,80 @@
 /* Chat history logistics: unread landing, search, filters, pinned context and reply context. */
 
+.bk-chat-history-dropdown,
+.bk-chat-pinned-dropdown {
+  display: block;
+  margin: 0 0 8px;
+}
+
+.bk-chat-history-dropdown summary,
+.bk-chat-pinned-dropdown summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 20px;
+  background: rgba(31, 36, 46, .86);
+  color: var(--bk-text);
+  cursor: pointer;
+  list-style: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+
+.bk-chat-history-dropdown summary::-webkit-details-marker,
+.bk-chat-pinned-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.bk-chat-history-dropdown summary::after,
+.bk-chat-pinned-dropdown summary::after {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background-color: rgba(226, 232, 240, .62);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform .16s ease;
+}
+
+.bk-chat-history-dropdown[open] summary::after,
+.bk-chat-pinned-dropdown[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.bk-chat-history-dropdown summary span,
+.bk-chat-history-dropdown summary small,
+.bk-chat-pinned-dropdown summary span,
+.bk-chat-pinned-dropdown summary small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bk-chat-history-dropdown summary span,
+.bk-chat-pinned-dropdown summary span {
+  font-weight: 850;
+  letter-spacing: -.015em;
+}
+
+.bk-chat-history-dropdown summary small,
+.bk-chat-pinned-dropdown summary small {
+  color: var(--bk-muted);
+  font-size: .72rem;
+  font-weight: 800;
+}
+
 .bk-chat-history-toolbar {
   display: grid;
-  gap: var(--bk-space-3);
-  padding: 12px;
-  border: 1px solid rgba(96, 165, 250, .18);
-  border-radius: var(--bk-radius-card);
-  background: rgba(15, 23, 42, .34);
+  gap: 8px;
+  margin-top: 6px;
+  padding: 8px;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 18px;
+  background: rgba(8, 14, 24, .94);
 }
 
 .bk-chat-history-search {
@@ -16,10 +84,11 @@
   gap: 10px;
   min-height: 40px;
   padding: 0 12px;
-  border: 1px solid rgba(148, 163, 184, .18);
-  border-radius: 999px;
-  background: rgba(15, 23, 42, .54);
+  border: 1px solid rgba(148, 163, 184, .17);
+  border-radius: 20px;
+  background: rgba(31, 36, 46, .86);
   color: var(--bk-muted);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
 }
 
 .bk-chat-history-search input {
@@ -30,11 +99,12 @@
   background: transparent;
   color: var(--bk-text);
   font: inherit;
+  font-size: .86rem;
 }
 
 .bk-chat-history-filters {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   overflow-x: auto;
   padding-bottom: 2px;
   scrollbar-width: none;
@@ -47,15 +117,15 @@
 
 .bk-chat-history-filter {
   flex: 0 0 auto;
-  min-height: 30px;
-  padding: 5px 10px;
-  border: 1px solid rgba(148, 163, 184, .18);
+  min-height: 28px;
+  padding: 4px 9px;
+  border: 1px solid rgba(148, 163, 184, .16);
   border-radius: 999px;
-  background: rgba(15, 23, 42, .48);
+  background: rgba(31, 36, 46, .72);
   color: var(--bk-muted);
   cursor: pointer;
   font: inherit;
-  font-size: .76rem;
+  font-size: .72rem;
   font-weight: 800;
 }
 
@@ -68,10 +138,11 @@
 .bk-chat-pinned-summary {
   display: grid;
   gap: 5px;
+  margin-top: 6px;
   padding: 12px;
   border: 1px solid rgba(250, 204, 21, .22);
   border-left: 3px solid rgba(250, 204, 21, .58);
-  border-radius: var(--bk-radius-control);
+  border-radius: 16px;
   background: rgba(250, 204, 21, .075);
 }
 
@@ -258,7 +329,18 @@
 
 @media (max-width: 767px) {
   .bk-chat-history-toolbar {
-    padding: 10px;
+    padding: 8px;
+  }
+
+  .bk-chat-history-dropdown summary,
+  .bk-chat-pinned-dropdown summary {
+    min-height: 40px;
+    padding: 7px 10px;
+  }
+
+  .bk-chat-history-dropdown summary small,
+  .bk-chat-pinned-dropdown summary small {
+    display: none;
   }
 
   .bk-chat-message-actions {
