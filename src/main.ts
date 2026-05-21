@@ -1,4 +1,5 @@
 import { createBandKitApp } from './app/App.js';
+import { initChatMessageControls } from './modules/ChatMessageControls.js';
 
 const root = document.getElementById('app');
 if (!root) {
@@ -6,3 +7,4 @@ if (!root) {
 }
 
 createBandKitApp(root);
+initChatMessageControls(root);
