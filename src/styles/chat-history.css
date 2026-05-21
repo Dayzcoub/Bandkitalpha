@@ -516,45 +516,6 @@
   line-height: 1;
 }
 
-.bk-chat-history-dropdown[open] {
-  position: sticky;
-}
-
-.bk-chat-history-dropdown[open] summary {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  z-index: 2;
-  display: grid;
-  width: 34px;
-  height: 34px;
-  min-height: 34px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  box-shadow: none;
-}
-
-.bk-chat-history-dropdown[open] summary::before,
-.bk-chat-history-dropdown[open] summary small,
-.bk-chat-history-dropdown[open] summary span {
-  display: none;
-}
-
-.bk-chat-history-dropdown[open] summary::after {
-  grid-column: 1;
-  place-self: center;
-}
-
-.bk-chat-history-dropdown[open] .bk-chat-history-toolbar {
-  margin-top: 0;
-}
-
-.bk-chat-history-dropdown[open] .bk-chat-history-search {
-  padding-right: 40px;
-}
-
 @media (max-width: 767px) {
   .bk-chat-history-dropdown,
   .bk-chat-pinned-dropdown {
@@ -570,12 +531,6 @@
     padding: 0 10px;
   }
 
-  .bk-chat-history-dropdown[open] summary {
-    top: 11px;
-    right: 13px;
-    padding: 0;
-  }
-
   .bk-chat-pinned-summary,
   .bk-chat-attachment-menu-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -587,89 +542,5 @@
 
   .bk-chat-message-actions {
     justify-content: flex-start;
-  }
-}
-
-/* Chat search v2: search stays visible, filters appear only during search focus, pinned message is a compact row. */
-.bk-chat-history-dropdown,
-.bk-chat-history-dropdown[open] {
-  position: sticky;
-  top: 0;
-  z-index: 9;
-  display: block;
-  margin: 0 0 8px;
-  padding: 2px 0 0;
-  background: rgba(8, 14, 24, .94);
-}
-
-.bk-chat-history-dropdown > summary,
-.bk-chat-history-dropdown[open] > summary {
-  display: none !important;
-}
-
-.bk-chat-history-dropdown:not([open]) > .bk-chat-history-toolbar,
-.bk-chat-history-dropdown[open] > .bk-chat-history-toolbar {
-  display: grid !important;
-}
-
-.bk-chat-history-dropdown > .bk-chat-history-toolbar,
-.bk-chat-history-dropdown[open] > .bk-chat-history-toolbar {
-  gap: 6px;
-  margin-top: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-.bk-chat-history-dropdown > .bk-chat-history-toolbar > .bk-chat-history-search {
-  min-height: 40px;
-}
-
-.bk-chat-history-dropdown > .bk-chat-history-toolbar > .bk-chat-history-filters {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  padding-bottom: 0;
-  pointer-events: none;
-  transition: max-height .16s ease, opacity .16s ease;
-}
-
-.bk-chat-history-dropdown:focus-within > .bk-chat-history-toolbar > .bk-chat-history-filters {
-  max-height: 40px;
-  opacity: 1;
-  padding-bottom: 2px;
-  pointer-events: auto;
-}
-
-.bk-chat-history-dropdown > .bk-chat-history-toolbar > .bk-chat-pinned-summary {
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
-  min-height: 36px;
-  padding: 8px 10px;
-  border-radius: 12px;
-}
-
-.bk-chat-history-dropdown > .bk-chat-history-toolbar > .bk-chat-pinned-summary span {
-  display: none;
-}
-
-.bk-chat-history-dropdown > .bk-chat-history-toolbar > .bk-chat-pinned-summary strong {
-  font-size: .78rem;
-  line-height: 1.15;
-}
-
-.bk-chat-history-dropdown > .bk-chat-history-toolbar > .bk-chat-pinned-summary p {
-  display: -webkit-box;
-  overflow: hidden;
-  font-size: .72rem;
-  line-height: 1.25;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
-
-@media (max-width: 767px) {
-  .bk-chat-history-dropdown > .bk-chat-history-toolbar > .bk-chat-pinned-summary {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
