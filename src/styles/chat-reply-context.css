@@ -1,0 +1,68 @@
+/* Chat reply context compact polish. Keeps reply preview inside the sticky composer without changing runtime logic. */
+
+.bk-chat-composer-inside-thread .bk-chat-reply-context {
+  position: relative;
+  grid-column: 2 / 3;
+  align-self: end;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 54px;
+  min-height: 42px;
+  margin: 0 0 2px;
+  padding: 7px 34px 7px 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.bk-chat-composer-inside-thread .bk-chat-reply-context[hidden] {
+  display: none !important;
+}
+
+.bk-chat-composer-inside-thread .bk-chat-reply-context strong,
+.bk-chat-composer-inside-thread .bk-chat-reply-context p {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.bk-chat-composer-inside-thread .bk-chat-reply-context p {
+  display: -webkit-box;
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.bk-chat-composer-inside-thread .bk-chat-reply-context button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  padding: 0;
+  line-height: 1;
+}
+
+.bk-chat-composer-inside-thread .bk-chat-reply-context button:focus-visible {
+  outline: 2px solid rgba(96, 165, 250, .48);
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  .bk-chat-composer-inside-thread .bk-chat-reply-context {
+    grid-column: 1 / -1;
+    max-height: 50px;
+    min-height: 40px;
+    margin-bottom: 1px;
+    padding: 6px 32px 6px 9px;
+  }
+
+  .bk-chat-composer-inside-thread .bk-chat-reply-context strong,
+  .bk-chat-composer-inside-thread .bk-chat-reply-context p {
+    font-size: .7rem;
+  }
+}
