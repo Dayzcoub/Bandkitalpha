@@ -29,18 +29,26 @@
 
 .bk-chat-history-dropdown summary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   min-height: 40px;
-  padding: 8px 12px;
-  border: 1px solid rgba(148, 163, 184, .16);
+  padding: 0 12px;
+  border: 1px solid rgba(148, 163, 184, .17);
   border-radius: 20px;
   background: rgba(31, 36, 46, .86);
-  color: var(--bk-text);
+  color: var(--bk-muted);
   cursor: pointer;
   list-style: none;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+
+.bk-chat-history-dropdown summary::before {
+  content: '⌕';
+  grid-column: 1;
+  color: rgba(148, 163, 184, .8);
+  font-size: .9rem;
+  line-height: 1;
 }
 
 .bk-chat-pinned-dropdown summary {
@@ -73,14 +81,21 @@
 
 .bk-chat-history-dropdown summary small {
   grid-column: 2;
-  justify-self: end;
+  justify-self: stretch;
   min-width: 0;
   overflow: hidden;
-  color: var(--bk-muted);
-  font-size: .72rem;
-  font-weight: 800;
+  color: transparent;
+  font-size: 0;
+  font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.bk-chat-history-dropdown summary small::before {
+  content: 'Поиск в чате, документах и решениях';
+  color: rgba(148, 163, 184, .78);
+  font-size: .86rem;
+  font-weight: 500;
 }
 
 .bk-chat-history-toolbar {
@@ -513,7 +528,7 @@
 
   .bk-chat-history-dropdown summary {
     min-height: 40px;
-    padding: 7px 10px;
+    padding: 0 10px;
   }
 
   .bk-chat-pinned-summary,
