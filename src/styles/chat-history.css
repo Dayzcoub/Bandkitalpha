@@ -18,8 +18,13 @@
   background: transparent;
 }
 
-.bk-chat-history-dropdown[open] + .bk-chat-pinned-dropdown {
+.bk-chat-history-dropdown[open] + .bk-chat-pinned-dropdown,
+.bk-chat-thread:has(.bk-chat-history-dropdown[open]) .bk-chat-pinned-dropdown {
   display: block;
+}
+
+.bk-chat-thread:has(.bk-chat-history-dropdown[open]) .bk-chat-pinned-dropdown > .bk-chat-pinned-summary {
+  display: grid;
 }
 
 .bk-chat-history-dropdown summary {
