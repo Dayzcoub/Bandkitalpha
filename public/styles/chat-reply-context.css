@@ -1,15 +1,20 @@
 /* Chat reply context compact polish. Keeps reply preview inside the sticky composer without changing runtime logic. */
 
+.bk-chat-composer-inside-thread {
+  grid-template-rows: auto auto;
+}
+
 .bk-chat-composer-inside-thread .bk-chat-reply-context {
   position: relative;
-  grid-column: 2 / 3;
-  align-self: end;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-self: stretch;
   min-width: 0;
   width: 100%;
   max-width: 100%;
   max-height: 54px;
   min-height: 42px;
-  margin: 0 0 2px;
+  margin: 0 0 6px;
   padding: 7px 34px 7px 10px;
   box-sizing: border-box;
   overflow: hidden;
@@ -17,6 +22,26 @@
 
 .bk-chat-composer-inside-thread .bk-chat-reply-context[hidden] {
   display: none !important;
+}
+
+.bk-chat-composer-inside-thread .bk-field {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.bk-chat-composer-inside-thread .bk-action-row .bk-button:first-child {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.bk-chat-composer-inside-thread .bk-action-row .bk-button:last-child {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.bk-chat-composer-inside-thread .bk-chat-attachment-menu {
+  grid-column: 1 / -1;
+  grid-row: 3;
 }
 
 .bk-chat-composer-inside-thread .bk-chat-reply-context strong,
@@ -55,9 +80,10 @@
 @media (max-width: 767px) {
   .bk-chat-composer-inside-thread .bk-chat-reply-context {
     grid-column: 1 / -1;
+    grid-row: 1;
     max-height: 50px;
     min-height: 40px;
-    margin-bottom: 1px;
+    margin-bottom: 5px;
     padding: 6px 32px 6px 9px;
   }
 
