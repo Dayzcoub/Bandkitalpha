@@ -1,0 +1,86 @@
+/* Chat room row states: active room, unread badges, hover and keyboard focus. */
+
+.bk-chat-nav-row,
+.bk-chat-stress-row {
+  position: relative;
+  isolation: isolate;
+  transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+
+.bk-chat-nav-row:hover,
+.bk-chat-stress-row:hover,
+.bk-chat-nav-row:focus-visible,
+.bk-chat-stress-row:focus-visible {
+  border-color: rgba(96, 165, 250, .28);
+  background: rgba(59, 130, 246, .08);
+}
+
+.bk-chat-nav-row:focus-visible,
+.bk-chat-stress-row:focus-visible {
+  outline: 2px solid rgba(96, 165, 250, .42);
+  outline-offset: 2px;
+}
+
+.bk-chat-nav-row.is-active,
+.bk-chat-nav-row[aria-current="true"] {
+  border-color: rgba(56, 189, 248, .42);
+  background: linear-gradient(90deg, rgba(14, 165, 233, .16), rgba(14, 165, 233, .06));
+  box-shadow: inset 3px 0 0 rgba(56, 189, 248, .76), 0 14px 30px rgba(14, 165, 233, .08);
+}
+
+.bk-chat-nav-row.is-active .bk-list-row-title,
+.bk-chat-nav-row[aria-current="true"] .bk-list-row-title {
+  color: var(--bk-text);
+}
+
+.bk-chat-nav-row .bk-badge,
+.bk-chat-stress-row .bk-badge {
+  min-width: 24px;
+  height: 22px;
+  justify-content: center;
+  border-color: rgba(250, 204, 21, .28);
+  background: rgba(250, 204, 21, .12);
+  color: rgba(254, 240, 138, .96);
+  font-size: .68rem;
+  line-height: 1;
+}
+
+.bk-chat-nav-row.is-active .bk-badge,
+.bk-chat-nav-row[aria-current="true"] .bk-badge {
+  border-color: rgba(56, 189, 248, .34);
+  background: rgba(14, 165, 233, .14);
+  color: rgb(125, 211, 252);
+}
+
+.bk-chat-stress-row:has(.bk-badge)::after,
+.bk-chat-nav-row:has(.bk-badge)::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: -1;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, .08);
+  filter: blur(8px);
+}
+
+@media (max-width: 767px) {
+  .bk-chat-nav-row:hover,
+  .bk-chat-stress-row:hover {
+    transform: none;
+  }
+
+  .bk-chat-nav-row.is-active,
+  .bk-chat-nav-row[aria-current="true"] {
+    box-shadow: inset 3px 0 0 rgba(56, 189, 248, .72);
+  }
+
+  .bk-chat-nav-row .bk-badge,
+  .bk-chat-stress-row .bk-badge {
+    min-width: 22px;
+    height: 21px;
+    padding-inline: 7px;
+  }
+}
