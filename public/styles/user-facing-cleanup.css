@@ -1,9 +1,7 @@
 /* User-facing cleanup: hide technical/debug labels and context plaques for non-admin roles.
-   Admin and super_admin keep the full diagnostic/context surface. */
+   Admin and super_admin keep the full diagnostic/context surface.
+   QA role switcher stays visible so preview/testing can switch between user, moderator and admin states. */
 
-.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-qa-card,
-.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-qa-card,
-.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-qa-card,
 .bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-chat-context-card,
 .bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-chat-context-card,
 .bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-chat-context-card,
