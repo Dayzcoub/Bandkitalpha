@@ -64,6 +64,18 @@ type ChatContextMeta = {
   visibilityChips: string[];
 };
 
+type ChatPinnedMessage = {
+  id: string;
+  title: string;
+  body: string;
+  meta: string;
+  authorName: string;
+  createdAt: string;
+  pinnedBy: string;
+  pinnedAt: string;
+  canUnpin: boolean;
+};
+
 function createNavigationKey(): string { return `bk-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`; }
 function historyState(): BandKitHistoryState { return (window.history.state ?? {}) as BandKitHistoryState; }
 function navigationKeyFromState(state: BandKitHistoryState | null | undefined): string | undefined { return state?.[NAVIGATION_STATE_KEY]; }
@@ -176,18 +188,26 @@ function chatHistoryFilters(ctx: AppContext): string[] {
   return base;
 }
 
-function chatPinnedText(ctx: AppContext): { title: string; body: string; meta: string } {
-  const kind = chatContextMeta(ctx).kind;
-  if (kind === 'direct') return { title: 'Закреплено: обмен файлами', body: 'Вокальные демо и материалы обсуждаются в личном контексте, без открытия доступа к проектному workspace.', meta: 'Pinned · личный чат' };
-  if (kind === 'safety') return { title: 'Закреплено: безопасность', body: 'Не переходить по внешним ссылкам и не переводить оплату вне платформы. При риске — оформить жалобу с контекстом сообщения.', meta: 'Pinned · safety' };
-  return { title: 'Закреплено: рабочее решение', body: 'Репетиция привязана к событию, актуальный райдер лежит в документах, спорные изменения обсуждаем в этом чате.', meta: 'Pinned · проект/событие' };
+function chatCanUnpin(ctx: AppContext): boolean {
+  return ctx.state.role === 'admin' || ctx.state.role === 'super_admin' || ctx.state.role === 'moderator';
+}
+
+function chatPinnedMessage(ctx: AppContext): ChatPinnedMessage | null {
+  const id = currentChatId(ctx);
+  const canUnpin = chatCanUnpin(ctx);
+  if (['c6', 'c8', 'c10', 'c11', 'c14', 'c15'].includes(id)) return null;
+  if (id === 'c2') return { id: 'm-pinned-c2', title: 'Закреплено: обмен файлами', body: 'Вокальные демо и материалы обсуждаются в личном контексте, без открытия доступа к проектному workspace.', meta: 'Pinned · личный чат', authorName: 'Mira Voice', createdAt: '2026-05-18T13:24:00Z', pinnedBy: 'manager-1', pinnedAt: '2026-05-18T13:26:00Z', canUnpin };
+  if (id === 'c3' || id === 'c9' || id === 'c13') return { id: `m-pinned-${id}`, title: 'Закреплено: безопасность', body: 'Не переходить по внешним ссылкам и не переводить оплату вне платформы. При риске — оформить жалобу с контекстом сообщения.', meta: 'Pinned · safety', authorName: 'Moderator', createdAt: '2026-05-18T15:31:00Z', pinnedBy: 'moderator-1', pinnedAt: '2026-05-18T15:33:00Z', canUnpin };
+  return { id: `m-pinned-${id}`, title: 'Закреплено: рабочее решение', body: 'Репетиция привязана к событию, актуальный райдер лежит в документах, спорные изменения обсуждаем в этом чате.', meta: 'Pinned · проект/событие', authorName: 'Alex Rhythm', createdAt: '2026-05-18T14:03:00Z', pinnedBy: 'manager-1', pinnedAt: '2026-05-18T14:05:00Z', canUnpin };
 }
 
 function chatHistoryChrome(ctx: AppContext): string {
   const filters = chatHistoryFilters(ctx).map((item, index) => `<button class="bk-chat-history-filter${index === 0 ? ' is-active' : ''}" type="button">${item}</button>`).join('');
-  const pinned = chatPinnedText(ctx);
+  const pinned = chatPinnedMessage(ctx);
   const meta = chatContextMeta(ctx);
-  return `<details class="bk-chat-history-dropdown"><summary><span>${meta.title}</span><small>Поиск и фильтры</small></summary><section class="bk-chat-history-toolbar" aria-label="Навигация по истории чата"><div class="bk-chat-history-search"><span aria-hidden="true">⌕</span><input type="search" aria-label="Поиск в чате" placeholder="Поиск в чате, документах и решениях" /></div><div class="bk-chat-history-filters">${filters}</div></section></details><details class="bk-chat-pinned-dropdown"><summary><span>${pinned.title}</span><small>Закреп</small></summary><section class="bk-chat-pinned-summary"><div><span>${pinned.meta}</span><strong>${pinned.title}</strong><p>${pinned.body}</p></div></section></details><button class="bk-chat-load-older" type="button">Загрузить старые сообщения</button><div class="bk-chat-date-divider">18 мая 2026</div>`;
+  const pinnedAction = pinned?.canUnpin ? `<button class="bk-chat-unpin-action" type="button" data-chat-action="unpin-message" data-chat-id="${currentChatId(ctx)}" data-message-id="${pinned.id}">Снять закреп</button>` : '';
+  const pinnedHtml = pinned ? `<details class="bk-chat-pinned-dropdown"><summary><span>${pinned.title}</span><small>Закреп</small></summary><section class="bk-chat-pinned-summary" data-pinned-message-id="${pinned.id}" data-pinned-at="${pinned.pinnedAt}" data-pinned-by="${pinned.pinnedBy}"><div><span>${pinned.meta}</span><strong>${pinned.title}</strong><p>${pinned.body}</p></div>${pinnedAction}</section></details>` : '';
+  return `<details class="bk-chat-history-dropdown"><summary><span>${meta.title}</span><small>Поиск и фильтры</small></summary><section class="bk-chat-history-toolbar" aria-label="Навигация по истории чата"><div class="bk-chat-history-search"><span aria-hidden="true">⌕</span><input type="search" aria-label="Поиск в чате" placeholder="Поиск в чате, документах и решениях" /></div><div class="bk-chat-history-filters">${filters}</div></section></details>${pinnedHtml}<button class="bk-chat-load-older" type="button">Загрузить старые сообщения</button><div class="bk-chat-date-divider">18 мая 2026</div>`;
 }
 
 function chatRoomRowHtml(room: (typeof CHAT_STRESS_ROOMS)[number]): string {
