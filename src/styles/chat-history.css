@@ -388,15 +388,23 @@
 
 .bk-chat-date-divider,
 .bk-chat-unread-divider {
-  position: static;
-  z-index: auto;
+  position: relative !important;
+  top: auto !important;
+  z-index: 1;
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 10px;
+  min-height: 22px;
+  margin: 8px 0;
+  padding: 3px 0;
+  clear: both;
   font-size: .74rem;
   font-weight: 850;
+  line-height: 1;
   letter-spacing: .03em;
   text-transform: uppercase;
+  isolation: isolate;
 }
 
 .bk-chat-date-divider {
@@ -405,6 +413,11 @@
 
 .bk-chat-unread-divider {
   color: var(--bk-accent);
+}
+
+.bk-chat-date-divider + .bk-chat-unread-divider,
+.bk-chat-unread-divider + .bk-chat-date-divider {
+  margin-top: 12px;
 }
 
 .bk-chat-date-divider::before,
@@ -424,6 +437,14 @@
 .bk-chat-unread-divider::before,
 .bk-chat-unread-divider::after {
   background: rgba(56, 189, 248, .34);
+}
+
+.bk-chat-date-divider::before,
+.bk-chat-date-divider::after,
+.bk-chat-unread-divider::before,
+.bk-chat-unread-divider::after {
+  position: relative;
+  z-index: -1;
 }
 
 .bk-chat-message-card {
