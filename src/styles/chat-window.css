@@ -134,8 +134,8 @@
 }
 
 .bk-chat-composer-inside-thread .bk-button {
-  display: grid;
-  place-items: center;
+  position: relative;
+  display: block;
   align-self: center;
   justify-self: center;
   width: 40px;
@@ -159,12 +159,15 @@
 
 .bk-chat-composer-inside-thread .bk-button::before {
   content: '';
+  position: absolute;
+  inset: 0;
   display: block;
   width: 18px;
   height: 18px;
-  margin: 0;
+  margin: auto;
   background-color: currentColor;
   opacity: .94;
+  transform: none;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
   -webkit-mask-size: contain;
@@ -179,7 +182,6 @@
 }
 
 .bk-chat-composer-inside-thread .bk-button-primary::before {
-  transform: translateX(.5px) translateY(-.5px);
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2 11 13'/%3E%3Cpath d='M22 2 15 22 11 13 2 9 22 2z'/%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2 11 13'/%3E%3Cpath d='M22 2 15 22 11 13 2 9 22 2z'/%3E%3C/svg%3E");
 }
@@ -190,7 +192,6 @@
 }
 
 .bk-chat-composer-inside-thread .bk-button-secondary::before {
-  transform: translateX(.5px);
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.44 11.05 12.25 20.24a6 6 0 1 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.2a2 2 0 0 1-2.82-2.83l8.48-8.48'/%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.15' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.44 11.05 12.25 20.24a6 6 0 1 1-8.49-8.49l9.19-9.19a4 4 0 1 1 5.66 5.66l-9.2 9.2a2 2 0 0 1-2.82-2.83l8.48-8.48'/%3E%3C/svg%3E");
 }
