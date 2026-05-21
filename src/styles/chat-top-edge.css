@@ -1,0 +1,51 @@
+/* Chat top edge polish: align pinned strip, load older and date dividers with the chat window frame. */
+
+.bk-chat-thread > .bk-chat-pinned-strip:first-child {
+  width: auto;
+  margin: -8px -9px 8px;
+  padding: 7px 12px;
+  border-radius: 15px 15px 12px 12px;
+  box-shadow: 0 12px 24px rgba(2, 6, 23, .18), inset 0 1px 0 rgba(255, 255, 255, .035);
+}
+
+.bk-chat-thread > .bk-chat-load-older:first-child,
+.bk-chat-thread > .bk-chat-pinned-strip + .bk-chat-load-older {
+  width: auto;
+  margin-inline: -1px;
+}
+
+.bk-chat-thread > .bk-chat-load-older:first-child {
+  margin-top: -1px;
+}
+
+.bk-chat-thread > .bk-chat-pinned-strip + .bk-chat-load-older {
+  margin-top: 0;
+}
+
+.bk-chat-thread > .bk-chat-date-divider,
+.bk-chat-thread > .bk-chat-unread-divider {
+  margin-inline: 1px;
+}
+
+.bk-chat-thread > .bk-chat-pinned-strip:first-child + .bk-chat-load-older + .bk-chat-date-divider,
+.bk-chat-thread > .bk-chat-load-older:first-child + .bk-chat-date-divider {
+  margin-top: 7px;
+}
+
+@media (max-width: 767px) {
+  .bk-chat-thread > .bk-chat-pinned-strip:first-child {
+    margin: -7px -7px 7px;
+    padding: 7px 10px;
+    border-radius: 15px 15px 12px 12px;
+  }
+
+  .bk-chat-thread > .bk-chat-load-older:first-child,
+  .bk-chat-thread > .bk-chat-pinned-strip + .bk-chat-load-older {
+    margin-inline: 0;
+  }
+
+  .bk-chat-thread > .bk-chat-date-divider,
+  .bk-chat-thread > .bk-chat-unread-divider {
+    margin-inline: 0;
+  }
+}
