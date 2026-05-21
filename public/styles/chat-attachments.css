@@ -1,0 +1,76 @@
+/* Chat attachment mock menu polish. Backend-ready UI only: no upload logic here. */
+
+.bk-chat-composer-inside-thread .bk-chat-attachment-menu {
+  grid-column: 1 / -1;
+  align-self: end;
+  max-height: min(42vh, 280px);
+  margin: 0 0 4px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.bk-chat-composer-inside-thread .bk-chat-attachment-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.bk-chat-composer-inside-thread .bk-chat-attachment-menu::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(148, 163, 184, .24);
+}
+
+.bk-chat-attachment-menu-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.bk-chat-attachment-menu-title::after {
+  content: 'mock · storage-ready';
+  flex: 0 0 auto;
+  color: rgba(148, 163, 184, .58);
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: none;
+}
+
+.bk-chat-attachment-option {
+  min-height: 54px;
+}
+
+.bk-chat-attachment-option:focus-visible,
+.bk-chat-attachment-trigger:focus-visible {
+  outline: 2px solid rgba(96, 165, 250, .48);
+  outline-offset: 2px;
+}
+
+.bk-chat-attachment-option:active {
+  transform: translateY(1px);
+}
+
+.bk-chat-attachment-trigger[aria-expanded="true"]::before {
+  opacity: 1;
+  transform: rotate(-10deg);
+}
+
+@media (max-width: 767px) {
+  .bk-chat-composer-inside-thread .bk-chat-attachment-menu {
+    max-height: min(36vh, 240px);
+    margin-bottom: 3px;
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .bk-chat-attachment-menu-title::after {
+    content: 'mock';
+  }
+
+  .bk-chat-attachment-option {
+    min-height: 50px;
+    padding: 8px 9px;
+  }
+}
