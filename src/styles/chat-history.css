@@ -274,6 +274,13 @@
   position: relative;
 }
 
+.bk-chat-message-card[hidden],
+.bk-chat-date-divider[hidden],
+.bk-chat-unread-divider[hidden],
+.bk-chat-load-older[hidden] {
+  display: none !important;
+}
+
 .bk-chat-first-unread {
   border-color: rgba(56, 189, 248, .42);
   box-shadow: 0 0 0 1px rgba(56, 189, 248, .1), 0 18px 44px rgba(14, 165, 233, .08);
