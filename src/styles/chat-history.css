@@ -516,6 +516,45 @@
   line-height: 1;
 }
 
+.bk-chat-history-dropdown[open] {
+  position: sticky;
+}
+
+.bk-chat-history-dropdown[open] summary {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  z-index: 2;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+}
+
+.bk-chat-history-dropdown[open] summary::before,
+.bk-chat-history-dropdown[open] summary small,
+.bk-chat-history-dropdown[open] summary span {
+  display: none;
+}
+
+.bk-chat-history-dropdown[open] summary::after {
+  grid-column: 1;
+  place-self: center;
+}
+
+.bk-chat-history-dropdown[open] .bk-chat-history-toolbar {
+  margin-top: 0;
+}
+
+.bk-chat-history-dropdown[open] .bk-chat-history-search {
+  padding-right: 40px;
+}
+
 @media (max-width: 767px) {
   .bk-chat-history-dropdown,
   .bk-chat-pinned-dropdown {
@@ -529,6 +568,12 @@
   .bk-chat-history-dropdown summary {
     min-height: 40px;
     padding: 0 10px;
+  }
+
+  .bk-chat-history-dropdown[open] summary {
+    top: 11px;
+    right: 13px;
+    padding: 0;
   }
 
   .bk-chat-pinned-summary,
