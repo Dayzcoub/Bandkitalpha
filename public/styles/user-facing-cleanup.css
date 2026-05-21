@@ -1,0 +1,41 @@
+/* User-facing cleanup: hide technical/debug labels and context plaques for non-admin roles.
+   Admin and super_admin keep the full diagnostic/context surface. */
+
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-chat-context-card,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-chat-context-card,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-chat-context-card,
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-social-scope-chip,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-social-scope-chip,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-social-scope-chip,
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-entity-post-origin .bk-chip-row,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-entity-post-origin .bk-chip-row,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-entity-post-origin .bk-chip-row,
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-chat-anchor-link,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-chat-anchor-link,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-chat-anchor-link,
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-chat-pinned-summary span,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-chat-pinned-summary span,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-chat-pinned-summary span,
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-entity-feed-policy .bk-chip-row,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-entity-feed-policy .bk-chip-row,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-entity-feed-policy .bk-chip-row {
+  display: none !important;
+}
+
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-chat-message-actions,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-chat-message-actions,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-chat-message-actions {
+  gap: var(--bk-space-2);
+}
+
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-entity-feed-preview .bk-eyebrow,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-entity-feed-preview .bk-eyebrow,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-entity-feed-preview .bk-eyebrow {
+  display: none;
+}
+
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-profile-feed-policy .bk-meta-chip-row,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-profile-feed-policy .bk-meta-chip-row,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-profile-feed-policy .bk-meta-chip-row {
+  display: none;
+}
