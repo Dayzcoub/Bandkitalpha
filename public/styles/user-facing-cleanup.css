@@ -1,6 +1,9 @@
 /* User-facing cleanup: hide technical/debug labels and context plaques for non-admin roles.
    Admin and super_admin keep the full diagnostic/context surface. */
 
+.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-qa-card,
+.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-qa-card,
+.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-qa-card,
 .bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-chat-context-card,
 .bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-chat-context-card,
 .bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-chat-context-card,
