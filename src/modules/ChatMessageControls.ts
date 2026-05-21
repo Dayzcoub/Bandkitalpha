@@ -1,3 +1,9 @@
+const LONG_PRESS_DELAY_MS = 520;
+
+let longPressTimer: number | null = null;
+let longPressTarget: HTMLElement | null = null;
+let longPressPointerId: number | null = null;
+
 function escapeHtml(value: string): string {
   return value.replace(/[&<>'"]/g, (char) => {
     const entities: Record<string, string> = {
@@ -8,6 +14,24 @@ function escapeHtml(value: string): string {
       '"': '&quot;',
     };
     return entities[char] ?? char;
+  });
+}
+
+function isTouchLikePointer(event: PointerEvent): boolean {
+  return event.pointerType === 'touch' || event.pointerType === 'pen' || window.matchMedia('(pointer: coarse)').matches;
+}
+
+function clearLongPressTimer(): void {
+  if (longPressTimer !== null) {
+    window.clearTimeout(longPressTimer);
+    longPressTimer = null;
+  }
+  longPressPointerId = null;
+}
+
+function closeOpenActions(root: HTMLElement, except?: HTMLElement): void {
+  root.querySelectorAll<HTMLElement>('.bk-chat-message-card.is-chat-actions-open').forEach((message) => {
+    if (message !== except) message.classList.remove('is-chat-actions-open');
   });
 }
 
@@ -55,8 +79,9 @@ function pinMessage(message: HTMLElement): void {
   message.classList.add('is-pinned-message');
 
   thread.querySelectorAll<HTMLButtonElement>('[data-chat-control="pin-message"]').forEach((button) => {
-    button.textContent = button.closest('.bk-chat-message-card') === message ? 'Закреплено' : 'Закрепить';
-    button.setAttribute('aria-pressed', String(button.closest('.bk-chat-message-card') === message));
+    const isPinned = button.closest('.bk-chat-message-card') === message;
+    button.textContent = isPinned ? 'Закреплено' : 'Закрепить';
+    button.setAttribute('aria-pressed', String(isPinned));
   });
 }
 
@@ -67,6 +92,7 @@ function deleteMessage(message: HTMLElement): void {
   const pinnedStrip = thread?.querySelector<HTMLButtonElement>('.bk-chat-pinned-strip');
 
   message.classList.add('bk-chat-message-deleted');
+  message.classList.remove('is-chat-actions-open');
   message.dataset.chatDeleted = 'true';
   if (body) body.innerHTML = '<p>Сообщение удалено.</p>';
   actions?.remove();
@@ -80,6 +106,7 @@ function decorateChatMessages(root: HTMLElement): void {
   const messages = Array.from(root.querySelectorAll<HTMLElement>('.bk-chat-thread .bk-chat-message-card'));
   messages.forEach((message) => {
     if (message.dataset.chatDeleted === 'true') return;
+    message.dataset.chatLongPressActions = 'true';
     const actions = message.querySelector<HTMLElement>('.bk-chat-message-actions');
     if (!actions || actions.dataset.chatControlsReady === 'true') return;
 
@@ -101,16 +128,49 @@ function jumpToPinnedMessage(button: HTMLButtonElement): void {
   window.setTimeout(() => target.classList.remove('bk-chat-pinned-jump-highlight'), 1400);
 }
 
+function startLongPress(root: HTMLElement, event: PointerEvent): void {
+  if (!isTouchLikePointer(event)) return;
+  const target = event.target instanceof Element ? event.target : null;
+  if (!target || target.closest('button, a, input, textarea, select')) return;
+
+  const message = target.closest<HTMLElement>('.bk-chat-message-card[data-chat-long-press-actions="true"]');
+  if (!message || message.dataset.chatDeleted === 'true') return;
+
+  clearLongPressTimer();
+  longPressTarget = message;
+  longPressPointerId = event.pointerId;
+  longPressTimer = window.setTimeout(() => {
+    if (!longPressTarget) return;
+    closeOpenActions(root, longPressTarget);
+    longPressTarget.classList.add('is-chat-actions-open');
+    longPressTimer = null;
+  }, LONG_PRESS_DELAY_MS);
+}
+
+function cancelLongPress(event?: PointerEvent): void {
+  if (event && longPressPointerId !== null && event.pointerId !== longPressPointerId) return;
+  clearLongPressTimer();
+  longPressTarget = null;
+}
+
 export function initChatMessageControls(root: HTMLElement): void {
   decorateChatMessages(root);
 
   const observer = new MutationObserver(() => decorateChatMessages(root));
   observer.observe(root, { childList: true, subtree: true });
 
+  root.addEventListener('pointerdown', (event) => startLongPress(root, event));
+  root.addEventListener('pointerup', cancelLongPress);
+  root.addEventListener('pointercancel', cancelLongPress);
+  root.addEventListener('pointermove', cancelLongPress);
+
   root.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
     const button = target?.closest<HTMLButtonElement>('[data-chat-control], [data-chat-action="jump-pinned-message"]');
-    if (!button) return;
+    if (!button) {
+      if (!target?.closest('.bk-chat-message-card')) closeOpenActions(root);
+      return;
+    }
 
     if (button.dataset.chatAction === 'jump-pinned-message') {
       jumpToPinnedMessage(button);
