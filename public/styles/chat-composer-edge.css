@@ -1,0 +1,61 @@
+/* Chat composer edge-to-edge visual pass: make sticky composer feel attached to the chat window frame. */
+
+.bk-chat-thread {
+  scrollbar-color: transparent transparent;
+}
+
+.bk-chat-thread:hover,
+.bk-chat-thread:focus-within {
+  scrollbar-color: rgba(148, 163, 184, .28) transparent;
+}
+
+.bk-chat-thread::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bk-chat-thread::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.bk-chat-thread:hover::-webkit-scrollbar-thumb,
+.bk-chat-thread:focus-within::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, .24);
+  background-clip: padding-box;
+}
+
+.bk-chat-thread > .bk-chat-composer-card.bk-chat-composer-inside-thread {
+  width: auto;
+  margin: 10px -9px -13px;
+  padding: 8px 12px 11px;
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 -14px 26px rgba(2, 6, 23, .22);
+}
+
+.bk-chat-composer-inside-thread::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: inherit;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .bk-chat-thread {
+    scrollbar-width: none;
+  }
+
+  .bk-chat-thread::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bk-chat-thread > .bk-chat-composer-card.bk-chat-composer-inside-thread {
+    margin: 10px -7px -7px;
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom, 0px));
+    border-radius: 0 0 15px 15px;
+    background: linear-gradient(180deg, rgba(5, 9, 16, 0), rgba(5, 9, 16, .78) 36%, rgba(5, 9, 16, .94));
+  }
+}
