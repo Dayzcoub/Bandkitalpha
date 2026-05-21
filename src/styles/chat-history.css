@@ -217,6 +217,15 @@
   display: none !important;
 }
 
+.bk-chat-composer-card > .bk-chat-attachment-menu {
+  grid-column: 1 / -1;
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 .bk-chat-attachment-menu {
   display: grid;
   gap: 8px;
@@ -237,14 +246,17 @@
 
 .bk-chat-attachment-menu-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
   gap: 7px;
+  width: 100%;
+  min-width: 0;
 }
 
 .bk-chat-attachment-option {
   display: grid;
   gap: 3px;
   min-width: 0;
+  max-width: 100%;
   padding: 9px 10px;
   border: 1px solid rgba(148, 163, 184, .14);
   border-radius: 12px;
@@ -266,11 +278,13 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .bk-chat-attachment-option strong {
   font-size: .78rem;
   font-weight: 850;
+  line-height: 1.15;
 }
 
 .bk-chat-attachment-option span {
