@@ -1,0 +1,60 @@
+/* Chat message controls: frontend-ready pin/delete actions for the mock messenger. */
+
+.bk-chat-pin-action,
+.bk-chat-delete-action {
+  min-height: 24px;
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--bk-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: .68rem;
+  font-weight: 800;
+}
+
+.bk-chat-message-card:hover .bk-chat-pin-action,
+.bk-chat-message-card:hover .bk-chat-delete-action,
+.bk-chat-pin-action:focus-visible,
+.bk-chat-delete-action:focus-visible {
+  border-color: rgba(148, 163, 184, .16);
+  background: rgba(15, 23, 42, .44);
+  color: var(--bk-text);
+}
+
+.bk-chat-pin-action[aria-pressed="true"] {
+  border-color: rgba(250, 204, 21, .24);
+  background: rgba(250, 204, 21, .1);
+  color: rgba(250, 204, 21, .92);
+}
+
+.bk-chat-delete-action:hover,
+.bk-chat-delete-action:focus-visible {
+  border-color: rgba(248, 113, 113, .26);
+  background: rgba(248, 113, 113, .1);
+  color: rgb(252, 165, 165);
+}
+
+.bk-chat-message-card.is-pinned-message {
+  background: rgba(250, 204, 21, .055) !important;
+  box-shadow: inset 2px 0 0 rgba(250, 204, 21, .58);
+}
+
+.bk-chat-message-card.bk-chat-message-deleted {
+  opacity: .68;
+}
+
+.bk-chat-message-card.bk-chat-message-deleted .bk-card-body {
+  color: var(--bk-muted);
+  font-style: italic;
+}
+
+@media (max-width: 767px) {
+  .bk-chat-pin-action,
+  .bk-chat-delete-action {
+    min-height: 23px;
+    padding: 3px 7px;
+    font-size: .66rem;
+  }
+}
