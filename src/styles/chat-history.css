@@ -21,7 +21,7 @@
 .bk-chat-history-dropdown summary,
 .bk-chat-pinned-dropdown summary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 8px;
   min-height: 40px;
@@ -43,6 +43,7 @@
 .bk-chat-history-dropdown summary::after,
 .bk-chat-pinned-dropdown summary::after {
   content: '⌄';
+  grid-column: 3;
   width: 18px;
   color: rgba(226, 232, 240, .62);
   font-size: 16px;
@@ -63,6 +64,8 @@
 
 .bk-chat-history-dropdown summary small,
 .bk-chat-pinned-dropdown summary small {
+  grid-column: 2;
+  justify-self: end;
   min-width: 0;
   overflow: hidden;
   color: var(--bk-muted);
@@ -142,13 +145,18 @@
 
 .bk-chat-pinned-summary {
   display: grid;
-  gap: 5px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 10px;
   margin-top: 6px;
   padding: 12px;
   border: 1px solid rgba(250, 204, 21, .22);
   border-left: 3px solid rgba(250, 204, 21, .58);
   border-radius: 16px;
   background: rgba(250, 204, 21, .075);
+}
+
+.bk-chat-pinned-summary div {
+  min-width: 0;
 }
 
 .bk-chat-pinned-summary span,
@@ -175,6 +183,26 @@
   color: var(--bk-muted);
   font-size: .82rem;
   line-height: 1.35;
+}
+
+.bk-chat-unpin-action {
+  align-self: start;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid rgba(250, 204, 21, .24);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, .36);
+  color: rgba(250, 204, 21, .88);
+  cursor: pointer;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.bk-chat-unpin-action:hover {
+  border-color: rgba(250, 204, 21, .42);
+  background: rgba(250, 204, 21, .1);
 }
 
 .bk-chat-load-older {
@@ -352,6 +380,14 @@
   .bk-chat-pinned-dropdown summary {
     min-height: 40px;
     padding: 7px 10px;
+  }
+
+  .bk-chat-pinned-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bk-chat-unpin-action {
+    justify-self: start;
   }
 
   .bk-chat-message-actions {
