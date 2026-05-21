@@ -273,6 +273,23 @@ function injectStressMessages(thread: HTMLElement): void {
   thread.dataset.chatStressMessagesReady = 'true';
 }
 
+function bindChatMessageSearch(thread: HTMLElement): void {
+  const input = thread.querySelector<HTMLInputElement>('.bk-chat-history-search input');
+  if (!input || input.dataset.chatMessageSearchReady === 'true') return;
+  input.dataset.chatMessageSearchReady = 'true';
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLowerCase();
+    const isSearching = query.length > 0;
+    Array.from(thread.querySelectorAll<HTMLElement>('.bk-chat-message-card')).forEach((message) => {
+      const haystack = message.textContent?.toLowerCase() ?? '';
+      message.hidden = isSearching && !haystack.includes(query);
+    });
+    Array.from(thread.querySelectorAll<HTMLElement>('.bk-chat-date-divider, .bk-chat-unread-divider, .bk-chat-load-older')).forEach((item) => {
+      item.hidden = isSearching;
+    });
+  });
+}
+
 function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
   if (ctx.match.route.path !== '/chats/:chatId') return;
   const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
@@ -296,6 +313,7 @@ function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
     }
     if (!message.querySelector('.bk-chat-message-actions')) message.insertAdjacentHTML('beforeend', `<footer class="bk-chat-message-actions"><a class="bk-chat-anchor-link" href="#chat-message-m${index + 1}" aria-label="Ссылка на сообщение">#m${index + 1}</a><button class="bk-chat-reply-action" type="button" data-chat-reply-index="${index}">↩ Ответить</button></footer>`);
   });
+  bindChatMessageSearch(thread);
   if (composerCard && !composerCard.querySelector('[data-chat-reply-context]')) composerCard.insertAdjacentHTML('afterbegin', '<div class="bk-chat-reply-context" data-chat-reply-context hidden><div><span>Ответ с контекстом</span><strong data-chat-reply-author></strong><p data-chat-reply-body></p></div><button type="button" data-chat-reply-clear aria-label="Убрать контекст ответа">×</button></div>');
   thread.querySelectorAll<HTMLButtonElement>('[data-chat-reply-index]').forEach((button) => {
     button.addEventListener('click', () => {
