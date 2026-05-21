@@ -49,14 +49,9 @@ const CHAT_STRESS_MESSAGES = [
   ['Alex Rhythm', '18 мая 2026 г., 17:02', 'Финальный тестовый блок: если всё нормально, список комнат слева тоже должен иметь собственный scroll.'],
 ] as const;
 
-type BandKitHistoryState = Record<string, unknown> & {
-  [NAVIGATION_STATE_KEY]?: string;
-};
+type BandKitHistoryState = Record<string, unknown> & { [NAVIGATION_STATE_KEY]?: string; };
 
-type RenderOptions = {
-  scrollMode?: 'top' | 'restore' | 'preserve';
-  restoreKey?: string;
-};
+type RenderOptions = { scrollMode?: 'top' | 'restore' | 'preserve'; restoreKey?: string; };
 
 type ChatContextMeta = {
   kind: 'project' | 'direct' | 'safety';
@@ -69,17 +64,9 @@ type ChatContextMeta = {
   visibilityChips: string[];
 };
 
-function createNavigationKey(): string {
-  return `bk-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
-}
-
-function historyState(): BandKitHistoryState {
-  return (window.history.state ?? {}) as BandKitHistoryState;
-}
-
-function navigationKeyFromState(state: BandKitHistoryState | null | undefined): string | undefined {
-  return state?.[NAVIGATION_STATE_KEY];
-}
+function createNavigationKey(): string { return `bk-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`; }
+function historyState(): BandKitHistoryState { return (window.history.state ?? {}) as BandKitHistoryState; }
+function navigationKeyFromState(state: BandKitHistoryState | null | undefined): string | undefined { return state?.[NAVIGATION_STATE_KEY]; }
 
 function ensureInitialHistoryState(): string {
   const current = historyState();
@@ -96,17 +83,11 @@ function readScrollPositions(): Record<string, { x: number; y: number }> {
     if (!raw) return {};
     const parsed = JSON.parse(raw) as Record<string, { x: number; y: number }>;
     return parsed && typeof parsed === 'object' ? parsed : {};
-  } catch {
-    return {};
-  }
+  } catch { return {}; }
 }
 
 function writeScrollPositions(positions: Record<string, { x: number; y: number }>): void {
-  try {
-    window.sessionStorage.setItem(SCROLL_STORAGE_KEY, JSON.stringify(positions));
-  } catch {
-    // Session storage may be unavailable in hardened browsers. Native back still works.
-  }
+  try { window.sessionStorage.setItem(SCROLL_STORAGE_KEY, JSON.stringify(positions)); } catch { }
 }
 
 function saveScrollPosition(key: string): void {
@@ -119,16 +100,10 @@ function restoreScrollPosition(key: string): void {
   const position = readScrollPositions()[key];
   const x = position?.x ?? 0;
   const y = position?.y ?? 0;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      window.scrollTo({ left: x, top: y, behavior: 'auto' });
-    });
-  });
+  requestAnimationFrame(() => { requestAnimationFrame(() => { window.scrollTo({ left: x, top: y, behavior: 'auto' }); }); });
 }
 
-function currentChatId(ctx: AppContext): string {
-  return ctx.match.params.chatId ?? ctx.path.split('/').filter(Boolean).at(-1) ?? 'c1';
-}
+function currentChatId(ctx: AppContext): string { return ctx.match.params.chatId ?? ctx.path.split('/').filter(Boolean).at(-1) ?? 'c1'; }
 
 function chatContextMeta(ctx: AppContext): ChatContextMeta {
   const id = currentChatId(ctx);
@@ -203,31 +178,16 @@ function chatHistoryFilters(ctx: AppContext): string[] {
 
 function chatPinnedText(ctx: AppContext): { title: string; body: string; meta: string } {
   const kind = chatContextMeta(ctx).kind;
-  if (kind === 'direct') {
-    return {
-      title: 'Закреплено: обмен файлами',
-      body: 'Вокальные демо и материалы обсуждаются в личном контексте, без открытия доступа к проектному workspace.',
-      meta: 'Pinned · личный чат',
-    };
-  }
-  if (kind === 'safety') {
-    return {
-      title: 'Закреплено: безопасность',
-      body: 'Не переходить по внешним ссылкам и не переводить оплату вне платформы. При риске — оформить жалобу с контекстом сообщения.',
-      meta: 'Pinned · safety',
-    };
-  }
-  return {
-    title: 'Закреплено: рабочее решение',
-    body: 'Репетиция привязана к событию, актуальный райдер лежит в документах, спорные изменения обсуждаем в этом чате.',
-    meta: 'Pinned · проект/событие',
-  };
+  if (kind === 'direct') return { title: 'Закреплено: обмен файлами', body: 'Вокальные демо и материалы обсуждаются в личном контексте, без открытия доступа к проектному workspace.', meta: 'Pinned · личный чат' };
+  if (kind === 'safety') return { title: 'Закреплено: безопасность', body: 'Не переходить по внешним ссылкам и не переводить оплату вне платформы. При риске — оформить жалобу с контекстом сообщения.', meta: 'Pinned · safety' };
+  return { title: 'Закреплено: рабочее решение', body: 'Репетиция привязана к событию, актуальный райдер лежит в документах, спорные изменения обсуждаем в этом чате.', meta: 'Pinned · проект/событие' };
 }
 
 function chatHistoryChrome(ctx: AppContext): string {
   const filters = chatHistoryFilters(ctx).map((item, index) => `<button class="bk-chat-history-filter${index === 0 ? ' is-active' : ''}" type="button">${item}</button>`).join('');
   const pinned = chatPinnedText(ctx);
-  return `<section class="bk-chat-history-toolbar" aria-label="Навигация по истории чата"><div class="bk-chat-history-search"><span aria-hidden="true">⌕</span><input type="search" aria-label="Поиск в чате" placeholder="Поиск в чате, документах и решениях" /></div><div class="bk-chat-history-filters">${filters}</div></section><section class="bk-chat-pinned-summary"><div><span>${pinned.meta}</span><strong>${pinned.title}</strong><p>${pinned.body}</p></div></section><button class="bk-chat-load-older" type="button">Загрузить старые сообщения</button><div class="bk-chat-date-divider">18 мая 2026</div>`;
+  const meta = chatContextMeta(ctx);
+  return `<details class="bk-chat-history-dropdown"><summary><span>${meta.title}</span><small>Поиск и фильтры</small></summary><section class="bk-chat-history-toolbar" aria-label="Навигация по истории чата"><div class="bk-chat-history-search"><span aria-hidden="true">⌕</span><input type="search" aria-label="Поиск в чате" placeholder="Поиск в чате, документах и решениях" /></div><div class="bk-chat-history-filters">${filters}</div></section></details><details class="bk-chat-pinned-dropdown"><summary><span>${pinned.title}</span><small>Закреп</small></summary><section class="bk-chat-pinned-summary"><div><span>${pinned.meta}</span><strong>${pinned.title}</strong><p>${pinned.body}</p></div></section></details><button class="bk-chat-load-older" type="button">Загрузить старые сообщения</button><div class="bk-chat-date-divider">18 мая 2026</div>`;
 }
 
 function chatRoomRowHtml(room: (typeof CHAT_STRESS_ROOMS)[number]): string {
@@ -251,10 +211,7 @@ function injectChatListSearchAndRooms(root: HTMLElement, ctx: AppContext): void 
     const input = search.querySelector<HTMLInputElement>('input');
     input?.addEventListener('input', () => {
       const value = input.value.trim().toLowerCase();
-      Array.from(list.querySelectorAll<HTMLElement>('.bk-list-row')).forEach((row) => {
-        const matched = !value || row.textContent?.toLowerCase().includes(value);
-        row.hidden = !matched;
-      });
+      Array.from(list.querySelectorAll<HTMLElement>('.bk-list-row')).forEach((row) => { const matched = !value || row.textContent?.toLowerCase().includes(value); row.hidden = !matched; });
     });
   });
 }
@@ -271,29 +228,16 @@ function addDirectChatNavigation(root: HTMLElement, ctx: AppContext): void {
     row.setAttribute('role', 'link');
     row.setAttribute('tabindex', '0');
     row.classList.add('bk-chat-nav-row');
-    if (ctx.match.route.path === '/chats/:chatId' && chatId === activeChatId) {
-      row.classList.add('is-active');
-      row.setAttribute('aria-current', 'true');
-    } else {
-      row.classList.remove('is-active');
-      row.removeAttribute('aria-current');
-    }
-    row.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        row.click();
-      }
-    });
+    if (ctx.match.route.path === '/chats/:chatId' && chatId === activeChatId) { row.classList.add('is-active'); row.setAttribute('aria-current', 'true'); } else { row.classList.remove('is-active'); row.removeAttribute('aria-current'); }
+    row.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); row.click(); } });
   });
 }
 
 function moveComposerIntoChatThread(chatRoom: HTMLElement, thread: HTMLElement): HTMLElement | null {
   const existingComposer = thread.querySelector<HTMLElement>('[data-chat-composer="true"]');
   if (existingComposer) return existingComposer;
-
   const externalComposer = chatRoom.nextElementSibling instanceof HTMLElement ? chatRoom.nextElementSibling : null;
   if (!externalComposer || !externalComposer.querySelector('textarea')) return null;
-
   externalComposer.dataset.chatComposer = 'true';
   externalComposer.classList.add('bk-chat-composer-card', 'bk-chat-composer-inside-thread');
   thread.appendChild(externalComposer);
@@ -305,8 +249,7 @@ function injectStressMessages(thread: HTMLElement): void {
   const firstMessage = thread.querySelector<HTMLElement>('.bk-social-card');
   const anchor = firstMessage?.parentElement === thread ? firstMessage : null;
   const html = CHAT_STRESS_MESSAGES.map(([author, time, body]) => `<article class="bk-card bk-social-card bk-chat-stress-message"><div class="bk-card-header"><span class="bk-avatar" aria-hidden="true">${author.slice(0, 1)}</span><div><h3 class="bk-card-title">${author}</h3><div class="bk-meta">${time}</div></div></div><div class="bk-card-body"><p>${body}</p></div></article>`).join('');
-  if (anchor) anchor.insertAdjacentHTML('beforebegin', html);
-  else thread.insertAdjacentHTML('beforeend', html);
+  if (anchor) anchor.insertAdjacentHTML('beforebegin', html); else thread.insertAdjacentHTML('beforeend', html);
   thread.dataset.chatStressMessagesReady = 'true';
 }
 
@@ -315,40 +258,25 @@ function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
   const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
   const thread = root.querySelector<HTMLElement>('.bk-chat-thread');
   if (!chatRoom || !thread) return;
-
-  if (!thread.querySelector('.bk-chat-history-toolbar')) {
-    thread.insertAdjacentHTML('afterbegin', chatHistoryChrome(ctx));
-  }
-
+  if (!thread.querySelector('.bk-chat-history-toolbar')) thread.insertAdjacentHTML('afterbegin', chatHistoryChrome(ctx));
   injectStressMessages(thread);
   const composerCard = moveComposerIntoChatThread(chatRoom, thread);
   const messages = Array.from(thread.querySelectorAll<HTMLElement>('.bk-social-card'));
   const unreadIndex = Math.min(chatUnreadIndex(ctx), Math.max(messages.length - 1, 0));
-
   messages.forEach((message, index) => {
     message.classList.add('bk-chat-message-card');
     message.dataset.messageIndex = String(index);
     message.id = `chat-message-m${index + 1}`;
     message.dataset.replyAuthor = message.querySelector('.bk-card-title')?.textContent?.trim() ?? 'Сообщение';
     message.dataset.replyBody = message.querySelector('.bk-card-body')?.textContent?.trim() ?? '';
-
     if (index === unreadIndex) {
       message.classList.add('bk-chat-first-unread');
       message.dataset.chatUnreadAnchor = 'true';
-      if (!message.previousElementSibling?.classList.contains('bk-chat-unread-divider')) {
-        message.insertAdjacentHTML('beforebegin', '<div class="bk-chat-unread-divider" data-chat-unread-anchor>Новые сообщения</div>');
-      }
+      if (!message.previousElementSibling?.classList.contains('bk-chat-unread-divider')) message.insertAdjacentHTML('beforebegin', '<div class="bk-chat-unread-divider" data-chat-unread-anchor>Новые сообщения</div>');
     }
-
-    if (!message.querySelector('.bk-chat-message-actions')) {
-      message.insertAdjacentHTML('beforeend', `<footer class="bk-chat-message-actions"><a class="bk-chat-anchor-link" href="#chat-message-m${index + 1}" aria-label="Ссылка на сообщение">#m${index + 1}</a><button class="bk-chat-reply-action" type="button" data-chat-reply-index="${index}">↩ Ответить</button></footer>`);
-    }
+    if (!message.querySelector('.bk-chat-message-actions')) message.insertAdjacentHTML('beforeend', `<footer class="bk-chat-message-actions"><a class="bk-chat-anchor-link" href="#chat-message-m${index + 1}" aria-label="Ссылка на сообщение">#m${index + 1}</a><button class="bk-chat-reply-action" type="button" data-chat-reply-index="${index}">↩ Ответить</button></footer>`);
   });
-
-  if (composerCard && !composerCard.querySelector('[data-chat-reply-context]')) {
-    composerCard.insertAdjacentHTML('afterbegin', '<div class="bk-chat-reply-context" data-chat-reply-context hidden><div><span>Ответ с контекстом</span><strong data-chat-reply-author></strong><p data-chat-reply-body></p></div><button type="button" data-chat-reply-clear aria-label="Убрать контекст ответа">×</button></div>');
-  }
-
+  if (composerCard && !composerCard.querySelector('[data-chat-reply-context]')) composerCard.insertAdjacentHTML('afterbegin', '<div class="bk-chat-reply-context" data-chat-reply-context hidden><div><span>Ответ с контекстом</span><strong data-chat-reply-author></strong><p data-chat-reply-body></p></div><button type="button" data-chat-reply-clear aria-label="Убрать контекст ответа">×</button></div>');
   thread.querySelectorAll<HTMLButtonElement>('[data-chat-reply-index]').forEach((button) => {
     button.addEventListener('click', () => {
       const index = Number(button.dataset.chatReplyIndex ?? '-1');
@@ -363,29 +291,19 @@ function decorateChatMessageHistory(root: HTMLElement, ctx: AppContext): void {
       composerCard?.querySelector<HTMLTextAreaElement>('textarea')?.focus();
     });
   });
-
-  root.querySelector<HTMLButtonElement>('[data-chat-reply-clear]')?.addEventListener('click', () => {
-    const replyContext = root.querySelector<HTMLElement>('[data-chat-reply-context]');
-    if (replyContext) replyContext.hidden = true;
-  });
+  root.querySelector<HTMLButtonElement>('[data-chat-reply-clear]')?.addEventListener('click', () => { const replyContext = root.querySelector<HTMLElement>('[data-chat-reply-context]'); if (replyContext) replyContext.hidden = true; });
 }
 
 function scrollChatToUnread(root: HTMLElement): void {
   const target = root.querySelector<HTMLElement>('[data-chat-unread-anchor]');
   if (!target) return;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      target.scrollIntoView({ block: 'center', behavior: 'auto' });
-    });
-  });
+  requestAnimationFrame(() => { requestAnimationFrame(() => { target.scrollIntoView({ block: 'center', behavior: 'auto' }); }); });
 }
 
 function decorateRenderedPage(root: HTMLElement, ctx: AppContext): void {
   if (ctx.match.route.path === '/chats/:chatId') {
     const chatRoom = root.querySelector<HTMLElement>('.bk-chat-room-card');
-    if (chatRoom && !root.querySelector('.bk-chat-context-card')) {
-      chatRoom.insertAdjacentHTML('beforebegin', chatRoomLogisticsContext(ctx));
-    }
+    if (chatRoom && !root.querySelector('.bk-chat-context-card')) chatRoom.insertAdjacentHTML('beforebegin', chatRoomLogisticsContext(ctx));
   }
   injectChatListSearchAndRooms(root, ctx);
   addDirectChatNavigation(root, ctx);
@@ -393,13 +311,9 @@ function decorateRenderedPage(root: HTMLElement, ctx: AppContext): void {
 }
 
 export function createBandKitApp(root: HTMLElement) {
-  if ('scrollRestoration' in window.history) {
-    window.history.scrollRestoration = 'manual';
-  }
-
+  if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
   let path = window.location.pathname;
   let activeNavigationKey = ensureInitialHistoryState();
-
   function render(options: RenderOptions = {}): void {
     const state = loadAppState();
     const match = matchRoute(path);
@@ -409,17 +323,10 @@ export function createBandKitApp(root: HTMLElement) {
     root.innerHTML = renderShell(ctx, renderPage(ctx));
     decorateRenderedPage(root, ctx);
     bindEvents();
-
-    if (ctx.match.route.path === '/chats/:chatId' && options.scrollMode !== 'restore') {
-      scrollChatToUnread(root);
-    } else if (options.scrollMode === 'top') {
-      window.scrollTo({ left: 0, top: 0, behavior: 'auto' });
-    }
-    if (options.scrollMode === 'restore' && options.restoreKey) {
-      restoreScrollPosition(options.restoreKey);
-    }
+    if (ctx.match.route.path === '/chats/:chatId' && options.scrollMode !== 'restore') scrollChatToUnread(root);
+    else if (options.scrollMode === 'top') window.scrollTo({ left: 0, top: 0, behavior: 'auto' });
+    if (options.scrollMode === 'restore' && options.restoreKey) restoreScrollPosition(options.restoreKey);
   }
-
   function navigate(nextPath: string): void {
     if (nextPath === path) return;
     saveScrollPosition(activeNavigationKey);
@@ -429,71 +336,21 @@ export function createBandKitApp(root: HTMLElement) {
     window.history.pushState({ [NAVIGATION_STATE_KEY]: nextNavigationKey }, '', nextPath);
     render({ scrollMode: 'top' });
   }
-
   function goBack(): void {
     saveScrollPosition(activeNavigationKey);
-    if (window.history.length > 1) {
-      window.history.back();
-      return;
-    }
+    if (window.history.length > 1) { window.history.back(); return; }
     navigate('/feed');
   }
-
-  function closeMobileMenu(): void {
-    const layer = root.querySelector<HTMLElement>('[data-mobile-menu-layer]');
-    layer?.classList.remove('is-open');
-    layer?.setAttribute('aria-hidden', 'true');
-  }
-
-  function openMobileMenu(): void {
-    const layer = root.querySelector<HTMLElement>('[data-mobile-menu-layer]');
-    layer?.classList.add('is-open');
-    layer?.setAttribute('aria-hidden', 'false');
-  }
-
+  function closeMobileMenu(): void { const layer = root.querySelector<HTMLElement>('[data-mobile-menu-layer]'); layer?.classList.remove('is-open'); layer?.setAttribute('aria-hidden', 'true'); }
+  function openMobileMenu(): void { const layer = root.querySelector<HTMLElement>('[data-mobile-menu-layer]'); layer?.classList.add('is-open'); layer?.setAttribute('aria-hidden', 'false'); }
   function bindEvents(): void {
-    root.querySelectorAll<HTMLElement>('[data-route]').forEach((node) => {
-      node.addEventListener('click', (event) => {
-        event.preventDefault();
-        const nextPath = node.dataset.route;
-        if (nextPath) {
-          closeMobileMenu();
-          navigate(nextPath);
-        }
-      });
-    });
-    root.querySelectorAll<HTMLElement>('[data-history-back]').forEach((node) => {
-      node.addEventListener('click', (event) => {
-        event.preventDefault();
-        closeMobileMenu();
-        goBack();
-      });
-    });
-    root.querySelectorAll<HTMLElement>('[data-mobile-menu-open]').forEach((node) => {
-      node.addEventListener('click', (event) => {
-        event.preventDefault();
-        openMobileMenu();
-      });
-    });
-    root.querySelectorAll<HTMLElement>('[data-mobile-menu-close]').forEach((node) => {
-      node.addEventListener('click', (event) => {
-        event.preventDefault();
-        closeMobileMenu();
-      });
-    });
-    root.querySelectorAll<HTMLSelectElement>('select[data-pref]').forEach((node) => {
-      node.addEventListener('change', () => {
-        const pref = node.dataset.pref as 'locale' | 'role' | 'verification' | 'uiState' | 'theme' | undefined;
-        if (pref) updatePreference(pref, node.value);
-        render({ scrollMode: 'preserve' });
-      });
-    });
+    root.querySelectorAll<HTMLElement>('[data-route]').forEach((node) => { node.addEventListener('click', (event) => { event.preventDefault(); const nextPath = node.dataset.route; if (nextPath) { closeMobileMenu(); navigate(nextPath); } }); });
+    root.querySelectorAll<HTMLElement>('[data-history-back]').forEach((node) => { node.addEventListener('click', (event) => { event.preventDefault(); closeMobileMenu(); goBack(); }); });
+    root.querySelectorAll<HTMLElement>('[data-mobile-menu-open]').forEach((node) => { node.addEventListener('click', (event) => { event.preventDefault(); openMobileMenu(); }); });
+    root.querySelectorAll<HTMLElement>('[data-mobile-menu-close]').forEach((node) => { node.addEventListener('click', (event) => { event.preventDefault(); closeMobileMenu(); }); });
+    root.querySelectorAll<HTMLSelectElement>('select[data-pref]').forEach((node) => { node.addEventListener('change', () => { const pref = node.dataset.pref as 'locale' | 'role' | 'verification' | 'uiState' | 'theme' | undefined; if (pref) updatePreference(pref, node.value); render({ scrollMode: 'preserve' }); }); });
   }
-
-  window.addEventListener('beforeunload', () => {
-    saveScrollPosition(activeNavigationKey);
-  });
-
+  window.addEventListener('beforeunload', () => { saveScrollPosition(activeNavigationKey); });
   window.addEventListener('popstate', (event) => {
     saveScrollPosition(activeNavigationKey);
     path = window.location.pathname;
@@ -501,6 +358,5 @@ export function createBandKitApp(root: HTMLElement) {
     activeNavigationKey = stateKey ?? ensureInitialHistoryState();
     render({ scrollMode: 'restore', restoreKey: activeNavigationKey });
   });
-
   render({ scrollMode: 'preserve' });
 }
