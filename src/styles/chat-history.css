@@ -399,6 +399,50 @@
   gap: var(--bk-space-3);
 }
 
+.bk-chat-thread > .bk-chat-composer-card.bk-chat-composer-inside-thread {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.bk-chat-composer-inside-thread {
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 8px;
+}
+
+.bk-chat-composer-inside-thread .bk-field {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.bk-chat-composer-inside-thread .bk-textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.bk-chat-composer-inside-thread .bk-action-row {
+  display: contents;
+}
+
+.bk-chat-composer-inside-thread .bk-action-row .bk-button:first-child {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.bk-chat-composer-inside-thread .bk-action-row .bk-button:last-child {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.bk-chat-composer-inside-thread .bk-blocked-link {
+  grid-column: 1 / -1;
+}
+
 .bk-chat-reply-context {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
