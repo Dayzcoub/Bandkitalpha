@@ -3,7 +3,7 @@
 .bk-chat-thread > .bk-chat-pinned-strip:first-child {
   top: -8px;
   width: auto;
-  margin: -10px -9px 11px;
+  margin: -10px 7px 11px -9px;
   padding: 7px 18px 7px 12px;
   border-radius: 15px 15px 12px 12px;
   box-shadow: 0 12px 24px rgba(2, 6, 23, .18), inset 0 1px 0 rgba(255, 255, 255, .035);
