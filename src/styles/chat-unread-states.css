@@ -38,6 +38,19 @@
   background: linear-gradient(90deg, rgba(56, 189, 248, .36), rgba(56, 189, 248, 0));
 }
 
+.bk-chat-thread:not(:has(.bk-chat-pinned-strip)) {
+  scroll-padding-top: 28px;
+}
+
+.bk-chat-thread:not(:has(.bk-chat-pinned-strip)) > .bk-chat-load-older:first-child {
+  margin-top: 0;
+  margin-bottom: 7px;
+}
+
+.bk-chat-thread:not(:has(.bk-chat-pinned-strip)) > .bk-chat-date-divider:nth-child(2) {
+  margin-top: 6px;
+}
+
 @media (max-width: 767px) {
   .bk-chat-thread {
     scroll-padding-top: 42px;
@@ -52,5 +65,13 @@
   .bk-chat-unread-divider {
     margin: 10px 0 12px;
     font-size: .68rem;
+  }
+
+  .bk-chat-thread:not(:has(.bk-chat-pinned-strip)) {
+    scroll-padding-top: 18px;
+  }
+
+  .bk-chat-thread:not(:has(.bk-chat-pinned-strip)) > .bk-chat-load-older:first-child {
+    margin-bottom: 6px;
   }
 }
