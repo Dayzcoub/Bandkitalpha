@@ -2,14 +2,26 @@
 
 .bk-chat-history-dropdown,
 .bk-chat-pinned-dropdown {
+  position: sticky;
+  z-index: 9;
   display: block;
   margin: 0 0 8px;
+  background: rgba(8, 14, 24, .94);
+}
+
+.bk-chat-history-dropdown {
+  top: 0;
+  padding-top: 2px;
+}
+
+.bk-chat-pinned-dropdown {
+  top: 50px;
 }
 
 .bk-chat-history-dropdown summary,
 .bk-chat-pinned-dropdown summary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
   min-height: 40px;
@@ -30,12 +42,12 @@
 
 .bk-chat-history-dropdown summary::after,
 .bk-chat-pinned-dropdown summary::after {
-  content: '';
+  content: '⌄';
   width: 18px;
-  height: 18px;
-  background-color: rgba(226, 232, 240, .62);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  color: rgba(226, 232, 240, .62);
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
   transition: transform .16s ease;
 }
 
@@ -45,26 +57,19 @@
 }
 
 .bk-chat-history-dropdown summary span,
+.bk-chat-pinned-dropdown summary span {
+  display: none;
+}
+
 .bk-chat-history-dropdown summary small,
-.bk-chat-pinned-dropdown summary span,
 .bk-chat-pinned-dropdown summary small {
   min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bk-chat-history-dropdown summary span,
-.bk-chat-pinned-dropdown summary span {
-  font-weight: 850;
-  letter-spacing: -.015em;
-}
-
-.bk-chat-history-dropdown summary small,
-.bk-chat-pinned-dropdown summary small {
   color: var(--bk-muted);
   font-size: .72rem;
   font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .bk-chat-history-toolbar {
@@ -191,6 +196,8 @@
 
 .bk-chat-date-divider,
 .bk-chat-unread-divider {
+  position: static;
+  z-index: auto;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -328,6 +335,15 @@
 }
 
 @media (max-width: 767px) {
+  .bk-chat-history-dropdown,
+  .bk-chat-pinned-dropdown {
+    margin-bottom: 7px;
+  }
+
+  .bk-chat-pinned-dropdown {
+    top: 49px;
+  }
+
   .bk-chat-history-toolbar {
     padding: 8px;
   }
@@ -336,11 +352,6 @@
   .bk-chat-pinned-dropdown summary {
     min-height: 40px;
     padding: 7px 10px;
-  }
-
-  .bk-chat-history-dropdown summary small,
-  .bk-chat-pinned-dropdown summary small {
-    display: none;
   }
 
   .bk-chat-message-actions {
