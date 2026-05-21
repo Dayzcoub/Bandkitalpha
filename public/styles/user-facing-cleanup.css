@@ -14,9 +14,6 @@
 .bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-chat-anchor-link,
 .bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-chat-anchor-link,
 .bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-chat-anchor-link,
-.bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-chat-pinned-summary span,
-.bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-chat-pinned-summary span,
-.bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-chat-pinned-summary span,
 .bk-app-shell:has(select[data-pref="role"] option[value="guest"]:checked) .bk-entity-feed-policy .bk-chip-row,
 .bk-app-shell:has(select[data-pref="role"] option[value="user"]:checked) .bk-entity-feed-policy .bk-chip-row,
 .bk-app-shell:has(select[data-pref="role"] option[value="moderator"]:checked) .bk-entity-feed-policy .bk-chip-row {
