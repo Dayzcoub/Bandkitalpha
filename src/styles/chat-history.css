@@ -213,6 +213,72 @@
   background: rgba(250, 204, 21, .1);
 }
 
+.bk-chat-attachment-menu[hidden] {
+  display: none !important;
+}
+
+.bk-chat-attachment-menu {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 16px;
+  background: rgba(8, 14, 24, .94);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+
+.bk-chat-attachment-menu-title {
+  color: var(--bk-muted);
+  font-size: .72rem;
+  font-weight: 850;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.bk-chat-attachment-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.bk-chat-attachment-option {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(148, 163, 184, .14);
+  border-radius: 12px;
+  background: rgba(31, 36, 46, .72);
+  color: var(--bk-text);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.bk-chat-attachment-option:hover,
+.bk-chat-attachment-trigger[aria-expanded="true"] {
+  border-color: rgba(56, 189, 248, .32);
+  background: rgba(14, 165, 233, .1);
+}
+
+.bk-chat-attachment-option strong,
+.bk-chat-attachment-option span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bk-chat-attachment-option strong {
+  font-size: .78rem;
+  font-weight: 850;
+}
+
+.bk-chat-attachment-option span {
+  color: var(--bk-muted);
+  font-size: .68rem;
+  line-height: 1.25;
+}
+
 .bk-chat-load-older {
   min-height: 36px;
   border: 1px dashed rgba(148, 163, 184, .24);
@@ -392,7 +458,8 @@
     padding: 7px 10px;
   }
 
-  .bk-chat-pinned-summary {
+  .bk-chat-pinned-summary,
+  .bk-chat-attachment-menu-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
