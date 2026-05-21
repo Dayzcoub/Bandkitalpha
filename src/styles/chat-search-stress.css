@@ -117,17 +117,6 @@
   font-weight: 850;
 }
 
-.bk-chat-history-dropdown[open] + .bk-chat-pinned-dropdown,
-.bk-chat-thread:has(.bk-chat-history-dropdown[open]) .bk-chat-pinned-dropdown {
-  display: block !important;
-}
-
-.bk-chat-history-dropdown[open] + .bk-chat-pinned-dropdown > .bk-chat-pinned-summary,
-.bk-chat-thread:has(.bk-chat-history-dropdown[open]) .bk-chat-pinned-dropdown > .bk-chat-pinned-summary {
-  display: grid !important;
-  visibility: visible !important;
-}
-
 @media (max-width: 900px) and (min-width: 768px) {
   .bk-chat-layout {
     grid-template-columns: minmax(176px, 220px) minmax(0, 1fr);
