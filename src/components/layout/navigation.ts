@@ -44,10 +44,19 @@ function shouldShowProfileBack(ctx: AppContext): boolean {
   return ctx.path.startsWith('/profile/') && ctx.path !== '/profile/me';
 }
 
+function shouldShowChatBack(ctx: AppContext): boolean {
+  return ctx.match.route.path === '/chats/:chatId';
+}
+
 function shellProfileBackButton(ctx: AppContext, placement: 'desktop' | 'mobile'): string {
   if (!shouldShowProfileBack(ctx)) return '';
   const className = placement === 'mobile' ? 'bk-shell-profile-back bk-shell-profile-back-mobile' : 'bk-shell-profile-back bk-shell-profile-back-desktop';
   return `<button class="bk-button bk-button-ghost ${className}" type="button" data-history-back aria-label="Вернуться назад">← Назад</button>`;
+}
+
+function mobileChatBackButton(ctx: AppContext): string {
+  if (!shouldShowChatBack(ctx)) return '';
+  return `<button class="bk-button bk-icon-button bk-mobile-chat-back" type="button" data-route="/chats" aria-label="Вернуться к списку чатов"><span aria-hidden="true">←</span></button>`;
 }
 
 export function sideNav(ctx: AppContext, mode: 'app' | 'admin'): string {
@@ -79,7 +88,7 @@ export function bottomNav(ctx: AppContext): string {
 }
 
 export function mobileTopBar(ctx: AppContext, mode: 'app' | 'admin' = 'app'): string {
-  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${ctx.t('app.name')}</span></a><div class="bk-mobile-top-actions">${shellProfileBackButton(ctx, 'mobile')}<button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button><button class="bk-button bk-icon-button bk-mobile-menu-trigger" type="button" data-mobile-menu-open aria-label="${ctx.t('common.actions')}"><span aria-hidden="true">☰</span></button></div></header>`;
+  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${ctx.t('app.name')}</span></a><div class="bk-mobile-top-actions">${shellProfileBackButton(ctx, 'mobile')}${mobileChatBackButton(ctx)}<button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button><button class="bk-button bk-icon-button bk-mobile-menu-trigger" type="button" data-mobile-menu-open aria-label="${ctx.t('common.actions')}"><span aria-hidden="true">☰</span></button></div></header>`;
 }
 
 export function mobileMenuDrawer(ctx: AppContext, mode: 'app' | 'admin'): string {
