@@ -1,38 +1,58 @@
 /* Chat message controls: frontend-ready pin/delete actions for the mock messenger. */
 
+.bk-chat-message-actions {
+  opacity: 0;
+  transform: translateY(-1px);
+  transition: opacity .14s ease, transform .14s ease;
+}
+
+.bk-chat-message-card:hover .bk-chat-message-actions,
+.bk-chat-message-card:focus-within .bk-chat-message-actions,
+.bk-chat-message-card.is-chat-actions-open .bk-chat-message-actions,
+.bk-chat-message-card.is-pinned-message .bk-chat-message-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bk-chat-anchor-link,
+.bk-chat-reply-action,
 .bk-chat-pin-action,
 .bk-chat-delete-action {
-  min-height: 24px;
-  padding: 3px 8px;
-  border: 1px solid transparent;
-  border-radius: 999px;
+  min-height: 0;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 0;
   background: transparent;
-  color: var(--bk-muted);
+  color: rgba(148, 163, 184, .72);
   cursor: pointer;
   font: inherit;
   font-size: .68rem;
   font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
 }
 
-.bk-chat-message-card:hover .bk-chat-pin-action,
-.bk-chat-message-card:hover .bk-chat-delete-action,
+.bk-chat-anchor-link:hover,
+.bk-chat-reply-action:hover,
+.bk-chat-pin-action:hover,
+.bk-chat-delete-action:hover,
+.bk-chat-anchor-link:focus-visible,
+.bk-chat-reply-action:focus-visible,
 .bk-chat-pin-action:focus-visible,
 .bk-chat-delete-action:focus-visible {
-  border-color: rgba(148, 163, 184, .16);
-  background: rgba(15, 23, 42, .44);
   color: var(--bk-text);
+  outline: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .bk-chat-pin-action[aria-pressed="true"] {
-  border-color: rgba(250, 204, 21, .24);
-  background: rgba(250, 204, 21, .1);
   color: rgba(250, 204, 21, .92);
+  text-decoration: none;
 }
 
 .bk-chat-delete-action:hover,
 .bk-chat-delete-action:focus-visible {
-  border-color: rgba(248, 113, 113, .26);
-  background: rgba(248, 113, 113, .1);
   color: rgb(252, 165, 165);
 }
 
@@ -51,10 +71,23 @@
 }
 
 @media (max-width: 767px) {
+  .bk-chat-message-actions {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .bk-chat-message-card.is-chat-actions-open .bk-chat-message-actions,
+  .bk-chat-message-card:focus-within .bk-chat-message-actions,
+  .bk-chat-message-card.is-pinned-message .bk-chat-message-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .bk-chat-anchor-link,
+  .bk-chat-reply-action,
   .bk-chat-pin-action,
   .bk-chat-delete-action {
-    min-height: 23px;
-    padding: 3px 7px;
+    padding: 0 3px;
     font-size: .66rem;
   }
 }
