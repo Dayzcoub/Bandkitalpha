@@ -24,6 +24,21 @@ request() {
   fi
 }
 
+request_allow_error() {
+  local method="$1"
+  local path="$2"
+  local data="${3:-}"
+
+  if [ -n "$data" ]; then
+    curl -sS -X "$method" "${API_BASE}${path}" \
+      -H "Content-Type: application/json" \
+      -H "X-BandKit-Dev-User: demo-manager" \
+      -d "$data"
+  else
+    curl -sS -X "$method" "${API_BASE}${path}"
+  fi
+}
+
 expect_contains() {
   local input="$1"
   local expected="$2"
@@ -58,7 +73,7 @@ expect_contains "$SEED" 'Demo Band' 'seed demo entity exists'
 
 log "Ensuring deterministic smoke entity"
 CREATE_BODY="{\"name\":\"${ENTITY_NAME}\",\"type\":\"band\",\"slug\":\"${ENTITY_SLUG}\",\"visibility\":\"members\"}"
-CREATE_RESPONSE="$(request POST /entities "$CREATE_BODY" || true)"
+CREATE_RESPONSE="$(request_allow_error POST /entities "$CREATE_BODY")"
 echo "$CREATE_RESPONSE"
 if printf '%s' "$CREATE_RESPONSE" | grep -q '"ok":true'; then
   expect_contains "$CREATE_RESPONSE" "$ENTITY_SLUG" 'created entity slug present'
