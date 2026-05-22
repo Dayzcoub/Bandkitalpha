@@ -1,5 +1,10 @@
 import http from 'node:http';
 import { getEnv } from './config/env.js';
+import { handleListChatRooms } from './modules/chats/chats.routes.js';
+import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
+import { handleListDocuments } from './modules/documents/documents.routes.js';
+import { handleListEntities } from './modules/entities/entities.routes.js';
+import { handleListEvents } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
 import { notFound, sendError } from './shared/http.js';
 import { logError, logInfo } from './shared/logger.js';
@@ -18,6 +23,31 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/health/db`) {
         await handleDatabaseHealth(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/dev/seed-demo`) {
+        await handleDevSeedDemo(req, res, env);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/entities`) {
+        await handleListEntities(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/events`) {
+        await handleListEvents(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/chat-rooms`) {
+        await handleListChatRooms(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/documents`) {
+        await handleListDocuments(req, res);
         return;
       }
 
