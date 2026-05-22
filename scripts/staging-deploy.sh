@@ -20,8 +20,36 @@ require_file() {
   fi
 }
 
+wait_for_url() {
+  local url="$1"
+  local label="$2"
+  local attempt
+
+  for attempt in 1 2 3 4 5 6 7 8 9 10; do
+    if curl -fsS "$url"; then
+      printf '\n'
+      return 0
+    fi
+
+    printf '\n[bandkit deploy] Waiting for %s (%s/10)\n' "$label" "$attempt"
+    sleep 1
+  done
+
+  echo "Health check failed: $label $url" >&2
+  return 1
+}
+
+clean_generated_worktree() {
+  cd "$APP_DIR"
+  git restore package-lock.json public/styles src/locales/bundles.ts server/package.json 2>/dev/null || true
+  git clean -f -- public/styles server/package-lock.json 2>/dev/null || true
+}
+
 log "Starting staging deploy"
 cd "$APP_DIR"
+
+log "Pre-cleaning generated working tree files"
+clean_generated_worktree
 
 log "Fetching latest main"
 git fetch origin main
@@ -38,13 +66,9 @@ log "Publishing frontend dist to $WEB_DIR"
 mkdir -p "$WEB_DIR"
 rsync -a --delete dist/ "$WEB_DIR"/
 
-log "Preparing backend package manifest"
-if [ ! -f server/package.json ]; then
-  cp server/backend-package.json server/package.json
-fi
-
 log "Installing backend dependencies"
 cd "$APP_DIR/server"
+require_file "$APP_DIR/server/package.json"
 npm install
 
 require_file "$APP_DIR/server/.env"
@@ -55,6 +79,9 @@ set -a
 set +a
 node scripts/run-migrations.js
 
+log "Checking backend code syntax"
+npm run check
+
 log "Restarting backend service"
 systemctl restart "$BACKEND_SERVICE"
 
@@ -63,15 +90,14 @@ nginx -t
 systemctl reload nginx
 
 log "Checking local backend health"
-curl -fsS "$API_HEALTH_URL"
-printf '\n'
-curl -fsS "$API_DB_HEALTH_URL"
-printf '\n'
+wait_for_url "$API_HEALTH_URL" "local backend health"
+wait_for_url "$API_DB_HEALTH_URL" "local database health"
 
 log "Checking public API health"
-curl -fsS "$PUBLIC_API_HEALTH_URL"
-printf '\n'
-curl -fsS "$PUBLIC_API_DB_HEALTH_URL"
-printf '\n'
+wait_for_url "$PUBLIC_API_HEALTH_URL" "public backend health"
+wait_for_url "$PUBLIC_API_DB_HEALTH_URL" "public database health"
+
+log "Cleaning generated working tree files after deploy"
+clean_generated_worktree
 
 log "Staging deploy completed"
