@@ -107,7 +107,7 @@ Rules:
 
 ---
 
-## 5. Attachments and documentation
+## 5. Attachments, documentation and external forwarding
 
 After a user leaves or is removed from a project/event/entity:
 
@@ -131,7 +131,32 @@ Rules:
 - message deletion is not document deletion;
 - documents/riders/setlists should use versioning.
 
-Cannot attach if user left the entity, is removed, read-only, room is archived/read-only, or attachment type is restricted.
+Entity document forwarding rules:
+
+- documents and attachments that belong to an entity must remain inside that entity by default;
+- regular participants cannot forward entity documents outside the entity context;
+- regular participants cannot export or externally send entity documents from chat;
+- riders, contracts, receipts, schedules, payment/booking documents and other entity materials are treated as confidential by default;
+- forwarding inside the same entity is allowed only to rooms/users that already have access to that entity and document;
+- external forwarding/export is allowed only to responsible roles.
+
+Roles allowed to externally forward/export entity documents:
+
+- event manager / event organizer for event documents;
+- group/band/project administrator;
+- group/band/project manager;
+- organization administrator/manager where applicable.
+
+External forwarding/export must be auditable later:
+
+- who sent/exported;
+- what document/attachment;
+- from which entity;
+- to whom or to what external channel;
+- when;
+- reason/purpose if required.
+
+Cannot attach or forward if user left the entity, is removed, read-only, room is archived/read-only, or attachment type is restricted.
 
 ---
 
@@ -248,6 +273,8 @@ Future backend should include:
 - critical notification bypass rules;
 - mention event records;
 - attachment access checks through entity/document permissions;
+- entity document external-forward/export permissions;
+- document forwarding/export audit events;
 - read receipts and explicit acknowledgements;
 - archive state and retention expiry;
 - system message types and payloads.
@@ -260,6 +287,8 @@ Suggested concepts:
 - `chat_notification_preferences`;
 - `chat_mentions`;
 - `chat_message_attachments`;
+- `entity_document_permissions`;
+- `entity_document_export_events`;
 - `chat_read_receipts`;
 - `chat_acknowledgements`;
 - `chat_archive_state`;
@@ -282,6 +311,8 @@ BandKit chat rules:
 - entity/admin/moderator mentions may bypass mute, but not access restrictions;
 - users who left projects/events cannot attach files or access documentation through related chats;
 - deleting a message does not delete the project document;
+- entity documents and attachments stay inside the entity by default;
+- external forwarding/export of riders, contracts, receipts, schedules and other entity documents is allowed only to event managers/organizers, group/project admins and group/project managers;
 - direct chats show read status;
 - event/project important messages track who acknowledged/read them;
 - archived chat history and attachments are retained for 50–55 days;
