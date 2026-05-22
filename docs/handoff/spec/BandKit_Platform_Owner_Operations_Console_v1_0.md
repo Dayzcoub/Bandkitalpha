@@ -247,6 +247,144 @@ without becoming an entity_admin of the user's band.
 
 ---
 
+## Platform operations safeguards
+
+### Break-glass access
+
+There must be an emergency-only owner mechanism for critical incidents.
+
+Break-glass mode is for cases such as:
+
+- active security incident;
+- compromised staff account;
+- severe data corruption risk;
+- legal or safety emergency;
+- system-wide abuse wave.
+
+Requirements:
+
+- only super admin can activate;
+- requires explicit reason;
+- creates high-priority audit event;
+- should expire automatically;
+- should notify owner/security channel later;
+- all actions during the session are marked as break-glass.
+
+Break-glass must never become normal daily admin workflow.
+
+### Staff impersonation / support view
+
+If support needs to see what a user sees, use controlled support view, not uncontrolled login-as-user.
+
+Rules:
+
+- no password/session theft;
+- no access to private chats/documents unless attached to a support/moderation case;
+- clear banner: staff is viewing in support mode;
+- reason/case ID required;
+- all viewed scopes are audited;
+- no destructive actions while impersonating unless separately authorized.
+
+### Dual approval for dangerous actions
+
+Some actions should require second approval or owner confirmation:
+
+- grant/revoke super admin;
+- bulk suspend users;
+- bulk delete/hide content;
+- export sensitive data;
+- permanent account deletion;
+- platform-wide maintenance/lockdown;
+- payment/refund bulk actions later;
+- disabling safety systems.
+
+### Appeals and reversals
+
+Moderation actions need appeal/review capability.
+
+Required concepts:
+
+- appeal request;
+- appeal status;
+- original decision;
+- reviewer;
+- reversal/partial reversal;
+- final decision;
+- user notification.
+
+### Support SLA and priorities
+
+Support tickets should have clear priority levels:
+
+```text
+P0 security/critical outage
+P1 account access/payment/safety urgent
+P2 normal user support
+P3 low priority/how-to/feedback
+```
+
+Each priority can later define response/resolution targets.
+
+### Incident management
+
+System incidents should be tracked separately from support tickets.
+
+Incident fields:
+
+- severity;
+- affected services;
+- started_at;
+- resolved_at;
+- owner;
+- timeline updates;
+- public/private status;
+- linked deploy/commit;
+- postmortem later.
+
+### Backups, retention, and recovery
+
+Owner console should track operational recovery status:
+
+- last database backup;
+- backup health;
+- restore drill status later;
+- retention rules;
+- deleted-account retention window;
+- audit log retention;
+- document/file retention later.
+
+Regular admins must not be able to delete backups or audit trails.
+
+### Internal runbooks
+
+Important operational procedures should be documented and linked from admin console:
+
+- deploy rollback;
+- backend restart;
+- database migration failure;
+- compromised account response;
+- scam wave response;
+- support escalation;
+- entity ownership dispute;
+- data export/deletion request;
+- incident communication.
+
+### Staff notifications and escalation
+
+The platform needs internal notification routing for staff:
+
+- new P0/P1 support ticket;
+- urgent safety case;
+- failed deploy;
+- failed smoke test;
+- DB health failed;
+- suspicious spike;
+- break-glass activated;
+- role changed;
+- export/deletion request created.
+
+---
+
 ## Main console sections
 
 ### 1. Owner dashboard
@@ -490,7 +628,11 @@ Audit events include:
 - moderation decision;
 - platform setting changed;
 - data export/deletion request;
-- deployment marker later.
+- deployment marker later;
+- break-glass activated/expired;
+- staff support view opened;
+- sensitive data revealed;
+- dangerous action approval requested/approved/rejected.
 
 Audit logs must not be deletable from normal admin UI.
 
@@ -512,7 +654,9 @@ Shows:
 - background jobs later;
 - storage status later;
 - queue status later;
-- error rate later.
+- error rate later;
+- backup status;
+- incident status.
 
 This section is not visible to regular users or entity admins.
 
@@ -588,7 +732,10 @@ staff_action_reasons
 blocked_domains
 risk_rules
 system_incidents
+incident_events
 data_requests
+dangerous_action_approvals
+staff_access_sessions
 billing_plans
 billing_subscriptions
 billing_events
@@ -666,7 +813,10 @@ Recommended vertical slices:
 7. Audit events expansion.
 8. Platform settings/feature flags.
 9. System health/deploy status panel.
-10. Billing/subscriptions later.
+10. Support SLA and priority model.
+11. Incident tracking shell.
+12. Dangerous action approval model.
+13. Billing/subscriptions later.
 
 In parallel, entity admin UI should evolve separately inside entity settings pages.
 
@@ -678,6 +828,9 @@ In parallel, entity admin UI should evolve separately inside entity settings pag
 - Do not treat entity admin as platform admin.
 - Do not treat platform admin as automatic day-to-day entity admin.
 - Do not allow support staff to browse private data without case context.
+- Do not allow uncontrolled login-as-user.
+- Do not allow break-glass without reason and audit.
+- Do not allow dangerous owner actions without explicit confirmation/approval rules.
 - Do not let frontend role placeholders become trusted security checks.
 - Backend permissions must be the final source of truth.
 - Do not store secrets in the repo.
