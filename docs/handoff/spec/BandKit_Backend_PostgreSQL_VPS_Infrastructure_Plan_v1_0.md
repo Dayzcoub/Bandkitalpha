@@ -14,37 +14,90 @@ Current VPS preview:
 
 ## Core decision
 
-For the MVP stage, BandKit should use the current VPS for frontend, backend and PostgreSQL.
+The current VPS is a **development/staging/preview environment in near-real conditions**, not the final production infrastructure.
 
-Accepted MVP stack:
+Its purpose is to let BandKit run as a complete system on limited resources:
+
+- frontend;
+- backend API;
+- PostgreSQL;
+- future WebSocket/realtime;
+- Nginx proxy;
+- deploy workflow;
+- environment variables;
+- migrations;
+- basic backups;
+- realistic behavior outside local developer machines.
+
+The VPS is a temporary low-cost development and testing measure. It is not intended to be the final launch environment.
+
+For the public launch, BandKit must be moved to a proper production setup in a datacenter/cloud/managed hosting environment.
+
+Accepted production direction later:
 
 ```text
-VPS
+Production hosting / datacenter / cloud
+├─ frontend delivery
+├─ backend/app layer
+├─ managed or dedicated PostgreSQL
+├─ object storage for files/documents
+├─ Redis/queue/realtime support
+├─ off-server backups
+├─ monitoring/logs
+├─ SSL/domain/CDN
+└─ disaster recovery plan
+```
+
+---
+
+## Current staging/MVP stack
+
+For MVP development and staging, BandKit can use the current VPS for frontend, backend and PostgreSQL.
+
+Accepted current VPS stack:
+
+```text
+Development/Staging VPS
 ├─ Nginx
 ├─ BandKit frontend static build
 ├─ Backend API service
-├─ PostgreSQL
+├─ PostgreSQL for dev/staging data
 ├─ Redis/Valkey later if needed
 └─ local backup scripts
 ```
 
-PostgreSQL is the accepted primary database for MVP and early production.
+PostgreSQL is the accepted primary database for MVP/staging and early backend development.
 
 Reasons:
 
 - strong relational model fits users, roles, projects, events, chats, documents and permissions;
 - ACID transactions are important for chat policies, entity membership and audit trails;
-- PostgreSQL is easy to run on a VPS for MVP;
+- PostgreSQL is easy to run on a VPS for MVP/staging;
 - can later move to managed PostgreSQL or a separate DB server by changing `DATABASE_URL`;
 - future distributed SQL migration remains possible if the project becomes global.
 
+Important data rule:
+
+> Data on the current VPS is development/staging data, not the final production source of truth.
+
 ---
 
-## Stage 1 — MVP on current VPS
+## Stage 1 — Development/staging on current VPS
 
 ### Goal
 
-Run everything on the existing VPS to keep cost and complexity low.
+Run everything on the existing VPS to keep cost and complexity low while testing the whole product in realistic conditions.
+
+This stage is for:
+
+- end-to-end behavior checks;
+- deploy checks;
+- backend/frontend integration;
+- Nginx/API routing;
+- database migrations;
+- chat/API/realtime experiments;
+- performance observation under limited resources;
+- finding practical infrastructure problems before paying for production infrastructure.
 
 ### Services
 
@@ -53,7 +106,7 @@ Run everything on the existing VPS to keep cost and complexity low.
 - database: PostgreSQL on the same VPS;
 - realtime: WebSocket endpoint later;
 - Redis/Valkey: optional later for rate limits, queues, sessions or realtime fanout;
-- files: local storage only for temporary MVP assets, but entity files should move to object storage later.
+- files: local storage only for temporary MVP/staging assets, but entity files should move to object storage for production.
 
 ### Network model
 
@@ -100,7 +153,7 @@ If PostgreSQL runs on the current VPS, additional database cost is:
 
 Only the existing VPS cost remains.
 
-This is the accepted start because BandKit is still in MVP/prototype stage.
+This is accepted because the current VPS is a development/staging environment, not final production.
 
 ---
 
@@ -134,7 +187,9 @@ This is the accepted start because BandKit is still in MVP/prototype stage.
 
 ### Backups
 
-Minimum MVP backup requirements:
+Even for staging, backups are required because they validate operating discipline and migration/restore procedures.
+
+Minimum staging backup requirements:
 
 - daily PostgreSQL dump;
 - keep last 7 daily backups locally;
@@ -142,7 +197,7 @@ Minimum MVP backup requirements:
 - test restore procedure at least once;
 - document restore command.
 
-Recommended MVP backup pattern:
+Recommended staging backup pattern:
 
 ```text
 /var/backups/bandkit/postgres/YYYY-MM-DD_bandkit.sql.gz
@@ -161,35 +216,43 @@ Allowed options:
 
 Accepted rule:
 
-> Never change production schema manually without migration tracking.
+> Never change schema manually without migration tracking, even on staging.
 
 ---
 
-## Stage 2 — Early production split
+## Stage 2 — Pre-production / beta split
 
-When real users and persistent data appear, PostgreSQL can be moved out of the app VPS.
+Before a public launch or serious beta, production infrastructure must be separated from the staging VPS.
 
-Options:
+The current VPS can remain as development/staging preview.
+
+Recommended pre-production model:
+
+```text
+Staging VPS
+├─ preview frontend
+├─ preview backend
+└─ staging PostgreSQL
+
+Production hosting
+├─ production frontend/backend
+├─ managed or dedicated PostgreSQL
+├─ object storage
+├─ Redis/queue/realtime support
+├─ off-server backups
+└─ monitoring/logs
+```
+
+Options for production PostgreSQL:
 
 1. separate DB VPS;
 2. managed PostgreSQL;
-3. serverless PostgreSQL such as Neon for suitable workloads.
+3. serverless PostgreSQL such as Neon for suitable workloads;
+4. dedicated database server in a datacenter.
 
-Recommended next step:
+Expected monthly cost examples later:
 
-```text
-VPS
-├─ frontend
-├─ backend API
-└─ connects to external PostgreSQL
-
-External PostgreSQL
-└─ database, backups, monitoring
-```
-
-Expected monthly cost examples:
-
-- current VPS + local PostgreSQL: no extra DB cost;
+- current staging VPS + local PostgreSQL: no extra DB cost;
 - managed PostgreSQL small tier: roughly 15–30 USD/month;
 - managed PostgreSQL medium tier: roughly 60–120 USD/month;
 - larger production stack with Redis/object storage/search/monitoring: 100–300+ USD/month depending on provider and load.
@@ -248,7 +311,7 @@ Future candidates:
 
 Accepted rule:
 
-> Do not start MVP with distributed SQL. Start with PostgreSQL and design the data layer so migration remains possible.
+> Do not start MVP/staging with distributed SQL. Start with PostgreSQL and design the data layer so migration remains possible.
 
 ---
 
@@ -300,13 +363,13 @@ PostgreSQL stores metadata only:
 - audit/export flags;
 - created/updated timestamps.
 
-Files should move to object storage later:
+Files should move to object storage for production:
 
 - S3-compatible storage;
 - MinIO;
 - cloud object storage.
 
-For MVP, local storage can be used temporarily, but the code should be written as if storage can be swapped later.
+For staging, local storage can be used temporarily, but the code should be written as if storage can be swapped later.
 
 ---
 
@@ -344,7 +407,7 @@ Search must respect chat/document access permissions.
 
 ## Security baseline
 
-MVP security requirements:
+Staging security requirements:
 
 - no public PostgreSQL port;
 - secrets in `.env`, not repo;
@@ -357,23 +420,37 @@ MVP security requirements:
 - migration logs;
 - audit tables for sensitive chat/document actions later.
 
+Production security requirements later:
+
+- off-server backups;
+- monitoring and alerting;
+- SSL/domain/CDN;
+- object storage access policies;
+- separated production secrets;
+- production/staging data isolation;
+- disaster recovery plan.
+
 ---
 
-## Migration path from local VPS PostgreSQL to managed PostgreSQL
+## Migration path from staging VPS PostgreSQL to production PostgreSQL
 
 The migration should be straightforward if `DATABASE_URL` is the only connection source.
 
 Steps later:
 
-1. create external PostgreSQL instance;
-2. stop backend writes briefly or enter maintenance mode;
-3. dump local DB;
-4. restore dump into external DB;
-5. update backend `DATABASE_URL`;
+1. create production PostgreSQL instance;
+2. prepare production environment variables/secrets;
+3. dump staging DB if data is needed, or start with clean production migrations;
+4. restore/import only approved data;
+5. update production backend `DATABASE_URL`;
 6. run migrations/checks;
-7. restart backend;
+7. start production backend;
 8. verify `/api/health` and key flows;
-9. keep old DB snapshot until migration is confirmed.
+9. keep staging separate after production is live.
+
+Important:
+
+> Staging data must not automatically become production data unless explicitly approved.
 
 ---
 
@@ -381,13 +458,14 @@ Steps later:
 
 ### Now
 
-- keep current VPS;
+- keep current VPS as development/staging preview;
 - plan backend API on same VPS;
-- plan PostgreSQL on same VPS;
+- plan PostgreSQL on same VPS for staging data;
 - plan local-only DB access;
 - plan migration tool from day one;
-- plan daily backups;
-- keep DB files separate from uploaded files.
+- plan daily backups to test operating discipline;
+- keep DB files separate from uploaded files;
+- avoid decisions that hard-lock BandKit to this VPS.
 
 ### Soon
 
@@ -398,12 +476,20 @@ Steps later:
 - add Nginx `/api` proxy;
 - add deploy workflow for backend service.
 
+### Before public launch
+
+- design production hosting layout;
+- separate production from staging;
+- move database to managed/dedicated PostgreSQL or production DB server;
+- move files to object storage;
+- add off-server backups;
+- add monitoring/logging;
+- add SSL/domain/CDN;
+- define disaster recovery procedure.
+
 ### Later
 
 - add Redis/Valkey;
-- move files to object storage;
-- move PostgreSQL to managed/external DB when real users/data justify it;
-- add monitoring and off-server backups;
 - add search engine if message/document search grows;
 - consider distributed SQL only after real global-scale requirements.
 
@@ -413,11 +499,14 @@ Steps later:
 
 BandKit backend/database direction:
 
-- MVP uses PostgreSQL on the current VPS;
-- additional DB cost at MVP stage is zero beyond VPS cost;
-- PostgreSQL is suitable for BandKit through MVP and early production;
-- architecture must avoid hard lock-in;
+- current VPS is development/staging infrastructure, not final production;
+- current VPS is used to test the full project in realistic limited-resource conditions;
+- MVP/staging uses PostgreSQL on the current VPS;
+- additional DB cost at staging stage is zero beyond VPS cost;
+- PostgreSQL is suitable for BandKit through MVP, staging and early production planning;
+- public launch must move to proper production hosting/datacenter/cloud/managed environment;
+- architecture must avoid hard lock-in to one VPS;
 - large chat/audit/notification tables must be designed with partitioning in mind;
 - files must not be stored directly in PostgreSQL;
 - realtime must use backend/WebSocket layer, not client DB polling;
-- future scaling path: external/managed PostgreSQL, Redis/Valkey, object storage, search engine, then distributed SQL only if needed.
+- future production scaling path: managed/dedicated PostgreSQL, Redis/Valkey, object storage, monitoring, search engine, then distributed SQL only if needed.
