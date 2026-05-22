@@ -122,6 +122,131 @@ Cannot:
 
 ---
 
+## Critical role separation: platform admin vs entity admin
+
+BandKit must strictly separate platform-level administration from entity-level administration.
+
+An entity is a band, orchestra, studio, venue, agency, project, organization, or similar public/workspace object inside BandKit.
+
+### Entity admin is not platform admin
+
+An entity admin manages only the entity where they have a role.
+
+Entity roles may include:
+
+```text
+entity_owner
+entity_admin
+entity_manager
+entity_moderator
+entity_member
+entity_guest
+```
+
+These roles are scoped to one entity and must not grant access to platform-owner tools.
+
+Entity admin can manage, depending on entity permissions:
+
+- entity profile content;
+- members and invitations;
+- internal roles inside that entity;
+- entity events;
+- entity documents;
+- entity chats;
+- entity public posts/feed;
+- entity settings;
+- entity-level moderation such as removing a member from that entity.
+
+Entity admin cannot:
+
+- access the platform owner console;
+- view global user management;
+- view unrelated users' private data;
+- browse all entities;
+- process global complaints unless they are a platform moderator;
+- access support tickets;
+- change platform settings;
+- access system health/deploy status;
+- see backend diagnostics;
+- manage platform staff;
+- grant platform roles;
+- bypass platform policies;
+- delete platform audit logs.
+
+### Platform admin is not automatically entity admin
+
+A platform admin manages the platform according to policy, support, moderation, abuse, legal, or operational needs.
+
+Platform admin does not automatically become a normal day-to-day admin of every entity.
+
+Platform admin can intervene in entities only through explicit platform operations, for example:
+
+- abuse investigation;
+- ownership dispute;
+- support escalation;
+- legal/privacy request;
+- frozen/abandoned entity recovery;
+- policy violation;
+- security incident.
+
+Every intervention must be audited and should include a reason/case reference.
+
+### UI separation
+
+Entity management must live in normal product UI, for example:
+
+```text
+/bands/:id/settings
+/events/:id/settings
+/entity admin panels inside entity context
+```
+
+Platform operations must live in a separate internal console, for example:
+
+```text
+/admin
+/admin/users
+/admin/entities
+/admin/support
+/admin/moderation
+/admin/settings
+/admin/audit
+/admin/system
+```
+
+Regular entity admins must not see platform operation navigation unless they also have a platform staff role.
+
+### Backend source of truth
+
+Frontend role placeholders are not security.
+
+Backend permission checks must distinguish:
+
+```text
+platform_role
+entity_membership.role
+support_case_assignment
+moderation_case_assignment
+```
+
+A user may have both kinds of roles, but each action must check the correct scope.
+
+Example:
+
+```text
+Alex can be entity_admin of Northern Lights Band
+without being platform_admin of BandKit.
+```
+
+Another example:
+
+```text
+A support_agent can help with a ticket
+without becoming an entity_admin of the user's band.
+```
+
+---
+
 ## Main console sections
 
 ### 1. Owner dashboard
@@ -172,7 +297,9 @@ Safety rules:
 
 ### 3. Entity management
 
-Global management of groups, orchestras, studios, venues, agencies, projects, and other platform entities.
+Global platform oversight of groups, orchestras, studios, venues, agencies, projects, and other platform entities.
+
+This is not the same as entity admin UI.
 
 Capabilities:
 
@@ -387,7 +514,7 @@ Shows:
 - queue status later;
 - error rate later.
 
-This section is not visible to regular users.
+This section is not visible to regular users or entity admins.
 
 ---
 
@@ -467,6 +594,16 @@ billing_subscriptions
 billing_events
 ```
 
+Entity-scoped roles continue to live in entity membership/permission tables, for example:
+
+```text
+entity_memberships
+entity_roles later
+entity_permissions later
+```
+
+Do not mix platform staff roles into entity membership rows.
+
 Use migrations only.
 
 ---
@@ -477,7 +614,9 @@ The platform owner console must not pollute regular user UI.
 
 Regular users see product-ready pages.
 
-Super admin and staff see technical/operational controls only inside dedicated admin/operations sections or behind explicit role gates.
+Entity admins see entity management controls only inside their entity context.
+
+Super admin and staff see technical/operational controls only inside dedicated admin/operations sections or behind explicit platform role gates.
 
 Technical labels such as `Real API`, `DB read-only`, `mock`, `offline`, `GET only`, or deploy/debug diagnostics are not user-facing.
 
@@ -487,7 +626,7 @@ Technical labels such as `Real API`, `DB read-only`, `mock`, `offline`, `GET onl
 
 All platform operations must be role-gated.
 
-Minimum gates:
+Minimum platform gates:
 
 ```text
 super_admin
@@ -497,7 +636,20 @@ support_agent
 read_only_auditor
 ```
 
+Minimum entity gates:
+
+```text
+entity_owner
+entity_admin
+entity_manager
+entity_moderator
+entity_member
+entity_guest
+```
+
 Current frontend may mock these roles, but backend must become the source of truth later.
+
+Each backend action must check whether it is platform-scoped or entity-scoped.
 
 ---
 
@@ -516,11 +668,15 @@ Recommended vertical slices:
 9. System health/deploy status panel.
 10. Billing/subscriptions later.
 
+In parallel, entity admin UI should evolve separately inside entity settings pages.
+
 ---
 
 ## Do not regress
 
 - Do not expose owner/staff tools to regular users.
+- Do not treat entity admin as platform admin.
+- Do not treat platform admin as automatic day-to-day entity admin.
 - Do not allow support staff to browse private data without case context.
 - Do not let frontend role placeholders become trusted security checks.
 - Backend permissions must be the final source of truth.
