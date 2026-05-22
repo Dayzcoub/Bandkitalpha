@@ -1,0 +1,83 @@
+name: Deploy staging
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: bandkit-staging-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to VPS staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check required secrets
+        env:
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
+          STAGING_USER: ${{ secrets.STAGING_USER }}
+          STAGING_SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$STAGING_HOST"
+          test -n "$STAGING_USER"
+          test -n "$STAGING_SSH_KEY"
+
+      - name: Prepare SSH key
+        env:
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
+          STAGING_PORT: ${{ secrets.STAGING_PORT }}
+          STAGING_SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          STAGING_KNOWN_HOSTS: ${{ secrets.STAGING_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$STAGING_SSH_KEY" > ~/.ssh/bandkit_staging_key
+          chmod 600 ~/.ssh/bandkit_staging_key
+          PORT="${STAGING_PORT:-22}"
+          if [ -n "${STAGING_KNOWN_HOSTS:-}" ]; then
+            printf '%s\n' "$STAGING_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$PORT" -H "$STAGING_HOST" > ~/.ssh/known_hosts
+          fi
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy and smoke on VPS
+        env:
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
+          STAGING_USER: ${{ secrets.STAGING_USER }}
+          STAGING_PORT: ${{ secrets.STAGING_PORT }}
+        run: |
+          set -euo pipefail
+          PORT="${STAGING_PORT:-22}"
+          ssh -i ~/.ssh/bandkit_staging_key \
+            -p "$PORT" \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            "$STAGING_USER@$STAGING_HOST" \
+            'set -euo pipefail
+             cd /opt/Bandkitalpha
+             git fetch origin main
+             git checkout main
+             git pull --ff-only origin main
+             if [ "$(id -u)" -eq 0 ]; then
+               bash scripts/staging-deploy.sh
+             else
+               sudo -n bash scripts/staging-deploy.sh
+             fi
+             bash scripts/staging-smoke-api.sh
+             STATUS="$(git status --short)"
+             if [ -n "$STATUS" ]; then
+               printf "%s\n" "$STATUS"
+               exit 1
+             fi
+             echo "[bandkit actions] Staging deploy and smoke completed"'
