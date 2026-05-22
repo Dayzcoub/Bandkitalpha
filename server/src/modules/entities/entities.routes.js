@@ -71,7 +71,7 @@ export async function handleGetEntity(req, res, entityId) {
          coalesce(count(em.user_id), 0)::int as member_count
        from entities e
        left join entity_memberships em on em.entity_id = e.id and em.status = 'active'
-       where e.id = $1 or e.slug = $1
+       where e.id::text = $1 or e.slug = $1
        group by e.id
        limit 1`,
       [entityId]
