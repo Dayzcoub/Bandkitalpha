@@ -65,16 +65,14 @@ jobs:
             -o StrictHostKeyChecking=yes \
             "$STAGING_USER@$STAGING_HOST" \
             'set -euo pipefail
-             cd /opt/Bandkitalpha
-             git fetch origin main
-             git checkout main
-             git pull --ff-only origin main
              if [ "$(id -u)" -eq 0 ]; then
-               bash scripts/staging-deploy.sh
+               /bin/bash /opt/Bandkitalpha/scripts/staging-deploy.sh
              else
-               sudo -n bash scripts/staging-deploy.sh
+               sudo -n /bin/bash /opt/Bandkitalpha/scripts/staging-deploy.sh
              fi
-             bash scripts/staging-smoke-api.sh
+             cd /opt/Bandkitalpha
+             git config --global --add safe.directory /opt/Bandkitalpha 2>/dev/null || true
+             /bin/bash scripts/staging-smoke-api.sh
              STATUS="$(git status --short)"
              if [ -n "$STATUS" ]; then
                printf "%s\n" "$STATUS"
