@@ -141,7 +141,9 @@ function mountDetail(root: HTMLElement): void {
   if (existing?.dataset.realEntitySlug === slug) return;
   existing?.remove();
 
-  const anchor = root.querySelector<HTMLElement>('.bk-band-logistics-card') ?? root.querySelector<HTMLElement>('.bk-card');
+  const anchor = root.querySelector<HTMLElement>('.bk-main-column > .bk-card')
+    ?? root.querySelector<HTMLElement>('.bk-band-logistics-card')
+    ?? root.querySelector<HTMLElement>('.bk-card');
   if (!anchor) return;
 
   anchor.insertAdjacentHTML('beforebegin', renderDetailLoading(slug));
