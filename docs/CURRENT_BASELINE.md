@@ -8,12 +8,15 @@
 - First clean GitHub baseline commit: `a178eb6`
 - Package version: `1.10.0`
 - Local preview: `http://127.0.0.1:5199`
+- Staging preview: `http://141.98.87.9`
+- Current stage: MVP Shell + Staging Backend Foundation
+- Current accepted staging checkpoint: `1.10.18 staging deploy script verified`
 
 ## What is fixed at this stage
 
-The project has moved from archive/patch exchange to GitHub-based development.
+The project has moved from archive/patch exchange to GitHub-based development and now has both a frontend MVP shell and a verified staging backend foundation.
 
-Current stable baseline includes:
+Current stable frontend baseline includes:
 
 - MVP Shell architecture;
 - routing map implementation with mock screens;
@@ -25,6 +28,22 @@ Current stable baseline includes:
 - runtime CSS synchronization from `src/styles` to `public/styles` and `dist/styles` during build;
 - mock permissions, role guards, moderation/security placeholders;
 - mobile reference UI pass applied to the feed shell.
+
+Current stable staging backend foundation includes:
+
+- Node.js backend skeleton in `server/`;
+- PostgreSQL installed locally on the staging VPS;
+- database `bandkit` and app user `bandkit_user`;
+- migration runner and `schema_migrations` tracking;
+- MVP core schema migration applied;
+- tables for users, entities, memberships, events, chat rooms/messages, documents, acknowledgements and audit events;
+- backend health endpoints `/api/v1/health` and `/api/v1/health/db`;
+- systemd service `bandkit-backend`;
+- Nginx `/api/` proxy;
+- verified public API health;
+- one-command staging deploy script.
+
+Frontend mock screens are not yet connected to real backend business APIs. Real registration, entity creation, chat messages and document actions still require API modules and frontend integration.
 
 Historical archive labels such as `BandKit_MVP_Shell_v1_1_local_dev_kit.zip` and notes from the `v1.7` mobile stabilization pass are retained only as history. They are not the current working baseline.
 
@@ -41,6 +60,29 @@ If only preview is needed:
 
 ```powershell
 .\START_BANDKIT_PREVIEW.bat
+```
+
+## Staging VPS workflow
+
+Normal staging deploy:
+
+```bash
+cd /opt/Bandkitalpha
+sudo scripts/staging-deploy.sh
+```
+
+Public API checks:
+
+```bash
+curl http://141.98.87.9/api/v1/health
+curl http://141.98.87.9/api/v1/health/db
+```
+
+Backend service checks:
+
+```bash
+sudo systemctl status bandkit-backend --no-pager
+sudo journalctl -u bandkit-backend -n 100 --no-pager
 ```
 
 ## Git rules
@@ -61,6 +103,7 @@ Commit source/runtime inputs:
 ```txt
 public/
 src/
+server/
 scripts/
 docs/
 checks/
@@ -76,6 +119,11 @@ README.md
 ```txt
 docs/CURRENT_BASELINE.md
 docs/handoff/README_START_HERE.md
+docs/handoff/runbooks/BandKit_Operator_Quick_Commands.md
+docs/handoff/spec/BandKit_Final_Product_Policy_And_Backend_Handoff_Checkpoint_1_10_15.md
+docs/handoff/checkpoints/BandKit_Staging_Backend_PostgreSQL_API_Checkpoint_1_10_16.md
+docs/handoff/checkpoints/BandKit_MVP_Core_DB_Schema_Checkpoint_1_10_17.md
+docs/handoff/checkpoints/BandKit_Staging_Deploy_Script_Verified_Checkpoint_1_10_18.md
 docs/handoff/spec/BandKit_TZ_v1_2.md
 docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md
 docs/handoff/spec/BandKit_App_Architecture_v1_0.md
@@ -98,9 +146,11 @@ docs/handoff/prompts/Codex_MVP_Shell_Prompt_v1_0.md
 - Assets stay language-neutral.
 - Desktop layout contract: `left nav → main content → right rail`.
 - Mobile layout contract: `top bar → content → bottom nav`.
-- Heavy backend/social-network logic starts only after backend/RLS/permission model implementation.
-- Frontend permission guards are mock placeholders until backend/RLS becomes source of truth.
+- Database schema changes must go through migrations.
+- Current VPS is staging/preview only, not production.
+- Heavy backend/social-network logic must be introduced as controlled vertical slices.
+- Frontend permission guards are mock placeholders until backend PermissionService/policy checks become source of truth.
 
 ## Next work item
 
-Continue UI/reference alignment and bug fixing from the GitHub repository, not from ZIP archives.
+Stabilize the backend foundation, keep documentation/checkpoints current, then add the first small real-data API slice. Do not jump directly into full registration, full chat backend, payments, marketplace or broad social feed.
