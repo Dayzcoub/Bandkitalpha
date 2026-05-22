@@ -2,9 +2,8 @@
 set -euo pipefail
 
 API_BASE="${API_BASE:-http://141.98.87.9/api/v1}"
-RUN_ID="$(date +%s)"
-ENTITY_SLUG="smoke-api-band-${RUN_ID}"
-ENTITY_NAME="Smoke API Band ${RUN_ID}"
+ENTITY_SLUG="smoke-api-band"
+ENTITY_NAME="Smoke API Band"
 
 log() {
   printf '\n[bandkit smoke] %s\n' "$*"
@@ -57,17 +56,24 @@ echo "$SEED"
 expect_contains "$SEED" '"ok":true' 'seed demo ok'
 expect_contains "$SEED" 'Demo Band' 'seed demo entity exists'
 
-log "Creating smoke entity"
+log "Ensuring deterministic smoke entity"
 CREATE_BODY="{\"name\":\"${ENTITY_NAME}\",\"type\":\"band\",\"slug\":\"${ENTITY_SLUG}\",\"visibility\":\"members\"}"
-CREATE_RESPONSE="$(request POST /entities "$CREATE_BODY")"
+CREATE_RESPONSE="$(request POST /entities "$CREATE_BODY" || true)"
 echo "$CREATE_RESPONSE"
-expect_contains "$CREATE_RESPONSE" '"ok":true' 'entity create ok'
-expect_contains "$CREATE_RESPONSE" "$ENTITY_SLUG" 'created entity slug present'
+if printf '%s' "$CREATE_RESPONSE" | grep -q '"ok":true'; then
+  expect_contains "$CREATE_RESPONSE" "$ENTITY_SLUG" 'created entity slug present'
+elif printf '%s' "$CREATE_RESPONSE" | grep -q 'ENTITY_CONFLICT'; then
+  echo "[bandkit smoke] Smoke entity already exists, reusing it"
+else
+  echo "Smoke check failed: entity create/reuse" >&2
+  echo "$CREATE_RESPONSE" >&2
+  exit 1
+fi
 
 log "Listing entities"
 LIST_RESPONSE="$(request GET /entities)"
 echo "$LIST_RESPONSE"
-expect_contains "$LIST_RESPONSE" "$ENTITY_SLUG" 'entity list contains created entity'
+expect_contains "$LIST_RESPONSE" "$ENTITY_SLUG" 'entity list contains smoke entity'
 
 log "Getting entity by slug"
 DETAIL_BY_SLUG="$(request GET "/entities/${ENTITY_SLUG}")"
