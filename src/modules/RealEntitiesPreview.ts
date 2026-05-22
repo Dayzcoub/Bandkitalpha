@@ -83,8 +83,29 @@ function renderDetailError(slug: string): string {
   return `<section class="bk-card bk-real-entity-detail-card" id="${DETAIL_PANEL_ID}" data-real-entity-detail="error" data-real-entity-slug="${escapeHtml(slug)}"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Real API detail</div><h3 class="bk-card-title">Реальная сущность недоступна</h3></div><span class="bk-badge bk-badge-warning">offline</span></div><p class="bk-state-copy">Не удалось прочитать /api/v1/entities/${escapeHtml(slug)}. Mock-detail ниже сохранён как fallback для shell.</p><div class="bk-action-row"><a class="bk-button bk-button-secondary" href="/bands" data-route="/bands">Назад к списку</a></div></section>`;
 }
 
+function renderDetailKpi(value: unknown, label: string): string {
+  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
+}
+
+function renderDetailRow(icon: string, title: unknown, meta: string): string {
+  return `<div class="bk-list-row"><span class="bk-nav-icon" aria-hidden="true">${escapeHtml(icon)}</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div></div></div>`;
+}
+
 function renderEntityDetail(entity: RealEntity): string {
-  return `<section class="bk-card bk-real-entity-detail-card" id="${DETAIL_PANEL_ID}" data-real-entity-detail="ready" data-real-entity-slug="${escapeHtml(entity.slug)}"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Real API detail</div><h3 class="bk-card-title">${escapeHtml(entity.name)}</h3></div><span class="bk-badge bk-badge-positive">DB read-only</span></div><p class="bk-state-copy">Карточка открыта из PostgreSQL через GET /api/v1/entities/${escapeHtml(entity.slug)}. UI-запись отключена до auth/permissions.</p><div class="bk-kpi-grid bk-entity-kpi-grid"><article class="bk-kpi"><strong>${escapeHtml(entity.type)}</strong><span>Тип</span></article><article class="bk-kpi"><strong>${escapeHtml(entity.status)}</strong><span>Статус</span></article><article class="bk-kpi"><strong>${escapeHtml(entity.visibility)}</strong><span>Видимость</span></article><article class="bk-kpi"><strong>${escapeHtml(entity.member_count)}</strong><span>Участники</span></article></div><div class="bk-list"><div class="bk-list-row"><span class="bk-nav-icon" aria-hidden="true">#</span><span><span class="bk-list-row-title">${escapeHtml(entity.slug)}</span><span class="bk-meta">Slug реальной сущности</span></span></div><div class="bk-list-row"><span class="bk-nav-icon" aria-hidden="true">◎</span><span><span class="bk-list-row-title">${escapeHtml(entity.id)}</span><span class="bk-meta">UUID из PostgreSQL</span></span></div><div class="bk-list-row"><span class="bk-nav-icon" aria-hidden="true">◷</span><span><span class="bk-list-row-title">${escapeHtml(formatDate(entity.created_at))}</span><span class="bk-meta">Дата создания</span></span></div></div><section class="bk-profile-feed-policy"><div><strong>Read-only integration checkpoint</strong><span>Ниже остаётся mock-контекст shell, чтобы не подключать create/update/delete до полноценной модели авторизации.</span></div><div class="bk-chip-row"><span class="bk-badge bk-badge-positive">GET only</span><span class="bk-badge">No auth writes</span><span class="bk-badge">Mock fallback preserved</span></div></section><div class="bk-action-row"><a class="bk-button bk-button-secondary" href="/bands" data-route="/bands">Назад к списку</a></div></section>`;
+  const kpis = [
+    renderDetailKpi(entity.type, 'Тип'),
+    renderDetailKpi(entity.status, 'Статус'),
+    renderDetailKpi(entity.visibility, 'Видимость'),
+    renderDetailKpi(entity.member_count, 'Участники')
+  ].join('');
+
+  const rows = [
+    renderDetailRow('#', entity.slug, 'Slug реальной сущности'),
+    renderDetailRow('◎', entity.id, 'UUID из PostgreSQL'),
+    renderDetailRow('◷', formatDate(entity.created_at), 'Дата создания')
+  ].join('');
+
+  return `<section class="bk-card bk-real-entity-detail-card" id="${DETAIL_PANEL_ID}" data-real-entity-detail="ready" data-real-entity-slug="${escapeHtml(entity.slug)}"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Real API detail</div><h3 class="bk-card-title">${escapeHtml(entity.name)}</h3></div><span class="bk-badge bk-badge-positive">DB read-only</span></div><p class="bk-state-copy">Карточка открыта из PostgreSQL через GET /api/v1/entities/${escapeHtml(entity.slug)}. UI-запись отключена до auth/permissions.</p><div class="bk-kpi-grid bk-entity-kpi-grid">${kpis}</div><div class="bk-list">${rows}</div><section class="bk-profile-feed-policy"><div><strong>Read-only integration checkpoint</strong><span>Ниже остаётся mock-контекст shell, чтобы не подключать create/update/delete до полноценной модели авторизации.</span></div><div class="bk-chip-row"><span class="bk-badge bk-badge-positive">GET only</span><span class="bk-badge">No auth writes</span><span class="bk-badge">Mock fallback preserved</span></div></section><div class="bk-action-row"><a class="bk-button bk-button-secondary" href="/bands" data-route="/bands">Назад к списку</a></div></section>`;
 }
 
 async function hydratePanel(panel: HTMLElement): Promise<void> {
