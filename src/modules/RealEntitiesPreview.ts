@@ -43,9 +43,9 @@ function renderError(): string {
 function renderEntities(entities: RealEntity[]): string {
   const rows = entities.length
     ? entities
-      .map((entity) => `<a class="bk-list-row bk-real-entity-row" href="/bands/${escapeHtml(entity.slug)}" data-route="/bands/${escapeHtml(entity.slug)}"><span class="bk-nav-icon" aria-hidden="true">♬</span><span><span class="bk-list-row-title">${escapeHtml(entity.name)}</span><span class="bk-meta">${escapeHtml(formatEntityMeta(entity))}</span></span><span class="bk-badge bk-badge-positive">DB</span></a>`)
+      .map((entity) => `<a class="bk-list-row bk-real-entity-row" href="/bands/${escapeHtml(entity.slug)}" data-route="/bands/${escapeHtml(entity.slug)}"><span class="bk-nav-icon" aria-hidden="true">♬</span><span class="bk-real-entity-main"><span class="bk-list-row-title">${escapeHtml(entity.name)}</span><span class="bk-meta bk-real-entity-meta">${escapeHtml(formatEntityMeta(entity))}</span></span><span class="bk-badge bk-badge-positive">DB</span></a>`)
       .join('')
-    : `<div class="bk-list-row"><span class="bk-nav-icon" aria-hidden="true">∅</span><span><span class="bk-list-row-title">Нет сущностей в БД</span><span class="bk-meta">Создай тестовую сущность через staging API smoke.</span></span></div>`;
+    : `<div class="bk-list-row"><span class="bk-nav-icon" aria-hidden="true">∅</span><span class="bk-real-entity-main"><span class="bk-list-row-title">Нет сущностей в БД</span><span class="bk-meta bk-real-entity-meta">Создай тестовую сущность через staging API smoke.</span></span></div>`;
 
   return `<section class="bk-card bk-real-entities-card" id="${PANEL_ID}" data-real-entities-preview="ready"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Real API</div><h3 class="bk-card-title">Сущности из PostgreSQL</h3></div><span class="bk-badge bk-badge-positive">read-only</span></div><p class="bk-state-copy">Первое безопасное подключение интерфейса к реальному backend. Запись из UI пока отключена.</p><div class="bk-list">${rows}</div></section>`;
 }
