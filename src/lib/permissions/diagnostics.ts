@@ -5,5 +5,5 @@ export function canSeeDiagnostics(ctx: AppContext): boolean {
 }
 
 export function canSeeTechnicalLabels(ctx: AppContext): boolean {
-  return ctx.state.role === 'admin' || ctx.state.role === 'super_admin';
+  return ctx.state.role === 'super_admin';
 }
