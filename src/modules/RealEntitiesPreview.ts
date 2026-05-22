@@ -26,6 +26,14 @@ const DETAIL_PANEL_ID = 'bk-real-entity-detail';
 const API_URL = '/api/v1/entities';
 const MOCK_BAND_IDS = new Set(['b1', 'b2', 'b3']);
 
+function canSeeRealApiDebugPanels(): boolean {
+  try {
+    return window.localStorage.getItem('bandkit.role') === 'super_admin';
+  } catch {
+    return false;
+  }
+}
+
 function escapeHtml(value: unknown): string {
   return String(value ?? '')
     .replace(/&/g, '&amp;')
@@ -142,6 +150,11 @@ async function hydrateDetailPanel(panel: HTMLElement, slug: string): Promise<voi
   }
 }
 
+function unmountDebugPanels(root: HTMLElement): void {
+  root.querySelector(`#${PANEL_ID}`)?.remove();
+  root.querySelector(`#${DETAIL_PANEL_ID}`)?.remove();
+}
+
 function mountList(root: HTMLElement): void {
   if (window.location.pathname !== '/bands') return;
   if (root.querySelector(`#${PANEL_ID}`)) return;
@@ -173,6 +186,11 @@ function mountDetail(root: HTMLElement): void {
 }
 
 function mount(root: HTMLElement): void {
+  if (!canSeeRealApiDebugPanels()) {
+    unmountDebugPanels(root);
+    return;
+  }
+
   mountList(root);
   mountDetail(root);
 }
