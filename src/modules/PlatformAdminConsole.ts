@@ -1,7 +1,9 @@
 type AdminTone = 'neutral' | 'positive' | 'warning' | 'danger';
+type AdminAccess = 'moderator' | 'admin' | 'super_admin';
 
 type AdminSection = {
   path: string;
+  access: AdminAccess;
   label: string;
   title: string;
   subtitle: string;
@@ -11,12 +13,11 @@ type AdminSection = {
 };
 
 const ADMIN_ROOT = '/admin';
+const roleRank: Record<string, number> = { guest: 0, user: 1, moderator: 2, admin: 3, super_admin: 4 };
 
 const sections: AdminSection[] = [
   {
-    path: '/admin',
-    label: 'Overview',
-    title: 'Platform Console',
+    path: '/admin', access: 'admin', label: 'Overview', title: 'Platform Console',
     subtitle: 'Owner-level operations console. This is not a band, studio, organization or event admin area.',
     kpis: [['42', 'users under review'], ['2', 'open reports'], ['7', 'platform queues'], ['0', 'critical incidents']],
     rows: [
@@ -27,9 +28,7 @@ const sections: AdminSection[] = [
     actions: ['Open reports queue', 'Review trust signals', 'Check audit trail'],
   },
   {
-    path: '/admin/users',
-    label: 'Users',
-    title: 'Users Registry',
+    path: '/admin/users', access: 'admin', label: 'Users', title: 'Users Registry',
     subtitle: 'Platform-level user lookup, verification state, risk flags and support-safe account operations.',
     kpis: [['3', 'demo profiles'], ['2FA', 'required for staff'], ['1', 'restricted sample'], ['Audit', 'mandatory']],
     rows: [
@@ -40,9 +39,7 @@ const sections: AdminSection[] = [
     actions: ['Open user card', 'Add support note', 'Request verification'],
   },
   {
-    path: '/admin/entities',
-    label: 'Entities',
-    title: 'Entities Registry',
+    path: '/admin/entities', access: 'admin', label: 'Entities', title: 'Entities Registry',
     subtitle: 'Read platform-level registry for bands, studios, organizations, venues and events without mixing their own admin panels.',
     kpis: [['3', 'bands/projects'], ['3', 'events'], ['Future', 'studios/orgs'], ['Safe', 'read-first']],
     rows: [
@@ -53,9 +50,7 @@ const sections: AdminSection[] = [
     actions: ['Open registry item', 'Flag for review', 'Open read-only audit'],
   },
   {
-    path: '/admin/reports',
-    label: 'Reports',
-    title: 'Reports Queue',
+    path: '/admin/reports', access: 'moderator', label: 'Reports', title: 'Reports Queue',
     subtitle: 'Unified queue for complaints, appeals and escalations before final moderation workflows are connected.',
     kpis: [['2', 'open reports'], ['1', 'high priority'], ['0', 'SLA breaches'], ['Appeals', 'future-ready']],
     rows: [
@@ -66,9 +61,7 @@ const sections: AdminSection[] = [
     actions: ['Assign case', 'Escalate to trust', 'Close as rejected'],
   },
   {
-    path: '/admin/moderation',
-    label: 'Moderation',
-    title: 'Moderation Operations',
+    path: '/admin/moderation', access: 'moderator', label: 'Moderation', title: 'Moderation Operations',
     subtitle: 'Platform moderation surface for content, profiles, messages under complaint, and entity visibility decisions.',
     kpis: [['Content', 'posts/comments'], ['Messages', 'complaint-gated'], ['Profiles', 'risk review'], ['Audit', 'immutable']],
     rows: [
@@ -79,9 +72,7 @@ const sections: AdminSection[] = [
     actions: ['Open queue', 'Review content flag', 'Write moderation note'],
   },
   {
-    path: '/admin/trust',
-    label: 'Trust & Safety',
-    title: 'Trust & Safety',
+    path: '/admin/trust', access: 'admin', label: 'Trust & Safety', title: 'Trust & Safety',
     subtitle: 'Risk signals, blocked links, suspicious account patterns, rating abuse and anti-fraud policy controls.',
     kpis: [['Links', 'blocked in MVP'], ['Risk', 'manual review'], ['Rating', 'abuse future'], ['2FA', 'staff required']],
     rows: [
@@ -92,9 +83,7 @@ const sections: AdminSection[] = [
     actions: ['Review blocked links', 'Open risk user', 'Tune policy draft'],
   },
   {
-    path: '/admin/billing',
-    label: 'Billing',
-    title: 'Billing & Plans',
+    path: '/admin/billing', access: 'super_admin', label: 'Billing', title: 'Billing & Plans',
     subtitle: 'Plans, subscriptions, refunds and manual access grants. Kept separate from entity settings and user profile screens.',
     kpis: [['Plans', 'future'], ['Invoices', 'future'], ['Refunds', 'audited'], ['Access', 'manual grant']],
     rows: [
@@ -105,9 +94,7 @@ const sections: AdminSection[] = [
     actions: ['Review plans', 'Open subscriptions', 'Audit refund'],
   },
   {
-    path: '/admin/content',
-    label: 'Content',
-    title: 'Content Operations',
+    path: '/admin/content', access: 'admin', label: 'Content', title: 'Content Operations',
     subtitle: 'Feed, comments, media, categories and featured surfaces controlled at platform level.',
     kpis: [['Feed', 'moderated'], ['Media', 'scan future'], ['Featured', 'curated'], ['Categories', 'controlled']],
     rows: [
@@ -118,9 +105,7 @@ const sections: AdminSection[] = [
     actions: ['Open content flags', 'Manage featured', 'Review media'],
   },
   {
-    path: '/admin/localization',
-    label: 'Localization',
-    title: 'Localization Console',
+    path: '/admin/localization', access: 'admin', label: 'Localization', title: 'Localization Console',
     subtitle: 'Language packs, translation keys, missing strings and future import/export workflows.',
     kpis: [['RU/EN', 'active'], ['JSON', 'current MVP'], ['DB', 'future-ready'], ['Fallback', 'English']],
     rows: [
@@ -131,9 +116,7 @@ const sections: AdminSection[] = [
     actions: ['Review keys', 'Export pack', 'Check missing'],
   },
   {
-    path: '/admin/notifications',
-    label: 'Notifications',
-    title: 'Notifications & Broadcasts',
+    path: '/admin/notifications', access: 'admin', label: 'Notifications', title: 'Notifications & Broadcasts',
     subtitle: 'Operational channel for platform announcements, templates, push/email/SMS policies and emergency notices.',
     kpis: [['In-app', 'ready shell'], ['Push', 'future'], ['Email', 'templates'], ['SMS', 'critical only']],
     rows: [
@@ -144,9 +127,7 @@ const sections: AdminSection[] = [
     actions: ['Create draft', 'Preview template', 'Audit send'],
   },
   {
-    path: '/admin/audit',
-    label: 'Audit',
-    title: 'Audit Trail',
+    path: '/admin/audit', access: 'admin', label: 'Audit', title: 'Audit Trail',
     subtitle: 'Immutable platform action log for role changes, restrictions, billing actions, moderation and data access.',
     kpis: [['Immutable', 'required'], ['Actor', 'captured'], ['Reason', 'required'], ['IP/UA', 'hashed']],
     rows: [
@@ -157,9 +138,7 @@ const sections: AdminSection[] = [
     actions: ['Filter audit', 'Export log', 'Open actor'],
   },
   {
-    path: '/admin/settings',
-    label: 'Settings',
-    title: 'Platform Settings',
+    path: '/admin/settings', access: 'super_admin', label: 'Settings', title: 'Platform Settings',
     subtitle: 'Global platform flags, registration policy, security requirements, providers and feature gates.',
     kpis: [['Registration', 'policy'], ['2FA', 'required staff'], ['Feature flags', 'future'], ['Providers', 'future']],
     rows: [
@@ -180,6 +159,14 @@ function currentSection(pathname = window.location.pathname): AdminSection | nul
   return sections.find((section) => section.path === pathname) ?? sections[0] ?? null;
 }
 
+function currentRole(root: HTMLElement): string {
+  return root.querySelector<HTMLElement>('.bk-shell')?.dataset.role ?? 'guest';
+}
+
+function canViewSection(root: HTMLElement, section: AdminSection): boolean {
+  return (roleRank[currentRole(root)] ?? 0) >= roleRank[section.access];
+}
+
 function badge(label: string, tone: AdminTone = 'neutral'): string {
   const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
   return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
@@ -197,9 +184,9 @@ function renderRow([title, meta, tone]: [string, string, AdminTone]): string {
   return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div></div>${badge(tone.toUpperCase(), tone)}</div>`;
 }
 
-function renderAdminMain(section: AdminSection): string {
+function renderAdminMain(section: AdminSection, root: HTMLElement): string {
   const shortcutButtons = sections
-    .filter((item) => item.path !== section.path)
+    .filter((item) => item.path !== section.path && canViewSection(root, item))
     .slice(0, 6)
     .map((item) => button(item.label, item.path, 'ghost'))
     .join('');
@@ -211,6 +198,7 @@ function renderAdminRightRail(section: AdminSection): string {
 }
 
 function renderAdminPage(root: HTMLElement, section: AdminSection): void {
+  if (!canViewSection(root, section)) return;
   document.documentElement.dataset.platformAdminConsole = 'true';
   root.querySelectorAll<HTMLElement>('.bk-nav-item').forEach((item) => {
     const href = item.getAttribute('href') ?? '';
@@ -222,7 +210,7 @@ function renderAdminPage(root: HTMLElement, section: AdminSection): void {
   const grid = root.querySelector<HTMLElement>('.bk-content-grid');
   const main = root.querySelector<HTMLElement>('.bk-main-column');
   if (grid) grid.classList.remove('bk-content-wide');
-  if (main) main.innerHTML = renderAdminMain(section);
+  if (main) main.innerHTML = renderAdminMain(section, root);
   const existingRail = root.querySelector<HTMLElement>('.bk-right-rail');
   const railHtml = renderAdminRightRail(section);
   if (existingRail) existingRail.outerHTML = railHtml;
