@@ -72,7 +72,7 @@ function mobileChatBackButton(ctx: AppContext): string {
 
 export function sideNav(ctx: AppContext, mode: 'app' | 'admin'): string {
   const filtered = filteredNavItems(ctx, mode);
-  const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${ctx.t('common.mock')}</span></div>` : '';
+  const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${mode === 'admin' ? ctx.t('admin.mockMode') : ctx.t('common.mock')}</span></div>` : '';
   const brandRoute = mode === 'admin' ? '/admin' : '/feed';
   const workspaceTitle = mode === 'admin' ? ctx.t('admin.consoleName') : ctx.t('mock.workspaceName');
   return `<aside class="bk-side-nav"><a class="bk-brand-row" href="${brandRoute}" data-route="${brandRoute}"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><img class="bk-brand-logo" src="${getAsset('logoPrimary')}" alt="${ctx.t('asset.alt.logo')}" /></a><nav class="bk-nav-list" aria-label="${ctx.t('common.actions')}">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><div class="bk-nav-spacer"></div><section class="bk-card bk-workspace-card"><div class="bk-meta">${mode === 'admin' ? ctx.t('admin.consoleMode') : ctx.t('common.workspace')}</div><strong>${workspaceTitle}</strong>${workspaceDiagnostics}</section></aside>`;
@@ -119,7 +119,7 @@ export function mobileTopBar(ctx: AppContext, mode: 'app' | 'admin' = 'app'): st
 
 export function mobileMenuDrawer(ctx: AppContext, mode: 'app' | 'admin'): string {
   const filtered = filteredNavItems(ctx, mode);
-  const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${ctx.t('common.mock')}</span></div>` : '';
+  const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${mode === 'admin' ? ctx.t('admin.mockMode') : ctx.t('common.mock')}</span></div>` : '';
   const menuTitle = mode === 'admin' ? ctx.t('admin.consoleName') : ctx.t('common.workspace');
   const workspaceTitle = mode === 'admin' ? ctx.t('admin.consoleMode') : ctx.t('mock.workspaceName');
   return `<div class="bk-mobile-menu-layer" data-mobile-menu-layer aria-hidden="true"><button class="bk-mobile-menu-backdrop" type="button" data-mobile-menu-close aria-label="${ctx.t('actions.close')}"></button><aside class="bk-mobile-menu-panel" aria-label="${ctx.t('common.actions')}"><div class="bk-mobile-menu-head"><div><div class="bk-meta">${menuTitle}</div><strong>${ctx.t('app.name')}</strong></div><button class="bk-button bk-icon-button" type="button" data-mobile-menu-close aria-label="${ctx.t('actions.close')}">×</button></div><nav class="bk-mobile-menu-list">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><section class="bk-card bk-mobile-menu-workspace"><div class="bk-meta">${menuTitle}</div><strong>${workspaceTitle}</strong>${workspaceDiagnostics}</section></aside></div>`;
