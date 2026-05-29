@@ -14,6 +14,13 @@ type AdminSection = {
   actions: string[];
 };
 
+type AdminTableRow = {
+  title: string;
+  meta: string;
+  badges: Array<{ label: string; tone?: AdminTone }>;
+  details: string[];
+};
+
 const ADMIN_ROOT = '/admin';
 const roleRank: Record<string, number> = { guest: 0, user: 1, moderator: 2, admin: 3, super_admin: 4 };
 
@@ -256,13 +263,74 @@ function renderRow(row: AdminRow): string {
   return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(row.title)}</div><div class="bk-meta">${escapeHtml(row.meta)}</div></div>${badge(toneLabel(row.tone), row.tone)}</div>`;
 }
 
+function renderTableRow(row: AdminTableRow): string {
+  const badges = row.badges.map((item) => badge(item.label, item.tone)).join('');
+  const details = row.details.map((item) => `<span class="bk-badge">${escapeHtml(item)}</span>`).join('');
+  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(row.title)}</div><div class="bk-meta">${escapeHtml(row.meta)}</div><div class="bk-chip-row">${details}</div></div><div class="bk-chip-row">${badges}</div></div>`;
+}
+
+function renderUsersRegistryDetails(): string {
+  const users: AdminTableRow[] = [
+    {
+      title: 'Alex Rhythm',
+      meta: 'Пользователь · музыкант · Helsinki · последний вход сегодня',
+      badges: [{ label: 'верифицирован', tone: 'positive' }, { label: '2FA готова', tone: 'positive' }],
+      details: ['email подтверждён', 'телефон подтверждён', 'репутация 92'],
+    },
+    {
+      title: 'Mira Voice',
+      meta: 'Пользователь · вокалист · Tallinn · premium-профиль',
+      badges: [{ label: 'trusted', tone: 'positive' }, { label: 'платный тариф', tone: 'warning' }],
+      details: ['email подтверждён', 'телефон подтверждён', 'репутация 96'],
+    },
+    {
+      title: 'Подозрительный контакт',
+      meta: 'Пользователь · личные сообщения · сработала политика внешних ссылок',
+      badges: [{ label: 'проверка', tone: 'warning' }, { label: 'жалоба', tone: 'danger' }],
+      details: ['ссылка заблокирована', 'контекст сохранён', 'нужна модерация'],
+    },
+  ];
+  return `<section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Реестр пользователей</div><h3 class="bk-card-title">Support-safe карточки</h3></div>${badge('без мутаций', 'positive')}</div><p class="bk-state-copy">Первый проход показывает только безопасный read-only слой: статус аккаунта, верификация, 2FA, жалобы и risk-флаги. Блокировки, сброс 2FA, смена роли и доступ к приватным данным требуют отдельного backend action с причиной и аудитом.</p><div class="bk-list">${users.map(renderTableRow).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Что будет в карточке пользователя</div><h3 class="bk-card-title">Структура будущего detail view</h3></div>${badge('позже API', 'warning')}</div><div class="bk-chip-row">${['Профиль', 'Контакты', 'Верификация', '2FA', 'Роли', 'Сущности', 'Жалобы', 'Платежи', 'Устройства', 'Аудит'].map((item) => badge(item)).join('')}</div></section>`;
+}
+
+function renderEntitiesRegistryDetails(): string {
+  const entities: AdminTableRow[] = [
+    {
+      title: 'Northern Lights Band',
+      meta: 'Группа / проект · владелец Alex Rhythm · активна',
+      badges: [{ label: 'активна', tone: 'positive' }, { label: 'owner admin отдельно', tone: 'neutral' }],
+      details: ['5 участников', '2 события', 'документы есть'],
+    },
+    {
+      title: 'City Orchestra Lab',
+      meta: 'Оркестр · 32 участника · идёт набор',
+      badges: [{ label: 'набор', tone: 'warning' }, { label: 'проверить роли', tone: 'neutral' }],
+      details: ['много участников', 'публичная страница', 'роли сущности'],
+    },
+    {
+      title: 'Studio Night Crew',
+      meta: 'Сессионная команда · закрытый проект · platform review возможен',
+      badges: [{ label: 'закрыто', tone: 'neutral' }, { label: 'review ready', tone: 'warning' }],
+      details: ['8 участников', 'закрытая видимость', 'аудит изменений'],
+    },
+  ];
+  return `<section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Реестр сущностей</div><h3 class="bk-card-title">Платформенный обзор без входа в админку сущности</h3></div>${badge('граница сохранена', 'positive')}</div><p class="bk-state-copy">Владелец платформы видит состояние сущностей, владельца, жалобы, активность и риск-флаги. Внутренние настройки группы, студии или события остаются в их собственных админках.</p><div class="bk-list">${entities.map(renderTableRow).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Допустимые platform actions</div><h3 class="bk-card-title">Что можно делать из /admin</h3></div>${badge('с аудитом', 'warning')}</div><div class="bk-chip-row">${['Заморозить', 'Снять с публикации', 'Поставить risk-флаг', 'Назначить проверку', 'Проверить владельца', 'Открыть read-only аудит'].map((item) => badge(item)).join('')}</div></section>`;
+}
+
+function renderSectionSpecificDetails(section: AdminSection): string {
+  if (section.path === '/admin/users') return renderUsersRegistryDetails();
+  if (section.path === '/admin/entities') return renderEntitiesRegistryDetails();
+  return '';
+}
+
 function renderAdminMain(section: AdminSection, root: HTMLElement): string {
   const shortcutButtons = sections
     .filter((item) => item.path !== section.path && canViewSection(root, item))
     .slice(0, 6)
     .map((item) => button(item.label, item.path, 'ghost'))
     .join('');
-  return `<header class="bk-page-header"><div class="bk-eyebrow">Платформенная консоль · операции владельца · режим заглушек</div><div class="bk-chip-row">${badge('/admin граница', 'positive')}${badge('админки сущностей отдельно', 'warning')}${badge('без критичных API')}</div><div class="bk-page-header-main"><div><h1 class="bk-title">${escapeHtml(section.title)}</h1><p class="bk-subtitle">${escapeHtml(section.subtitle)}</p></div><div class="bk-action-row">${button('В приложение', '/feed', 'secondary')}</div></div></header><section class="bk-card"><div class="bk-kpi-grid">${section.kpis.map(renderKpi).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Операционная граница</div><h3 class="bk-card-title">Только действия уровня платформы</h3></div>${badge('сначала только чтение', 'positive')}</div><div class="bk-list">${section.rows.map(renderRow).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Безопасные действия</h3><p class="bk-state-copy">Эти кнопки пока являются UI-заглушками. Реальные блокировки, возвраты, смена ролей, impersonation и доступ к данным должны проходить через backend permissions, запрос причины и неизменяемый аудит.</p><div class="bk-action-row">${section.actions.map((action) => button(action, section.path, action.includes('Аудит') || action.includes('аудит') ? 'primary' : 'secondary')).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Разделы платформы</h3><div class="bk-action-row">${shortcutButtons}</div></section>`;
+  const details = renderSectionSpecificDetails(section);
+  return `<header class="bk-page-header"><div class="bk-eyebrow">Платформенная консоль · операции владельца · режим заглушек</div><div class="bk-chip-row">${badge('/admin граница', 'positive')}${badge('админки сущностей отдельно', 'warning')}${badge('без критичных API')}</div><div class="bk-page-header-main"><div><h1 class="bk-title">${escapeHtml(section.title)}</h1><p class="bk-subtitle">${escapeHtml(section.subtitle)}</p></div><div class="bk-action-row">${button('В приложение', '/feed', 'secondary')}</div></div></header><section class="bk-card"><div class="bk-kpi-grid">${section.kpis.map(renderKpi).join('')}</div></section>${details}<section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Операционная граница</div><h3 class="bk-card-title">Только действия уровня платформы</h3></div>${badge('сначала только чтение', 'positive')}</div><div class="bk-list">${section.rows.map(renderRow).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Безопасные действия</h3><p class="bk-state-copy">Эти кнопки пока являются UI-заглушками. Реальные блокировки, возвраты, смена ролей, impersonation и доступ к данным должны проходить через backend permissions, запрос причины и неизменяемый аудит.</p><div class="bk-action-row">${section.actions.map((action) => button(action, section.path, action.includes('Аудит') || action.includes('аудит') ? 'primary' : 'secondary')).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Разделы платформы</h3><div class="bk-action-row">${shortcutButtons}</div></section>`;
 }
 
 function renderAdminRightRail(section: AdminSection): string {
