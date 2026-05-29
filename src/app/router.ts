@@ -34,9 +34,17 @@ export const routes: RouteDefinition[] = [
   { path: '/moderation/complaints/:complaintId', shell: 'admin', access: 'moderator', titleKey: 'moderation.caseTitle', subtitleKey: 'moderation.subtitle', navKey: 'nav.moderation', iconKey: 'badgeWarning', section: 'admin', exact: true },
   { path: '/admin', shell: 'admin', access: 'admin', titleKey: 'admin.title', subtitleKey: 'admin.subtitle', navKey: 'nav.admin', iconKey: 'navAdminInactive', section: 'admin', exact: true },
   { path: '/admin/users', shell: 'admin', access: 'admin', titleKey: 'admin.usersTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.users', iconKey: 'navAdminInactive', section: 'admin', exact: true },
+  { path: '/admin/entities', shell: 'admin', access: 'admin', titleKey: 'admin.entitiesTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.entities', iconKey: 'navProjectsInactive', section: 'admin', exact: true },
+  { path: '/admin/reports', shell: 'admin', access: 'moderator', titleKey: 'admin.reportsTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.reports', iconKey: 'badgeWarning', section: 'admin', exact: true },
+  { path: '/admin/moderation', shell: 'admin', access: 'moderator', titleKey: 'admin.moderationTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.moderation', iconKey: 'navAdminInactive', section: 'admin', exact: true },
+  { path: '/admin/trust', shell: 'admin', access: 'admin', titleKey: 'admin.trustTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.security', iconKey: 'badgeWarning', section: 'admin', exact: true },
+  { path: '/admin/billing', shell: 'admin', access: 'super_admin', titleKey: 'admin.billingTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.billing', iconKey: 'navFilesInactive', section: 'admin', exact: true },
+  { path: '/admin/content', shell: 'admin', access: 'admin', titleKey: 'admin.contentTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.content', iconKey: 'navFeedInactive', section: 'admin', exact: true },
   { path: '/admin/roles', shell: 'admin', access: 'super_admin', titleKey: 'admin.rolesTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.roles', iconKey: 'navAdminInactive', section: 'admin', exact: true },
   { path: '/admin/localization', shell: 'admin', access: 'admin', titleKey: 'admin.localizationTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.localization', iconKey: 'navFilesInactive', section: 'admin', exact: true },
+  { path: '/admin/notifications', shell: 'admin', access: 'admin', titleKey: 'admin.notificationsTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.notifications', iconKey: 'navNotificationsInactive', section: 'admin', exact: true },
   { path: '/admin/audit', shell: 'admin', access: 'admin', titleKey: 'admin.auditTitle', subtitleKey: 'common.audit', navKey: 'nav.audit', iconKey: 'navFilesInactive', section: 'admin', exact: true },
+  { path: '/admin/settings', shell: 'admin', access: 'super_admin', titleKey: 'admin.settingsTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.settings', iconKey: 'navSettingsInactive', section: 'admin', exact: true },
 ];
 
 const notFoundRoute: RouteDefinition = { path: '*', shell: 'public', access: 'any', titleKey: 'state.notFoundTitle', subtitleKey: 'state.notFoundCopy', section: 'public', exact: true, wide: true };
