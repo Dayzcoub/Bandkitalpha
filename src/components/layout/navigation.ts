@@ -62,12 +62,12 @@ function shouldShowChatBack(ctx: AppContext): boolean {
 function shellProfileBackButton(ctx: AppContext, placement: 'desktop' | 'mobile'): string {
   if (!shouldShowProfileBack(ctx)) return '';
   const className = placement === 'mobile' ? 'bk-shell-profile-back bk-shell-profile-back-mobile' : 'bk-shell-profile-back bk-shell-profile-back-desktop';
-  return `<button class="bk-button bk-button-ghost ${className}" type="button" data-history-back aria-label="Вернуться назад">← Назад</button>`;
+  return `<button class="bk-button bk-button-ghost ${className}" type="button" data-history-back aria-label="${ctx.t('actions.back')}">← ${ctx.t('actions.back')}</button>`;
 }
 
 function mobileChatBackButton(ctx: AppContext): string {
   if (!shouldShowChatBack(ctx)) return '';
-  return `<button class="bk-button bk-icon-button bk-mobile-chat-back" type="button" data-route="/chats" aria-label="Вернуться к списку чатов"><span aria-hidden="true">←</span></button>`;
+  return `<button class="bk-button bk-icon-button bk-mobile-chat-back" type="button" data-route="/chats" aria-label="${ctx.t('chats.title')}"><span aria-hidden="true">←</span></button>`;
 }
 
 export function sideNav(ctx: AppContext, mode: 'app' | 'admin'): string {
@@ -85,6 +85,14 @@ function navLink(ctx: AppContext, item: NavItem): string {
 }
 
 export function bottomNav(ctx: AppContext): string {
+  if (ctx.match.route.shell === 'admin') {
+    const items = filteredNavItems(ctx, 'admin').slice(0, 5);
+    return `<nav class="bk-bottom-nav" aria-label="${ctx.t('admin.consoleName')}">${items.map((item) => {
+      const active = ctx.path === item.path || (item.path !== '/admin' && ctx.path.startsWith(`${item.path}/`));
+      const icon = active ? item.activeIcon : item.inactiveIcon;
+      return `<a href="${item.path}" data-route="${item.path}" ${active ? 'aria-current="page"' : ''}><img class="bk-nav-icon" src="${getAsset(icon)}" alt="" /><span>${ctx.t(item.labelKey)}</span></a>`;
+    }).join('')}</nav>`;
+  }
   const items = [
     appNavItems[0],
     appNavItems[1],
@@ -103,7 +111,10 @@ export function bottomNav(ctx: AppContext): string {
 export function mobileTopBar(ctx: AppContext, mode: 'app' | 'admin' = 'app'): string {
   const brandRoute = mode === 'admin' ? '/admin' : '/feed';
   const brandLabel = mode === 'admin' ? ctx.t('admin.consoleName') : ctx.t('app.name');
-  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="${brandRoute}" data-route="${brandRoute}"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${brandLabel}</span></a><div class="bk-mobile-top-actions">${shellProfileBackButton(ctx, 'mobile')}${mobileChatBackButton(ctx)}<button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button><button class="bk-button bk-icon-button bk-mobile-menu-trigger" type="button" data-mobile-menu-open aria-label="${ctx.t('common.actions')}"><span aria-hidden="true">☰</span></button></div></header>`;
+  const adminActions = mode === 'admin'
+    ? `<button class="bk-button bk-icon-button" data-route="/admin/audit" aria-label="${ctx.t('admin.auditTitle')}"><img class="bk-nav-icon" src="${getAsset('navFilesInactive')}" alt="" /></button>`
+    : `<button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button>`;
+  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="${brandRoute}" data-route="${brandRoute}"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${brandLabel}</span></a><div class="bk-mobile-top-actions">${shellProfileBackButton(ctx, 'mobile')}${mobileChatBackButton(ctx)}${adminActions}<button class="bk-button bk-icon-button bk-mobile-menu-trigger" type="button" data-mobile-menu-open aria-label="${ctx.t('common.actions')}"><span aria-hidden="true">☰</span></button></div></header>`;
 }
 
 export function mobileMenuDrawer(ctx: AppContext, mode: 'app' | 'admin'): string {
@@ -115,5 +126,9 @@ export function mobileMenuDrawer(ctx: AppContext, mode: 'app' | 'admin'): string
 }
 
 export function topBar(ctx: AppContext): string {
+  if (ctx.match.route.shell === 'admin') {
+    const settingsButton = hasRole(ctx.state, 'super_admin') ? `<button class="bk-button bk-button-secondary" data-route="/admin/settings">${ctx.t('admin.settingsTitle')}</button>` : '';
+    return `<header class="bk-top-bar"><input class="bk-search" type="search" aria-label="${ctx.t('admin.searchLabel')}" placeholder="${ctx.t('admin.searchPlaceholder')}" /><div class="bk-top-actions"><button class="bk-button bk-button-primary" data-route="/admin/audit">${ctx.t('admin.openAudit')}</button>${settingsButton}<button class="bk-button bk-button-secondary" data-route="/feed">${ctx.t('admin.backToApp')}</button></div></header>`;
+  }
   return `<header class="bk-top-bar"><input class="bk-search" type="search" aria-label="${ctx.t('common.search')}" placeholder="${ctx.t('common.searchPlaceholder')}" /><div class="bk-top-actions">${shellProfileBackButton(ctx, 'desktop')}<button class="bk-button bk-button-primary" data-route="/events/new">${ctx.t('events.create')}</button><button class="bk-button bk-button-secondary" data-route="/settings">${ctx.t('nav.settings')}</button><button class="bk-button bk-icon-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /></button></div></header>`;
 }
