@@ -271,55 +271,45 @@ function renderTableRow(row: AdminTableRow): string {
 
 function renderUsersRegistryDetails(): string {
   const users: AdminTableRow[] = [
-    {
-      title: 'Alex Rhythm',
-      meta: 'Пользователь · музыкант · Helsinki · последний вход сегодня',
-      badges: [{ label: 'верифицирован', tone: 'positive' }, { label: '2FA готова', tone: 'positive' }],
-      details: ['email подтверждён', 'телефон подтверждён', 'репутация 92'],
-    },
-    {
-      title: 'Mira Voice',
-      meta: 'Пользователь · вокалист · Tallinn · premium-профиль',
-      badges: [{ label: 'trusted', tone: 'positive' }, { label: 'платный тариф', tone: 'warning' }],
-      details: ['email подтверждён', 'телефон подтверждён', 'репутация 96'],
-    },
-    {
-      title: 'Подозрительный контакт',
-      meta: 'Пользователь · личные сообщения · сработала политика внешних ссылок',
-      badges: [{ label: 'проверка', tone: 'warning' }, { label: 'жалоба', tone: 'danger' }],
-      details: ['ссылка заблокирована', 'контекст сохранён', 'нужна модерация'],
-    },
+    { title: 'Alex Rhythm', meta: 'Пользователь · музыкант · Helsinki · последний вход сегодня', badges: [{ label: 'верифицирован', tone: 'positive' }, { label: '2FA готова', tone: 'positive' }], details: ['email подтверждён', 'телефон подтверждён', 'репутация 92'] },
+    { title: 'Mira Voice', meta: 'Пользователь · вокалист · Tallinn · premium-профиль', badges: [{ label: 'trusted', tone: 'positive' }, { label: 'платный тариф', tone: 'warning' }], details: ['email подтверждён', 'телефон подтверждён', 'репутация 96'] },
+    { title: 'Подозрительный контакт', meta: 'Пользователь · личные сообщения · сработала политика внешних ссылок', badges: [{ label: 'проверка', tone: 'warning' }, { label: 'жалоба', tone: 'danger' }], details: ['ссылка заблокирована', 'контекст сохранён', 'нужна модерация'] },
   ];
   return `<section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Реестр пользователей</div><h3 class="bk-card-title">Support-safe карточки</h3></div>${badge('без мутаций', 'positive')}</div><p class="bk-state-copy">Первый проход показывает только безопасный read-only слой: статус аккаунта, верификация, 2FA, жалобы и risk-флаги. Блокировки, сброс 2FA, смена роли и доступ к приватным данным требуют отдельного backend action с причиной и аудитом.</p><div class="bk-list">${users.map(renderTableRow).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Что будет в карточке пользователя</div><h3 class="bk-card-title">Структура будущего detail view</h3></div>${badge('позже API', 'warning')}</div><div class="bk-chip-row">${['Профиль', 'Контакты', 'Верификация', '2FA', 'Роли', 'Сущности', 'Жалобы', 'Платежи', 'Устройства', 'Аудит'].map((item) => badge(item)).join('')}</div></section>`;
 }
 
 function renderEntitiesRegistryDetails(): string {
   const entities: AdminTableRow[] = [
-    {
-      title: 'Northern Lights Band',
-      meta: 'Группа / проект · владелец Alex Rhythm · активна',
-      badges: [{ label: 'активна', tone: 'positive' }, { label: 'owner admin отдельно', tone: 'neutral' }],
-      details: ['5 участников', '2 события', 'документы есть'],
-    },
-    {
-      title: 'City Orchestra Lab',
-      meta: 'Оркестр · 32 участника · идёт набор',
-      badges: [{ label: 'набор', tone: 'warning' }, { label: 'проверить роли', tone: 'neutral' }],
-      details: ['много участников', 'публичная страница', 'роли сущности'],
-    },
-    {
-      title: 'Studio Night Crew',
-      meta: 'Сессионная команда · закрытый проект · platform review возможен',
-      badges: [{ label: 'закрыто', tone: 'neutral' }, { label: 'review ready', tone: 'warning' }],
-      details: ['8 участников', 'закрытая видимость', 'аудит изменений'],
-    },
+    { title: 'Northern Lights Band', meta: 'Группа / проект · владелец Alex Rhythm · активна', badges: [{ label: 'активна', tone: 'positive' }, { label: 'owner admin отдельно', tone: 'neutral' }], details: ['5 участников', '2 события', 'документы есть'] },
+    { title: 'City Orchestra Lab', meta: 'Оркестр · 32 участника · идёт набор', badges: [{ label: 'набор', tone: 'warning' }, { label: 'проверить роли', tone: 'neutral' }], details: ['много участников', 'публичная страница', 'роли сущности'] },
+    { title: 'Studio Night Crew', meta: 'Сессионная команда · закрытый проект · platform review возможен', badges: [{ label: 'закрыто', tone: 'neutral' }, { label: 'review ready', tone: 'warning' }], details: ['8 участников', 'закрытая видимость', 'аудит изменений'] },
   ];
   return `<section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Реестр сущностей</div><h3 class="bk-card-title">Платформенный обзор без входа в админку сущности</h3></div>${badge('граница сохранена', 'positive')}</div><p class="bk-state-copy">Владелец платформы видит состояние сущностей, владельца, жалобы, активность и риск-флаги. Внутренние настройки группы, студии или события остаются в их собственных админках.</p><div class="bk-list">${entities.map(renderTableRow).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Допустимые platform actions</div><h3 class="bk-card-title">Что можно делать из /admin</h3></div>${badge('с аудитом', 'warning')}</div><div class="bk-chip-row">${['Заморозить', 'Снять с публикации', 'Поставить risk-флаг', 'Назначить проверку', 'Проверить владельца', 'Открыть read-only аудит'].map((item) => badge(item)).join('')}</div></section>`;
+}
+
+function renderReportsQueueDetails(): string {
+  const reports: AdminTableRow[] = [
+    { title: 'RPT-1024 · подозрение на мошенничество', meta: 'Пост в ленте · жалоба от пользователя · риск оплаты вне платформы', badges: [{ label: 'высокий приоритет', tone: 'danger' }, { label: 'новая', tone: 'warning' }], details: ['контент сохранён', 'автор виден', 'нужна проверка'] },
+    { title: 'RPT-1025 · спам в личных сообщениях', meta: 'Чат по жалобе · повторяющийся текст · внешняя ссылка заблокирована', badges: [{ label: 'в работе', tone: 'warning' }, { label: 'сообщения по жалобе', tone: 'neutral' }], details: ['доступ только к кейсу', 'история действий', 'anti-fraud flag'] },
+    { title: 'RPT-1026 · спор по рейтингу', meta: 'Отзыв после события · пользователь оспаривает оценку и причину отмены', badges: [{ label: 'апелляция', tone: 'neutral' }, { label: 'нужны данные', tone: 'warning' }], details: ['событие связано', 'нужен ответ второй стороны', 'аудит рейтинга'] },
+  ];
+  return `<section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Очередь жалоб</div><h3 class="bk-card-title">Операционные кейсы модерации</h3></div>${badge('read-only mock', 'positive')}</div><p class="bk-state-copy">Экран показывает будущую структуру очереди: тип жалобы, объект, приоритет, статус, назначение и следующий безопасный шаг. Реальные решения должны фиксировать причину и событие аудита.</p><div class="bk-list">${reports.map(renderTableRow).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Workflow жалобы</div><h3 class="bk-card-title">Статусы без потери следа</h3></div>${badge('аудит обязателен', 'warning')}</div><div class="bk-chip-row">${['Новая', 'В работе', 'Запрошены данные', 'Эскалация', 'Решена', 'Отклонена', 'Апелляция'].map((item) => badge(item)).join('')}</div></section>`;
+}
+
+function renderModerationOpsDetails(): string {
+  const lanes: AdminTableRow[] = [
+    { title: 'Контент в ленте', meta: 'Посты, комментарии, медиа и публичные профили', badges: [{ label: 'очередь', tone: 'warning' }], details: ['скрыть', 'снять', 'оставить', 'эскалация'] },
+    { title: 'Сообщения по жалобе', meta: 'Доступ только к конкретному кейсу, без общего чтения приватных чатов', badges: [{ label: 'ограниченный доступ', tone: 'positive' }], details: ['контекст жалобы', 'снимок сообщений', 'аудит просмотра'] },
+    { title: 'Видимость сущностей', meta: 'Группы, студии, события и организации на уровне публикации', badges: [{ label: 'platform action', tone: 'warning' }], details: ['заморозить', 'снять с публикации', 'проверить владельца'] },
+  ];
+  return `<section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Операции модерации</div><h3 class="bk-card-title">Очереди и допустимые решения</h3></div>${badge('без прямого редактирования', 'positive')}</div><p class="bk-state-copy">Модератор не редактирует профиль или пост как пользователь. Он принимает платформенное решение: скрыть, снять с публикации, ограничить, оставить без изменений или эскалировать.</p><div class="bk-list">${lanes.map(renderTableRow).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Матрица решения</div><h3 class="bk-card-title">Каждое действие требует причины</h3></div>${badge('логируется', 'warning')}</div><div class="bk-chip-row">${['Скрыть публикацию', 'Снять комментарий', 'Ограничить сообщения', 'Оставить без изменений', 'Отправить на проверку', 'Эскалация в безопасность'].map((item) => badge(item)).join('')}</div></section>`;
 }
 
 function renderSectionSpecificDetails(section: AdminSection): string {
   if (section.path === '/admin/users') return renderUsersRegistryDetails();
   if (section.path === '/admin/entities') return renderEntitiesRegistryDetails();
+  if (section.path === '/admin/reports') return renderReportsQueueDetails();
+  if (section.path === '/admin/moderation') return renderModerationOpsDetails();
   return '';
 }
 
