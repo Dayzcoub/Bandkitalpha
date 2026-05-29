@@ -1,13 +1,16 @@
 type AdminTone = 'neutral' | 'positive' | 'warning' | 'danger';
 type AdminAccess = 'moderator' | 'admin' | 'super_admin';
-type Translate = (key: string, vars?: Record<string, string | number>) => string;
 
+type AdminKpi = { value: string; label: string; };
+type AdminRow = { title: string; meta: string; tone: AdminTone; };
 type AdminSection = {
   path: string;
   access: AdminAccess;
-  key: string;
-  kpis: Array<[string, string]>;
-  rows: Array<[string, string, string, AdminTone]>;
+  label: string;
+  title: string;
+  subtitle: string;
+  kpis: AdminKpi[];
+  rows: AdminRow[];
   actions: string[];
 };
 
@@ -16,124 +19,199 @@ const roleRank: Record<string, number> = { guest: 0, user: 1, moderator: 2, admi
 
 const sections: AdminSection[] = [
   {
-    path: '/admin', access: 'admin', key: 'overview',
-    kpis: [['42', 'usersReview'], ['2', 'openReports'], ['7', 'platformQueues'], ['0', 'criticalIncidents']],
-    rows: [
-      ['platformBoundary', 'platformBoundaryMeta', 'positive', 'positive'],
-      ['sensitiveActions', 'sensitiveActionsMeta', 'warning', 'warning'],
-      ['currentMode', 'currentModeMeta', 'neutral', 'neutral'],
+    path: '/admin',
+    access: 'admin',
+    label: 'Обзор',
+    title: 'Платформенная консоль',
+    subtitle: 'Операционная консоль владельца уровня платформы. Это не админка группы, студии, организации или события.',
+    kpis: [
+      { value: '42', label: 'пользователя на проверке' },
+      { value: '2', label: 'открытые жалобы' },
+      { value: '7', label: 'очередей платформы' },
+      { value: '0', label: 'критичных инцидентов' },
     ],
-    actions: ['openReportsQueue', 'reviewTrustSignals', 'checkAuditTrail'],
+    rows: [
+      { title: 'Граница платформы', meta: '/admin управляет только операциями платформы; настройки сущностей остаются в админках сущностей.', tone: 'positive' },
+      { title: 'Критичные действия', meta: 'Блокировки, возвраты, смена ролей и impersonation должны аудироваться до реального backend-подключения.', tone: 'warning' },
+      { title: 'Текущий режим', meta: 'Mock-консоль. Реальные backend-действия намеренно не подключены.', tone: 'neutral' },
+    ],
+    actions: ['Открыть очередь жалоб', 'Проверить сигналы доверия', 'Проверить аудит'],
   },
   {
-    path: '/admin/users', access: 'admin', key: 'users',
-    kpis: [['3', 'demoProfiles'], ['2FA', 'staffRequired'], ['1', 'restrictedSample'], ['Audit', 'mandatory']],
-    rows: [
-      ['alexRhythm', 'alexRhythmMeta', 'positive', 'positive'],
-      ['miraVoice', 'miraVoiceMeta', 'positive', 'positive'],
-      ['suspiciousOutreach', 'suspiciousOutreachMeta', 'warning', 'warning'],
+    path: '/admin/users', access: 'admin', label: 'Пользователи', title: 'Реестр пользователей',
+    subtitle: 'Платформенный поиск пользователей, статусы верификации, риск-флаги и безопасные операции поддержки.',
+    kpis: [
+      { value: '3', label: 'demo-профиля' },
+      { value: '2FA', label: 'обязательно для команды' },
+      { value: '1', label: 'пример ограничения' },
+      { value: 'Аудит', label: 'обязателен' },
     ],
-    actions: ['openUserCard', 'addSupportNote', 'requestVerification'],
+    rows: [
+      { title: 'Alex Rhythm', meta: 'Верифицированный пользователь · репутация 92 · без активных ограничений', tone: 'positive' },
+      { title: 'Mira Voice', meta: 'Премиум-профиль · доверенный контакт · email и телефон готовы', tone: 'positive' },
+      { title: 'Подозрительный контакт', meta: 'Предупреждение по ссылкам · доступен контекст жалобы', tone: 'warning' },
+    ],
+    actions: ['Открыть карточку', 'Добавить заметку поддержки', 'Запросить верификацию'],
   },
   {
-    path: '/admin/entities', access: 'admin', key: 'entities',
-    kpis: [['3', 'bandsProjects'], ['3', 'events'], ['Future', 'studiosOrgs'], ['Safe', 'readFirst']],
-    rows: [
-      ['northernLights', 'northernLightsMeta', 'positive', 'positive'],
-      ['cityOrchestra', 'cityOrchestraMeta', 'neutral', 'neutral'],
-      ['studioCrew', 'studioCrewMeta', 'warning', 'warning'],
+    path: '/admin/entities', access: 'admin', label: 'Сущности', title: 'Реестр сущностей',
+    subtitle: 'Реестр групп, студий, организаций, площадок и событий без смешивания с их собственными админками.',
+    kpis: [
+      { value: '3', label: 'группы/проекты' },
+      { value: '3', label: 'события' },
+      { value: 'Future', label: 'студии/организации' },
+      { value: 'Safe', label: 'только чтение сначала' },
     ],
-    actions: ['openRegistryItem', 'flagForReview', 'openReadOnlyAudit'],
+    rows: [
+      { title: 'Northern Lights Band', meta: 'Сущность группы/проекта · админка владельца вне /admin', tone: 'positive' },
+      { title: 'City Orchestra Lab', meta: 'Оркестр · участники и внутренние настройки относятся к админке сущности', tone: 'neutral' },
+      { title: 'Studio Night Crew', meta: 'Сессионная команда · платформа может заморозить или проверить, но не редактировать внутренние настройки случайно', tone: 'warning' },
+    ],
+    actions: ['Открыть сущность', 'Поставить флаг проверки', 'Открыть аудит'],
   },
   {
-    path: '/admin/reports', access: 'moderator', key: 'reports',
-    kpis: [['2', 'openReports'], ['1', 'highPriority'], ['0', 'slaBreaches'], ['Appeals', 'futureReady']],
-    rows: [
-      ['fraudReport', 'fraudReportMeta', 'danger', 'danger'],
-      ['spamReport', 'spamReportMeta', 'warning', 'warning'],
-      ['appealLane', 'appealLaneMeta', 'neutral', 'neutral'],
+    path: '/admin/reports', access: 'moderator', label: 'Жалобы', title: 'Очередь жалоб',
+    subtitle: 'Единая очередь жалоб, апелляций и эскалаций до подключения реальных процессов модерации.',
+    kpis: [
+      { value: '2', label: 'открытые жалобы' },
+      { value: '1', label: 'высокий приоритет' },
+      { value: '0', label: 'нарушений SLA' },
+      { value: 'Апелляции', label: 'заложены на будущее' },
     ],
-    actions: ['assignCase', 'escalateToTrust', 'closeRejected'],
+    rows: [
+      { title: 'Жалоба на мошенничество', meta: 'Подозрительный пост · риск оплаты вне платформы и социальной инженерии', tone: 'danger' },
+      { title: 'Жалоба на спам', meta: 'Подозрительный чат · повторяющийся паттерн рассылки', tone: 'warning' },
+      { title: 'Линия апелляций', meta: 'Зарезервировано для апелляций после применённого действия', tone: 'neutral' },
+    ],
+    actions: ['Назначить кейс', 'Эскалация в безопасность', 'Отклонить'],
   },
   {
-    path: '/admin/moderation', access: 'moderator', key: 'moderation',
-    kpis: [['Content', 'postsComments'], ['Messages', 'complaintGated'], ['Profiles', 'riskReview'], ['Audit', 'immutable']],
-    rows: [
-      ['contentReview', 'contentReviewMeta', 'warning', 'warning'],
-      ['complaintMessages', 'complaintMessagesMeta', 'positive', 'positive'],
-      ['entityVisibility', 'entityVisibilityMeta', 'neutral', 'neutral'],
+    path: '/admin/moderation', access: 'moderator', label: 'Модерация', title: 'Операции модерации',
+    subtitle: 'Платформенная модерация контента, профилей, сообщений по жалобам и видимости сущностей.',
+    kpis: [
+      { value: 'Контент', label: 'посты/комментарии' },
+      { value: 'Сообщения', label: 'только по жалобе' },
+      { value: 'Профили', label: 'проверка риска' },
+      { value: 'Аудит', label: 'неизменяемый' },
     ],
-    actions: ['openQueue', 'reviewContentFlag', 'writeModerationNote'],
+    rows: [
+      { title: 'Проверка контента', meta: 'Скрытие и удаление проходят через действия модерации, а не через прямое редактирование текста пользователя.', tone: 'warning' },
+      { title: 'Сообщения по жалобам', meta: 'Модераторы не получают общий доступ ко всем приватным чатам.', tone: 'positive' },
+      { title: 'Видимость сущностей', meta: 'Заморозка, снятие с публикации или проверка; админы сущностей держат свои настройки отдельно.', tone: 'neutral' },
+    ],
+    actions: ['Открыть очередь', 'Проверить флаг контента', 'Заметка модератора'],
   },
   {
-    path: '/admin/trust', access: 'admin', key: 'trust',
-    kpis: [['Links', 'blockedMvp'], ['Risk', 'manualReview'], ['Rating', 'abuseFuture'], ['2FA', 'staffRequired']],
-    rows: [
-      ['externalLinks', 'externalLinksMeta', 'warning', 'warning'],
-      ['suspiciousLogins', 'suspiciousLoginsMeta', 'neutral', 'neutral'],
-      ['ratingDisputes', 'ratingDisputesMeta', 'positive', 'positive'],
+    path: '/admin/trust', access: 'admin', label: 'Доверие и безопасность', title: 'Доверие и безопасность',
+    subtitle: 'Риск-сигналы, заблокированные ссылки, подозрительные паттерны, накрутки рейтинга и антифрод.',
+    kpis: [
+      { value: 'Ссылки', label: 'блокируются в MVP' },
+      { value: 'Риск', label: 'ручная проверка' },
+      { value: 'Рейтинг', label: 'защита от накруток' },
+      { value: '2FA', label: 'обязательно для команды' },
     ],
-    actions: ['reviewBlockedLinks', 'openRiskUser', 'tunePolicyDraft'],
+    rows: [
+      { title: 'Внешние ссылки', meta: 'MVP блокирует небезопасное поведение с внешними ссылками в чатах и постах.', tone: 'warning' },
+      { title: 'Подозрительные входы', meta: 'Риски устройства и IP относятся к backend-политике до включения enforcement.', tone: 'neutral' },
+      { title: 'Споры по рейтингу', meta: 'Неявки, отмены и отзывы требуют истории спора до изменения оценки.', tone: 'positive' },
+    ],
+    actions: ['Проверить ссылки', 'Открыть риск-профиль', 'Настроить черновик политики'],
   },
   {
-    path: '/admin/billing', access: 'super_admin', key: 'billing',
-    kpis: [['Plans', 'future'], ['Invoices', 'future'], ['Refunds', 'audited'], ['Access', 'manualGrant']],
-    rows: [
-      ['planCatalog', 'planCatalogMeta', 'neutral', 'neutral'],
-      ['manualGrant', 'manualGrantMeta', 'warning', 'warning'],
-      ['refundLane', 'refundLaneMeta', 'neutral', 'neutral'],
+    path: '/admin/billing', access: 'super_admin', label: 'Платежи', title: 'Тарифы и платежи',
+    subtitle: 'Тарифы, подписки, возвраты и ручная выдача доступа отдельно от настроек сущностей и профиля.',
+    kpis: [
+      { value: 'Тарифы', label: 'будущий модуль' },
+      { value: 'Счета', label: 'будущий модуль' },
+      { value: 'Возвраты', label: 'аудируются' },
+      { value: 'Доступ', label: 'ручная выдача' },
     ],
-    actions: ['reviewPlans', 'openSubscriptions', 'auditRefund'],
+    rows: [
+      { title: 'Каталог тарифов', meta: 'Централизованные тарифы и права доступа управляются владельцем платформы.', tone: 'neutral' },
+      { title: 'Ручная выдача доступа', meta: 'Любое ручное изменение доступа должно создавать событие аудита.', tone: 'warning' },
+      { title: 'Возвраты', meta: 'Интеграция платёжного провайдера только после готовности policy-slice.', tone: 'neutral' },
+    ],
+    actions: ['Проверить тарифы', 'Открыть подписки', 'Аудит возврата'],
   },
   {
-    path: '/admin/content', access: 'admin', key: 'content',
-    kpis: [['Feed', 'moderated'], ['Media', 'scanFuture'], ['Featured', 'curated'], ['Categories', 'controlled']],
-    rows: [
-      ['feedOperations', 'feedOperationsMeta', 'neutral', 'neutral'],
-      ['mediaStatus', 'mediaStatusMeta', 'warning', 'warning'],
-      ['categories', 'categoriesMeta', 'positive', 'positive'],
+    path: '/admin/content', access: 'admin', label: 'Контент', title: 'Контентные операции',
+    subtitle: 'Лента, комментарии, медиа, категории и рекомендованные поверхности на уровне платформы.',
+    kpis: [
+      { value: 'Лента', label: 'модерируется' },
+      { value: 'Медиа', label: 'проверка позже' },
+      { value: 'Подборки', label: 'курируются' },
+      { value: 'Категории', label: 'контролируемо' },
     ],
-    actions: ['openContentFlags', 'manageFeatured', 'reviewMedia'],
+    rows: [
+      { title: 'Операции ленты', meta: 'Платформа может рекомендовать, скрывать или отправлять посты на проверку.', tone: 'neutral' },
+      { title: 'Статус медиа', meta: 'Проверка MIME и вирус-сканирование остаются future-ready задачами backend.', tone: 'warning' },
+      { title: 'Категории', meta: 'Локализуемые названия без текста внутри ассетов.', tone: 'positive' },
+    ],
+    actions: ['Открыть флаги', 'Управлять подборками', 'Проверить медиа'],
   },
   {
-    path: '/admin/localization', access: 'admin', key: 'localization',
-    kpis: [['RU/EN', 'active'], ['JSON', 'currentMvp'], ['DB', 'futureReady'], ['Fallback', 'english']],
-    rows: [
-      ['languagePacks', 'languagePacksMeta', 'positive', 'positive'],
-      ['missingKeys', 'missingKeysMeta', 'neutral', 'neutral'],
-      ['assetPolicy', 'assetPolicyMeta', 'positive', 'positive'],
+    path: '/admin/localization', access: 'admin', label: 'Локализация', title: 'Консоль локализации',
+    subtitle: 'Языковые пакеты, ключи переводов, отсутствующие строки и будущие import/export-потоки.',
+    kpis: [
+      { value: 'RU/EN', label: 'активны' },
+      { value: 'JSON', label: 'текущий MVP' },
+      { value: 'DB', label: 'заложено на будущее' },
+      { value: 'Fallback', label: 'английский' },
     ],
-    actions: ['reviewKeys', 'exportPack', 'checkMissing'],
+    rows: [
+      { title: 'Языковые пакеты', meta: 'Строки остаются в i18n JSON, а не хардкодятся в компонентах.', tone: 'positive' },
+      { title: 'Отсутствующие ключи', meta: 'Admin tooling позже покажет непереведённые ключи по namespace.', tone: 'neutral' },
+      { title: 'Политика ассетов', meta: 'Production assets остаются нейтральными к языку.', tone: 'positive' },
+    ],
+    actions: ['Проверить ключи', 'Экспорт пакета', 'Проверить пропуски'],
   },
   {
-    path: '/admin/notifications', access: 'admin', key: 'notifications',
-    kpis: [['In-app', 'readyShell'], ['Push', 'future'], ['Email', 'templates'], ['SMS', 'criticalOnly']],
-    rows: [
-      ['broadcasts', 'broadcastsMeta', 'neutral', 'neutral'],
-      ['templates', 'templatesMeta', 'positive', 'positive'],
-      ['emergencyNotice', 'emergencyNoticeMeta', 'danger', 'danger'],
+    path: '/admin/notifications', access: 'admin', label: 'Уведомления', title: 'Уведомления и рассылки',
+    subtitle: 'Платформенные объявления, шаблоны, push/email/SMS политики и экстренные уведомления.',
+    kpis: [
+      { value: 'In-app', label: 'shell готов' },
+      { value: 'Push', label: 'будущий модуль' },
+      { value: 'Email', label: 'шаблоны' },
+      { value: 'SMS', label: 'только критичное' },
     ],
-    actions: ['createDraft', 'previewTemplate', 'auditSend'],
+    rows: [
+      { title: 'Рассылки', meta: 'Сегментация по роли, языку, городу или типу сущности после backend.', tone: 'neutral' },
+      { title: 'Шаблоны', meta: 'Все тексты уведомлений должны локализоваться и аудироваться.', tone: 'positive' },
+      { title: 'Экстренное уведомление', meta: 'Действие уровня владельца со строгим аудитом и подтверждением.', tone: 'danger' },
+    ],
+    actions: ['Создать черновик', 'Предпросмотр шаблона', 'Аудит отправки'],
   },
   {
-    path: '/admin/audit', access: 'admin', key: 'audit',
-    kpis: [['Immutable', 'required'], ['Actor', 'captured'], ['Reason', 'required'], ['IP/UA', 'hashed']],
-    rows: [
-      ['routeGuardChecked', 'routeGuardCheckedMeta', 'positive', 'positive'],
-      ['moderationViewed', 'moderationViewedMeta', 'neutral', 'neutral'],
-      ['manualRoleChange', 'manualRoleChangeMeta', 'warning', 'warning'],
+    path: '/admin/audit', access: 'admin', label: 'Аудит', title: 'Аудит действий',
+    subtitle: 'Неизменяемый журнал смены ролей, ограничений, платежных действий, модерации и доступа к данным.',
+    kpis: [
+      { value: 'Immutable', label: 'неизменяемый' },
+      { value: 'Actor', label: 'фиксируется' },
+      { value: 'Reason', label: 'обязательна' },
+      { value: 'IP/UA', label: 'хешируются' },
     ],
-    actions: ['filterAudit', 'exportLog', 'openActor'],
+    rows: [
+      { title: 'Route guard проверен', meta: 'Системное событие · граница доступа подтверждена.', tone: 'positive' },
+      { title: 'Очередь модерации открыта', meta: 'Действие модератора · только контекст жалобы.', tone: 'neutral' },
+      { title: 'Ручная смена роли', meta: 'Требует причины и 2FA до реальной реализации.', tone: 'warning' },
+    ],
+    actions: ['Фильтр аудита', 'Экспорт лога', 'Открыть actor'],
   },
   {
-    path: '/admin/settings', access: 'super_admin', key: 'settings',
-    kpis: [['Registration', 'policy'], ['2FA', 'staffRequired'], ['Feature flags', 'future'], ['Providers', 'future']],
-    rows: [
-      ['registrationPolicy', 'registrationPolicyMeta', 'positive', 'positive'],
-      ['securityPolicy', 'securityPolicyMeta', 'warning', 'warning'],
-      ['featureGates', 'featureGatesMeta', 'neutral', 'neutral'],
+    path: '/admin/settings', access: 'super_admin', label: 'Настройки', title: 'Настройки платформы',
+    subtitle: 'Глобальные флаги платформы, регистрация, требования безопасности, провайдеры и feature gates.',
+    kpis: [
+      { value: 'Регистрация', label: 'политика' },
+      { value: '2FA', label: 'обязательно для команды' },
+      { value: 'Feature flags', label: 'будущий модуль' },
+      { value: 'Провайдеры', label: 'будущий модуль' },
     ],
-    actions: ['reviewPolicy', 'openFeatureFlags', 'checkProviders'],
+    rows: [
+      { title: 'Политика регистрации', meta: 'Email, phone и OAuth требования управляются здесь, не по сущностям.', tone: 'positive' },
+      { title: 'Политика безопасности', meta: '2FA для elevated staff и владельцев — обязательное правило.', tone: 'warning' },
+      { title: 'Feature gates', meta: 'Контролируемый rollout перед подключением широких социальных функций.', tone: 'neutral' },
+    ],
+    actions: ['Проверить политику', 'Feature flags', 'Проверить провайдеры'],
   },
 ];
 
@@ -154,95 +232,6 @@ function canViewSection(root: HTMLElement, section: AdminSection): boolean {
   return (roleRank[currentRole(root)] ?? 0) >= roleRank[section.access];
 }
 
-function localeFromDocument(): 'ru' | 'en' {
-  return document.documentElement.lang === 'en' ? 'en' : 'ru';
-}
-
-const messages: Record<'ru' | 'en', Record<string, string>> = {
-  ru: {
-    'admin.platformEyebrow': 'Платформенная консоль · операции владельца · mock-only',
-    'admin.boundaryBadge': '/admin граница',
-    'admin.entityBadge': 'админки сущностей отдельно',
-    'admin.noSensitiveApi': 'без sensitive API',
-    'admin.backToApp': 'В приложение',
-    'admin.operationalBoundary': 'Операционная граница',
-    'admin.platformActionsOnly': 'Только действия уровня платформы',
-    'admin.readFirstMock': 'read-first mock',
-    'admin.safeActionsTitle': 'Безопасные действия',
-    'admin.safeActionsCopy': 'Эти кнопки пока являются UI-заглушками. Реальные блокировки, возвраты, смена ролей, impersonation и доступ к данным должны проходить через backend permissions, запрос причины и неизменяемый аудит.',
-    'admin.platformSections': 'Разделы платформы',
-    'admin.consoleModeLabel': 'Режим консоли',
-    'admin.rightRailCopy': 'Рабочее место владельца и команды платформы. Администраторы сущностей должны использовать свои будущие маршруты: /band/:id/admin, /studio/:id/admin, /org/:id/admin, /event/:id/admin.',
-    'admin.doNotMix': 'Не смешивать здесь',
-    'admin.twoFactorRequired': '2FA обязательно',
-    'admin.bandSettings': 'Настройки группы',
-    'admin.bandSettingsMeta': 'Относятся к админке сущности.',
-    'admin.studioSettings': 'Настройки студии',
-    'admin.studioSettingsMeta': 'Относятся к будущему /studio/:id/admin.',
-    'admin.userPreferences': 'Настройки пользователя',
-    'admin.userPreferencesMeta': 'Относятся к настройкам аккаунта, не к консоли владельца.',
-    'tone.positive': 'OK', 'tone.warning': 'РИСК', 'tone.neutral': 'INFO', 'tone.danger': 'ВАЖНО',
-    'section.overview.label': 'Обзор', 'section.overview.title': 'Платформенная консоль', 'section.overview.subtitle': 'Операционная консоль владельца уровня платформы. Это не админка группы, студии, организации или события.',
-    'section.users.label': 'Пользователи', 'section.users.title': 'Реестр пользователей', 'section.users.subtitle': 'Платформенный поиск пользователей, статусы верификации, риск-флаги и support-safe операции аккаунта.',
-    'section.entities.label': 'Сущности', 'section.entities.title': 'Реестр сущностей', 'section.entities.subtitle': 'Реестр групп, студий, организаций, площадок и событий без смешивания с их собственными админками.',
-    'section.reports.label': 'Жалобы', 'section.reports.title': 'Очередь жалоб', 'section.reports.subtitle': 'Единая очередь жалоб, апелляций и эскалаций до подключения реальных moderation workflows.',
-    'section.moderation.label': 'Модерация', 'section.moderation.title': 'Операции модерации', 'section.moderation.subtitle': 'Платформенная модерация контента, профилей, сообщений по жалобам и видимости сущностей.',
-    'section.trust.label': 'Trust & Safety', 'section.trust.title': 'Trust & Safety', 'section.trust.subtitle': 'Риск-сигналы, заблокированные ссылки, подозрительные паттерны, накрутки рейтинга и антифрод.',
-    'section.billing.label': 'Платежи', 'section.billing.title': 'Тарифы и платежи', 'section.billing.subtitle': 'Тарифы, подписки, возвраты и ручная выдача доступа отдельно от настроек сущностей и профиля.',
-    'section.content.label': 'Контент', 'section.content.title': 'Контентные операции', 'section.content.subtitle': 'Лента, комментарии, медиа, категории и рекомендованные поверхности на уровне платформы.',
-    'section.localization.label': 'Локализация', 'section.localization.title': 'Консоль локализации', 'section.localization.subtitle': 'Языковые пакеты, ключи переводов, отсутствующие строки и будущие import/export flows.',
-    'section.notifications.label': 'Уведомления', 'section.notifications.title': 'Уведомления и рассылки', 'section.notifications.subtitle': 'Платформенные объявления, шаблоны, push/email/SMS политики и emergency notices.',
-    'section.audit.label': 'Аудит', 'section.audit.title': 'Аудит действий', 'section.audit.subtitle': 'Неизменяемый журнал смены ролей, ограничений, платежных действий, модерации и доступа к данным.',
-    'section.settings.label': 'Настройки', 'section.settings.title': 'Настройки платформы', 'section.settings.subtitle': 'Глобальные флаги платформы, регистрация, требования безопасности, провайдеры и feature gates.',
-    'kpi.usersReview': 'пользователей на проверке', 'kpi.openReports': 'открытые жалобы', 'kpi.platformQueues': 'очередей платформы', 'kpi.criticalIncidents': 'критичных инцидентов', 'kpi.demoProfiles': 'demo-профиля', 'kpi.staffRequired': 'обязательно для staff', 'kpi.restrictedSample': 'пример ограничения', 'kpi.mandatory': 'обязателен', 'kpi.bandsProjects': 'группы/проекты', 'kpi.events': 'события', 'kpi.studiosOrgs': 'студии/организации', 'kpi.readFirst': 'read-first', 'kpi.highPriority': 'высокий приоритет', 'kpi.slaBreaches': 'SLA нарушений', 'kpi.futureReady': 'future-ready', 'kpi.postsComments': 'посты/комментарии', 'kpi.complaintGated': 'только по жалобе', 'kpi.riskReview': 'проверка риска', 'kpi.immutable': 'неизменяемый', 'kpi.blockedMvp': 'блокируются в MVP', 'kpi.manualReview': 'ручная проверка', 'kpi.abuseFuture': 'накрутки future', 'kpi.future': 'future', 'kpi.audited': 'аудируется', 'kpi.manualGrant': 'ручная выдача', 'kpi.moderated': 'модерируется', 'kpi.scanFuture': 'scan future', 'kpi.curated': 'курируется', 'kpi.controlled': 'контролируемо', 'kpi.active': 'активны', 'kpi.currentMvp': 'текущий MVP', 'kpi.english': 'английский', 'kpi.readyShell': 'shell готов', 'kpi.templates': 'шаблоны', 'kpi.criticalOnly': 'только критичные', 'kpi.required': 'обязательно', 'kpi.captured': 'фиксируется', 'kpi.hashed': 'хешируются', 'kpi.policy': 'политика',
-    'row.platformBoundary': 'Граница платформы', 'row.platformBoundaryMeta': '/admin управляет только операциями платформы; настройки сущностей остаются в админках сущностей.',
-    'row.sensitiveActions': 'Sensitive actions', 'row.sensitiveActionsMeta': 'Блокировки, возвраты, смена ролей и impersonation должны аудироваться до реального backend-подключения.',
-    'row.currentMode': 'Текущий режим', 'row.currentModeMeta': 'Mock-консоль. Backend business actions намеренно не подключены.',
-    'row.alexRhythm': 'Alex Rhythm', 'row.alexRhythmMeta': 'Верифицированный пользователь · reputation 92 · без активных ограничений',
-    'row.miraVoice': 'Mira Voice', 'row.miraVoiceMeta': 'Premium performer · trusted contact · email и телефон готовы',
-    'row.suspiciousOutreach': 'Suspicious outreach sample', 'row.suspiciousOutreachMeta': 'Link-policy warning · доступен контекст жалобы',
-    'row.northernLights': 'Northern Lights Band', 'row.northernLightsMeta': 'Band/project entity · owner admin вне /admin',
-    'row.cityOrchestra': 'City Orchestra Lab', 'row.cityOrchestraMeta': 'Orchestra entity · membership и настройки относятся к админке сущности',
-    'row.studioCrew': 'Studio Night Crew', 'row.studioCrewMeta': 'Session crew · платформа может freeze/review, но не случайно редактировать internals',
-    'row.fraudReport': 'Жалоба на мошенничество', 'row.fraudReportMeta': 'Подозрительный пост · external payment / social engineering risk',
-    'row.spamReport': 'Жалоба на спам', 'row.spamReportMeta': 'Подозрительный чат · повторяющийся outreach pattern',
-    'row.appealLane': 'Линия апелляций', 'row.appealLaneMeta': 'Зарезервировано для апелляций после применённого действия',
-    'row.contentReview': 'Проверка контента', 'row.contentReviewMeta': 'Hide/remove через moderation actions, не прямое редактирование текста пользователя.',
-    'row.complaintMessages': 'Сообщения по жалобам', 'row.complaintMessagesMeta': 'Модераторы не получают blanket access ко всем приватным чатам.',
-    'row.entityVisibility': 'Видимость сущностей', 'row.entityVisibilityMeta': 'Freeze, unpublish или review; entity admins держат свои настройки отдельно.',
-    'row.externalLinks': 'Внешние ссылки', 'row.externalLinksMeta': 'MVP блокирует небезопасное поведение с внешними ссылками в чатах и постах.',
-    'row.suspiciousLogins': 'Подозрительные входы', 'row.suspiciousLoginsMeta': 'Device/IP risk относится к backend policy до enforcement.',
-    'row.ratingDisputes': 'Споры по рейтингу', 'row.ratingDisputesMeta': 'No-shows, cancellations и reviews требуют dispute trail до изменения score.',
-    'row.planCatalog': 'Каталог тарифов', 'row.planCatalogMeta': 'Центральные owner-managed pricing и entitlements.',
-    'row.manualGrant': 'Ручная выдача доступа', 'row.manualGrantMeta': 'Любое ручное изменение entitlement должно создавать audit event.',
-    'row.refundLane': 'Возвраты', 'row.refundLaneMeta': 'Payment provider integration только после готовности policy slice.',
-    'row.feedOperations': 'Операции ленты', 'row.feedOperationsMeta': 'Платформа может feature, hide или отправлять посты на review.',
-    'row.mediaStatus': 'Статус медиа', 'row.mediaStatusMeta': 'MIME и virus scanning остаются future-ready backend concerns.',
-    'row.categories': 'Категории', 'row.categoriesMeta': 'Localization-safe labels, без текста внутри ассетов.',
-    'row.languagePacks': 'Языковые пакеты', 'row.languagePacksMeta': 'Строки остаются в i18n JSON, а не hardcoded в компонентах.',
-    'row.missingKeys': 'Отсутствующие ключи', 'row.missingKeysMeta': 'Admin tooling позже покажет untranslated keys по namespace.',
-    'row.assetPolicy': 'Asset policy', 'row.assetPolicyMeta': 'Production assets остаются language-neutral.',
-    'row.broadcasts': 'Рассылки', 'row.broadcastsMeta': 'Сегментация по роли, locale, городу или типу сущности после backend.',
-    'row.templates': 'Шаблоны', 'row.templatesMeta': 'Все тексты уведомлений должны локализоваться и аудироваться.',
-    'row.emergencyNotice': 'Emergency notice', 'row.emergencyNoticeMeta': 'Owner-level действие со строгим аудитом и подтверждением.',
-    'row.routeGuardChecked': 'Route guard проверен', 'row.routeGuardCheckedMeta': 'System actor · permission boundary verified.',
-    'row.moderationViewed': 'Очередь модерации открыта', 'row.moderationViewedMeta': 'Moderator actor · только complaint context.',
-    'row.manualRoleChange': 'Ручная смена роли', 'row.manualRoleChangeMeta': 'Требует reason и 2FA до реальной реализации.',
-    'row.registrationPolicy': 'Политика регистрации', 'row.registrationPolicyMeta': 'Email, phone и OAuth требования управляются здесь, не по сущностям.',
-    'row.securityPolicy': 'Security policy', 'row.securityPolicyMeta': '2FA для elevated staff и owners — обязательное правило.',
-    'row.featureGates': 'Feature gates', 'row.featureGatesMeta': 'Контролируемый rollout перед подключением широких социальных функций.',
-    'action.openReportsQueue': 'Открыть очередь жалоб', 'action.reviewTrustSignals': 'Проверить trust signals', 'action.checkAuditTrail': 'Проверить аудит', 'action.openUserCard': 'Открыть карточку', 'action.addSupportNote': 'Добавить заметку', 'action.requestVerification': 'Запросить верификацию', 'action.openRegistryItem': 'Открыть сущность', 'action.flagForReview': 'Поставить флаг', 'action.openReadOnlyAudit': 'Открыть аудит', 'action.assignCase': 'Назначить кейс', 'action.escalateToTrust': 'Эскалация в trust', 'action.closeRejected': 'Отклонить', 'action.openQueue': 'Открыть очередь', 'action.reviewContentFlag': 'Проверить флаг', 'action.writeModerationNote': 'Заметка модератора', 'action.reviewBlockedLinks': 'Проверить ссылки', 'action.openRiskUser': 'Открыть риск-профиль', 'action.tunePolicyDraft': 'Настроить policy draft', 'action.reviewPlans': 'Проверить тарифы', 'action.openSubscriptions': 'Открыть подписки', 'action.auditRefund': 'Аудит возврата', 'action.openContentFlags': 'Открыть флаги', 'action.manageFeatured': 'Управлять featured', 'action.reviewMedia': 'Проверить медиа', 'action.reviewKeys': 'Проверить ключи', 'action.exportPack': 'Экспорт pack', 'action.checkMissing': 'Проверить пропуски', 'action.createDraft': 'Создать черновик', 'action.previewTemplate': 'Предпросмотр шаблона', 'action.auditSend': 'Аудит отправки', 'action.filterAudit': 'Фильтр аудита', 'action.exportLog': 'Экспорт лога', 'action.openActor': 'Открыть actor', 'action.reviewPolicy': 'Проверить policy', 'action.openFeatureFlags': 'Feature flags', 'action.checkProviders': 'Проверить провайдеры'
-  },
-  en: {}
-};
-
-messages.en = messages.ru;
-
-function createTranslator(): Translate {
-  const locale = localeFromDocument();
-  return (key: string) => messages[locale][key] ?? messages.ru[key] ?? key;
-}
-
 function badge(label: string, tone: AdminTone = 'neutral'): string {
   const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
   return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
@@ -252,27 +241,32 @@ function button(label: string, path: string, variant: 'primary' | 'secondary' | 
   return `<button class="bk-button bk-button-${variant}" type="button" data-admin-route="${escapeHtml(path)}">${escapeHtml(label)}</button>`;
 }
 
-function renderKpi(t: Translate, [value, labelKey]: [string, string]): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(t(`kpi.${labelKey}`))}</div></div>`;
+function renderKpi(item: AdminKpi): string {
+  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(item.value)}</div><div class="bk-kpi-label">${escapeHtml(item.label)}</div></div>`;
 }
 
-function renderRow(t: Translate, [titleKey, metaKey, toneLabelKey, tone]: [string, string, string, AdminTone]): string {
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t(`row.${titleKey}`))}</div><div class="bk-meta">${escapeHtml(t(`row.${metaKey}`))}</div></div>${badge(t(`tone.${toneLabelKey}`), tone)}</div>`;
+function toneLabel(tone: AdminTone): string {
+  if (tone === 'positive') return 'OK';
+  if (tone === 'warning') return 'РИСК';
+  if (tone === 'danger') return 'ВАЖНО';
+  return 'INFO';
+}
+
+function renderRow(row: AdminRow): string {
+  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(row.title)}</div><div class="bk-meta">${escapeHtml(row.meta)}</div></div>${badge(toneLabel(row.tone), row.tone)}</div>`;
 }
 
 function renderAdminMain(section: AdminSection, root: HTMLElement): string {
-  const t = createTranslator();
   const shortcutButtons = sections
     .filter((item) => item.path !== section.path && canViewSection(root, item))
     .slice(0, 6)
-    .map((item) => button(t(`section.${item.key}.label`), item.path, 'ghost'))
+    .map((item) => button(item.label, item.path, 'ghost'))
     .join('');
-  return `<header class="bk-page-header"><div class="bk-eyebrow">${escapeHtml(t('admin.platformEyebrow'))}</div><div class="bk-chip-row">${badge(t('admin.boundaryBadge'), 'positive')}${badge(t('admin.entityBadge'), 'warning')}${badge(t('admin.noSensitiveApi'))}</div><div class="bk-page-header-main"><div><h1 class="bk-title">${escapeHtml(t(`section.${section.key}.title`))}</h1><p class="bk-subtitle">${escapeHtml(t(`section.${section.key}.subtitle`))}</p></div><div class="bk-action-row">${button(t('admin.backToApp'), '/feed', 'secondary')}</div></div></header><section class="bk-card"><div class="bk-kpi-grid">${section.kpis.map((item) => renderKpi(t, item)).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">${escapeHtml(t('admin.operationalBoundary'))}</div><h3 class="bk-card-title">${escapeHtml(t('admin.platformActionsOnly'))}</h3></div>${badge(t('admin.readFirstMock'), 'positive')}</div><div class="bk-list">${section.rows.map((item) => renderRow(t, item)).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">${escapeHtml(t('admin.safeActionsTitle'))}</h3><p class="bk-state-copy">${escapeHtml(t('admin.safeActionsCopy'))}</p><div class="bk-action-row">${section.actions.map((action) => button(t(`action.${action}`), section.path, action.includes('Audit') || action.includes('audit') ? 'primary' : 'secondary')).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">${escapeHtml(t('admin.platformSections'))}</h3><div class="bk-action-row">${shortcutButtons}</div></section>`;
+  return `<header class="bk-page-header"><div class="bk-eyebrow">Платформенная консоль · операции владельца · режим заглушек</div><div class="bk-chip-row">${badge('/admin граница', 'positive')}${badge('админки сущностей отдельно', 'warning')}${badge('без критичных API')}</div><div class="bk-page-header-main"><div><h1 class="bk-title">${escapeHtml(section.title)}</h1><p class="bk-subtitle">${escapeHtml(section.subtitle)}</p></div><div class="bk-action-row">${button('В приложение', '/feed', 'secondary')}</div></div></header><section class="bk-card"><div class="bk-kpi-grid">${section.kpis.map(renderKpi).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Операционная граница</div><h3 class="bk-card-title">Только действия уровня платформы</h3></div>${badge('сначала только чтение', 'positive')}</div><div class="bk-list">${section.rows.map(renderRow).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Безопасные действия</h3><p class="bk-state-copy">Эти кнопки пока являются UI-заглушками. Реальные блокировки, возвраты, смена ролей, impersonation и доступ к данным должны проходить через backend permissions, запрос причины и неизменяемый аудит.</p><div class="bk-action-row">${section.actions.map((action) => button(action, section.path, action.includes('Аудит') || action.includes('аудит') ? 'primary' : 'secondary')).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Разделы платформы</h3><div class="bk-action-row">${shortcutButtons}</div></section>`;
 }
 
 function renderAdminRightRail(section: AdminSection): string {
-  const t = createTranslator();
-  return `<aside class="bk-right-rail"><section class="bk-card"><div class="bk-meta">${escapeHtml(t('admin.consoleModeLabel'))}</div><strong>${escapeHtml(t(`section.${section.key}.label`))}</strong><p class="bk-state-copy">${escapeHtml(t('admin.rightRailCopy'))}</p><div class="bk-chip-row">${badge(t('admin.twoFactorRequired'), 'warning')}${badge('RBAC')}${badge('audit')}</div></section><section class="bk-card"><h3 class="bk-card-title">${escapeHtml(t('admin.doNotMix'))}</h3><div class="bk-list"><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t('admin.bandSettings'))}</div><div class="bk-meta">${escapeHtml(t('admin.bandSettingsMeta'))}</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t('admin.studioSettings'))}</div><div class="bk-meta">${escapeHtml(t('admin.studioSettingsMeta'))}</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t('admin.userPreferences'))}</div><div class="bk-meta">${escapeHtml(t('admin.userPreferencesMeta'))}</div></div></div></div></section></aside>`;
+  return `<aside class="bk-right-rail"><section class="bk-card"><div class="bk-meta">Режим консоли</div><strong>${escapeHtml(section.label)}</strong><p class="bk-state-copy">Рабочее место владельца и команды платформы. Администраторы сущностей должны использовать свои будущие маршруты: /band/:id/admin, /studio/:id/admin, /org/:id/admin, /event/:id/admin.</p><div class="bk-chip-row">${badge('2FA обязательно', 'warning')}${badge('роли доступа')}${badge('аудит')}</div></section><section class="bk-card"><h3 class="bk-card-title">Не смешивать здесь</h3><div class="bk-list"><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">Настройки группы</div><div class="bk-meta">Относятся к админке сущности.</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">Настройки студии</div><div class="bk-meta">Относятся к будущему /studio/:id/admin.</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">Настройки пользователя</div><div class="bk-meta">Относятся к настройкам аккаунта, не к консоли владельца.</div></div></div></div></section></aside>`;
 }
 
 function renderAdminPage(root: HTMLElement, section: AdminSection): void {
