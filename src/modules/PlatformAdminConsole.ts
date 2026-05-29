@@ -1,14 +1,13 @@
 type AdminTone = 'neutral' | 'positive' | 'warning' | 'danger';
 type AdminAccess = 'moderator' | 'admin' | 'super_admin';
+type Translate = (key: string, vars?: Record<string, string | number>) => string;
 
 type AdminSection = {
   path: string;
   access: AdminAccess;
-  label: string;
-  title: string;
-  subtitle: string;
+  key: string;
   kpis: Array<[string, string]>;
-  rows: Array<[string, string, AdminTone]>;
+  rows: Array<[string, string, string, AdminTone]>;
   actions: string[];
 };
 
@@ -17,136 +16,124 @@ const roleRank: Record<string, number> = { guest: 0, user: 1, moderator: 2, admi
 
 const sections: AdminSection[] = [
   {
-    path: '/admin', access: 'admin', label: 'Overview', title: 'Platform Console',
-    subtitle: 'Owner-level operations console. This is not a band, studio, organization or event admin area.',
-    kpis: [['42', 'users under review'], ['2', 'open reports'], ['7', 'platform queues'], ['0', 'critical incidents']],
+    path: '/admin', access: 'admin', key: 'overview',
+    kpis: [['42', 'usersReview'], ['2', 'openReports'], ['7', 'platformQueues'], ['0', 'criticalIncidents']],
     rows: [
-      ['Platform boundary', '/admin controls platform operations only; entity settings stay in entity admin spaces.', 'positive'],
-      ['Sensitive actions', 'Blocking, refunds, role changes and impersonation must be audited before real backend wiring.', 'warning'],
-      ['Current mode', 'Mock console surface. Backend business actions are intentionally not connected yet.', 'neutral'],
+      ['platformBoundary', 'platformBoundaryMeta', 'positive', 'positive'],
+      ['sensitiveActions', 'sensitiveActionsMeta', 'warning', 'warning'],
+      ['currentMode', 'currentModeMeta', 'neutral', 'neutral'],
     ],
-    actions: ['Open reports queue', 'Review trust signals', 'Check audit trail'],
+    actions: ['openReportsQueue', 'reviewTrustSignals', 'checkAuditTrail'],
   },
   {
-    path: '/admin/users', access: 'admin', label: 'Users', title: 'Users Registry',
-    subtitle: 'Platform-level user lookup, verification state, risk flags and support-safe account operations.',
-    kpis: [['3', 'demo profiles'], ['2FA', 'required for staff'], ['1', 'restricted sample'], ['Audit', 'mandatory']],
+    path: '/admin/users', access: 'admin', key: 'users',
+    kpis: [['3', 'demoProfiles'], ['2FA', 'staffRequired'], ['1', 'restrictedSample'], ['Audit', 'mandatory']],
     rows: [
-      ['Alex Rhythm', 'Verified user · reputation 92 · no active restriction', 'positive'],
-      ['Mira Voice', 'Premium performer · trusted contact · email and phone ready', 'positive'],
-      ['Suspicious outreach sample', 'Link-policy warning · complaint context available', 'warning'],
+      ['alexRhythm', 'alexRhythmMeta', 'positive', 'positive'],
+      ['miraVoice', 'miraVoiceMeta', 'positive', 'positive'],
+      ['suspiciousOutreach', 'suspiciousOutreachMeta', 'warning', 'warning'],
     ],
-    actions: ['Open user card', 'Add support note', 'Request verification'],
+    actions: ['openUserCard', 'addSupportNote', 'requestVerification'],
   },
   {
-    path: '/admin/entities', access: 'admin', label: 'Entities', title: 'Entities Registry',
-    subtitle: 'Read platform-level registry for bands, studios, organizations, venues and events without mixing their own admin panels.',
-    kpis: [['3', 'bands/projects'], ['3', 'events'], ['Future', 'studios/orgs'], ['Safe', 'read-first']],
+    path: '/admin/entities', access: 'admin', key: 'entities',
+    kpis: [['3', 'bandsProjects'], ['3', 'events'], ['Future', 'studiosOrgs'], ['Safe', 'readFirst']],
     rows: [
-      ['Northern Lights Band', 'Band/project entity · owner admin is outside /admin', 'positive'],
-      ['City Orchestra Lab', 'Orchestra entity · membership and settings belong to entity admin space', 'neutral'],
-      ['Studio Night Crew', 'Session crew · platform can freeze or review, not casually edit internals', 'warning'],
+      ['northernLights', 'northernLightsMeta', 'positive', 'positive'],
+      ['cityOrchestra', 'cityOrchestraMeta', 'neutral', 'neutral'],
+      ['studioCrew', 'studioCrewMeta', 'warning', 'warning'],
     ],
-    actions: ['Open registry item', 'Flag for review', 'Open read-only audit'],
+    actions: ['openRegistryItem', 'flagForReview', 'openReadOnlyAudit'],
   },
   {
-    path: '/admin/reports', access: 'moderator', label: 'Reports', title: 'Reports Queue',
-    subtitle: 'Unified queue for complaints, appeals and escalations before final moderation workflows are connected.',
-    kpis: [['2', 'open reports'], ['1', 'high priority'], ['0', 'SLA breaches'], ['Appeals', 'future-ready']],
+    path: '/admin/reports', access: 'moderator', key: 'reports',
+    kpis: [['2', 'openReports'], ['1', 'highPriority'], ['0', 'slaBreaches'], ['Appeals', 'futureReady']],
     rows: [
-      ['Fraud report', 'Suspicious post · external payment / social engineering risk', 'danger'],
-      ['Spam report', 'Suspicious chat · repeated outreach pattern', 'warning'],
-      ['Appeal lane', 'Reserved for user appeals after action is taken', 'neutral'],
+      ['fraudReport', 'fraudReportMeta', 'danger', 'danger'],
+      ['spamReport', 'spamReportMeta', 'warning', 'warning'],
+      ['appealLane', 'appealLaneMeta', 'neutral', 'neutral'],
     ],
-    actions: ['Assign case', 'Escalate to trust', 'Close as rejected'],
+    actions: ['assignCase', 'escalateToTrust', 'closeRejected'],
   },
   {
-    path: '/admin/moderation', access: 'moderator', label: 'Moderation', title: 'Moderation Operations',
-    subtitle: 'Platform moderation surface for content, profiles, messages under complaint, and entity visibility decisions.',
-    kpis: [['Content', 'posts/comments'], ['Messages', 'complaint-gated'], ['Profiles', 'risk review'], ['Audit', 'immutable']],
+    path: '/admin/moderation', access: 'moderator', key: 'moderation',
+    kpis: [['Content', 'postsComments'], ['Messages', 'complaintGated'], ['Profiles', 'riskReview'], ['Audit', 'immutable']],
     rows: [
-      ['Content review', 'Hide/remove through moderation actions, not direct user text editing.', 'warning'],
-      ['Complaint-gated messages', 'Moderators do not get blanket access to all private chats.', 'positive'],
-      ['Entity visibility', 'Freeze, unpublish or review; entity admins keep entity settings separately.', 'neutral'],
+      ['contentReview', 'contentReviewMeta', 'warning', 'warning'],
+      ['complaintMessages', 'complaintMessagesMeta', 'positive', 'positive'],
+      ['entityVisibility', 'entityVisibilityMeta', 'neutral', 'neutral'],
     ],
-    actions: ['Open queue', 'Review content flag', 'Write moderation note'],
+    actions: ['openQueue', 'reviewContentFlag', 'writeModerationNote'],
   },
   {
-    path: '/admin/trust', access: 'admin', label: 'Trust & Safety', title: 'Trust & Safety',
-    subtitle: 'Risk signals, blocked links, suspicious account patterns, rating abuse and anti-fraud policy controls.',
-    kpis: [['Links', 'blocked in MVP'], ['Risk', 'manual review'], ['Rating', 'abuse future'], ['2FA', 'staff required']],
+    path: '/admin/trust', access: 'admin', key: 'trust',
+    kpis: [['Links', 'blockedMvp'], ['Risk', 'manualReview'], ['Rating', 'abuseFuture'], ['2FA', 'staffRequired']],
     rows: [
-      ['External links', 'MVP blocks unsafe external-link behavior in chats and posts.', 'warning'],
-      ['Suspicious logins', 'Device/IP risk belongs to backend policy before enforcement.', 'neutral'],
-      ['Rating disputes', 'No-shows, cancellations and reviews need dispute trail before score changes.', 'positive'],
+      ['externalLinks', 'externalLinksMeta', 'warning', 'warning'],
+      ['suspiciousLogins', 'suspiciousLoginsMeta', 'neutral', 'neutral'],
+      ['ratingDisputes', 'ratingDisputesMeta', 'positive', 'positive'],
     ],
-    actions: ['Review blocked links', 'Open risk user', 'Tune policy draft'],
+    actions: ['reviewBlockedLinks', 'openRiskUser', 'tunePolicyDraft'],
   },
   {
-    path: '/admin/billing', access: 'super_admin', label: 'Billing', title: 'Billing & Plans',
-    subtitle: 'Plans, subscriptions, refunds and manual access grants. Kept separate from entity settings and user profile screens.',
-    kpis: [['Plans', 'future'], ['Invoices', 'future'], ['Refunds', 'audited'], ['Access', 'manual grant']],
+    path: '/admin/billing', access: 'super_admin', key: 'billing',
+    kpis: [['Plans', 'future'], ['Invoices', 'future'], ['Refunds', 'audited'], ['Access', 'manualGrant']],
     rows: [
-      ['Plan catalog', 'Central owner-managed pricing and entitlements.', 'neutral'],
-      ['Manual grant', 'Every manual entitlement change must create an audit event.', 'warning'],
-      ['Refund lane', 'Future payment provider integration only after policy slice is ready.', 'neutral'],
+      ['planCatalog', 'planCatalogMeta', 'neutral', 'neutral'],
+      ['manualGrant', 'manualGrantMeta', 'warning', 'warning'],
+      ['refundLane', 'refundLaneMeta', 'neutral', 'neutral'],
     ],
-    actions: ['Review plans', 'Open subscriptions', 'Audit refund'],
+    actions: ['reviewPlans', 'openSubscriptions', 'auditRefund'],
   },
   {
-    path: '/admin/content', access: 'admin', label: 'Content', title: 'Content Operations',
-    subtitle: 'Feed, comments, media, categories and featured surfaces controlled at platform level.',
-    kpis: [['Feed', 'moderated'], ['Media', 'scan future'], ['Featured', 'curated'], ['Categories', 'controlled']],
+    path: '/admin/content', access: 'admin', key: 'content',
+    kpis: [['Feed', 'moderated'], ['Media', 'scanFuture'], ['Featured', 'curated'], ['Categories', 'controlled']],
     rows: [
-      ['Feed operations', 'Platform can feature, hide or send posts to review.', 'neutral'],
-      ['Media status', 'MIME and virus scanning remain future-ready backend concerns.', 'warning'],
-      ['Categories', 'Localization-safe labels, no text baked into assets.', 'positive'],
+      ['feedOperations', 'feedOperationsMeta', 'neutral', 'neutral'],
+      ['mediaStatus', 'mediaStatusMeta', 'warning', 'warning'],
+      ['categories', 'categoriesMeta', 'positive', 'positive'],
     ],
-    actions: ['Open content flags', 'Manage featured', 'Review media'],
+    actions: ['openContentFlags', 'manageFeatured', 'reviewMedia'],
   },
   {
-    path: '/admin/localization', access: 'admin', label: 'Localization', title: 'Localization Console',
-    subtitle: 'Language packs, translation keys, missing strings and future import/export workflows.',
-    kpis: [['RU/EN', 'active'], ['JSON', 'current MVP'], ['DB', 'future-ready'], ['Fallback', 'English']],
+    path: '/admin/localization', access: 'admin', key: 'localization',
+    kpis: [['RU/EN', 'active'], ['JSON', 'currentMvp'], ['DB', 'futureReady'], ['Fallback', 'english']],
     rows: [
-      ['Language packs', 'Source strings stay in i18n JSON, not hardcoded in components.', 'positive'],
-      ['Missing keys', 'Admin tooling will later surface untranslated keys by namespace.', 'neutral'],
-      ['Asset policy', 'Production assets remain language-neutral.', 'positive'],
+      ['languagePacks', 'languagePacksMeta', 'positive', 'positive'],
+      ['missingKeys', 'missingKeysMeta', 'neutral', 'neutral'],
+      ['assetPolicy', 'assetPolicyMeta', 'positive', 'positive'],
     ],
-    actions: ['Review keys', 'Export pack', 'Check missing'],
+    actions: ['reviewKeys', 'exportPack', 'checkMissing'],
   },
   {
-    path: '/admin/notifications', access: 'admin', label: 'Notifications', title: 'Notifications & Broadcasts',
-    subtitle: 'Operational channel for platform announcements, templates, push/email/SMS policies and emergency notices.',
-    kpis: [['In-app', 'ready shell'], ['Push', 'future'], ['Email', 'templates'], ['SMS', 'critical only']],
+    path: '/admin/notifications', access: 'admin', key: 'notifications',
+    kpis: [['In-app', 'readyShell'], ['Push', 'future'], ['Email', 'templates'], ['SMS', 'criticalOnly']],
     rows: [
-      ['Broadcasts', 'Segmented by role, locale, city or entity type when backend is ready.', 'neutral'],
-      ['Templates', 'All notification text must be localized and audited.', 'positive'],
-      ['Emergency notice', 'Owner-level action with strict audit and confirmation.', 'danger'],
+      ['broadcasts', 'broadcastsMeta', 'neutral', 'neutral'],
+      ['templates', 'templatesMeta', 'positive', 'positive'],
+      ['emergencyNotice', 'emergencyNoticeMeta', 'danger', 'danger'],
     ],
-    actions: ['Create draft', 'Preview template', 'Audit send'],
+    actions: ['createDraft', 'previewTemplate', 'auditSend'],
   },
   {
-    path: '/admin/audit', access: 'admin', label: 'Audit', title: 'Audit Trail',
-    subtitle: 'Immutable platform action log for role changes, restrictions, billing actions, moderation and data access.',
+    path: '/admin/audit', access: 'admin', key: 'audit',
     kpis: [['Immutable', 'required'], ['Actor', 'captured'], ['Reason', 'required'], ['IP/UA', 'hashed']],
     rows: [
-      ['Route guard checked', 'System actor · permission boundary verified.', 'positive'],
-      ['Moderation queue viewed', 'Moderator actor · complaint context only.', 'neutral'],
-      ['Manual role change', 'Requires reason and 2FA before real implementation.', 'warning'],
+      ['routeGuardChecked', 'routeGuardCheckedMeta', 'positive', 'positive'],
+      ['moderationViewed', 'moderationViewedMeta', 'neutral', 'neutral'],
+      ['manualRoleChange', 'manualRoleChangeMeta', 'warning', 'warning'],
     ],
-    actions: ['Filter audit', 'Export log', 'Open actor'],
+    actions: ['filterAudit', 'exportLog', 'openActor'],
   },
   {
-    path: '/admin/settings', access: 'super_admin', label: 'Settings', title: 'Platform Settings',
-    subtitle: 'Global platform flags, registration policy, security requirements, providers and feature gates.',
-    kpis: [['Registration', 'policy'], ['2FA', 'required staff'], ['Feature flags', 'future'], ['Providers', 'future']],
+    path: '/admin/settings', access: 'super_admin', key: 'settings',
+    kpis: [['Registration', 'policy'], ['2FA', 'staffRequired'], ['Feature flags', 'future'], ['Providers', 'future']],
     rows: [
-      ['Registration policy', 'Email, phone and OAuth requirements controlled here, not per entity.', 'positive'],
-      ['Security policy', '2FA for elevated staff and owners is non-negotiable.', 'warning'],
-      ['Feature gates', 'Controlled rollout before connecting broad social features.', 'neutral'],
+      ['registrationPolicy', 'registrationPolicyMeta', 'positive', 'positive'],
+      ['securityPolicy', 'securityPolicyMeta', 'warning', 'warning'],
+      ['featureGates', 'featureGatesMeta', 'neutral', 'neutral'],
     ],
-    actions: ['Review policy', 'Open feature flags', 'Check providers'],
+    actions: ['reviewPolicy', 'openFeatureFlags', 'checkProviders'],
   },
 ];
 
@@ -167,6 +154,95 @@ function canViewSection(root: HTMLElement, section: AdminSection): boolean {
   return (roleRank[currentRole(root)] ?? 0) >= roleRank[section.access];
 }
 
+function localeFromDocument(): 'ru' | 'en' {
+  return document.documentElement.lang === 'en' ? 'en' : 'ru';
+}
+
+const messages: Record<'ru' | 'en', Record<string, string>> = {
+  ru: {
+    'admin.platformEyebrow': 'Платформенная консоль · операции владельца · mock-only',
+    'admin.boundaryBadge': '/admin граница',
+    'admin.entityBadge': 'админки сущностей отдельно',
+    'admin.noSensitiveApi': 'без sensitive API',
+    'admin.backToApp': 'В приложение',
+    'admin.operationalBoundary': 'Операционная граница',
+    'admin.platformActionsOnly': 'Только действия уровня платформы',
+    'admin.readFirstMock': 'read-first mock',
+    'admin.safeActionsTitle': 'Безопасные действия',
+    'admin.safeActionsCopy': 'Эти кнопки пока являются UI-заглушками. Реальные блокировки, возвраты, смена ролей, impersonation и доступ к данным должны проходить через backend permissions, запрос причины и неизменяемый аудит.',
+    'admin.platformSections': 'Разделы платформы',
+    'admin.consoleModeLabel': 'Режим консоли',
+    'admin.rightRailCopy': 'Рабочее место владельца и команды платформы. Администраторы сущностей должны использовать свои будущие маршруты: /band/:id/admin, /studio/:id/admin, /org/:id/admin, /event/:id/admin.',
+    'admin.doNotMix': 'Не смешивать здесь',
+    'admin.twoFactorRequired': '2FA обязательно',
+    'admin.bandSettings': 'Настройки группы',
+    'admin.bandSettingsMeta': 'Относятся к админке сущности.',
+    'admin.studioSettings': 'Настройки студии',
+    'admin.studioSettingsMeta': 'Относятся к будущему /studio/:id/admin.',
+    'admin.userPreferences': 'Настройки пользователя',
+    'admin.userPreferencesMeta': 'Относятся к настройкам аккаунта, не к консоли владельца.',
+    'tone.positive': 'OK', 'tone.warning': 'РИСК', 'tone.neutral': 'INFO', 'tone.danger': 'ВАЖНО',
+    'section.overview.label': 'Обзор', 'section.overview.title': 'Платформенная консоль', 'section.overview.subtitle': 'Операционная консоль владельца уровня платформы. Это не админка группы, студии, организации или события.',
+    'section.users.label': 'Пользователи', 'section.users.title': 'Реестр пользователей', 'section.users.subtitle': 'Платформенный поиск пользователей, статусы верификации, риск-флаги и support-safe операции аккаунта.',
+    'section.entities.label': 'Сущности', 'section.entities.title': 'Реестр сущностей', 'section.entities.subtitle': 'Реестр групп, студий, организаций, площадок и событий без смешивания с их собственными админками.',
+    'section.reports.label': 'Жалобы', 'section.reports.title': 'Очередь жалоб', 'section.reports.subtitle': 'Единая очередь жалоб, апелляций и эскалаций до подключения реальных moderation workflows.',
+    'section.moderation.label': 'Модерация', 'section.moderation.title': 'Операции модерации', 'section.moderation.subtitle': 'Платформенная модерация контента, профилей, сообщений по жалобам и видимости сущностей.',
+    'section.trust.label': 'Trust & Safety', 'section.trust.title': 'Trust & Safety', 'section.trust.subtitle': 'Риск-сигналы, заблокированные ссылки, подозрительные паттерны, накрутки рейтинга и антифрод.',
+    'section.billing.label': 'Платежи', 'section.billing.title': 'Тарифы и платежи', 'section.billing.subtitle': 'Тарифы, подписки, возвраты и ручная выдача доступа отдельно от настроек сущностей и профиля.',
+    'section.content.label': 'Контент', 'section.content.title': 'Контентные операции', 'section.content.subtitle': 'Лента, комментарии, медиа, категории и рекомендованные поверхности на уровне платформы.',
+    'section.localization.label': 'Локализация', 'section.localization.title': 'Консоль локализации', 'section.localization.subtitle': 'Языковые пакеты, ключи переводов, отсутствующие строки и будущие import/export flows.',
+    'section.notifications.label': 'Уведомления', 'section.notifications.title': 'Уведомления и рассылки', 'section.notifications.subtitle': 'Платформенные объявления, шаблоны, push/email/SMS политики и emergency notices.',
+    'section.audit.label': 'Аудит', 'section.audit.title': 'Аудит действий', 'section.audit.subtitle': 'Неизменяемый журнал смены ролей, ограничений, платежных действий, модерации и доступа к данным.',
+    'section.settings.label': 'Настройки', 'section.settings.title': 'Настройки платформы', 'section.settings.subtitle': 'Глобальные флаги платформы, регистрация, требования безопасности, провайдеры и feature gates.',
+    'kpi.usersReview': 'пользователей на проверке', 'kpi.openReports': 'открытые жалобы', 'kpi.platformQueues': 'очередей платформы', 'kpi.criticalIncidents': 'критичных инцидентов', 'kpi.demoProfiles': 'demo-профиля', 'kpi.staffRequired': 'обязательно для staff', 'kpi.restrictedSample': 'пример ограничения', 'kpi.mandatory': 'обязателен', 'kpi.bandsProjects': 'группы/проекты', 'kpi.events': 'события', 'kpi.studiosOrgs': 'студии/организации', 'kpi.readFirst': 'read-first', 'kpi.highPriority': 'высокий приоритет', 'kpi.slaBreaches': 'SLA нарушений', 'kpi.futureReady': 'future-ready', 'kpi.postsComments': 'посты/комментарии', 'kpi.complaintGated': 'только по жалобе', 'kpi.riskReview': 'проверка риска', 'kpi.immutable': 'неизменяемый', 'kpi.blockedMvp': 'блокируются в MVP', 'kpi.manualReview': 'ручная проверка', 'kpi.abuseFuture': 'накрутки future', 'kpi.future': 'future', 'kpi.audited': 'аудируется', 'kpi.manualGrant': 'ручная выдача', 'kpi.moderated': 'модерируется', 'kpi.scanFuture': 'scan future', 'kpi.curated': 'курируется', 'kpi.controlled': 'контролируемо', 'kpi.active': 'активны', 'kpi.currentMvp': 'текущий MVP', 'kpi.english': 'английский', 'kpi.readyShell': 'shell готов', 'kpi.templates': 'шаблоны', 'kpi.criticalOnly': 'только критичные', 'kpi.required': 'обязательно', 'kpi.captured': 'фиксируется', 'kpi.hashed': 'хешируются', 'kpi.policy': 'политика',
+    'row.platformBoundary': 'Граница платформы', 'row.platformBoundaryMeta': '/admin управляет только операциями платформы; настройки сущностей остаются в админках сущностей.',
+    'row.sensitiveActions': 'Sensitive actions', 'row.sensitiveActionsMeta': 'Блокировки, возвраты, смена ролей и impersonation должны аудироваться до реального backend-подключения.',
+    'row.currentMode': 'Текущий режим', 'row.currentModeMeta': 'Mock-консоль. Backend business actions намеренно не подключены.',
+    'row.alexRhythm': 'Alex Rhythm', 'row.alexRhythmMeta': 'Верифицированный пользователь · reputation 92 · без активных ограничений',
+    'row.miraVoice': 'Mira Voice', 'row.miraVoiceMeta': 'Premium performer · trusted contact · email и телефон готовы',
+    'row.suspiciousOutreach': 'Suspicious outreach sample', 'row.suspiciousOutreachMeta': 'Link-policy warning · доступен контекст жалобы',
+    'row.northernLights': 'Northern Lights Band', 'row.northernLightsMeta': 'Band/project entity · owner admin вне /admin',
+    'row.cityOrchestra': 'City Orchestra Lab', 'row.cityOrchestraMeta': 'Orchestra entity · membership и настройки относятся к админке сущности',
+    'row.studioCrew': 'Studio Night Crew', 'row.studioCrewMeta': 'Session crew · платформа может freeze/review, но не случайно редактировать internals',
+    'row.fraudReport': 'Жалоба на мошенничество', 'row.fraudReportMeta': 'Подозрительный пост · external payment / social engineering risk',
+    'row.spamReport': 'Жалоба на спам', 'row.spamReportMeta': 'Подозрительный чат · повторяющийся outreach pattern',
+    'row.appealLane': 'Линия апелляций', 'row.appealLaneMeta': 'Зарезервировано для апелляций после применённого действия',
+    'row.contentReview': 'Проверка контента', 'row.contentReviewMeta': 'Hide/remove через moderation actions, не прямое редактирование текста пользователя.',
+    'row.complaintMessages': 'Сообщения по жалобам', 'row.complaintMessagesMeta': 'Модераторы не получают blanket access ко всем приватным чатам.',
+    'row.entityVisibility': 'Видимость сущностей', 'row.entityVisibilityMeta': 'Freeze, unpublish или review; entity admins держат свои настройки отдельно.',
+    'row.externalLinks': 'Внешние ссылки', 'row.externalLinksMeta': 'MVP блокирует небезопасное поведение с внешними ссылками в чатах и постах.',
+    'row.suspiciousLogins': 'Подозрительные входы', 'row.suspiciousLoginsMeta': 'Device/IP risk относится к backend policy до enforcement.',
+    'row.ratingDisputes': 'Споры по рейтингу', 'row.ratingDisputesMeta': 'No-shows, cancellations и reviews требуют dispute trail до изменения score.',
+    'row.planCatalog': 'Каталог тарифов', 'row.planCatalogMeta': 'Центральные owner-managed pricing и entitlements.',
+    'row.manualGrant': 'Ручная выдача доступа', 'row.manualGrantMeta': 'Любое ручное изменение entitlement должно создавать audit event.',
+    'row.refundLane': 'Возвраты', 'row.refundLaneMeta': 'Payment provider integration только после готовности policy slice.',
+    'row.feedOperations': 'Операции ленты', 'row.feedOperationsMeta': 'Платформа может feature, hide или отправлять посты на review.',
+    'row.mediaStatus': 'Статус медиа', 'row.mediaStatusMeta': 'MIME и virus scanning остаются future-ready backend concerns.',
+    'row.categories': 'Категории', 'row.categoriesMeta': 'Localization-safe labels, без текста внутри ассетов.',
+    'row.languagePacks': 'Языковые пакеты', 'row.languagePacksMeta': 'Строки остаются в i18n JSON, а не hardcoded в компонентах.',
+    'row.missingKeys': 'Отсутствующие ключи', 'row.missingKeysMeta': 'Admin tooling позже покажет untranslated keys по namespace.',
+    'row.assetPolicy': 'Asset policy', 'row.assetPolicyMeta': 'Production assets остаются language-neutral.',
+    'row.broadcasts': 'Рассылки', 'row.broadcastsMeta': 'Сегментация по роли, locale, городу или типу сущности после backend.',
+    'row.templates': 'Шаблоны', 'row.templatesMeta': 'Все тексты уведомлений должны локализоваться и аудироваться.',
+    'row.emergencyNotice': 'Emergency notice', 'row.emergencyNoticeMeta': 'Owner-level действие со строгим аудитом и подтверждением.',
+    'row.routeGuardChecked': 'Route guard проверен', 'row.routeGuardCheckedMeta': 'System actor · permission boundary verified.',
+    'row.moderationViewed': 'Очередь модерации открыта', 'row.moderationViewedMeta': 'Moderator actor · только complaint context.',
+    'row.manualRoleChange': 'Ручная смена роли', 'row.manualRoleChangeMeta': 'Требует reason и 2FA до реальной реализации.',
+    'row.registrationPolicy': 'Политика регистрации', 'row.registrationPolicyMeta': 'Email, phone и OAuth требования управляются здесь, не по сущностям.',
+    'row.securityPolicy': 'Security policy', 'row.securityPolicyMeta': '2FA для elevated staff и owners — обязательное правило.',
+    'row.featureGates': 'Feature gates', 'row.featureGatesMeta': 'Контролируемый rollout перед подключением широких социальных функций.',
+    'action.openReportsQueue': 'Открыть очередь жалоб', 'action.reviewTrustSignals': 'Проверить trust signals', 'action.checkAuditTrail': 'Проверить аудит', 'action.openUserCard': 'Открыть карточку', 'action.addSupportNote': 'Добавить заметку', 'action.requestVerification': 'Запросить верификацию', 'action.openRegistryItem': 'Открыть сущность', 'action.flagForReview': 'Поставить флаг', 'action.openReadOnlyAudit': 'Открыть аудит', 'action.assignCase': 'Назначить кейс', 'action.escalateToTrust': 'Эскалация в trust', 'action.closeRejected': 'Отклонить', 'action.openQueue': 'Открыть очередь', 'action.reviewContentFlag': 'Проверить флаг', 'action.writeModerationNote': 'Заметка модератора', 'action.reviewBlockedLinks': 'Проверить ссылки', 'action.openRiskUser': 'Открыть риск-профиль', 'action.tunePolicyDraft': 'Настроить policy draft', 'action.reviewPlans': 'Проверить тарифы', 'action.openSubscriptions': 'Открыть подписки', 'action.auditRefund': 'Аудит возврата', 'action.openContentFlags': 'Открыть флаги', 'action.manageFeatured': 'Управлять featured', 'action.reviewMedia': 'Проверить медиа', 'action.reviewKeys': 'Проверить ключи', 'action.exportPack': 'Экспорт pack', 'action.checkMissing': 'Проверить пропуски', 'action.createDraft': 'Создать черновик', 'action.previewTemplate': 'Предпросмотр шаблона', 'action.auditSend': 'Аудит отправки', 'action.filterAudit': 'Фильтр аудита', 'action.exportLog': 'Экспорт лога', 'action.openActor': 'Открыть actor', 'action.reviewPolicy': 'Проверить policy', 'action.openFeatureFlags': 'Feature flags', 'action.checkProviders': 'Проверить провайдеры'
+  },
+  en: {}
+};
+
+messages.en = messages.ru;
+
+function createTranslator(): Translate {
+  const locale = localeFromDocument();
+  return (key: string) => messages[locale][key] ?? messages.ru[key] ?? key;
+}
+
 function badge(label: string, tone: AdminTone = 'neutral'): string {
   const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
   return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
@@ -176,25 +252,27 @@ function button(label: string, path: string, variant: 'primary' | 'secondary' | 
   return `<button class="bk-button bk-button-${variant}" type="button" data-admin-route="${escapeHtml(path)}">${escapeHtml(label)}</button>`;
 }
 
-function renderKpi([value, label]: [string, string]): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
+function renderKpi(t: Translate, [value, labelKey]: [string, string]): string {
+  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(t(`kpi.${labelKey}`))}</div></div>`;
 }
 
-function renderRow([title, meta, tone]: [string, string, AdminTone]): string {
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div></div>${badge(tone.toUpperCase(), tone)}</div>`;
+function renderRow(t: Translate, [titleKey, metaKey, toneLabelKey, tone]: [string, string, string, AdminTone]): string {
+  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t(`row.${titleKey}`))}</div><div class="bk-meta">${escapeHtml(t(`row.${metaKey}`))}</div></div>${badge(t(`tone.${toneLabelKey}`), tone)}</div>`;
 }
 
 function renderAdminMain(section: AdminSection, root: HTMLElement): string {
+  const t = createTranslator();
   const shortcutButtons = sections
     .filter((item) => item.path !== section.path && canViewSection(root, item))
     .slice(0, 6)
-    .map((item) => button(item.label, item.path, 'ghost'))
+    .map((item) => button(t(`section.${item.key}.label`), item.path, 'ghost'))
     .join('');
-  return `<header class="bk-page-header"><div class="bk-eyebrow">Platform Console · owner operations · mock only</div><div class="bk-chip-row">${badge('/admin boundary', 'positive')}${badge('entity admin separated', 'warning')}${badge('no real sensitive API calls')}</div><div class="bk-page-header-main"><div><h1 class="bk-title">${escapeHtml(section.title)}</h1><p class="bk-subtitle">${escapeHtml(section.subtitle)}</p></div><div class="bk-action-row">${button('Back to app', '/feed', 'secondary')}</div></div></header><section class="bk-card"><div class="bk-kpi-grid">${section.kpis.map(renderKpi).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Operational boundary</div><h3 class="bk-card-title">Platform-level actions only</h3></div>${badge('read-first mock', 'positive')}</div><div class="bk-list">${section.rows.map(renderRow).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Safe actions preview</h3><p class="bk-state-copy">These buttons are UI placeholders. Real blocking, refunds, role changes, impersonation and data access must go through backend permissions, reason prompts and immutable audit logs.</p><div class="bk-action-row">${section.actions.map((action) => button(action, section.path, action.includes('Audit') ? 'primary' : 'secondary')).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Platform sections</h3><div class="bk-action-row">${shortcutButtons}</div></section>`;
+  return `<header class="bk-page-header"><div class="bk-eyebrow">${escapeHtml(t('admin.platformEyebrow'))}</div><div class="bk-chip-row">${badge(t('admin.boundaryBadge'), 'positive')}${badge(t('admin.entityBadge'), 'warning')}${badge(t('admin.noSensitiveApi'))}</div><div class="bk-page-header-main"><div><h1 class="bk-title">${escapeHtml(t(`section.${section.key}.title`))}</h1><p class="bk-subtitle">${escapeHtml(t(`section.${section.key}.subtitle`))}</p></div><div class="bk-action-row">${button(t('admin.backToApp'), '/feed', 'secondary')}</div></div></header><section class="bk-card"><div class="bk-kpi-grid">${section.kpis.map((item) => renderKpi(t, item)).join('')}</div></section><section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">${escapeHtml(t('admin.operationalBoundary'))}</div><h3 class="bk-card-title">${escapeHtml(t('admin.platformActionsOnly'))}</h3></div>${badge(t('admin.readFirstMock'), 'positive')}</div><div class="bk-list">${section.rows.map((item) => renderRow(t, item)).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">${escapeHtml(t('admin.safeActionsTitle'))}</h3><p class="bk-state-copy">${escapeHtml(t('admin.safeActionsCopy'))}</p><div class="bk-action-row">${section.actions.map((action) => button(t(`action.${action}`), section.path, action.includes('Audit') || action.includes('audit') ? 'primary' : 'secondary')).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">${escapeHtml(t('admin.platformSections'))}</h3><div class="bk-action-row">${shortcutButtons}</div></section>`;
 }
 
 function renderAdminRightRail(section: AdminSection): string {
-  return `<aside class="bk-right-rail"><section class="bk-card"><div class="bk-meta">Console mode</div><strong>${escapeHtml(section.label)}</strong><p class="bk-state-copy">Owner and platform staff workspace. Entity admins must use their own future routes such as /band/:id/admin, /studio/:id/admin, /org/:id/admin, /event/:id/admin.</p><div class="bk-chip-row">${badge('2FA required', 'warning')}${badge('RBAC')}${badge('audit')}</div></section><section class="bk-card"><h3 class="bk-card-title">Do not mix here</h3><div class="bk-list"><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">Band settings</div><div class="bk-meta">Belongs to entity admin space.</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">Studio settings</div><div class="bk-meta">Belongs to /studio/:id/admin future route.</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">User preferences</div><div class="bk-meta">Belongs to account settings, not owner console.</div></div></div></div></section></aside>`;
+  const t = createTranslator();
+  return `<aside class="bk-right-rail"><section class="bk-card"><div class="bk-meta">${escapeHtml(t('admin.consoleModeLabel'))}</div><strong>${escapeHtml(t(`section.${section.key}.label`))}</strong><p class="bk-state-copy">${escapeHtml(t('admin.rightRailCopy'))}</p><div class="bk-chip-row">${badge(t('admin.twoFactorRequired'), 'warning')}${badge('RBAC')}${badge('audit')}</div></section><section class="bk-card"><h3 class="bk-card-title">${escapeHtml(t('admin.doNotMix'))}</h3><div class="bk-list"><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t('admin.bandSettings'))}</div><div class="bk-meta">${escapeHtml(t('admin.bandSettingsMeta'))}</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t('admin.studioSettings'))}</div><div class="bk-meta">${escapeHtml(t('admin.studioSettingsMeta'))}</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t('admin.userPreferences'))}</div><div class="bk-meta">${escapeHtml(t('admin.userPreferencesMeta'))}</div></div></div></div></section></aside>`;
 }
 
 function renderAdminPage(root: HTMLElement, section: AdminSection): void {
