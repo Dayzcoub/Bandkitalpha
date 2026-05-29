@@ -243,7 +243,7 @@ export function initPlatformAdminConsole(root: HTMLElement): void {
     const target = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-admin-route], a[href^="/admin"]') : null;
     if (!target) return;
     const nextPath = target.dataset.adminRoute ?? target.getAttribute('href') ?? '';
-    if (!nextPath.startsWith(ADMIN_ROOT)) return;
+    if (!nextPath) return;
     event.preventDefault();
     event.stopImmediatePropagation();
     routeTo(nextPath);
