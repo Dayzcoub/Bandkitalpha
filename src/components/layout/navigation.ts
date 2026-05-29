@@ -10,6 +10,7 @@ interface NavItem {
   inactiveIcon: AssetKey;
   adminOnly?: boolean;
   moderatorOnly?: boolean;
+  superAdminOnly?: boolean;
 }
 
 export const appNavItems: NavItem[] = [
@@ -27,17 +28,27 @@ export const appNavItems: NavItem[] = [
 ];
 
 export const adminNavItems: NavItem[] = [
-  { path: '/admin', labelKey: 'nav.admin', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive' },
-  { path: '/moderation', labelKey: 'nav.moderation', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', moderatorOnly: true },
-  { path: '/admin/users', labelKey: 'nav.users', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive' },
-  { path: '/admin/roles', labelKey: 'nav.roles', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive' },
-  { path: '/admin/localization', labelKey: 'nav.localization', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
-  { path: '/admin/audit', labelKey: 'nav.audit', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
+  { path: '/admin', labelKey: 'admin.title', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive' },
+  { path: '/admin/users', labelKey: 'admin.usersTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive' },
+  { path: '/admin/entities', labelKey: 'admin.entitiesTitle', activeIcon: 'navProjectsActive', inactiveIcon: 'navProjectsInactive' },
+  { path: '/admin/reports', labelKey: 'admin.reportsTitle', activeIcon: 'navAdminActive', inactiveIcon: 'badgeWarning', moderatorOnly: true },
+  { path: '/admin/moderation', labelKey: 'admin.moderationTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', moderatorOnly: true },
+  { path: '/admin/trust', labelKey: 'admin.trustTitle', activeIcon: 'navAdminActive', inactiveIcon: 'badgeWarning' },
+  { path: '/admin/billing', labelKey: 'admin.billingTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive', superAdminOnly: true },
+  { path: '/admin/content', labelKey: 'admin.contentTitle', activeIcon: 'navFeedActive', inactiveIcon: 'navFeedInactive' },
+  { path: '/admin/roles', labelKey: 'admin.rolesTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', superAdminOnly: true },
+  { path: '/admin/localization', labelKey: 'admin.localizationTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
+  { path: '/admin/notifications', labelKey: 'admin.notificationsTitle', activeIcon: 'navNotificationsActive', inactiveIcon: 'navNotificationsInactive' },
+  { path: '/admin/audit', labelKey: 'admin.auditTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
+  { path: '/admin/settings', labelKey: 'admin.settingsTitle', activeIcon: 'navSettingsActive', inactiveIcon: 'navSettingsInactive', superAdminOnly: true },
 ];
 
 function filteredNavItems(ctx: AppContext, mode: 'app' | 'admin'): NavItem[] {
   const items = mode === 'admin' ? adminNavItems : appNavItems;
-  return items.filter((item) => !item.adminOnly || hasRole(ctx.state, 'admin')).filter((item) => !item.moderatorOnly || hasRole(ctx.state, 'moderator'));
+  return items
+    .filter((item) => !item.adminOnly || hasRole(ctx.state, 'admin'))
+    .filter((item) => !item.moderatorOnly || hasRole(ctx.state, 'moderator'))
+    .filter((item) => !item.superAdminOnly || hasRole(ctx.state, 'super_admin'));
 }
 
 function shouldShowProfileBack(ctx: AppContext): boolean {
@@ -62,7 +73,9 @@ function mobileChatBackButton(ctx: AppContext): string {
 export function sideNav(ctx: AppContext, mode: 'app' | 'admin'): string {
   const filtered = filteredNavItems(ctx, mode);
   const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${ctx.t('common.mock')}</span></div>` : '';
-  return `<aside class="bk-side-nav"><a class="bk-brand-row" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><img class="bk-brand-logo" src="${getAsset('logoPrimary')}" alt="${ctx.t('asset.alt.logo')}" /></a><nav class="bk-nav-list" aria-label="${ctx.t('common.actions')}">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><div class="bk-nav-spacer"></div><section class="bk-card bk-workspace-card"><div class="bk-meta">${ctx.t('common.workspace')}</div><strong>${ctx.t('mock.workspaceName')}</strong>${workspaceDiagnostics}</section></aside>`;
+  const brandRoute = mode === 'admin' ? '/admin' : '/feed';
+  const workspaceTitle = mode === 'admin' ? ctx.t('admin.consoleName') : ctx.t('mock.workspaceName');
+  return `<aside class="bk-side-nav"><a class="bk-brand-row" href="${brandRoute}" data-route="${brandRoute}"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><img class="bk-brand-logo" src="${getAsset('logoPrimary')}" alt="${ctx.t('asset.alt.logo')}" /></a><nav class="bk-nav-list" aria-label="${ctx.t('common.actions')}">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><div class="bk-nav-spacer"></div><section class="bk-card bk-workspace-card"><div class="bk-meta">${mode === 'admin' ? ctx.t('admin.consoleMode') : ctx.t('common.workspace')}</div><strong>${workspaceTitle}</strong>${workspaceDiagnostics}</section></aside>`;
 }
 
 function navLink(ctx: AppContext, item: NavItem): string {
@@ -88,14 +101,17 @@ export function bottomNav(ctx: AppContext): string {
 }
 
 export function mobileTopBar(ctx: AppContext, mode: 'app' | 'admin' = 'app'): string {
-  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="/feed" data-route="/feed"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${ctx.t('app.name')}</span></a><div class="bk-mobile-top-actions">${shellProfileBackButton(ctx, 'mobile')}${mobileChatBackButton(ctx)}<button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button><button class="bk-button bk-icon-button bk-mobile-menu-trigger" type="button" data-mobile-menu-open aria-label="${ctx.t('common.actions')}"><span aria-hidden="true">☰</span></button></div></header>`;
+  const brandRoute = mode === 'admin' ? '/admin' : '/feed';
+  const brandLabel = mode === 'admin' ? ctx.t('admin.consoleName') : ctx.t('app.name');
+  return `<header class="bk-mobile-topbar"><a class="bk-mobile-brand" href="${brandRoute}" data-route="${brandRoute}"><img class="bk-brand-mark" src="${getAsset('markTile')}" alt="${ctx.t('asset.alt.mark')}" /><span>${brandLabel}</span></a><div class="bk-mobile-top-actions">${shellProfileBackButton(ctx, 'mobile')}${mobileChatBackButton(ctx)}<button class="bk-button bk-icon-button" data-route="/marketplace" aria-label="${ctx.t('common.search')}"><img class="bk-nav-icon" src="${getAsset('navSearchInactive')}" alt="" /></button><button class="bk-button bk-icon-button bk-mobile-notification-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /><span>3</span></button><button class="bk-button bk-icon-button bk-mobile-menu-trigger" type="button" data-mobile-menu-open aria-label="${ctx.t('common.actions')}"><span aria-hidden="true">☰</span></button></div></header>`;
 }
 
 export function mobileMenuDrawer(ctx: AppContext, mode: 'app' | 'admin'): string {
   const filtered = filteredNavItems(ctx, mode);
   const workspaceDiagnostics = canSeeDiagnostics(ctx) ? `<div class="bk-chip-row"><span class="bk-badge">${ctx.t('common.mock')}</span></div>` : '';
-  const menuTitle = mode === 'admin' ? ctx.t('nav.admin') : ctx.t('common.workspace');
-  return `<div class="bk-mobile-menu-layer" data-mobile-menu-layer aria-hidden="true"><button class="bk-mobile-menu-backdrop" type="button" data-mobile-menu-close aria-label="${ctx.t('actions.close')}"></button><aside class="bk-mobile-menu-panel" aria-label="${ctx.t('common.actions')}"><div class="bk-mobile-menu-head"><div><div class="bk-meta">${menuTitle}</div><strong>${ctx.t('app.name')}</strong></div><button class="bk-button bk-icon-button" type="button" data-mobile-menu-close aria-label="${ctx.t('actions.close')}">×</button></div><nav class="bk-mobile-menu-list">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><section class="bk-card bk-mobile-menu-workspace"><div class="bk-meta">${ctx.t('common.workspace')}</div><strong>${ctx.t('mock.workspaceName')}</strong>${workspaceDiagnostics}</section></aside></div>`;
+  const menuTitle = mode === 'admin' ? ctx.t('admin.consoleName') : ctx.t('common.workspace');
+  const workspaceTitle = mode === 'admin' ? ctx.t('admin.consoleMode') : ctx.t('mock.workspaceName');
+  return `<div class="bk-mobile-menu-layer" data-mobile-menu-layer aria-hidden="true"><button class="bk-mobile-menu-backdrop" type="button" data-mobile-menu-close aria-label="${ctx.t('actions.close')}"></button><aside class="bk-mobile-menu-panel" aria-label="${ctx.t('common.actions')}"><div class="bk-mobile-menu-head"><div><div class="bk-meta">${menuTitle}</div><strong>${ctx.t('app.name')}</strong></div><button class="bk-button bk-icon-button" type="button" data-mobile-menu-close aria-label="${ctx.t('actions.close')}">×</button></div><nav class="bk-mobile-menu-list">${filtered.map((item) => navLink(ctx, item)).join('')}</nav><section class="bk-card bk-mobile-menu-workspace"><div class="bk-meta">${menuTitle}</div><strong>${workspaceTitle}</strong>${workspaceDiagnostics}</section></aside></div>`;
 }
 
 export function topBar(ctx: AppContext): string {
