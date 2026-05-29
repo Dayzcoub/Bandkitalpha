@@ -1,6 +1,7 @@
 import { createBandKitApp } from './app/App.js';
 import { initPlatformAdminConsole } from './modules/PlatformAdminConsole.js';
 import { initPlatformAdminTrustDetails } from './modules/PlatformAdminTrustDetails.js';
+import { initPlatformAdminCommercialContentDetails } from './modules/PlatformAdminCommercialContentDetails.js';
 import { initChatMessageControls } from './modules/ChatMessageControls.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 
@@ -12,5 +13,6 @@ if (!root) {
 createBandKitApp(root);
 initPlatformAdminConsole(root);
 initPlatformAdminTrustDetails(root);
+initPlatformAdminCommercialContentDetails(root);
 initChatMessageControls(root);
 initRealEntitiesPreview(root);
