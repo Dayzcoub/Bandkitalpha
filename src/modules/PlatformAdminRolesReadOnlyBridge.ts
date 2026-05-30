@@ -1,8 +1,16 @@
+type AdminStaffCatalogItem = {
+  id?: string;
+  title?: string;
+  description?: string;
+  status?: string;
+  tags?: string[];
+};
+
 type AdminStaffCatalogResponse = {
   ok?: boolean;
   mode?: string;
   generated_at?: string;
-  items?: Array<{ id?: string; title?: string; status?: string }>;
+  items?: AdminStaffCatalogItem[];
   summary?: { groups?: number; elevated?: number; scoped?: number; source?: string };
   operation_types?: string[];
   guardrails?: Record<string, boolean>;
@@ -23,6 +31,29 @@ function badge(label: string, tone: 'neutral' | 'positive' | 'warning' | 'danger
 
 function kpi(value: string, label: string): string {
   return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
+}
+
+function listRow(title: string, meta: string, details: string[], badges: Array<{ label: string; tone?: 'neutral' | 'positive' | 'warning' | 'danger' }>): string {
+  const detailHtml = details.map((item) => badge(item)).join('');
+  const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
+  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
+}
+
+function statusLabel(status?: string): string {
+  const map: Record<string, string> = {
+    elevated: 'elevated',
+    staff: 'команда',
+    case_limited: 'только по кейсу',
+    scoped: 'ограничено областью'
+  };
+  return map[status || ''] || status || 'только чтение';
+}
+
+function statusTone(status?: string): 'neutral' | 'positive' | 'warning' | 'danger' {
+  if (status === 'elevated') return 'danger';
+  if (status === 'staff') return 'warning';
+  if (status === 'case_limited') return 'positive';
+  return 'neutral';
 }
 
 function operationLabel(operation?: string): string {
@@ -61,9 +92,23 @@ function applyRoles(root: HTMLElement, data: AdminStaffCatalogResponse): void {
     ].join('');
   }
 
+  const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
+  const catalogCard = cards.find((card) => card.textContent?.includes('Платформенная матрица команды'));
+  const catalogList = catalogCard?.querySelector<HTMLElement>('.bk-list');
+  if (catalogList) {
+    const items = data.items ?? [];
+    catalogList.innerHTML = items.length
+      ? items.map((item) => listRow(
+          item.title || item.id || 'Позиция матрицы',
+          item.description || 'Описание области ответственности пока не подключено.',
+          item.tags?.length ? item.tags : ['только чтение'],
+          [{ label: statusLabel(item.status), tone: statusTone(item.status) }]
+        )).join('')
+      : listRow('Каталог ролей пока не подключён', 'Контракт API готов, но источник staff catalog ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 записей' }]);
+  }
+
   const operations = data.operation_types?.length ? data.operation_types : ['review_matrix', 'open_history', 'check_2fa_status', 'review_restrictions', 'export_matrix'];
   const operationLabels = operations.map(operationLabel);
-  const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
   const matrixCard = cards.find((card) => card.textContent?.includes('Матрица действий'));
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
