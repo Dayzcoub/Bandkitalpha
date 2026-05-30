@@ -4,6 +4,7 @@ import { initPlatformAdminTrustDetails } from './modules/PlatformAdminTrustDetai
 import { initPlatformAdminCommercialContentDetails } from './modules/PlatformAdminCommercialContentDetails.js';
 import { initPlatformAdminServiceDetails } from './modules/PlatformAdminServiceDetails.js';
 import { initPlatformAdminRolesPageFix } from './modules/PlatformAdminRolesPageFix.js';
+import { initPlatformAdminCopyPolish } from './modules/PlatformAdminCopyPolish.js';
 import { initChatMessageControls } from './modules/ChatMessageControls.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 
@@ -18,5 +19,6 @@ initPlatformAdminTrustDetails(root);
 initPlatformAdminCommercialContentDetails(root);
 initPlatformAdminServiceDetails(root);
 initPlatformAdminRolesPageFix(root);
+initPlatformAdminCopyPolish(root);
 initChatMessageControls(root);
 initRealEntitiesPreview(root);
