@@ -3,6 +3,7 @@ import { initPlatformAdminConsole } from './modules/PlatformAdminConsole.js';
 import { initPlatformAdminReadOnlyDataBridge } from './modules/PlatformAdminReadOnlyDataBridge.js';
 import { initPlatformAdminBillingReadOnlyBridge } from './modules/PlatformAdminBillingReadOnlyBridge.js';
 import { initPlatformAdminContentReadOnlyBridge } from './modules/PlatformAdminContentReadOnlyBridge.js';
+import { initPlatformAdminLocalizationReadOnlyBridge } from './modules/PlatformAdminLocalizationReadOnlyBridge.js';
 import { initChatMessageControls } from './modules/ChatMessageControls.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 
@@ -16,5 +17,6 @@ initPlatformAdminConsole(root);
 initPlatformAdminReadOnlyDataBridge(root);
 initPlatformAdminBillingReadOnlyBridge(root);
 initPlatformAdminContentReadOnlyBridge(root);
+initPlatformAdminLocalizationReadOnlyBridge(root);
 initChatMessageControls(root);
 initRealEntitiesPreview(root);
