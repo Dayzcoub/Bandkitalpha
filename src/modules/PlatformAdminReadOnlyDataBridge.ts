@@ -7,7 +7,7 @@ type AdminOverviewResponse = {
     entities?: { total?: number; active?: number };
     events?: { total?: number };
     reports?: { open?: number; source?: string };
-    audit?: { total?: number; recent?: Array<{ action?: string; created_at?: string }> };
+    audit?: { total?: number; recent?: Array<AdminAuditEvent> };
   };
   guardrails?: Record<string, boolean>;
 };
@@ -34,13 +34,55 @@ type AdminEntitiesResponse = {
   guardrails?: Record<string, boolean>;
 };
 
+type AdminReport = {
+  id?: string;
+  title?: string;
+  type?: string;
+  status?: string;
+  priority?: string;
+  created_at?: string;
+  subject?: string;
+};
+
+type AdminReportsResponse = {
+  ok?: boolean;
+  mode?: string;
+  generated_at?: string;
+  reports?: AdminReport[];
+  summary?: { total?: number; open?: number; high_priority?: number; escalated?: number; appeals?: number; source?: string };
+  workflow?: string[];
+  guardrails?: Record<string, boolean>;
+};
+
+type AdminAuditEvent = {
+  id?: string;
+  action?: string;
+  entity_id?: string | null;
+  created_at?: string;
+  actor?: { display_name?: string | null; handle?: string | null } | null;
+  metadata?: Record<string, unknown>;
+};
+
+type AdminAuditResponse = {
+  ok?: boolean;
+  mode?: string;
+  generated_at?: string;
+  audit_events?: AdminAuditEvent[];
+  summary?: { total_returned?: number; by_action?: Array<{ key?: string; count?: number }> };
+  guardrails?: Record<string, boolean>;
+};
+
 const ADMIN_ROOT = '/admin';
 const API_BASE = '/api/v1/admin';
 
 let overviewCache: AdminOverviewResponse | null = null;
 let entitiesCache: AdminEntitiesResponse | null = null;
+let reportsCache: AdminReportsResponse | null = null;
+let auditCache: AdminAuditResponse | null = null;
 let overviewLoading = false;
 let entitiesLoading = false;
+let reportsLoading = false;
+let auditLoading = false;
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
@@ -68,9 +110,9 @@ function listRow(title: string, meta: string, details: string[], badges: Array<{
 }
 
 function statusTone(status?: string): 'neutral' | 'positive' | 'warning' | 'danger' {
-  if (status === 'active') return 'positive';
-  if (status === 'suspended' || status === 'blocked') return 'danger';
-  if (status === 'pending' || status === 'review') return 'warning';
+  if (status === 'active' || status === 'resolved') return 'positive';
+  if (status === 'suspended' || status === 'blocked' || status === 'rejected') return 'danger';
+  if (status === 'pending' || status === 'review' || status === 'in_review' || status === 'new' || status === 'escalated') return 'warning';
   return 'neutral';
 }
 
@@ -97,6 +139,20 @@ function entityVisibilityLabel(visibility?: string): string {
     public: 'публичная'
   };
   return map[visibility || ''] || visibility || 'видимость не указана';
+}
+
+function actionLabel(action?: string): string {
+  const map: Record<string, string> = {
+    'entity.created': 'Создана сущность'
+  };
+  return map[action || ''] || action || 'Событие аудита';
+}
+
+function formatDate(value?: string): string {
+  if (!value) return 'дата не указана';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
 }
 
 function updateHeaderBadge(root: HTMLElement, text: string, tone: 'neutral' | 'positive' | 'warning' | 'danger' = 'positive'): void {
@@ -159,10 +215,69 @@ function updateEntities(root: HTMLElement, data: AdminEntitiesResponse): void {
   updateHeaderBadge(root, 'данные из API', 'positive');
 }
 
+function updateReports(root: HTMLElement, data: AdminReportsResponse): void {
+  const reports = data.reports ?? [];
+  const summary = data.summary ?? {};
+  const grid = root.querySelector<HTMLElement>('.bk-main-column .bk-kpi-grid');
+  if (grid) {
+    grid.innerHTML = [
+      kpi(String(summary.open ?? 0), 'открытые жалобы'),
+      kpi(String(summary.high_priority ?? 0), 'высокий приоритет'),
+      kpi(String(summary.escalated ?? 0), 'эскалации'),
+      kpi(String(summary.appeals ?? 0), 'апелляции')
+    ].join('');
+  }
+
+  const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
+  const queueCard = cards.find((card) => card.textContent?.includes('Операционные кейсы модерации'));
+  const list = queueCard?.querySelector<HTMLElement>('.bk-list');
+  if (list) {
+    list.innerHTML = reports.length
+      ? reports.slice(0, 20).map((report) => listRow(
+          report.title || report.id || 'Жалоба без названия',
+          `${report.type || 'тип не указан'} · ${report.subject || 'объект не указан'} · ${formatDate(report.created_at)}`,
+          ['только чтение', 'без решений модерации'],
+          [{ label: report.status || 'new', tone: statusTone(report.status) }, { label: report.priority || 'обычный' }]
+        )).join('')
+      : listRow('Жалобы пока не подключены', 'Контракт API готов, но источник жалоб ещё не подключён к базе.', ['source: not_connected_yet'], [{ label: '0 открытых' }]);
+  }
+  updateHeaderBadge(root, 'данные из API', 'positive');
+}
+
+function updateAudit(root: HTMLElement, data: AdminAuditResponse): void {
+  const events = data.audit_events ?? [];
+  const grid = root.querySelector<HTMLElement>('.bk-main-column .bk-kpi-grid');
+  if (grid) {
+    grid.innerHTML = [
+      kpi(String(events.length), 'записей получено'),
+      kpi(String(data.summary?.by_action?.length ?? 0), 'типов действий'),
+      kpi('Read API', 'только чтение'),
+      kpi('Guarded', 'без изменений')
+    ].join('');
+  }
+
+  const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
+  const auditCard = cards.find((card) => card.textContent?.includes('Неизменяемый журнал платформы'));
+  const list = auditCard?.querySelector<HTMLElement>('.bk-list');
+  if (list) {
+    list.innerHTML = events.length
+      ? events.slice(0, 30).map((event) => {
+          const actor = event.actor?.display_name || event.actor?.handle || 'системное действие';
+          const meta = `${actor} · ${formatDate(event.created_at)}`;
+          const details = [event.entity_id ? `entity ${event.entity_id}` : 'без сущности', 'только чтение'];
+          return listRow(actionLabel(event.action), meta, details, [{ label: event.action || 'audit' }, { label: 'аудит', tone: 'warning' }]);
+        }).join('')
+      : listRow('Событий аудита пока нет', 'API вернул пустой список audit_events.', ['только чтение'], [{ label: 'пусто' }]);
+  }
+  updateHeaderBadge(root, 'данные из API', 'positive');
+}
+
 function applyCachedData(root: HTMLElement): void {
   const path = window.location.pathname;
   if (path === '/admin' && overviewCache?.ok) updateOverview(root, overviewCache);
   if (path === '/admin/entities' && entitiesCache?.ok) updateEntities(root, entitiesCache);
+  if (path === '/admin/reports' && reportsCache?.ok) updateReports(root, reportsCache);
+  if (path === '/admin/audit' && auditCache?.ok) updateAudit(root, auditCache);
 }
 
 async function loadOverview(root: HTMLElement): Promise<void> {
@@ -191,12 +306,40 @@ async function loadEntities(root: HTMLElement): Promise<void> {
   }
 }
 
+async function loadReports(root: HTMLElement): Promise<void> {
+  if (reportsCache || reportsLoading) return;
+  reportsLoading = true;
+  try {
+    reportsCache = await fetchJson<AdminReportsResponse>(`${API_BASE}/reports`);
+    applyCachedData(root);
+  } catch {
+    reportsCache = null;
+  } finally {
+    reportsLoading = false;
+  }
+}
+
+async function loadAudit(root: HTMLElement): Promise<void> {
+  if (auditCache || auditLoading) return;
+  auditLoading = true;
+  try {
+    auditCache = await fetchJson<AdminAuditResponse>(`${API_BASE}/audit`);
+    applyCachedData(root);
+  } catch {
+    auditCache = null;
+  } finally {
+    auditLoading = false;
+  }
+}
+
 function hydrate(root: HTMLElement): void {
   if (!window.location.pathname.startsWith(ADMIN_ROOT)) return;
   window.requestAnimationFrame(() => {
     applyCachedData(root);
     if (window.location.pathname === '/admin') void loadOverview(root);
     if (window.location.pathname === '/admin/entities') void loadEntities(root);
+    if (window.location.pathname === '/admin/reports') void loadReports(root);
+    if (window.location.pathname === '/admin/audit') void loadAudit(root);
   });
 }
 
