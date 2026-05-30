@@ -6,6 +6,7 @@ import { initPlatformAdminContentReadOnlyBridge } from './modules/PlatformAdminC
 import { initPlatformAdminLocalizationReadOnlyBridge } from './modules/PlatformAdminLocalizationReadOnlyBridge.js';
 import { initPlatformAdminNotificationsReadOnlyBridge } from './modules/PlatformAdminNotificationsReadOnlyBridge.js';
 import { initPlatformAdminRolesReadOnlyBridge } from './modules/PlatformAdminRolesReadOnlyBridge.js';
+import { initPlatformAdminSettingsReadOnlyBridge } from './modules/PlatformAdminSettingsReadOnlyBridge.js';
 import { initChatMessageControls } from './modules/ChatMessageControls.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 
@@ -22,5 +23,6 @@ initPlatformAdminContentReadOnlyBridge(root);
 initPlatformAdminLocalizationReadOnlyBridge(root);
 initPlatformAdminNotificationsReadOnlyBridge(root);
 initPlatformAdminRolesReadOnlyBridge(root);
+initPlatformAdminSettingsReadOnlyBridge(root);
 initChatMessageControls(root);
 initRealEntitiesPreview(root);
