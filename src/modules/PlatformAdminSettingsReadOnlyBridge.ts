@@ -1,3 +1,5 @@
+import { badge, findCardByText, kpi, listRow, markHeaderApiHydrated, safeButton, type AdminBridgeTone } from './PlatformAdminReadOnlyBridgeUi.js';
+
 type PlatformFlag = {
   key?: string;
   title?: string;
@@ -27,29 +29,6 @@ const API_URL = '/api/v1/admin/settings';
 let cache: AdminSettingsResponse | null = null;
 let loading = false;
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
-}
-
-function kpi(value: string, label: string): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
-}
-
-function badge(label: string, tone: 'neutral' | 'positive' | 'warning' | 'danger' = 'neutral'): string {
-  const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
-  return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
-}
-
-function listRow(title: string, meta: string, details: string[], badges: Array<{ label: string; tone?: 'neutral' | 'positive' | 'warning' | 'danger' }>): string {
-  const detailHtml = details.map((item) => badge(item)).join('');
-  const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
-}
-
-function safeButton(label: string): string {
-  return `<button class="bk-button bk-button-secondary" type="button" data-admin-route="/admin/settings">${escapeHtml(label)}</button>`;
-}
-
 function statusLabel(status?: string): string {
   const map: Record<string, string> = {
     preview_only: 'только просмотр',
@@ -61,7 +40,7 @@ function statusLabel(status?: string): string {
   return map[status || ''] || status || 'не указано';
 }
 
-function statusTone(status?: string): 'neutral' | 'positive' | 'warning' | 'danger' {
+function statusTone(status?: string): AdminBridgeTone {
   if (status === 'off' || status === 'preview_only') return 'positive';
   if (status === 'required_for_admins') return 'warning';
   if (status === 'not_connected_yet') return 'neutral';
@@ -96,10 +75,7 @@ async function fetchSettings(): Promise<AdminSettingsResponse | null> {
 }
 
 function updateHeaderBadge(root: HTMLElement): void {
-  const chipRow = root.querySelector<HTMLElement>('.bk-main-column .bk-page-header .bk-chip-row');
-  if (!chipRow || chipRow.dataset.adminSettingsApiHydrated === 'true') return;
-  chipRow.insertAdjacentHTML('beforeend', badge('данные из API', 'positive'));
-  chipRow.dataset.adminSettingsApiHydrated = 'true';
+  markHeaderApiHydrated(root, 'adminSettingsApiHydrated');
 }
 
 function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
@@ -115,10 +91,7 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
   }
 
   const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
-  const flagsCard = cards.find((card) => {
-    const text = card.textContent || '';
-    return text.includes('Глобальные флаги') || text.includes('Платформенные настройки') || text.includes('Настройки платформы') || text.includes('Глобальные политики');
-  });
+  const flagsCard = findCardByText(cards, ['Глобальные флаги', 'Платформенные настройки', 'Настройки платформы', 'Глобальные политики']);
   const flagsList = flagsCard?.querySelector<HTMLElement>('.bk-list');
   if (flagsList) {
     const flags = data.platform_flags ?? [];
@@ -132,10 +105,7 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
       : listRow('Платформенные настройки пока не подключены', 'Контракт API готов, но источник settings_items ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 настроек' }]);
   }
 
-  const providersCard = cards.find((card) => {
-    const text = card.textContent || '';
-    return text.includes('Провайдеры') || text.includes('Авторизация') || text.includes('Регистрация и подтверждения');
-  });
+  const providersCard = findCardByText(cards, ['Провайдеры', 'Авторизация', 'Регистрация и подтверждения']);
   const providersList = providersCard?.querySelector<HTMLElement>('.bk-list');
   if (providersList && providersCard !== flagsCard) {
     const providers = data.provider_scopes?.length ? data.provider_scopes : ['google', 'apple', 'email', 'sms'];
@@ -149,10 +119,7 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
 
   const operations = data.operation_types?.length ? data.operation_types : ['review_flags', 'check_2fa_policy', 'review_maintenance', 'review_providers', 'open_settings_audit'];
   const operationLabels = operations.map(operationLabel);
-  const matrixCard = cards.find((card) => {
-    const text = card.textContent || '';
-    return text.includes('Матрица') || text.includes('Критичные настройки') || text.includes('Что можно делать из /admin/settings');
-  });
+  const matrixCard = findCardByText(cards, ['Матрица', 'Критичные настройки', 'Что можно делать из /admin/settings']);
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
     matrixChips.innerHTML = operationLabels.map((item) => badge(item)).join('');
@@ -161,7 +128,7 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
   const safeActionsCard = cards.find((card) => card.querySelector('.bk-card-title')?.textContent?.trim() === 'Безопасные действия');
   const safeActionsRow = safeActionsCard?.querySelector<HTMLElement>('.bk-action-row');
   if (safeActionsRow) {
-    safeActionsRow.innerHTML = operationLabels.map(safeButton).join('');
+    safeActionsRow.innerHTML = operationLabels.map((label) => safeButton(label, '/admin/settings')).join('');
   }
 
   updateHeaderBadge(root);
