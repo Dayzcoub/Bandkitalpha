@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node src/index.js",
     "migrate": "node scripts/run-migrations.js",
-    "check": "node --check src/index.js && node --check src/config/env.js && node --check src/db/client.js && node --check src/modules/admin/admin.routes.js && node --check src/modules/admin/billing.routes.js && node --check src/modules/admin/content.routes.js && node --check src/modules/admin/localization.routes.js && node --check src/modules/admin/notifications.routes.js && node --check src/modules/admin/settings.routes.js && node --check src/modules/admin/staff.routes.js && node --check src/modules/health/health.routes.js && node --check src/modules/permissions/PermissionService.js && node --check src/shared/http.js && node --check src/shared/logger.js && node --check scripts/run-migrations.js"
+    "check": "node --check src/index.js && node --check src/config/env.js && node --check src/db/client.js && node --check src/modules/admin/admin.routes.js && node --check src/modules/admin/billing.routes.js && node --check src/modules/admin/content.routes.js && node --check src/modules/admin/localization.routes.js && node --check src/modules/admin/notifications.routes.js && node --check src/modules/admin/settings.routes.js && node --check src/modules/admin/staff.routes.js && node --check src/modules/health/health.routes.js && node --check src/modules/permissions/PermissionService.js && node --check src/shared/http.js && node --check src/shared/logger.js && node --check scripts/run-migrations.js && node --check scripts/check-admin-contracts.js && node scripts/check-admin-contracts.js",
+    "check:admin-contracts": "node scripts/check-admin-contracts.js"
   },
   "engines": {
     "node": ">=20"
