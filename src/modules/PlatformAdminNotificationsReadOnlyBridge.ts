@@ -34,6 +34,10 @@ function badge(label: string, tone: 'neutral' | 'positive' | 'warning' | 'danger
   return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
 }
 
+function safeButton(label: string): string {
+  return `<button class="bk-button bk-button-secondary" type="button" data-admin-route="/admin/notifications">${escapeHtml(label)}</button>`;
+}
+
 function listRow(title: string, meta: string, details: string[], badges: Array<{ label: string; tone?: 'neutral' | 'positive' | 'warning' | 'danger' }>): string {
   const detailHtml = details.map((item) => badge(item)).join('');
   const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
@@ -123,11 +127,18 @@ function applyNotifications(root: HTMLElement, data: AdminNotificationsResponse)
     )).join('');
   }
 
+  const operations = data.operation_types?.length ? data.operation_types : ['review_queue', 'preview_template', 'check_delivery_status', 'audit_subscriptions'];
+  const operationLabels = operations.map(operationLabel);
   const matrixCard = cards.find((card) => card.textContent?.includes('Матрица отправки') || card.textContent?.includes('Что будет доступно из /admin/notifications'));
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
-    const operations = data.operation_types?.length ? data.operation_types : ['review_queue', 'preview_template', 'check_delivery_status', 'audit_subscriptions'];
-    matrixChips.innerHTML = operations.map((item) => badge(operationLabel(item))).join('');
+    matrixChips.innerHTML = operationLabels.map((item) => badge(item)).join('');
+  }
+
+  const safeActionsCard = cards.find((card) => card.querySelector('.bk-card-title')?.textContent?.trim() === 'Безопасные действия');
+  const safeActionsRow = safeActionsCard?.querySelector<HTMLElement>('.bk-action-row');
+  if (safeActionsRow) {
+    safeActionsRow.innerHTML = operationLabels.map((item) => safeButton(item)).join('');
   }
 
   updateHeaderBadge(root);
