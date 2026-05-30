@@ -1,0 +1,33 @@
+import { sendJson } from '../../shared/http.js';
+
+function nowIso() {
+  return new Date().toISOString();
+}
+
+export async function handleAdminNotifications(req, res) {
+  sendJson(res, 200, {
+    ok: true,
+    mode: 'read_only',
+    generated_at: nowIso(),
+    notification_items: [],
+    summary: {
+      total: 0,
+      push: 0,
+      email: 0,
+      sms: 0,
+      templates: 0,
+      source: 'not_connected_yet'
+    },
+    channels: ['push', 'email', 'sms', 'in_app'],
+    template_scopes: ['system', 'security', 'moderation', 'billing', 'entity_activity'],
+    operation_types: ['review_queue', 'preview_template', 'check_delivery_status', 'audit_subscriptions'],
+    guardrails: {
+      write_actions_enabled: false,
+      send_actions_enabled: false,
+      bulk_send_enabled: false,
+      subscription_mutations_enabled: false,
+      template_mutations_enabled: false,
+      private_message_content_enabled: false
+    }
+  });
+}
