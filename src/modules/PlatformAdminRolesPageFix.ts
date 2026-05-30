@@ -1,5 +1,4 @@
 const ROLES_ROUTE = '/admin/roles';
-const MARKER = 'platform-admin-roles-page-fix';
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
@@ -19,6 +18,15 @@ function row(title: string, meta: string, tone: 'neutral' | 'positive' | 'warnin
   return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div></div>${badge(toneLabel, tone)}</div>`;
 }
 
+function rolesKpiCard(): string {
+  return `<section class="bk-card" data-platform-admin-roles-kpis="true"><div class="bk-kpi-grid">${[
+    kpi('4', 'группы staff-ролей'),
+    kpi('2FA', 'обязательно для elevated'),
+    kpi('Audit', 'смена роли логируется'),
+    kpi('Scope', 'доступ ограничен'),
+  ].join('')}</div></section>`;
+}
+
 function patchHeader(root: HTMLElement): void {
   const header = root.querySelector<HTMLElement>('.bk-main-column .bk-page-header');
   if (!header) return;
@@ -29,15 +37,17 @@ function patchHeader(root: HTMLElement): void {
 }
 
 function patchKpis(root: HTMLElement): void {
-  const grid = root.querySelector<HTMLElement>('.bk-main-column .bk-kpi-grid');
-  if (!grid) return;
-  grid.dataset[MARKER] = 'true';
-  grid.innerHTML = [
-    kpi('4', 'группы staff-ролей'),
-    kpi('2FA', 'обязательно для elevated'),
-    kpi('Audit', 'смена роли логируется'),
-    kpi('Scope', 'доступ ограничен'),
-  ].join('');
+  const main = root.querySelector<HTMLElement>('.bk-main-column');
+  if (!main) return;
+  const existingPatched = main.querySelector<HTMLElement>('[data-platform-admin-roles-kpis="true"]');
+  if (existingPatched) {
+    existingPatched.outerHTML = rolesKpiCard();
+    return;
+  }
+  const grid = main.querySelector<HTMLElement>('.bk-kpi-grid');
+  const card = grid?.closest<HTMLElement>('.bk-card');
+  if (!card) return;
+  card.outerHTML = rolesKpiCard();
 }
 
 function patchBoundary(root: HTMLElement): void {
@@ -71,6 +81,7 @@ function patchRolesPage(root: HTMLElement): void {
 
 function schedule(root: HTMLElement): void {
   window.requestAnimationFrame(() => patchRolesPage(root));
+  window.setTimeout(() => patchRolesPage(root), 50);
 }
 
 export function initPlatformAdminRolesPageFix(root: HTMLElement): void {
