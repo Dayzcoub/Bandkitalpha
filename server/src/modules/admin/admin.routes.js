@@ -27,6 +27,29 @@ function mapActor(row) {
   };
 }
 
+function mapUser(row) {
+  return {
+    id: row.id,
+    display_name: row.display_name || null,
+    handle: row.handle || null,
+    status: row.status || null,
+    created_at: row.created_at || null,
+    entity_count: Number(row.entity_count || 0),
+    owned_entity_count: Number(row.owned_entity_count || 0),
+    audit_event_count: Number(row.audit_event_count || 0),
+    verification: {
+      email_verified: false,
+      phone_verified: false,
+      source: 'not_connected_yet'
+    },
+    security: {
+      two_factor_enabled: false,
+      source: 'not_connected_yet'
+    },
+    platform_flags: []
+  };
+}
+
 function mapEntity(row) {
   return {
     id: row.id,
@@ -148,6 +171,61 @@ export async function handleAdminOverview(req, res) {
     });
   } finally {
     client.release();
+  }
+}
+
+export async function handleAdminUsers(req, res) {
+  try {
+    const result = await getPool().query(
+      `select
+         u.id,
+         u.display_name,
+         u.handle,
+         u.status,
+         u.created_at,
+         coalesce(count(distinct em.entity_id), 0)::int as entity_count,
+         coalesce(count(distinct owned.id), 0)::int as owned_entity_count,
+         coalesce(count(distinct ae.id), 0)::int as audit_event_count
+       from users u
+       left join entity_memberships em on em.user_id = u.id and em.status = 'active'
+       left join entities owned on owned.owner_user_id = u.id
+       left join audit_events ae on ae.actor_user_id = u.id
+       group by u.id
+       order by u.created_at desc
+       limit 100`
+    );
+
+    const statusCounts = await getPool().query(
+      `select coalesce(status, $$unknown$$) as key, count(*)
+       from users
+       group by key
+       order by count desc`
+    );
+
+    sendJson(res, 200, {
+      ok: true,
+      mode: 'read_only',
+      generated_at: nowIso(),
+      users: result.rows.map(mapUser),
+      summary: {
+        total_returned: result.rowCount,
+        by_status: statusCounts.rows.map((row) => ({
+          key: row.key,
+          count: Number(row.count || 0)
+        }))
+      },
+      guardrails: {
+        write_actions_enabled: false,
+        user_restrictions_enabled: false,
+        role_mutations_enabled: false,
+        two_factor_reset_enabled: false,
+        private_data_access_enabled: false
+      }
+    });
+  } catch (error) {
+    sendError(res, 500, 'ADMIN_USERS_FAILED', 'Failed to load admin users', {
+      message: error?.message || String(error)
+    });
   }
 }
 
