@@ -116,6 +116,34 @@ function statusTone(status?: string): 'neutral' | 'positive' | 'warning' | 'dang
   return 'neutral';
 }
 
+function statusLabel(status?: string): string {
+  const map: Record<string, string> = {
+    active: 'активна',
+    inactive: 'неактивна',
+    pending: 'ожидает',
+    review: 'проверка',
+    in_review: 'на проверке',
+    new: 'новая',
+    escalated: 'эскалация',
+    resolved: 'решена',
+    rejected: 'отклонена',
+    suspended: 'заморожена',
+    blocked: 'заблокирована'
+  };
+  return map[status || ''] || status || 'неизвестно';
+}
+
+function priorityLabel(priority?: string): string {
+  const map: Record<string, string> = {
+    low: 'низкий',
+    normal: 'обычный',
+    medium: 'средний',
+    high: 'высокий',
+    critical: 'критичный'
+  };
+  return map[priority || ''] || priority || 'обычный';
+}
+
 function entityTypeLabel(type?: string): string {
   const map: Record<string, string> = {
     band: 'группа',
@@ -146,6 +174,13 @@ function actionLabel(action?: string): string {
     'entity.created': 'Создана сущность'
   };
   return map[action || ''] || action || 'Событие аудита';
+}
+
+function actionBadgeLabel(action?: string): string {
+  const map: Record<string, string> = {
+    'entity.created': 'создание сущности'
+  };
+  return map[action || ''] || actionLabel(action).toLowerCase();
 }
 
 function formatDate(value?: string): string {
@@ -186,7 +221,7 @@ function updateEntities(root: HTMLElement, data: AdminEntitiesResponse): void {
       kpi(String(entities.length), 'сущностей из API'),
       kpi(String(totalMembers), 'участников всего'),
       kpi(String(totalEvents), 'событий всего'),
-      kpi('Read API', 'только чтение')
+      kpi('API', 'только чтение')
     ].join('');
   }
 
@@ -206,7 +241,7 @@ function updateEntities(root: HTMLElement, data: AdminEntitiesResponse): void {
               `${Number(entity.event_count || 0)} событий`,
               `${Number(entity.audit_event_count || 0)} записей аудита`
             ],
-            [{ label: entity.status || 'unknown', tone: statusTone(entity.status) }, { label: 'API только чтение' }]
+            [{ label: statusLabel(entity.status), tone: statusTone(entity.status) }, { label: 'API только чтение' }]
           );
         }).join('')
       : listRow('Сущности не найдены', 'API вернул пустой список сущностей.', [], [{ label: 'пусто', tone: 'neutral' }]);
@@ -237,9 +272,9 @@ function updateReports(root: HTMLElement, data: AdminReportsResponse): void {
           report.title || report.id || 'Жалоба без названия',
           `${report.type || 'тип не указан'} · ${report.subject || 'объект не указан'} · ${formatDate(report.created_at)}`,
           ['только чтение', 'без решений модерации'],
-          [{ label: report.status || 'new', tone: statusTone(report.status) }, { label: report.priority || 'обычный' }]
+          [{ label: statusLabel(report.status), tone: statusTone(report.status) }, { label: priorityLabel(report.priority) }]
         )).join('')
-      : listRow('Жалобы пока не подключены', 'Контракт API готов, но источник жалоб ещё не подключён к базе.', ['source: not_connected_yet'], [{ label: '0 открытых' }]);
+      : listRow('Жалобы пока не подключены', 'Контракт API готов, но источник жалоб ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 открытых' }]);
   }
   updateHeaderBadge(root, 'данные из API', 'positive');
 }
@@ -251,8 +286,8 @@ function updateAudit(root: HTMLElement, data: AdminAuditResponse): void {
     grid.innerHTML = [
       kpi(String(events.length), 'записей получено'),
       kpi(String(data.summary?.by_action?.length ?? 0), 'типов действий'),
-      kpi('Read API', 'только чтение'),
-      kpi('Guarded', 'без изменений')
+      kpi('API', 'только чтение'),
+      kpi('Защищено', 'без изменений')
     ].join('');
   }
 
@@ -264,11 +299,18 @@ function updateAudit(root: HTMLElement, data: AdminAuditResponse): void {
       ? events.slice(0, 30).map((event) => {
           const actor = event.actor?.display_name || event.actor?.handle || 'системное действие';
           const meta = `${actor} · ${formatDate(event.created_at)}`;
-          const details = [event.entity_id ? `entity ${event.entity_id}` : 'без сущности', 'только чтение'];
-          return listRow(actionLabel(event.action), meta, details, [{ label: event.action || 'audit' }, { label: 'аудит', tone: 'warning' }]);
+          const details = [event.entity_id ? `сущность ${event.entity_id}` : 'без сущности', 'только чтение'];
+          return listRow(actionLabel(event.action), meta, details, [{ label: actionBadgeLabel(event.action) }, { label: 'аудит', tone: 'warning' }]);
         }).join('')
-      : listRow('Событий аудита пока нет', 'API вернул пустой список audit_events.', ['только чтение'], [{ label: 'пусто' }]);
+      : listRow('Событий аудита пока нет', 'API вернул пустой список событий аудита.', ['только чтение'], [{ label: 'пусто' }]);
   }
+
+  const filterCard = cards.find((card) => card.textContent?.includes('Фильтры аудита'));
+  const filterChips = filterCard?.querySelector<HTMLElement>('.bk-chip-row');
+  if (filterChips) {
+    filterChips.innerHTML = ['Оператор', 'Объект', 'Тип действия', 'Период', 'Роль', 'Риск-действия', 'Платежи', 'Модерация'].map((item) => badge(item)).join('');
+  }
+
   updateHeaderBadge(root, 'данные из API', 'positive');
 }
 
