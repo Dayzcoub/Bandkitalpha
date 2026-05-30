@@ -5,6 +5,7 @@ import { handleAdminBilling } from './modules/admin/billing.routes.js';
 import { handleAdminContent } from './modules/admin/content.routes.js';
 import { handleAdminLocalization } from './modules/admin/localization.routes.js';
 import { handleAdminNotifications } from './modules/admin/notifications.routes.js';
+import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
 import { handleListChatRooms } from './modules/chats/chats.routes.js';
 import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
 import { handleListDocuments } from './modules/documents/documents.routes.js';
@@ -79,6 +80,11 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/notifications`) {
         await handleAdminNotifications(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/roles`) {
+        await handleAdminStaffCatalog(req, res);
         return;
       }
 
