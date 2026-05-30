@@ -326,6 +326,33 @@ export async function handleAdminModeration(req, res) {
   });
 }
 
+export async function handleAdminTrust(req, res) {
+  sendJson(res, 200, {
+    ok: true,
+    mode: 'read_only',
+    generated_at: nowIso(),
+    trust_signals: [],
+    summary: {
+      total: 0,
+      link_risk: 0,
+      spam: 0,
+      suspicious_login: 0,
+      rating_dispute: 0,
+      source: 'not_connected_yet'
+    },
+    signal_types: ['link_risk', 'spam', 'suspicious_login', 'rating_dispute'],
+    policies: ['external_links', 'new_account_limits', 'high_risk_actions'],
+    guardrails: {
+      write_actions_enabled: false,
+      sanctions_enabled: false,
+      auto_blocking_enabled: false,
+      message_restrictions_enabled: false,
+      rating_mutations_enabled: false,
+      private_message_bulk_access_enabled: false
+    }
+  });
+}
+
 export async function handleAdminAudit(req, res) {
   try {
     const result = await getPool().query(
