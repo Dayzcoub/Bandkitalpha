@@ -30,7 +30,7 @@ export async function handleAdminStaffCatalog(req, res) {
       {
         id: 'billing-locale-operator',
         title: 'Оператор платежей и локализации',
-        description: 'Read-only просмотр коммерческого и языкового контуров.',
+        description: 'Просмотр коммерческого и языкового контуров без изменений.',
         status: 'scoped',
         tags: ['платежи', 'локализация', 'экспорт', 'аудит']
       }
