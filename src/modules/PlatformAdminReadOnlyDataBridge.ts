@@ -12,6 +12,28 @@ type AdminOverviewResponse = {
   guardrails?: Record<string, boolean>;
 };
 
+type AdminUser = {
+  id?: string;
+  display_name?: string | null;
+  handle?: string | null;
+  status?: string | null;
+  created_at?: string | null;
+  entity_count?: number;
+  owned_entity_count?: number;
+  audit_event_count?: number;
+  verification?: { email_verified?: boolean; phone_verified?: boolean; source?: string };
+  security?: { two_factor_enabled?: boolean; source?: string };
+};
+
+type AdminUsersResponse = {
+  ok?: boolean;
+  mode?: string;
+  generated_at?: string;
+  users?: AdminUser[];
+  summary?: { total_returned?: number; by_status?: Array<{ key?: string; count?: number }> };
+  guardrails?: Record<string, boolean>;
+};
+
 type AdminEntity = {
   id?: string;
   name?: string;
@@ -76,10 +98,12 @@ const ADMIN_ROOT = '/admin';
 const API_BASE = '/api/v1/admin';
 
 let overviewCache: AdminOverviewResponse | null = null;
+let usersCache: AdminUsersResponse | null = null;
 let entitiesCache: AdminEntitiesResponse | null = null;
 let reportsCache: AdminReportsResponse | null = null;
 let auditCache: AdminAuditResponse | null = null;
 let overviewLoading = false;
+let usersLoading = false;
 let entitiesLoading = false;
 let reportsLoading = false;
 let auditLoading = false;
@@ -109,17 +133,17 @@ function listRow(title: string, meta: string, details: string[], badges: Array<{
   return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
 }
 
-function statusTone(status?: string): 'neutral' | 'positive' | 'warning' | 'danger' {
+function statusTone(status?: string | null): 'neutral' | 'positive' | 'warning' | 'danger' {
   if (status === 'active' || status === 'resolved') return 'positive';
   if (status === 'suspended' || status === 'blocked' || status === 'rejected') return 'danger';
   if (status === 'pending' || status === 'review' || status === 'in_review' || status === 'new' || status === 'escalated') return 'warning';
   return 'neutral';
 }
 
-function statusLabel(status?: string): string {
+function statusLabel(status?: string | null): string {
   const map: Record<string, string> = {
-    active: 'активна',
-    inactive: 'неактивна',
+    active: 'активен',
+    inactive: 'неактивен',
     pending: 'ожидает',
     review: 'проверка',
     in_review: 'на проверке',
@@ -127,10 +151,15 @@ function statusLabel(status?: string): string {
     escalated: 'эскалация',
     resolved: 'решена',
     rejected: 'отклонена',
-    suspended: 'заморожена',
-    blocked: 'заблокирована'
+    suspended: 'заморожен',
+    blocked: 'заблокирован'
   };
   return map[status || ''] || status || 'неизвестно';
+}
+
+function entityStatusLabel(status?: string): string {
+  if (status === 'active') return 'активна';
+  return statusLabel(status);
 }
 
 function priorityLabel(priority?: string): string {
@@ -183,7 +212,7 @@ function actionBadgeLabel(action?: string): string {
   return map[action || ''] || actionLabel(action).toLowerCase();
 }
 
-function formatDate(value?: string): string {
+function formatDate(value?: string | null): string {
   if (!value) return 'дата не указана';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -207,6 +236,47 @@ function updateOverview(root: HTMLElement, data: AdminOverviewResponse): void {
       kpi(String(summary.events?.total ?? 0), 'событий всего'),
       kpi(String(summary.audit?.total ?? 0), 'событий аудита')
     ].join('');
+  }
+  updateHeaderBadge(root, 'данные из API', 'positive');
+}
+
+function updateUsers(root: HTMLElement, data: AdminUsersResponse): void {
+  const users = data.users ?? [];
+  const activeUsers = users.filter((user) => user.status === 'active').length;
+  const totalEntities = users.reduce((sum, user) => sum + Number(user.entity_count || 0), 0);
+  const totalAudit = users.reduce((sum, user) => sum + Number(user.audit_event_count || 0), 0);
+  const grid = root.querySelector<HTMLElement>('.bk-main-column .bk-kpi-grid');
+  if (grid) {
+    grid.innerHTML = [
+      kpi(String(users.length), 'пользователей из API'),
+      kpi(String(activeUsers), 'активных'),
+      kpi(String(totalEntities), 'связей с сущностями'),
+      kpi(String(totalAudit), 'событий аудита')
+    ].join('');
+  }
+
+  const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
+  const registryCard = cards.find((card) => card.textContent?.includes('Безопасные карточки поддержки'));
+  const list = registryCard?.querySelector<HTMLElement>('.bk-list');
+  if (list) {
+    list.innerHTML = users.length
+      ? users.slice(0, 30).map((user) => {
+          const title = user.display_name || user.handle || 'Пользователь без имени';
+          const handle = user.handle ? `@${user.handle}` : 'handle не указан';
+          const meta = `${handle} · создан ${formatDate(user.created_at)}`;
+          const details = [
+            `${Number(user.entity_count || 0)} сущностей`,
+            `${Number(user.owned_entity_count || 0)} владеет`,
+            `${Number(user.audit_event_count || 0)} записей аудита`
+          ];
+          const badges = [
+            { label: statusLabel(user.status), tone: statusTone(user.status) },
+            { label: user.verification?.source === 'not_connected_yet' ? 'верификация позже' : 'верификация' },
+            { label: user.security?.source === 'not_connected_yet' ? '2FA позже' : '2FA' }
+          ];
+          return listRow(title, meta, details, badges);
+        }).join('')
+      : listRow('Пользователи не найдены', 'API вернул пустой список пользователей.', [], [{ label: 'пусто' }]);
   }
   updateHeaderBadge(root, 'данные из API', 'positive');
 }
@@ -241,7 +311,7 @@ function updateEntities(root: HTMLElement, data: AdminEntitiesResponse): void {
               `${Number(entity.event_count || 0)} событий`,
               `${Number(entity.audit_event_count || 0)} записей аудита`
             ],
-            [{ label: statusLabel(entity.status), tone: statusTone(entity.status) }, { label: 'API только чтение' }]
+            [{ label: entityStatusLabel(entity.status), tone: statusTone(entity.status) }, { label: 'API только чтение' }]
           );
         }).join('')
       : listRow('Сущности не найдены', 'API вернул пустой список сущностей.', [], [{ label: 'пусто', tone: 'neutral' }]);
@@ -317,6 +387,7 @@ function updateAudit(root: HTMLElement, data: AdminAuditResponse): void {
 function applyCachedData(root: HTMLElement): void {
   const path = window.location.pathname;
   if (path === '/admin' && overviewCache?.ok) updateOverview(root, overviewCache);
+  if (path === '/admin/users' && usersCache?.ok) updateUsers(root, usersCache);
   if (path === '/admin/entities' && entitiesCache?.ok) updateEntities(root, entitiesCache);
   if (path === '/admin/reports' && reportsCache?.ok) updateReports(root, reportsCache);
   if (path === '/admin/audit' && auditCache?.ok) updateAudit(root, auditCache);
@@ -332,6 +403,19 @@ async function loadOverview(root: HTMLElement): Promise<void> {
     overviewCache = null;
   } finally {
     overviewLoading = false;
+  }
+}
+
+async function loadUsers(root: HTMLElement): Promise<void> {
+  if (usersCache || usersLoading) return;
+  usersLoading = true;
+  try {
+    usersCache = await fetchJson<AdminUsersResponse>(`${API_BASE}/users`);
+    applyCachedData(root);
+  } catch {
+    usersCache = null;
+  } finally {
+    usersLoading = false;
   }
 }
 
@@ -379,6 +463,7 @@ function hydrate(root: HTMLElement): void {
   window.requestAnimationFrame(() => {
     applyCachedData(root);
     if (window.location.pathname === '/admin') void loadOverview(root);
+    if (window.location.pathname === '/admin/users') void loadUsers(root);
     if (window.location.pathname === '/admin/entities') void loadEntities(root);
     if (window.location.pathname === '/admin/reports') void loadReports(root);
     if (window.location.pathname === '/admin/audit') void loadAudit(root);
