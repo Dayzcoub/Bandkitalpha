@@ -76,6 +76,27 @@ type AdminReportsResponse = {
   guardrails?: Record<string, boolean>;
 };
 
+type AdminModerationItem = {
+  id?: string;
+  title?: string;
+  queue?: string;
+  status?: string;
+  priority?: string;
+  created_at?: string;
+  subject?: string;
+};
+
+type AdminModerationResponse = {
+  ok?: boolean;
+  mode?: string;
+  generated_at?: string;
+  moderation_items?: AdminModerationItem[];
+  summary?: { total?: number; content?: number; messages?: number; profiles?: number; visibility?: number; source?: string };
+  queues?: string[];
+  decisions?: string[];
+  guardrails?: Record<string, boolean>;
+};
+
 type AdminAuditEvent = {
   id?: string;
   action?: string;
@@ -101,11 +122,13 @@ let overviewCache: AdminOverviewResponse | null = null;
 let usersCache: AdminUsersResponse | null = null;
 let entitiesCache: AdminEntitiesResponse | null = null;
 let reportsCache: AdminReportsResponse | null = null;
+let moderationCache: AdminModerationResponse | null = null;
 let auditCache: AdminAuditResponse | null = null;
 let overviewLoading = false;
 let usersLoading = false;
 let entitiesLoading = false;
 let reportsLoading = false;
+let moderationLoading = false;
 let auditLoading = false;
 
 function escapeHtml(value: string): string {
@@ -171,6 +194,27 @@ function priorityLabel(priority?: string): string {
     critical: 'критичный'
   };
   return map[priority || ''] || priority || 'обычный';
+}
+
+function queueLabel(queue?: string): string {
+  const map: Record<string, string> = {
+    content: 'контент',
+    reported_messages: 'сообщения по жалобе',
+    profiles: 'профили',
+    entity_visibility: 'видимость сущностей'
+  };
+  return map[queue || ''] || queue || 'очередь не указана';
+}
+
+function decisionLabel(decision?: string): string {
+  const map: Record<string, string> = {
+    hide: 'скрыть',
+    unpublish: 'снять с публикации',
+    restrict_messages: 'ограничить сообщения',
+    leave_unchanged: 'оставить без изменений',
+    escalate: 'эскалация'
+  };
+  return map[decision || ''] || decision || 'решение';
 }
 
 function entityTypeLabel(type?: string): string {
@@ -360,6 +404,43 @@ function updateReports(root: HTMLElement, data: AdminReportsResponse): void {
   updateHeaderBadge(root, 'данные из API', 'positive');
 }
 
+function updateModeration(root: HTMLElement, data: AdminModerationResponse): void {
+  const items = data.moderation_items ?? [];
+  const summary = data.summary ?? {};
+  const grid = root.querySelector<HTMLElement>('.bk-main-column .bk-kpi-grid');
+  if (grid) {
+    grid.innerHTML = [
+      kpi(String(summary.content ?? 0), 'контент'),
+      kpi(String(summary.messages ?? 0), 'сообщения'),
+      kpi(String(summary.profiles ?? 0), 'профили'),
+      kpi(String(summary.visibility ?? 0), 'видимость')
+    ].join('');
+  }
+
+  const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
+  const moderationCard = cards.find((card) => card.textContent?.includes('Очереди и допустимые решения'));
+  const list = moderationCard?.querySelector<HTMLElement>('.bk-list');
+  if (list) {
+    list.innerHTML = items.length
+      ? items.slice(0, 20).map((item) => listRow(
+          item.title || item.id || 'Объект модерации без названия',
+          `${queueLabel(item.queue)} · ${item.subject || 'объект не указан'} · ${formatDate(item.created_at)}`,
+          ['только чтение', 'без решений модерации'],
+          [{ label: statusLabel(item.status), tone: statusTone(item.status) }, { label: priorityLabel(item.priority) }]
+        )).join('')
+      : listRow('Очередь модерации пока не подключена', 'Контракт API готов, но источник moderation_items ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 объектов' }]);
+  }
+
+  const matrixCard = cards.find((card) => card.textContent?.includes('Матрица решения'));
+  const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
+  if (matrixChips) {
+    const decisions = data.decisions?.length ? data.decisions : ['hide', 'unpublish', 'restrict_messages', 'leave_unchanged', 'escalate'];
+    matrixChips.innerHTML = decisions.map((item) => badge(decisionLabel(item))).join('');
+  }
+
+  updateHeaderBadge(root, 'данные из API', 'positive');
+}
+
 function updateAudit(root: HTMLElement, data: AdminAuditResponse): void {
   const events = data.audit_events ?? [];
   const grid = root.querySelector<HTMLElement>('.bk-main-column .bk-kpi-grid');
@@ -401,6 +482,7 @@ function applyCachedData(root: HTMLElement): void {
   if (path === '/admin/users' && usersCache?.ok) updateUsers(root, usersCache);
   if (path === '/admin/entities' && entitiesCache?.ok) updateEntities(root, entitiesCache);
   if (path === '/admin/reports' && reportsCache?.ok) updateReports(root, reportsCache);
+  if (path === '/admin/moderation' && moderationCache?.ok) updateModeration(root, moderationCache);
   if (path === '/admin/audit' && auditCache?.ok) updateAudit(root, auditCache);
 }
 
@@ -456,6 +538,19 @@ async function loadReports(root: HTMLElement): Promise<void> {
   }
 }
 
+async function loadModeration(root: HTMLElement): Promise<void> {
+  if (moderationCache || moderationLoading) return;
+  moderationLoading = true;
+  try {
+    moderationCache = await fetchJson<AdminModerationResponse>(`${API_BASE}/moderation`);
+    applyCachedData(root);
+  } catch {
+    moderationCache = null;
+  } finally {
+    moderationLoading = false;
+  }
+}
+
 async function loadAudit(root: HTMLElement): Promise<void> {
   if (auditCache || auditLoading) return;
   auditLoading = true;
@@ -477,6 +572,7 @@ function hydrate(root: HTMLElement): void {
     if (window.location.pathname === '/admin/users') void loadUsers(root);
     if (window.location.pathname === '/admin/entities') void loadEntities(root);
     if (window.location.pathname === '/admin/reports') void loadReports(root);
+    if (window.location.pathname === '/admin/moderation') void loadModeration(root);
     if (window.location.pathname === '/admin/audit') void loadAudit(root);
   });
 }
