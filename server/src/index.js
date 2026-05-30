@@ -3,6 +3,7 @@ import { getEnv } from './config/env.js';
 import { handleAdminAudit, handleAdminEntities, handleAdminModeration, handleAdminOverview, handleAdminReports, handleAdminTrust, handleAdminUsers } from './modules/admin/admin.routes.js';
 import { handleAdminBilling } from './modules/admin/billing.routes.js';
 import { handleAdminContent } from './modules/admin/content.routes.js';
+import { handleAdminLocalization } from './modules/admin/localization.routes.js';
 import { handleListChatRooms } from './modules/chats/chats.routes.js';
 import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
 import { handleListDocuments } from './modules/documents/documents.routes.js';
@@ -67,6 +68,11 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/content`) {
         await handleAdminContent(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/localization`) {
+        await handleAdminLocalization(req, res);
         return;
       }
 
