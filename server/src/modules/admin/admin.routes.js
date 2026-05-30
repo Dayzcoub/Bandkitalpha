@@ -18,6 +18,15 @@ async function groupedCountQuery(client, sql, params = []) {
   }));
 }
 
+function mapActor(row) {
+  if (!row.actor_user_id) return null;
+  return {
+    id: row.actor_user_id,
+    display_name: row.actor_display_name || null,
+    handle: row.actor_handle || null
+  };
+}
+
 function mapEntity(row) {
   return {
     id: row.id,
@@ -39,6 +48,17 @@ function mapEntity(row) {
     event_count: Number(row.event_count || 0),
     audit_event_count: Number(row.audit_event_count || 0),
     platform_flags: []
+  };
+}
+
+function mapAuditEvent(row) {
+  return {
+    id: row.id,
+    action: row.action,
+    entity_id: row.entity_id || null,
+    created_at: row.created_at,
+    actor: mapActor(row),
+    metadata: row.metadata || {}
   };
 }
 
@@ -71,6 +91,7 @@ export async function handleAdminOverview(req, res) {
            ae.id,
            ae.action,
            ae.entity_id,
+           ae.metadata,
            ae.created_at,
            u.id as actor_user_id,
            u.display_name as actor_display_name,
@@ -110,19 +131,7 @@ export async function handleAdminOverview(req, res) {
         },
         audit: {
           total: auditEventsTotal,
-          recent: recentAuditResult.rows.map((row) => ({
-            id: row.id,
-            action: row.action,
-            entity_id: row.entity_id,
-            created_at: row.created_at,
-            actor: row.actor_user_id
-              ? {
-                  id: row.actor_user_id,
-                  display_name: row.actor_display_name || null,
-                  handle: row.actor_handle || null
-                }
-              : null
-          }))
+          recent: recentAuditResult.rows.map(mapAuditEvent)
         }
       },
       guardrails: {
@@ -183,6 +192,81 @@ export async function handleAdminEntities(req, res) {
     });
   } catch (error) {
     sendError(res, 500, 'ADMIN_ENTITIES_FAILED', 'Failed to load admin entities', {
+      message: error?.message || String(error)
+    });
+  }
+}
+
+export async function handleAdminReports(req, res) {
+  sendJson(res, 200, {
+    ok: true,
+    mode: 'read_only',
+    generated_at: nowIso(),
+    reports: [],
+    summary: {
+      total: 0,
+      open: 0,
+      high_priority: 0,
+      escalated: 0,
+      appeals: 0,
+      source: 'not_connected_yet'
+    },
+    workflow: ['new', 'in_review', 'needs_more_data', 'escalated', 'resolved', 'rejected', 'appealed'],
+    guardrails: {
+      write_actions_enabled: false,
+      moderation_decisions_enabled: false,
+      private_message_access_enabled: false,
+      user_restrictions_enabled: false
+    }
+  });
+}
+
+export async function handleAdminAudit(req, res) {
+  try {
+    const result = await getPool().query(
+      `select
+         ae.id,
+         ae.action,
+         ae.entity_id,
+         ae.metadata,
+         ae.created_at,
+         u.id as actor_user_id,
+         u.display_name as actor_display_name,
+         u.handle as actor_handle
+       from audit_events ae
+       left join users u on u.id = ae.actor_user_id
+       order by ae.created_at desc
+       limit 100`
+    );
+
+    const actionCounts = await getPool().query(
+      `select action as key, count(*)
+       from audit_events
+       group by action
+       order by count desc
+       limit 20`
+    );
+
+    sendJson(res, 200, {
+      ok: true,
+      mode: 'read_only',
+      generated_at: nowIso(),
+      audit_events: result.rows.map(mapAuditEvent),
+      summary: {
+        total_returned: result.rowCount,
+        by_action: actionCounts.rows.map((row) => ({
+          key: row.key,
+          count: Number(row.count || 0)
+        }))
+      },
+      guardrails: {
+        write_actions_enabled: false,
+        audit_mutation_enabled: false,
+        raw_sensitive_metadata_enabled: false
+      }
+    });
+  } catch (error) {
+    sendError(res, 500, 'ADMIN_AUDIT_FAILED', 'Failed to load admin audit', {
       message: error?.message || String(error)
     });
   }
