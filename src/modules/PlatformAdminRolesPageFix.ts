@@ -71,17 +71,35 @@ function patchSafeActions(root: HTMLElement): void {
   actions.innerHTML = ['Проверить матрицу', 'Открыть историю роли', 'Экспорт ролей'].map((label) => `<button class="bk-button bk-button-secondary" type="button">${escapeHtml(label)}</button>`).join('');
 }
 
+function patchActiveNavigation(root: HTMLElement): void {
+  root.querySelectorAll<HTMLElement>('.bk-nav-item').forEach((item) => {
+    const active = item.getAttribute('href') === ROLES_ROUTE;
+    item.classList.toggle('is-active', active);
+    if (active) item.setAttribute('aria-current', 'page');
+    else item.removeAttribute('aria-current');
+  });
+}
+
+function patchRightRail(root: HTMLElement): void {
+  const rail = root.querySelector<HTMLElement>('.bk-right-rail');
+  const modeTitle = rail?.querySelector<HTMLElement>('.bk-card strong');
+  if (modeTitle) modeTitle.textContent = 'Роли и доступы';
+}
+
 function patchRolesPage(root: HTMLElement): void {
   if (window.location.pathname !== ROLES_ROUTE) return;
   patchHeader(root);
   patchKpis(root);
   patchBoundary(root);
   patchSafeActions(root);
+  patchActiveNavigation(root);
+  patchRightRail(root);
 }
 
 function schedule(root: HTMLElement): void {
   window.requestAnimationFrame(() => patchRolesPage(root));
   window.setTimeout(() => patchRolesPage(root), 50);
+  window.setTimeout(() => patchRolesPage(root), 150);
 }
 
 export function initPlatformAdminRolesPageFix(root: HTMLElement): void {
