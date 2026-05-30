@@ -278,6 +278,17 @@ function updateUsers(root: HTMLElement, data: AdminUsersResponse): void {
         }).join('')
       : listRow('Пользователи не найдены', 'API вернул пустой список пользователей.', [], [{ label: 'пусто' }]);
   }
+
+  const boundaryCard = cards.find((card) => card.textContent?.includes('Операционная граница'));
+  const boundaryList = boundaryCard?.querySelector<HTMLElement>('.bk-list');
+  if (boundaryList) {
+    boundaryList.innerHTML = [
+      listRow('Только безопасный просмотр', 'Платформенная консоль показывает профильные статусы, связи и аудит без изменения пользовательских данных.', ['без write-actions', 'без приватных данных'], [{ label: 'OK', tone: 'positive' }]),
+      listRow('Критичные действия отдельно', 'Блокировки, сброс 2FA, смена ролей и доступ к чувствительным данным требуют отдельного серверного действия с причиной.', ['2FA', 'причина', 'аудит'], [{ label: 'РИСК', tone: 'warning' }]),
+      listRow('Граница аккаунта', 'Настройки пользователя остаются в настройках аккаунта; /admin не становится личным кабинетом пользователя.', ['настройки аккаунта отдельно'], [{ label: 'INFO' }])
+    ].join('');
+  }
+
   updateHeaderBadge(root, 'данные из API', 'positive');
 }
 
