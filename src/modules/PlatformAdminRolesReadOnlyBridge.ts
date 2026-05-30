@@ -41,7 +41,7 @@ function listRow(title: string, meta: string, details: string[], badges: Array<{
 
 function statusLabel(status?: string): string {
   const map: Record<string, string> = {
-    elevated: 'elevated',
+    elevated: 'повышенный доступ',
     staff: 'команда',
     case_limited: 'только по кейсу',
     scoped: 'ограничено областью'
@@ -86,7 +86,7 @@ function applyRoles(root: HTMLElement, data: AdminStaffCatalogResponse): void {
   if (grid) {
     grid.innerHTML = [
       kpi(String(summary.groups ?? 4), 'группы ролей команды'),
-      kpi('2FA', 'обязательно для elevated'),
+      kpi('2FA', 'обязательно для повышенного доступа'),
       kpi('Аудит', 'изменения логируются'),
       kpi(String(summary.scoped ?? 2), 'ограниченные области')
     ].join('');
