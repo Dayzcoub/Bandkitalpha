@@ -97,6 +97,27 @@ type AdminModerationResponse = {
   guardrails?: Record<string, boolean>;
 };
 
+type AdminTrustSignal = {
+  id?: string;
+  title?: string;
+  type?: string;
+  status?: string;
+  priority?: string;
+  created_at?: string;
+  subject?: string;
+};
+
+type AdminTrustResponse = {
+  ok?: boolean;
+  mode?: string;
+  generated_at?: string;
+  trust_signals?: AdminTrustSignal[];
+  summary?: { total?: number; link_risk?: number; spam?: number; suspicious_login?: number; rating_dispute?: number; source?: string };
+  signal_types?: string[];
+  policies?: string[];
+  guardrails?: Record<string, boolean>;
+};
+
 type AdminAuditEvent = {
   id?: string;
   action?: string;
@@ -123,12 +144,14 @@ let usersCache: AdminUsersResponse | null = null;
 let entitiesCache: AdminEntitiesResponse | null = null;
 let reportsCache: AdminReportsResponse | null = null;
 let moderationCache: AdminModerationResponse | null = null;
+let trustCache: AdminTrustResponse | null = null;
 let auditCache: AdminAuditResponse | null = null;
 let overviewLoading = false;
 let usersLoading = false;
 let entitiesLoading = false;
 let reportsLoading = false;
 let moderationLoading = false;
+let trustLoading = false;
 let auditLoading = false;
 
 function escapeHtml(value: string): string {
@@ -215,6 +238,25 @@ function decisionLabel(decision?: string): string {
     escalate: 'эскалация'
   };
   return map[decision || ''] || decision || 'решение';
+}
+
+function trustSignalLabel(type?: string): string {
+  const map: Record<string, string> = {
+    link_risk: 'риск внешних ссылок',
+    spam: 'спам-паттерн',
+    suspicious_login: 'подозрительный вход',
+    rating_dispute: 'спор по рейтингу'
+  };
+  return map[type || ''] || type || 'сигнал не указан';
+}
+
+function trustPolicyLabel(policy?: string): string {
+  const map: Record<string, string> = {
+    external_links: 'внешние ссылки',
+    new_account_limits: 'лимиты новых аккаунтов',
+    high_risk_actions: 'действия высокого риска'
+  };
+  return map[policy || ''] || policy || 'политика';
 }
 
 function entityTypeLabel(type?: string): string {
@@ -441,6 +483,54 @@ function updateModeration(root: HTMLElement, data: AdminModerationResponse): voi
   updateHeaderBadge(root, 'данные из API', 'positive');
 }
 
+function updateTrust(root: HTMLElement, data: AdminTrustResponse): void {
+  const signals = data.trust_signals ?? [];
+  const summary = data.summary ?? {};
+  const grid = root.querySelector<HTMLElement>('.bk-main-column .bk-kpi-grid');
+  if (grid) {
+    grid.innerHTML = [
+      kpi(String(summary.link_risk ?? 0), 'риск ссылок'),
+      kpi(String(summary.spam ?? 0), 'спам'),
+      kpi(String(summary.rating_dispute ?? 0), 'споры рейтинга'),
+      kpi(String(summary.suspicious_login ?? 0), 'подозрительные входы')
+    ].join('');
+  }
+
+  const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
+  const signalCard = cards.find((card) => card.textContent?.includes('Сигналы риска'));
+  const signalList = signalCard?.querySelector<HTMLElement>('.bk-list');
+  if (signalList) {
+    signalList.innerHTML = signals.length
+      ? signals.slice(0, 20).map((signal) => listRow(
+          signal.title || signal.id || 'Сигнал доверия без названия',
+          `${trustSignalLabel(signal.type)} · ${signal.subject || 'объект не указан'} · ${formatDate(signal.created_at)}`,
+          ['только чтение', 'без санкций'],
+          [{ label: statusLabel(signal.status), tone: statusTone(signal.status) }, { label: priorityLabel(signal.priority) }]
+        )).join('')
+      : listRow('Сигналы доверия пока не подключены', 'Контракт API готов, но источник trust_signals ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 сигналов' }]);
+  }
+
+  const policyCard = cards.find((card) => card.textContent?.includes('Правила, лимиты и ручные проверки'));
+  const policyList = policyCard?.querySelector<HTMLElement>('.bk-list');
+  if (policyList) {
+    const policies = data.policies?.length ? data.policies : ['external_links', 'new_account_limits', 'high_risk_actions'];
+    policyList.innerHTML = policies.map((policy) => listRow(
+      trustPolicyLabel(policy),
+      'Политика отображается только как read-only настройка будущего safety-контура.',
+      ['без автоматических санкций', 'без изменения рейтингов'],
+      [{ label: 'только чтение' }]
+    )).join('');
+  }
+
+  const matrixCard = cards.find((card) => card.textContent?.includes('Что можно будет делать из /admin/trust'));
+  const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
+  if (matrixChips) {
+    matrixChips.innerHTML = ['Проверить ссылки', 'Открыть риск-профиль', 'Ограничить сообщения', 'Запросить 2FA', 'Открыть спор рейтинга', 'Эскалация владельцу'].map((item) => badge(item)).join('');
+  }
+
+  updateHeaderBadge(root, 'данные из API', 'positive');
+}
+
 function updateAudit(root: HTMLElement, data: AdminAuditResponse): void {
   const events = data.audit_events ?? [];
   const grid = root.querySelector<HTMLElement>('.bk-main-column .bk-kpi-grid');
@@ -483,6 +573,7 @@ function applyCachedData(root: HTMLElement): void {
   if (path === '/admin/entities' && entitiesCache?.ok) updateEntities(root, entitiesCache);
   if (path === '/admin/reports' && reportsCache?.ok) updateReports(root, reportsCache);
   if (path === '/admin/moderation' && moderationCache?.ok) updateModeration(root, moderationCache);
+  if (path === '/admin/trust' && trustCache?.ok) updateTrust(root, trustCache);
   if (path === '/admin/audit' && auditCache?.ok) updateAudit(root, auditCache);
 }
 
@@ -551,6 +642,19 @@ async function loadModeration(root: HTMLElement): Promise<void> {
   }
 }
 
+async function loadTrust(root: HTMLElement): Promise<void> {
+  if (trustCache || trustLoading) return;
+  trustLoading = true;
+  try {
+    trustCache = await fetchJson<AdminTrustResponse>(`${API_BASE}/trust`);
+    applyCachedData(root);
+  } catch {
+    trustCache = null;
+  } finally {
+    trustLoading = false;
+  }
+}
+
 async function loadAudit(root: HTMLElement): Promise<void> {
   if (auditCache || auditLoading) return;
   auditLoading = true;
@@ -573,6 +677,7 @@ function hydrate(root: HTMLElement): void {
     if (window.location.pathname === '/admin/entities') void loadEntities(root);
     if (window.location.pathname === '/admin/reports') void loadReports(root);
     if (window.location.pathname === '/admin/moderation') void loadModeration(root);
+    if (window.location.pathname === '/admin/trust') void loadTrust(root);
     if (window.location.pathname === '/admin/audit') void loadAudit(root);
   });
 }
