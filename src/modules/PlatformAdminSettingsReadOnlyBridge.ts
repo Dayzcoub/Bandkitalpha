@@ -46,6 +46,10 @@ function listRow(title: string, meta: string, details: string[], badges: Array<{
   return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
 }
 
+function safeButton(label: string): string {
+  return `<button class="bk-button bk-button-secondary" type="button" data-admin-route="/admin/settings">${escapeHtml(label)}</button>`;
+}
+
 function statusLabel(status?: string): string {
   const map: Record<string, string> = {
     preview_only: 'только просмотр',
@@ -111,7 +115,10 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
   }
 
   const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
-  const flagsCard = cards.find((card) => card.textContent?.includes('Глобальные флаги') || card.textContent?.includes('Платформенные настройки'));
+  const flagsCard = cards.find((card) => {
+    const text = card.textContent || '';
+    return text.includes('Глобальные флаги') || text.includes('Платформенные настройки') || text.includes('Настройки платформы') || text.includes('Глобальные политики');
+  });
   const flagsList = flagsCard?.querySelector<HTMLElement>('.bk-list');
   if (flagsList) {
     const flags = data.platform_flags ?? [];
@@ -125,9 +132,12 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
       : listRow('Платформенные настройки пока не подключены', 'Контракт API готов, но источник settings_items ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 настроек' }]);
   }
 
-  const providersCard = cards.find((card) => card.textContent?.includes('Провайдеры') || card.textContent?.includes('Авторизация'));
+  const providersCard = cards.find((card) => {
+    const text = card.textContent || '';
+    return text.includes('Провайдеры') || text.includes('Авторизация') || text.includes('Регистрация и подтверждения');
+  });
   const providersList = providersCard?.querySelector<HTMLElement>('.bk-list');
-  if (providersList) {
+  if (providersList && providersCard !== flagsCard) {
     const providers = data.provider_scopes?.length ? data.provider_scopes : ['google', 'apple', 'email', 'sms'];
     providersList.innerHTML = providers.map((provider) => listRow(
       providerLabel(provider),
@@ -139,7 +149,10 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
 
   const operations = data.operation_types?.length ? data.operation_types : ['review_flags', 'check_2fa_policy', 'review_maintenance', 'review_providers', 'open_settings_audit'];
   const operationLabels = operations.map(operationLabel);
-  const matrixCard = cards.find((card) => card.textContent?.includes('Матрица') || card.textContent?.includes('Что можно делать из /admin/settings'));
+  const matrixCard = cards.find((card) => {
+    const text = card.textContent || '';
+    return text.includes('Матрица') || text.includes('Критичные настройки') || text.includes('Что можно делать из /admin/settings');
+  });
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
     matrixChips.innerHTML = operationLabels.map((item) => badge(item)).join('');
@@ -148,7 +161,7 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
   const safeActionsCard = cards.find((card) => card.querySelector('.bk-card-title')?.textContent?.trim() === 'Безопасные действия');
   const safeActionsRow = safeActionsCard?.querySelector<HTMLElement>('.bk-action-row');
   if (safeActionsRow) {
-    safeActionsRow.innerHTML = operationLabels.map((label) => `<button class="bk-button bk-button-secondary" type="button" data-admin-route="/admin/settings">${escapeHtml(label)}</button>`).join('');
+    safeActionsRow.innerHTML = operationLabels.map(safeButton).join('');
   }
 
   updateHeaderBadge(root);
