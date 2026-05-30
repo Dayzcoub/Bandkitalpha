@@ -123,7 +123,7 @@ function applyNotifications(root: HTMLElement, data: AdminNotificationsResponse)
     )).join('');
   }
 
-  const matrixCard = cards.find((card) => card.textContent?.includes('Что будет доступно из /admin/notifications'));
+  const matrixCard = cards.find((card) => card.textContent?.includes('Матрица отправки') || card.textContent?.includes('Что будет доступно из /admin/notifications'));
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
     const operations = data.operation_types?.length ? data.operation_types : ['review_queue', 'preview_template', 'check_delivery_status', 'audit_subscriptions'];
