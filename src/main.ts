@@ -2,6 +2,7 @@ import { createBandKitApp } from './app/App.js';
 import { initPlatformAdminConsole } from './modules/PlatformAdminConsole.js';
 import { initPlatformAdminReadOnlyDataBridge } from './modules/PlatformAdminReadOnlyDataBridge.js';
 import { initPlatformAdminBillingReadOnlyBridge } from './modules/PlatformAdminBillingReadOnlyBridge.js';
+import { initPlatformAdminContentReadOnlyBridge } from './modules/PlatformAdminContentReadOnlyBridge.js';
 import { initChatMessageControls } from './modules/ChatMessageControls.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 
@@ -14,5 +15,6 @@ createBandKitApp(root);
 initPlatformAdminConsole(root);
 initPlatformAdminReadOnlyDataBridge(root);
 initPlatformAdminBillingReadOnlyBridge(root);
+initPlatformAdminContentReadOnlyBridge(root);
 initChatMessageControls(root);
 initRealEntitiesPreview(root);
