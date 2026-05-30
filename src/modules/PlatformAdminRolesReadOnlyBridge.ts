@@ -1,3 +1,5 @@
+import { badge, findCardByText, kpi, listRow, markHeaderApiHydrated, safeButton, type AdminBridgeTone } from './PlatformAdminReadOnlyBridgeUi.js';
+
 type AdminStaffCatalogItem = {
   id?: string;
   title?: string;
@@ -20,25 +22,6 @@ const API_URL = '/api/v1/admin/roles';
 let cache: AdminStaffCatalogResponse | null = null;
 let loading = false;
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
-}
-
-function badge(label: string, tone: 'neutral' | 'positive' | 'warning' | 'danger' = 'neutral'): string {
-  const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
-  return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
-}
-
-function kpi(value: string, label: string): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
-}
-
-function listRow(title: string, meta: string, details: string[], badges: Array<{ label: string; tone?: 'neutral' | 'positive' | 'warning' | 'danger' }>): string {
-  const detailHtml = details.map((item) => badge(item)).join('');
-  const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
-}
-
 function statusLabel(status?: string): string {
   const map: Record<string, string> = {
     elevated: 'повышенный доступ',
@@ -49,7 +32,7 @@ function statusLabel(status?: string): string {
   return map[status || ''] || status || 'только чтение';
 }
 
-function statusTone(status?: string): 'neutral' | 'positive' | 'warning' | 'danger' {
+function statusTone(status?: string): AdminBridgeTone {
   if (status === 'elevated') return 'danger';
   if (status === 'staff') return 'warning';
   if (status === 'case_limited') return 'positive';
@@ -74,10 +57,7 @@ async function fetchRoles(): Promise<AdminStaffCatalogResponse | null> {
 }
 
 function updateHeaderBadge(root: HTMLElement): void {
-  const chipRow = root.querySelector<HTMLElement>('.bk-main-column .bk-page-header .bk-chip-row');
-  if (!chipRow || chipRow.dataset.adminRolesApiHydrated === 'true') return;
-  chipRow.insertAdjacentHTML('beforeend', badge('данные из API', 'positive'));
-  chipRow.dataset.adminRolesApiHydrated = 'true';
+  markHeaderApiHydrated(root, 'adminRolesApiHydrated');
 }
 
 function applyRoles(root: HTMLElement, data: AdminStaffCatalogResponse): void {
@@ -93,7 +73,7 @@ function applyRoles(root: HTMLElement, data: AdminStaffCatalogResponse): void {
   }
 
   const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
-  const catalogCard = cards.find((card) => card.textContent?.includes('Платформенная матрица команды'));
+  const catalogCard = findCardByText(cards, ['Платформенная матрица команды']);
   const catalogList = catalogCard?.querySelector<HTMLElement>('.bk-list');
   if (catalogList) {
     const items = data.items ?? [];
@@ -109,7 +89,7 @@ function applyRoles(root: HTMLElement, data: AdminStaffCatalogResponse): void {
 
   const operations = data.operation_types?.length ? data.operation_types : ['review_matrix', 'open_history', 'check_2fa_status', 'review_restrictions', 'export_matrix'];
   const operationLabels = operations.map(operationLabel);
-  const matrixCard = cards.find((card) => card.textContent?.includes('Матрица действий'));
+  const matrixCard = findCardByText(cards, ['Матрица действий']);
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
     matrixChips.innerHTML = operationLabels.map((item) => badge(item)).join('');
@@ -118,7 +98,7 @@ function applyRoles(root: HTMLElement, data: AdminStaffCatalogResponse): void {
   const safeActionsCard = cards.find((card) => card.querySelector('.bk-card-title')?.textContent?.trim() === 'Безопасные действия');
   const safeActionsRow = safeActionsCard?.querySelector<HTMLElement>('.bk-action-row');
   if (safeActionsRow) {
-    safeActionsRow.innerHTML = operationLabels.map((label) => `<button class="bk-button bk-button-secondary" type="button" data-admin-route="/admin/roles">${escapeHtml(label)}</button>`).join('');
+    safeActionsRow.innerHTML = operationLabels.map((label) => safeButton(label, '/admin/roles')).join('');
   }
 
   updateHeaderBadge(root);
