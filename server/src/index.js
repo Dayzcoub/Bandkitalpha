@@ -1,6 +1,6 @@
 import http from 'node:http';
 import { getEnv } from './config/env.js';
-import { handleAdminAudit, handleAdminEntities, handleAdminModeration, handleAdminOverview, handleAdminReports, handleAdminUsers } from './modules/admin/admin.routes.js';
+import { handleAdminAudit, handleAdminEntities, handleAdminModeration, handleAdminOverview, handleAdminReports, handleAdminTrust, handleAdminUsers } from './modules/admin/admin.routes.js';
 import { handleListChatRooms } from './modules/chats/chats.routes.js';
 import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
 import { handleListDocuments } from './modules/documents/documents.routes.js';
@@ -50,6 +50,11 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/moderation`) {
         await handleAdminModeration(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/trust`) {
+        await handleAdminTrust(req, res);
         return;
       }
 
