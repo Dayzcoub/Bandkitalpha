@@ -299,6 +299,33 @@ export async function handleAdminReports(req, res) {
   });
 }
 
+export async function handleAdminModeration(req, res) {
+  sendJson(res, 200, {
+    ok: true,
+    mode: 'read_only',
+    generated_at: nowIso(),
+    moderation_items: [],
+    summary: {
+      total: 0,
+      content: 0,
+      messages: 0,
+      profiles: 0,
+      visibility: 0,
+      source: 'not_connected_yet'
+    },
+    queues: ['content', 'reported_messages', 'profiles', 'entity_visibility'],
+    decisions: ['hide', 'unpublish', 'restrict_messages', 'leave_unchanged', 'escalate'],
+    guardrails: {
+      write_actions_enabled: false,
+      moderation_decisions_enabled: false,
+      content_mutation_enabled: false,
+      private_message_bulk_access_enabled: false,
+      user_restrictions_enabled: false,
+      entity_visibility_mutations_enabled: false
+    }
+  });
+}
+
 export async function handleAdminAudit(req, res) {
   try {
     const result = await getPool().query(
