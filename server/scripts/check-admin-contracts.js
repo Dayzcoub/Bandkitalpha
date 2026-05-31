@@ -5,6 +5,7 @@ import path from 'node:path';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const serverRoot = path.resolve(__dirname, '..');
 const ADMIN_API_PREFIX = '/api/v1/admin/';
+const EXPECTED_ADMIN_ENDPOINT_COUNT = 13;
 
 const ADMIN_ENDPOINTS = [
   { path: '/api/v1/admin/overview', file: 'src/modules/admin/admin.routes.js', handler: 'handleAdminOverview' },
@@ -60,6 +61,11 @@ function assert(condition, message) {
 function assertUniqueContracts() {
   const paths = new Set();
   const handlers = new Set();
+
+  assert(
+    ADMIN_ENDPOINTS.length === EXPECTED_ADMIN_ENDPOINT_COUNT,
+    `expected ${EXPECTED_ADMIN_ENDPOINT_COUNT} admin endpoints, got ${ADMIN_ENDPOINTS.length}`
+  );
 
   for (const endpoint of ADMIN_ENDPOINTS) {
     assert(endpoint.path.startsWith(ADMIN_API_PREFIX), `admin endpoint must use ${ADMIN_API_PREFIX} prefix: ${endpoint.path}`);
