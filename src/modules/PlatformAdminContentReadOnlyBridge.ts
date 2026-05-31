@@ -1,3 +1,5 @@
+import { badge, findCardByText, kpi, listRow, markHeaderApiHydrated } from './PlatformAdminReadOnlyBridgeUi.js';
+
 type AdminContentResponse = {
   ok?: boolean;
   mode?: string;
@@ -20,25 +22,6 @@ type AdminContentResponse = {
 const API_URL = '/api/v1/admin/content';
 let cache: AdminContentResponse | null = null;
 let loading = false;
-
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
-}
-
-function kpi(value: string, label: string): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
-}
-
-function badge(label: string, tone: 'neutral' | 'positive' | 'warning' | 'danger' = 'neutral'): string {
-  const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
-  return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
-}
-
-function listRow(title: string, meta: string, details: string[], badges: Array<{ label: string; tone?: 'neutral' | 'positive' | 'warning' | 'danger' }>): string {
-  const detailHtml = details.map((item) => badge(item)).join('');
-  const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
-}
 
 function scopeLabel(scope?: string): string {
   const map: Record<string, string> = {
@@ -69,10 +52,7 @@ async function fetchContent(): Promise<AdminContentResponse | null> {
 }
 
 function updateHeaderBadge(root: HTMLElement): void {
-  const chipRow = root.querySelector<HTMLElement>('.bk-main-column .bk-page-header .bk-chip-row');
-  if (!chipRow || chipRow.dataset.adminContentApiHydrated === 'true') return;
-  chipRow.insertAdjacentHTML('beforeend', badge('данные из API', 'positive'));
-  chipRow.dataset.adminContentApiHydrated = 'true';
+  markHeaderApiHydrated(root, 'adminContentApiHydrated');
 }
 
 function applyContent(root: HTMLElement, data: AdminContentResponse): void {
@@ -88,7 +68,7 @@ function applyContent(root: HTMLElement, data: AdminContentResponse): void {
   }
 
   const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
-  const contentCard = cards.find((card) => card.textContent?.includes('Лента, медиа и подборки'));
+  const contentCard = findCardByText(cards, ['Лента, медиа и подборки']);
   const contentList = contentCard?.querySelector<HTMLElement>('.bk-list');
   if (contentList) {
     const items = data.content_items ?? [];
@@ -102,7 +82,7 @@ function applyContent(root: HTMLElement, data: AdminContentResponse): void {
       : listRow('Контентные очереди пока не подключены', 'Контракт API готов, но источник content_items ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 объектов' }]);
   }
 
-  const policyCard = cards.find((card) => card.textContent?.includes('Правила и управляемые словари'));
+  const policyCard = findCardByText(cards, ['Правила и управляемые словари']);
   const policyList = policyCard?.querySelector<HTMLElement>('.bk-list');
   if (policyList) {
     const policies = data.policy_scopes?.length ? data.policy_scopes : ['categories', 'dictionaries', 'promo_surfaces'];
@@ -114,7 +94,7 @@ function applyContent(root: HTMLElement, data: AdminContentResponse): void {
     )).join('');
   }
 
-  const matrixCard = cards.find((card) => card.textContent?.includes('Что можно делать из /admin/content'));
+  const matrixCard = findCardByText(cards, ['Что можно делать из /admin/content']);
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
     const operations = data.operation_types?.length ? data.operation_types : ['review_feed', 'review_media', 'manage_collections', 'dictionary_review'];
