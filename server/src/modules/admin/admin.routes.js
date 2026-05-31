@@ -1,9 +1,6 @@
 import { getPool } from '../../db/client.js';
 import { sendError, sendJson } from '../../shared/http.js';
-
-function nowIso() {
-  return new Date().toISOString();
-}
+import { nowIso } from './admin.shared.js';
 
 async function countQuery(client, sql, params = []) {
   const result = await client.query(sql, params);
