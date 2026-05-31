@@ -1,8 +1,5 @@
 import { sendJson } from '../../shared/http.js';
-
-function nowIso() {
-  return new Date().toISOString();
-}
+import { nowIso } from './admin.shared.js';
 
 export async function handleAdminContent(req, res) {
   sendJson(res, 200, {
