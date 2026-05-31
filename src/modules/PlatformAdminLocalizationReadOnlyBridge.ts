@@ -1,3 +1,5 @@
+import { badge, findCardByText, kpi, listRow, markHeaderApiHydrated, type AdminBridgeTone } from './PlatformAdminReadOnlyBridgeUi.js';
+
 type LanguagePack = {
   code?: string;
   title?: string;
@@ -28,25 +30,6 @@ const API_URL = '/api/v1/admin/localization';
 let cache: AdminLocalizationResponse | null = null;
 let loading = false;
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
-}
-
-function kpi(value: string, label: string): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
-}
-
-function badge(label: string, tone: 'neutral' | 'positive' | 'warning' | 'danger' = 'neutral'): string {
-  const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
-  return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
-}
-
-function listRow(title: string, meta: string, details: string[], badges: Array<{ label: string; tone?: 'neutral' | 'positive' | 'warning' | 'danger' }>): string {
-  const detailHtml = details.map((item) => badge(item)).join('');
-  const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
-}
-
 function statusLabel(status?: string): string {
   const map: Record<string, string> = {
     active: 'активна',
@@ -57,7 +40,7 @@ function statusLabel(status?: string): string {
   return map[status || ''] || status || 'статус не указан';
 }
 
-function statusTone(status?: string): 'neutral' | 'positive' | 'warning' | 'danger' {
+function statusTone(status?: string): AdminBridgeTone {
   if (status === 'active') return 'positive';
   if (status === 'fallback' || status === 'planned') return 'warning';
   return 'neutral';
@@ -90,10 +73,7 @@ async function fetchLocalization(): Promise<AdminLocalizationResponse | null> {
 }
 
 function updateHeaderBadge(root: HTMLElement): void {
-  const chipRow = root.querySelector<HTMLElement>('.bk-main-column .bk-page-header .bk-chip-row');
-  if (!chipRow || chipRow.dataset.adminLocalizationApiHydrated === 'true') return;
-  chipRow.insertAdjacentHTML('beforeend', badge('данные из API', 'positive'));
-  chipRow.dataset.adminLocalizationApiHydrated = 'true';
+  markHeaderApiHydrated(root, 'adminLocalizationApiHydrated');
 }
 
 function applyLocalization(root: HTMLElement, data: AdminLocalizationResponse): void {
@@ -109,7 +89,7 @@ function applyLocalization(root: HTMLElement, data: AdminLocalizationResponse): 
   }
 
   const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
-  const localeCard = cards.find((card) => card.textContent?.includes('Языковые пакеты и ключи переводов'));
+  const localeCard = findCardByText(cards, ['Языковые пакеты и ключи переводов']);
   const localeList = localeCard?.querySelector<HTMLElement>('.bk-list');
   if (localeList) {
     const packs = data.language_packs ?? [];
@@ -123,7 +103,7 @@ function applyLocalization(root: HTMLElement, data: AdminLocalizationResponse): 
       : listRow('Языковые пакеты пока не подключены', 'Контракт API готов, но источник language_packs ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 пакетов' }]);
   }
 
-  const boundaryCard = cards.find((card) => card.textContent?.includes('Строки остаются в i18n JSON'));
+  const boundaryCard = findCardByText(cards, ['Строки остаются в i18n JSON']);
   const boundaryList = boundaryCard?.querySelector<HTMLElement>('.bk-list');
   if (boundaryList) {
     const namespaces = data.namespaces?.length ? data.namespaces : ['nav', 'admin', 'common', 'auth'];
@@ -135,7 +115,7 @@ function applyLocalization(root: HTMLElement, data: AdminLocalizationResponse): 
     )).join('');
   }
 
-  const operationsCard = cards.find((card) => card.textContent?.includes('Что будет доступно менеджеру переводов'));
+  const operationsCard = findCardByText(cards, ['Что будет доступно менеджеру переводов']);
   const operationChips = operationsCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (operationChips) {
     const operations = data.operation_types?.length ? data.operation_types : ['check_missing_keys', 'export_json', 'import_pack', 'compare_ru_en'];
