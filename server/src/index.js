@@ -18,6 +18,22 @@ import { logError, logInfo } from './shared/logger.js';
 
 const env = getEnv();
 
+const adminGetRoutes = [
+  { path: '/admin/overview', handler: handleAdminOverview },
+  { path: '/admin/users', handler: handleAdminUsers },
+  { path: '/admin/entities', handler: handleAdminEntities },
+  { path: '/admin/reports', handler: handleAdminReports },
+  { path: '/admin/moderation', handler: handleAdminModeration },
+  { path: '/admin/trust', handler: handleAdminTrust },
+  { path: '/admin/billing', handler: handleAdminBilling },
+  { path: '/admin/content', handler: handleAdminContent },
+  { path: '/admin/localization', handler: handleAdminLocalization },
+  { path: '/admin/notifications', handler: handleAdminNotifications },
+  { path: '/admin/roles', handler: handleAdminStaffCatalog },
+  { path: '/admin/settings', handler: handleAdminSettings },
+  { path: '/admin/audit', handler: handleAdminAudit }
+];
+
 const server = http.createServer((req, res) => {
   Promise.resolve()
     .then(async () => {
@@ -34,69 +50,12 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/overview`) {
-        await handleAdminOverview(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/users`) {
-        await handleAdminUsers(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/entities`) {
-        await handleAdminEntities(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/reports`) {
-        await handleAdminReports(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/moderation`) {
-        await handleAdminModeration(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/trust`) {
-        await handleAdminTrust(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/billing`) {
-        await handleAdminBilling(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/content`) {
-        await handleAdminContent(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/localization`) {
-        await handleAdminLocalization(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/notifications`) {
-        await handleAdminNotifications(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/roles`) {
-        await handleAdminStaffCatalog(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/settings`) {
-        await handleAdminSettings(req, res);
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/admin/audit`) {
-        await handleAdminAudit(req, res);
-        return;
+      if (req.method === 'GET') {
+        const adminRoute = adminGetRoutes.find((route) => url.pathname === `${env.apiPrefix}${route.path}`);
+        if (adminRoute) {
+          await adminRoute.handler(req, res);
+          return;
+        }
       }
 
       if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/dev/seed-demo`) {
