@@ -6,6 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const serverRoot = path.resolve(__dirname, '..');
 const ADMIN_API_PREFIX = '/api/v1/admin/';
 const ADMIN_ROUTE_FILE_PREFIX = 'src/modules/admin/';
+const ADMIN_ROUTE_FILE_SUFFIX = '.routes.js';
 const ADMIN_HANDLER_PREFIX = 'handleAdmin';
 const EXPECTED_ADMIN_ENDPOINT_PATHS = [
   '/api/v1/admin/overview',
@@ -94,6 +95,7 @@ function assertUniqueContracts() {
   for (const endpoint of ADMIN_ENDPOINTS) {
     assert(endpoint.path.startsWith(ADMIN_API_PREFIX), `admin endpoint must use ${ADMIN_API_PREFIX} prefix: ${endpoint.path}`);
     assert(endpoint.file.startsWith(ADMIN_ROUTE_FILE_PREFIX), `admin endpoint file must stay in ${ADMIN_ROUTE_FILE_PREFIX}: ${endpoint.file}`);
+    assert(endpoint.file.endsWith(ADMIN_ROUTE_FILE_SUFFIX), `admin endpoint file must be a route module ending with ${ADMIN_ROUTE_FILE_SUFFIX}: ${endpoint.file}`);
     assert(endpoint.handler.startsWith(ADMIN_HANDLER_PREFIX), `admin endpoint handler must start with ${ADMIN_HANDLER_PREFIX}: ${endpoint.handler}`);
     assertExpectedPath(endpoint.path);
     assert(!paths.has(endpoint.path), `duplicate endpoint path: ${endpoint.path}`);
