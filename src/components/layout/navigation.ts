@@ -34,13 +34,13 @@ export const adminNavItems: NavItem[] = [
   { path: '/admin/reports', labelKey: 'admin.reportsTitle', activeIcon: 'navAdminActive', inactiveIcon: 'badgeWarning', moderatorOnly: true },
   { path: '/admin/moderation', labelKey: 'admin.moderationTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', moderatorOnly: true },
   { path: '/admin/trust', labelKey: 'admin.trustTitle', activeIcon: 'navAdminActive', inactiveIcon: 'badgeWarning' },
-  { path: '/admin/billing', labelKey: 'admin.billingTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive', superAdminOnly: true },
+  { path: '/admin/billing', labelKey: 'admin.billingTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
   { path: '/admin/content', labelKey: 'admin.contentTitle', activeIcon: 'navFeedActive', inactiveIcon: 'navFeedInactive' },
-  { path: '/admin/roles', labelKey: 'admin.rolesTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', superAdminOnly: true },
+  { path: '/admin/roles', labelKey: 'admin.rolesTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive' },
   { path: '/admin/localization', labelKey: 'admin.localizationTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
   { path: '/admin/notifications', labelKey: 'admin.notificationsTitle', activeIcon: 'navNotificationsActive', inactiveIcon: 'navNotificationsInactive' },
   { path: '/admin/audit', labelKey: 'admin.auditTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
-  { path: '/admin/settings', labelKey: 'admin.settingsTitle', activeIcon: 'navSettingsActive', inactiveIcon: 'navSettingsInactive', superAdminOnly: true },
+  { path: '/admin/settings', labelKey: 'admin.settingsTitle', activeIcon: 'navSettingsActive', inactiveIcon: 'navSettingsInactive' },
 ];
 
 function filteredNavItems(ctx: AppContext, mode: 'app' | 'admin'): NavItem[] {
@@ -127,7 +127,7 @@ export function mobileMenuDrawer(ctx: AppContext, mode: 'app' | 'admin'): string
 
 export function topBar(ctx: AppContext): string {
   if (ctx.match.route.shell === 'admin') {
-    const settingsButton = hasRole(ctx.state, 'super_admin') ? `<button class="bk-button bk-button-secondary" data-route="/admin/settings">${ctx.t('admin.settingsTitle')}</button>` : '';
+    const settingsButton = hasRole(ctx.state, 'admin') ? `<button class="bk-button bk-button-secondary" data-route="/admin/settings">${ctx.t('admin.settingsTitle')}</button>` : '';
     return `<header class="bk-top-bar"><input class="bk-search" type="search" aria-label="${ctx.t('admin.searchLabel')}" placeholder="${ctx.t('admin.searchPlaceholder')}" /><div class="bk-top-actions"><button class="bk-button bk-button-primary" data-route="/admin/audit">${ctx.t('admin.openAudit')}</button>${settingsButton}<button class="bk-button bk-button-secondary" data-route="/feed">${ctx.t('admin.backToApp')}</button></div></header>`;
   }
   return `<header class="bk-top-bar"><input class="bk-search" type="search" aria-label="${ctx.t('common.search')}" placeholder="${ctx.t('common.searchPlaceholder')}" /><div class="bk-top-actions">${shellProfileBackButton(ctx, 'desktop')}<button class="bk-button bk-button-primary" data-route="/events/new">${ctx.t('events.create')}</button><button class="bk-button bk-button-secondary" data-route="/settings">${ctx.t('nav.settings')}</button><button class="bk-button bk-icon-button" data-route="/notifications" aria-label="${ctx.t('common.notifications')}"><img class="bk-nav-icon" src="${getAsset('navNotificationsInactive')}" alt="" /></button></div></header>`;
