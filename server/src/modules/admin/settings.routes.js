@@ -1,6 +1,8 @@
 import { sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+const SETTINGS_SOURCE_STATIC_POLICY_SEED = 'static_policy_seed';
+
 const SETTINGS_PLATFORM_FLAGS = [
   {
     key: 'registration_policy',
@@ -42,7 +44,7 @@ export async function handleAdminSettings(req, res) {
       two_factor: 'required_for_admins',
       maintenance: 'off',
       providers: 0,
-      source: 'static_policy_seed'
+      source: SETTINGS_SOURCE_STATIC_POLICY_SEED
     },
     platform_flags: SETTINGS_PLATFORM_FLAGS,
     provider_scopes: SETTINGS_PROVIDER_SCOPES,
