@@ -5,7 +5,21 @@ import path from 'node:path';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const serverRoot = path.resolve(__dirname, '..');
 const ADMIN_API_PREFIX = '/api/v1/admin/';
-const EXPECTED_ADMIN_ENDPOINT_COUNT = 13;
+const EXPECTED_ADMIN_ENDPOINT_PATHS = [
+  '/api/v1/admin/overview',
+  '/api/v1/admin/users',
+  '/api/v1/admin/entities',
+  '/api/v1/admin/reports',
+  '/api/v1/admin/moderation',
+  '/api/v1/admin/trust',
+  '/api/v1/admin/billing',
+  '/api/v1/admin/content',
+  '/api/v1/admin/localization',
+  '/api/v1/admin/notifications',
+  '/api/v1/admin/roles',
+  '/api/v1/admin/settings',
+  '/api/v1/admin/audit'
+];
 
 const ADMIN_ENDPOINTS = [
   { path: '/api/v1/admin/overview', file: 'src/modules/admin/admin.routes.js', handler: 'handleAdminOverview' },
@@ -58,17 +72,22 @@ function assert(condition, message) {
   if (!condition) fail(message);
 }
 
+function assertExpectedPath(path) {
+  assert(EXPECTED_ADMIN_ENDPOINT_PATHS.includes(path), `unexpected admin endpoint path: ${path}`);
+}
+
 function assertUniqueContracts() {
   const paths = new Set();
   const handlers = new Set();
 
   assert(
-    ADMIN_ENDPOINTS.length === EXPECTED_ADMIN_ENDPOINT_COUNT,
-    `expected ${EXPECTED_ADMIN_ENDPOINT_COUNT} admin endpoints, got ${ADMIN_ENDPOINTS.length}`
+    ADMIN_ENDPOINTS.length === EXPECTED_ADMIN_ENDPOINT_PATHS.length,
+    `expected ${EXPECTED_ADMIN_ENDPOINT_PATHS.length} admin endpoints, got ${ADMIN_ENDPOINTS.length}`
   );
 
   for (const endpoint of ADMIN_ENDPOINTS) {
     assert(endpoint.path.startsWith(ADMIN_API_PREFIX), `admin endpoint must use ${ADMIN_API_PREFIX} prefix: ${endpoint.path}`);
+    assertExpectedPath(endpoint.path);
     assert(!paths.has(endpoint.path), `duplicate endpoint path: ${endpoint.path}`);
     assert(!handlers.has(endpoint.handler), `duplicate endpoint handler: ${endpoint.handler}`);
     paths.add(endpoint.path);
