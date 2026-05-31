@@ -26,6 +26,8 @@ type AdminSettingsResponse = {
 };
 
 const API_URL = '/api/v1/admin/settings';
+const FALLBACK_PROVIDER_SCOPES = ['google', 'apple', 'email', 'sms'];
+const FALLBACK_OPERATION_TYPES = ['review_flags', 'check_2fa_policy', 'review_maintenance', 'review_providers', 'open_settings_audit'];
 let cache: AdminSettingsResponse | null = null;
 let loading = false;
 
@@ -108,7 +110,7 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
   const providersCard = findCardByText(cards, ['Провайдеры', 'Авторизация', 'Регистрация и подтверждения']);
   const providersList = providersCard?.querySelector<HTMLElement>('.bk-list');
   if (providersList && providersCard !== flagsCard) {
-    const providers = data.provider_scopes?.length ? data.provider_scopes : ['google', 'apple', 'email', 'sms'];
+    const providers = data.provider_scopes?.length ? data.provider_scopes : FALLBACK_PROVIDER_SCOPES;
     providersList.innerHTML = providers.map((provider) => listRow(
       providerLabel(provider),
       'Провайдер отображается только как read-only элемент будущей конфигурации.',
@@ -117,7 +119,7 @@ function applySettings(root: HTMLElement, data: AdminSettingsResponse): void {
     )).join('');
   }
 
-  const operations = data.operation_types?.length ? data.operation_types : ['review_flags', 'check_2fa_policy', 'review_maintenance', 'review_providers', 'open_settings_audit'];
+  const operations = data.operation_types?.length ? data.operation_types : FALLBACK_OPERATION_TYPES;
   const operationLabels = operations.map(operationLabel);
   const matrixCard = findCardByText(cards, ['Матрица', 'Критичные настройки', 'Что можно делать из /admin/settings']);
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
