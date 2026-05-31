@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const indexPath = path.join(root, 'server/src/index.js');
 const adminRouteFiles = [
   'server/src/modules/admin/admin.routes.js',
   'server/src/modules/admin/billing.routes.js',
@@ -27,6 +26,17 @@ const requiredAdminRoutes = [
   '/admin/roles',
   '/admin/settings',
   '/admin/audit'
+];
+
+const requiredFrontendInitializers = [
+  'initPlatformAdminConsole',
+  'initPlatformAdminReadOnlyDataBridge',
+  'initPlatformAdminBillingReadOnlyBridge',
+  'initPlatformAdminContentReadOnlyBridge',
+  'initPlatformAdminLocalizationReadOnlyBridge',
+  'initPlatformAdminNotificationsReadOnlyBridge',
+  'initPlatformAdminRolesReadOnlyBridge',
+  'initPlatformAdminSettingsReadOnlyBridge'
 ];
 
 const forbiddenWriteGuardrails = [
@@ -120,5 +130,13 @@ for (const routeFile of adminRouteFiles) {
   }
 }
 
+const frontendEntrySource = readFile('src/main.ts');
+assertIncludes(frontendEntrySource, 'const platformAdminInitializers:', 'platform admin frontend initializer registry');
+
+for (const initializer of requiredFrontendInitializers) {
+  assertIncludes(frontendEntrySource, initializer, 'platform admin frontend initializer');
+}
+
 console.log(`[OK] Admin route registry contains ${requiredAdminRoutes.length} read-only endpoints.`);
 console.log('[OK] Admin route files keep read-only mode and disabled write/sensitive guardrails.');
+console.log(`[OK] Frontend admin registry contains ${requiredFrontendInitializers.length} initializers.`);
