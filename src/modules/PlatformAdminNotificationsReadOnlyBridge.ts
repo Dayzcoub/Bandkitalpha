@@ -20,6 +20,8 @@ type AdminNotificationsResponse = {
 };
 
 const API_URL = '/api/v1/admin/notifications';
+const FALLBACK_TEMPLATE_SCOPES = ['system', 'security', 'moderation', 'billing', 'entity_activity'];
+const FALLBACK_OPERATION_TYPES = ['review_queue', 'preview_template', 'check_delivery_status', 'audit_subscriptions'];
 let cache: AdminNotificationsResponse | null = null;
 let loading = false;
 
@@ -94,7 +96,7 @@ function applyNotifications(root: HTMLElement, data: AdminNotificationsResponse)
   const templatesCard = findCardByText(cards, ['Шаблоны и каналы']);
   const templatesList = templatesCard?.querySelector<HTMLElement>('.bk-list');
   if (templatesList) {
-    const scopes = data.template_scopes?.length ? data.template_scopes : ['system', 'security', 'moderation', 'billing', 'entity_activity'];
+    const scopes = data.template_scopes?.length ? data.template_scopes : FALLBACK_TEMPLATE_SCOPES;
     templatesList.innerHTML = scopes.map((scope) => listRow(
       templateScopeLabel(scope),
       'Шаблон отображается только как read-only описание будущего notification-контура.',
@@ -103,7 +105,7 @@ function applyNotifications(root: HTMLElement, data: AdminNotificationsResponse)
     )).join('');
   }
 
-  const operations = data.operation_types?.length ? data.operation_types : ['review_queue', 'preview_template', 'check_delivery_status', 'audit_subscriptions'];
+  const operations = data.operation_types?.length ? data.operation_types : FALLBACK_OPERATION_TYPES;
   const operationLabels = operations.map(operationLabel);
   const matrixCard = findCardByText(cards, ['Матрица отправки', 'Что будет доступно из /admin/notifications']);
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
