@@ -2,6 +2,12 @@ import { getPool } from '../../db/client.js';
 import { sendError, sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+function errorDetails(error) {
+  return {
+    message: error?.message || String(error)
+  };
+}
+
 function mapCountRows(rows) {
   return rows.map((row) => ({
     key: row.key,
@@ -167,9 +173,7 @@ export async function handleAdminOverview(req, res) {
       }
     });
   } catch (error) {
-    sendError(res, 500, 'ADMIN_OVERVIEW_FAILED', 'Failed to load admin overview', {
-      message: error?.message || String(error)
-    });
+    sendError(res, 500, 'ADMIN_OVERVIEW_FAILED', 'Failed to load admin overview', errorDetails(error));
   } finally {
     client.release();
   }
@@ -221,9 +225,7 @@ export async function handleAdminUsers(req, res) {
       }
     });
   } catch (error) {
-    sendError(res, 500, 'ADMIN_USERS_FAILED', 'Failed to load admin users', {
-      message: error?.message || String(error)
-    });
+    sendError(res, 500, 'ADMIN_USERS_FAILED', 'Failed to load admin users', errorDetails(error));
   }
 }
 
@@ -267,9 +269,7 @@ export async function handleAdminEntities(req, res) {
       }
     });
   } catch (error) {
-    sendError(res, 500, 'ADMIN_ENTITIES_FAILED', 'Failed to load admin entities', {
-      message: error?.message || String(error)
-    });
+    sendError(res, 500, 'ADMIN_ENTITIES_FAILED', 'Failed to load admin entities', errorDetails(error));
   }
 }
 
@@ -393,8 +393,6 @@ export async function handleAdminAudit(req, res) {
       }
     });
   } catch (error) {
-    sendError(res, 500, 'ADMIN_AUDIT_FAILED', 'Failed to load admin audit', {
-      message: error?.message || String(error)
-    });
+    sendError(res, 500, 'ADMIN_AUDIT_FAILED', 'Failed to load admin audit', errorDetails(error));
   }
 }
