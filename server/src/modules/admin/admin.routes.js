@@ -180,8 +180,9 @@ export async function handleAdminOverview(req, res) {
 }
 
 export async function handleAdminUsers(req, res) {
+  const pool = getPool();
   try {
-    const result = await getPool().query(
+    const result = await pool.query(
       `select
          u.id,
          u.display_name,
@@ -200,7 +201,7 @@ export async function handleAdminUsers(req, res) {
        limit 100`
     );
 
-    const statusCounts = await getPool().query(
+    const statusCounts = await pool.query(
       `select coalesce(status, $$unknown$$) as key, count(*)
        from users
        group by key
@@ -352,8 +353,9 @@ export async function handleAdminTrust(req, res) {
 }
 
 export async function handleAdminAudit(req, res) {
+  const pool = getPool();
   try {
-    const result = await getPool().query(
+    const result = await pool.query(
       `select
          ae.id,
          ae.action,
@@ -369,7 +371,7 @@ export async function handleAdminAudit(req, res) {
        limit 100`
     );
 
-    const actionCounts = await getPool().query(
+    const actionCounts = await pool.query(
       `select action as key, count(*)
        from audit_events
        group by action
