@@ -93,6 +93,10 @@ function assertUniqueContracts() {
     paths.add(endpoint.path);
     handlers.add(endpoint.handler);
   }
+
+  for (const path of EXPECTED_ADMIN_ENDPOINT_PATHS) {
+    assert(paths.has(path), `missing expected admin endpoint path: ${path}`);
+  }
 }
 
 function readRouteFile(relativePath) {
