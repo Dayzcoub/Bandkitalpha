@@ -2,6 +2,13 @@ import { getPool } from '../../db/client.js';
 import { sendError, sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+function mapCountRows(rows) {
+  return rows.map((row) => ({
+    key: row.key,
+    count: Number(row.count || 0)
+  }));
+}
+
 async function countQuery(client, sql, params = []) {
   const result = await client.query(sql, params);
   return Number(result.rows[0]?.count || 0);
@@ -9,10 +16,7 @@ async function countQuery(client, sql, params = []) {
 
 async function groupedCountQuery(client, sql, params = []) {
   const result = await client.query(sql, params);
-  return result.rows.map((row) => ({
-    key: row.key,
-    count: Number(row.count || 0)
-  }));
+  return mapCountRows(result.rows);
 }
 
 function mapActor(row) {
@@ -206,10 +210,7 @@ export async function handleAdminUsers(req, res) {
       users: result.rows.map(mapUser),
       summary: {
         total_returned: result.rowCount,
-        by_status: statusCounts.rows.map((row) => ({
-          key: row.key,
-          count: Number(row.count || 0)
-        }))
+        by_status: mapCountRows(statusCounts.rows)
       },
       guardrails: {
         write_actions_enabled: false,
@@ -383,10 +384,7 @@ export async function handleAdminAudit(req, res) {
       audit_events: result.rows.map(mapAuditEvent),
       summary: {
         total_returned: result.rowCount,
-        by_action: actionCounts.rows.map((row) => ({
-          key: row.key,
-          count: Number(row.count || 0)
-        }))
+        by_action: mapCountRows(actionCounts.rows)
       },
       guardrails: {
         write_actions_enabled: false,
