@@ -5,6 +5,8 @@ export type AdminBridgeBadge = {
   tone?: AdminBridgeTone;
 };
 
+const LIST_ROW_AVATAR_SYMBOL = '◇';
+
 export function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
 }
@@ -21,7 +23,7 @@ export function kpi(value: string, label: string): string {
 export function listRow(title: string, meta: string, details: string[] = [], badges: AdminBridgeBadge[] = []): string {
   const detailHtml = details.map((item) => badge(item)).join('');
   const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
+  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">${LIST_ROW_AVATAR_SYMBOL}</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
 }
 
 export function safeButton(label: string, route: string): string {
