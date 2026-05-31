@@ -1,6 +1,8 @@
 import { sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+const LOCALIZATION_SOURCE_NOT_CONNECTED = 'not_connected_yet';
+
 const LOCALIZATION_LANGUAGE_PACKS = [
   {
     code: 'ru',
@@ -32,7 +34,7 @@ export async function handleAdminLocalization(req, res) {
       fallback: 'en',
       namespaces: 0,
       missing_keys: 0,
-      source: 'not_connected_yet'
+      source: LOCALIZATION_SOURCE_NOT_CONNECTED
     },
     language_packs: LOCALIZATION_LANGUAGE_PACKS,
     namespaces: LOCALIZATION_NAMESPACES,
