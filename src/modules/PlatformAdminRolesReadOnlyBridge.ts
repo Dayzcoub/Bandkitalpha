@@ -19,6 +19,7 @@ type AdminStaffCatalogResponse = {
 };
 
 const API_URL = '/api/v1/admin/roles';
+const FALLBACK_OPERATION_TYPES = ['review_matrix', 'open_history', 'check_2fa_status', 'review_restrictions', 'export_matrix'];
 let cache: AdminStaffCatalogResponse | null = null;
 let loading = false;
 
@@ -87,7 +88,7 @@ function applyRoles(root: HTMLElement, data: AdminStaffCatalogResponse): void {
       : listRow('Каталог ролей пока не подключён', 'Контракт API готов, но источник staff catalog ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 записей' }]);
   }
 
-  const operations = data.operation_types?.length ? data.operation_types : ['review_matrix', 'open_history', 'check_2fa_status', 'review_restrictions', 'export_matrix'];
+  const operations = data.operation_types?.length ? data.operation_types : FALLBACK_OPERATION_TYPES;
   const operationLabels = operations.map(operationLabel);
   const matrixCard = findCardByText(cards, ['Матрица действий']);
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
