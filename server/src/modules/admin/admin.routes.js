@@ -7,6 +7,9 @@ const MODERATION_QUEUES = ['content', 'reported_messages', 'profiles', 'entity_v
 const MODERATION_DECISIONS = ['hide', 'unpublish', 'restrict_messages', 'leave_unchanged', 'escalate'];
 const TRUST_SIGNAL_TYPES = ['link_risk', 'spam', 'suspicious_login', 'rating_dispute'];
 const TRUST_POLICIES = ['external_links', 'new_account_limits', 'high_risk_actions'];
+const ADMIN_RECENT_AUDIT_LIMIT = 5;
+const ADMIN_LIST_LIMIT = 100;
+const ADMIN_ACTION_COUNT_LIMIT = 20;
 
 function errorDetails(error) {
   return {
@@ -135,7 +138,7 @@ export async function handleAdminOverview(req, res) {
          from audit_events ae
          left join users u on u.id = ae.actor_user_id
          order by ae.created_at desc
-         limit 5`
+         limit ${ADMIN_RECENT_AUDIT_LIMIT}`
       ),
       groupedCountQuery(client, 'select coalesce(status, $$unknown$$) as key, count(*) from users group by key order by count desc'),
       groupedCountQuery(client, 'select coalesce(status, $$unknown$$) as key, count(*) from entities group by key order by count desc'),
@@ -204,7 +207,7 @@ export async function handleAdminUsers(req, res) {
        left join audit_events ae on ae.actor_user_id = u.id
        group by u.id
        order by u.created_at desc
-       limit 100`
+       limit ${ADMIN_LIST_LIMIT}`
     );
 
     const statusCounts = await pool.query(
@@ -262,7 +265,7 @@ export async function handleAdminEntities(req, res) {
        left join audit_events ae on ae.entity_id = e.id
        group by e.id, u.id
        order by e.created_at desc
-       limit 100`
+       limit ${ADMIN_LIST_LIMIT}`
     );
 
     sendJson(res, 200, {
@@ -375,7 +378,7 @@ export async function handleAdminAudit(req, res) {
        from audit_events ae
        left join users u on u.id = ae.actor_user_id
        order by ae.created_at desc
-       limit 100`
+       limit ${ADMIN_LIST_LIMIT}`
     );
 
     const actionCounts = await pool.query(
@@ -383,7 +386,7 @@ export async function handleAdminAudit(req, res) {
        from audit_events
        group by action
        order by count desc
-       limit 20`
+       limit ${ADMIN_ACTION_COUNT_LIMIT}`
     );
 
     sendJson(res, 200, {
