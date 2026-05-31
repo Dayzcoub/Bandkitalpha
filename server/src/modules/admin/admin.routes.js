@@ -231,8 +231,9 @@ export async function handleAdminUsers(req, res) {
 }
 
 export async function handleAdminEntities(req, res) {
+  const pool = getPool();
   try {
-    const result = await getPool().query(
+    const result = await pool.query(
       `select
          e.id,
          e.name,
