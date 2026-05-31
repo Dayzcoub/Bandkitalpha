@@ -15,14 +15,20 @@ if (!root) {
   throw new Error('BandKit root element was not found.');
 }
 
+const platformAdminInitializers: Array<(root: HTMLElement) => void> = [
+  initPlatformAdminConsole,
+  initPlatformAdminReadOnlyDataBridge,
+  initPlatformAdminBillingReadOnlyBridge,
+  initPlatformAdminContentReadOnlyBridge,
+  initPlatformAdminLocalizationReadOnlyBridge,
+  initPlatformAdminNotificationsReadOnlyBridge,
+  initPlatformAdminRolesReadOnlyBridge,
+  initPlatformAdminSettingsReadOnlyBridge
+];
+
 createBandKitApp(root);
-initPlatformAdminConsole(root);
-initPlatformAdminReadOnlyDataBridge(root);
-initPlatformAdminBillingReadOnlyBridge(root);
-initPlatformAdminContentReadOnlyBridge(root);
-initPlatformAdminLocalizationReadOnlyBridge(root);
-initPlatformAdminNotificationsReadOnlyBridge(root);
-initPlatformAdminRolesReadOnlyBridge(root);
-initPlatformAdminSettingsReadOnlyBridge(root);
+for (const initPlatformAdminModule of platformAdminInitializers) {
+  initPlatformAdminModule(root);
+}
 initChatMessageControls(root);
 initRealEntitiesPreview(root);
