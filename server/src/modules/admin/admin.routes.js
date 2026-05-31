@@ -2,6 +2,7 @@ import { getPool } from '../../db/client.js';
 import { sendError, sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+const ADMIN_SOURCE_NOT_CONNECTED = 'not_connected_yet';
 const REPORT_WORKFLOW = ['new', 'in_review', 'needs_more_data', 'escalated', 'resolved', 'rejected', 'appealed'];
 const MODERATION_QUEUES = ['content', 'reported_messages', 'profiles', 'entity_visibility'];
 const MODERATION_DECISIONS = ['hide', 'unpublish', 'restrict_messages', 'leave_unchanged', 'escalate'];
@@ -56,11 +57,11 @@ function mapUser(row) {
     verification: {
       email_verified: false,
       phone_verified: false,
-      source: 'not_connected_yet'
+      source: ADMIN_SOURCE_NOT_CONNECTED
     },
     security: {
       two_factor_enabled: false,
-      source: 'not_connected_yet'
+      source: ADMIN_SOURCE_NOT_CONNECTED
     },
     platform_flags: []
   };
@@ -166,7 +167,7 @@ export async function handleAdminOverview(req, res) {
         },
         reports: {
           open: reportsOpen,
-          source: 'not_connected_yet'
+          source: ADMIN_SOURCE_NOT_CONNECTED
         },
         audit: {
           total: auditEventsTotal,
@@ -296,7 +297,7 @@ export async function handleAdminReports(req, res) {
       high_priority: 0,
       escalated: 0,
       appeals: 0,
-      source: 'not_connected_yet'
+      source: ADMIN_SOURCE_NOT_CONNECTED
     },
     workflow: REPORT_WORKFLOW,
     guardrails: {
@@ -320,7 +321,7 @@ export async function handleAdminModeration(req, res) {
       messages: 0,
       profiles: 0,
       visibility: 0,
-      source: 'not_connected_yet'
+      source: ADMIN_SOURCE_NOT_CONNECTED
     },
     queues: MODERATION_QUEUES,
     decisions: MODERATION_DECISIONS,
@@ -347,7 +348,7 @@ export async function handleAdminTrust(req, res) {
       spam: 0,
       suspicious_login: 0,
       rating_dispute: 0,
-      source: 'not_connected_yet'
+      source: ADMIN_SOURCE_NOT_CONNECTED
     },
     signal_types: TRUST_SIGNAL_TYPES,
     policies: TRUST_POLICIES,
