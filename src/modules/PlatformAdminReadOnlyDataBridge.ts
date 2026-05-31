@@ -140,6 +140,10 @@ type AdminAuditResponse = {
 
 const ADMIN_ROOT = '/admin';
 const API_BASE = '/api/v1/admin';
+const FALLBACK_MODERATION_DECISIONS = ['hide', 'unpublish', 'restrict_messages', 'leave_unchanged', 'escalate'];
+const FALLBACK_TRUST_POLICIES = ['external_links', 'new_account_limits', 'high_risk_actions'];
+const TRUST_MATRIX_ACTIONS = ['Проверить ссылки', 'Открыть риск-профиль', 'Ограничить сообщения', 'Запросить 2FA', 'Открыть спор рейтинга', 'Эскалация владельцу'];
+const AUDIT_FILTERS = ['Оператор', 'Объект', 'Тип действия', 'Период', 'Роль', 'Риск-действия', 'Платежи', 'Модерация'];
 
 let overviewCache: AdminOverviewResponse | null = null;
 let usersCache: AdminUsersResponse | null = null;
@@ -459,7 +463,7 @@ function updateModeration(root: HTMLElement, data: AdminModerationResponse): voi
   const matrixCard = cards.find((card) => card.textContent?.includes('Матрица решения'));
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
-    const decisions = data.decisions?.length ? data.decisions : ['hide', 'unpublish', 'restrict_messages', 'leave_unchanged', 'escalate'];
+    const decisions = data.decisions?.length ? data.decisions : FALLBACK_MODERATION_DECISIONS;
     matrixChips.innerHTML = decisions.map((item) => badge(decisionLabel(item))).join('');
   }
 
@@ -496,7 +500,7 @@ function updateTrust(root: HTMLElement, data: AdminTrustResponse): void {
   const policyCard = cards.find((card) => card.textContent?.includes('Правила, лимиты и ручные проверки'));
   const policyList = policyCard?.querySelector<HTMLElement>('.bk-list');
   if (policyList) {
-    const policies = data.policies?.length ? data.policies : ['external_links', 'new_account_limits', 'high_risk_actions'];
+    const policies = data.policies?.length ? data.policies : FALLBACK_TRUST_POLICIES;
     policyList.innerHTML = policies.map((policy) => listRow(
       trustPolicyLabel(policy),
       'Политика отображается только как read-only настройка будущего safety-контура.',
@@ -508,7 +512,7 @@ function updateTrust(root: HTMLElement, data: AdminTrustResponse): void {
   const matrixCard = cards.find((card) => card.textContent?.includes('Что можно будет делать из /admin/trust'));
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
-    matrixChips.innerHTML = ['Проверить ссылки', 'Открыть риск-профиль', 'Ограничить сообщения', 'Запросить 2FA', 'Открыть спор рейтинга', 'Эскалация владельцу'].map((item) => badge(item)).join('');
+    matrixChips.innerHTML = TRUST_MATRIX_ACTIONS.map((item) => badge(item)).join('');
   }
 
   updateHeaderBadge(root, 'данные из API', 'positive');
@@ -543,7 +547,7 @@ function updateAudit(root: HTMLElement, data: AdminAuditResponse): void {
   const filterCard = cards.find((card) => card.textContent?.includes('Фильтры аудита'));
   const filterChips = filterCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (filterChips) {
-    filterChips.innerHTML = ['Оператор', 'Объект', 'Тип действия', 'Период', 'Роль', 'Риск-действия', 'Платежи', 'Модерация'].map((item) => badge(item)).join('');
+    filterChips.innerHTML = AUDIT_FILTERS.map((item) => badge(item)).join('');
   }
 
   updateHeaderBadge(root, 'данные из API', 'positive');
