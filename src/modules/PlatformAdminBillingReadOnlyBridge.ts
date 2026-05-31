@@ -1,3 +1,5 @@
+import { badge, findCardByText, kpi, listRow, markHeaderApiHydrated, type AdminBridgeTone } from './PlatformAdminReadOnlyBridgeUi.js';
+
 type BillingPlan = {
   key?: string;
   title?: string;
@@ -28,25 +30,6 @@ const API_URL = '/api/v1/admin/billing';
 let cache: AdminBillingResponse | null = null;
 let loading = false;
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
-}
-
-function kpi(value: string, label: string): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
-}
-
-function badge(label: string, tone: 'neutral' | 'positive' | 'warning' | 'danger' = 'neutral'): string {
-  const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
-  return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
-}
-
-function listRow(title: string, meta: string, details: string[], badges: Array<{ label: string; tone?: 'neutral' | 'positive' | 'warning' | 'danger' }>): string {
-  const detailHtml = details.map((item) => badge(item)).join('');
-  const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
-}
-
 function planStatusLabel(status?: string): string {
   const map: Record<string, string> = {
     active: 'активен',
@@ -57,7 +40,7 @@ function planStatusLabel(status?: string): string {
   return map[status || ''] || status || 'статус не указан';
 }
 
-function planStatusTone(status?: string): 'neutral' | 'positive' | 'warning' | 'danger' {
+function planStatusTone(status?: string): AdminBridgeTone {
   if (status === 'active') return 'positive';
   if (status === 'planned') return 'warning';
   if (status === 'archived') return 'danger';
@@ -80,10 +63,7 @@ async function fetchBilling(): Promise<AdminBillingResponse | null> {
 }
 
 function updateHeaderBadge(root: HTMLElement): void {
-  const chipRow = root.querySelector<HTMLElement>('.bk-main-column .bk-page-header .bk-chip-row');
-  if (!chipRow || chipRow.dataset.adminBillingApiHydrated === 'true') return;
-  chipRow.insertAdjacentHTML('beforeend', badge('данные из API', 'positive'));
-  chipRow.dataset.adminBillingApiHydrated = 'true';
+  markHeaderApiHydrated(root, 'adminBillingApiHydrated');
 }
 
 function applyBilling(root: HTMLElement, data: AdminBillingResponse): void {
@@ -99,7 +79,7 @@ function applyBilling(root: HTMLElement, data: AdminBillingResponse): void {
   }
 
   const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
-  const catalogCard = cards.find((card) => card.textContent?.includes('Коммерческий контур платформы'));
+  const catalogCard = findCardByText(cards, ['Коммерческий контур платформы']);
   const catalogList = catalogCard?.querySelector<HTMLElement>('.bk-list');
   if (catalogList) {
     const plans = data.plan_catalog ?? [];
@@ -113,7 +93,7 @@ function applyBilling(root: HTMLElement, data: AdminBillingResponse): void {
       : listRow('Каталог тарифов пока не подключён', 'Контракт API готов, но источник тарифов ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 тарифов' }]);
   }
 
-  const operationsCard = cards.find((card) => card.textContent?.includes('Только через аудит и причину'));
+  const operationsCard = findCardByText(cards, ['Только через аудит и причину']);
   const operationsList = operationsCard?.querySelector<HTMLElement>('.bk-list');
   if (operationsList) {
     const operations = data.operation_types?.length ? data.operation_types : ['manual_access', 'refunds', 'promocodes'];
@@ -125,7 +105,7 @@ function applyBilling(root: HTMLElement, data: AdminBillingResponse): void {
     )).join('');
   }
 
-  const matrixCard = cards.find((card) => card.textContent?.includes('Что будет доступно владельцу'));
+  const matrixCard = findCardByText(cards, ['Что будет доступно владельцу']);
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
     matrixChips.innerHTML = ['Просмотреть тарифы', 'Открыть подписки', 'Проверить возврат', 'Открыть аудит', 'Промокоды позже'].map((item) => badge(item)).join('');
