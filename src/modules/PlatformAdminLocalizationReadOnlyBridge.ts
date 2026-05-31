@@ -27,6 +27,8 @@ type AdminLocalizationResponse = {
 };
 
 const API_URL = '/api/v1/admin/localization';
+const FALLBACK_NAMESPACES = ['nav', 'admin', 'common', 'auth'];
+const FALLBACK_OPERATION_TYPES = ['check_missing_keys', 'export_json', 'import_pack', 'compare_ru_en'];
 let cache: AdminLocalizationResponse | null = null;
 let loading = false;
 
@@ -106,7 +108,7 @@ function applyLocalization(root: HTMLElement, data: AdminLocalizationResponse): 
   const boundaryCard = findCardByText(cards, ['Строки остаются в i18n JSON']);
   const boundaryList = boundaryCard?.querySelector<HTMLElement>('.bk-list');
   if (boundaryList) {
-    const namespaces = data.namespaces?.length ? data.namespaces : ['nav', 'admin', 'common', 'auth'];
+    const namespaces = data.namespaces?.length ? data.namespaces : FALLBACK_NAMESPACES;
     boundaryList.innerHTML = namespaces.map((namespace) => listRow(
       namespaceLabel(namespace),
       'Namespace отображается только как read-only область будущего i18n tooling.',
@@ -118,7 +120,7 @@ function applyLocalization(root: HTMLElement, data: AdminLocalizationResponse): 
   const operationsCard = findCardByText(cards, ['Что будет доступно менеджеру переводов']);
   const operationChips = operationsCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (operationChips) {
-    const operations = data.operation_types?.length ? data.operation_types : ['check_missing_keys', 'export_json', 'import_pack', 'compare_ru_en'];
+    const operations = data.operation_types?.length ? data.operation_types : FALLBACK_OPERATION_TYPES;
     operationChips.innerHTML = operations.map((item) => badge(operationLabel(item))).join('');
   }
 
