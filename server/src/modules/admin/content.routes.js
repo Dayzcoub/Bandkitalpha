@@ -1,6 +1,10 @@
 import { sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+const CONTENT_SCOPES = ['feed', 'media', 'collections', 'categories'];
+const CONTENT_POLICY_SCOPES = ['categories', 'dictionaries', 'promo_surfaces'];
+const CONTENT_OPERATION_TYPES = ['review_feed', 'review_media', 'manage_collections', 'dictionary_review'];
+
 export async function handleAdminContent(req, res) {
   sendJson(res, 200, {
     ok: true,
@@ -15,9 +19,9 @@ export async function handleAdminContent(req, res) {
       categories: 0,
       source: 'not_connected_yet'
     },
-    content_scopes: ['feed', 'media', 'collections', 'categories'],
-    policy_scopes: ['categories', 'dictionaries', 'promo_surfaces'],
-    operation_types: ['review_feed', 'review_media', 'manage_collections', 'dictionary_review'],
+    content_scopes: CONTENT_SCOPES,
+    policy_scopes: CONTENT_POLICY_SCOPES,
+    operation_types: CONTENT_OPERATION_TYPES,
     guardrails: {
       write_actions_enabled: false,
       post_mutations_enabled: false,
