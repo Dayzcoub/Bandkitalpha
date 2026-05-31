@@ -1,3 +1,5 @@
+import { badge, findCardByText, kpi, listRow, markHeaderApiHydrated, safeButton } from './PlatformAdminReadOnlyBridgeUi.js';
+
 type AdminNotificationsResponse = {
   ok?: boolean;
   mode?: string;
@@ -20,29 +22,6 @@ type AdminNotificationsResponse = {
 const API_URL = '/api/v1/admin/notifications';
 let cache: AdminNotificationsResponse | null = null;
 let loading = false;
-
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
-}
-
-function kpi(value: string, label: string): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
-}
-
-function badge(label: string, tone: 'neutral' | 'positive' | 'warning' | 'danger' = 'neutral'): string {
-  const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
-  return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
-}
-
-function safeButton(label: string): string {
-  return `<button class="bk-button bk-button-secondary" type="button" data-admin-route="/admin/notifications">${escapeHtml(label)}</button>`;
-}
-
-function listRow(title: string, meta: string, details: string[], badges: Array<{ label: string; tone?: 'neutral' | 'positive' | 'warning' | 'danger' }>): string {
-  const detailHtml = details.map((item) => badge(item)).join('');
-  const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
-}
 
 function channelLabel(channel?: string): string {
   const map: Record<string, string> = {
@@ -82,10 +61,7 @@ async function fetchNotifications(): Promise<AdminNotificationsResponse | null> 
 }
 
 function updateHeaderBadge(root: HTMLElement): void {
-  const chipRow = root.querySelector<HTMLElement>('.bk-main-column .bk-page-header .bk-chip-row');
-  if (!chipRow || chipRow.dataset.adminNotificationsApiHydrated === 'true') return;
-  chipRow.insertAdjacentHTML('beforeend', badge('данные из API', 'positive'));
-  chipRow.dataset.adminNotificationsApiHydrated = 'true';
+  markHeaderApiHydrated(root, 'adminNotificationsApiHydrated');
 }
 
 function applyNotifications(root: HTMLElement, data: AdminNotificationsResponse): void {
@@ -101,7 +77,7 @@ function applyNotifications(root: HTMLElement, data: AdminNotificationsResponse)
   }
 
   const cards = Array.from(root.querySelectorAll<HTMLElement>('.bk-main-column .bk-card'));
-  const queueCard = cards.find((card) => card.textContent?.includes('Уведомления и рассылки'));
+  const queueCard = findCardByText(cards, ['Уведомления и рассылки']);
   const queueList = queueCard?.querySelector<HTMLElement>('.bk-list');
   if (queueList) {
     const items = data.notification_items ?? [];
@@ -115,7 +91,7 @@ function applyNotifications(root: HTMLElement, data: AdminNotificationsResponse)
       : listRow('Очередь уведомлений пока не подключена', 'Контракт API готов, но источник notification_items ещё не подключён к базе.', ['источник не подключён'], [{ label: '0 уведомлений' }]);
   }
 
-  const templatesCard = cards.find((card) => card.textContent?.includes('Шаблоны и каналы'));
+  const templatesCard = findCardByText(cards, ['Шаблоны и каналы']);
   const templatesList = templatesCard?.querySelector<HTMLElement>('.bk-list');
   if (templatesList) {
     const scopes = data.template_scopes?.length ? data.template_scopes : ['system', 'security', 'moderation', 'billing', 'entity_activity'];
@@ -129,7 +105,7 @@ function applyNotifications(root: HTMLElement, data: AdminNotificationsResponse)
 
   const operations = data.operation_types?.length ? data.operation_types : ['review_queue', 'preview_template', 'check_delivery_status', 'audit_subscriptions'];
   const operationLabels = operations.map(operationLabel);
-  const matrixCard = cards.find((card) => card.textContent?.includes('Матрица отправки') || card.textContent?.includes('Что будет доступно из /admin/notifications'));
+  const matrixCard = findCardByText(cards, ['Матрица отправки', 'Что будет доступно из /admin/notifications']);
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
     matrixChips.innerHTML = operationLabels.map((item) => badge(item)).join('');
@@ -138,7 +114,7 @@ function applyNotifications(root: HTMLElement, data: AdminNotificationsResponse)
   const safeActionsCard = cards.find((card) => card.querySelector('.bk-card-title')?.textContent?.trim() === 'Безопасные действия');
   const safeActionsRow = safeActionsCard?.querySelector<HTMLElement>('.bk-action-row');
   if (safeActionsRow) {
-    safeActionsRow.innerHTML = operationLabels.map((item) => safeButton(item)).join('');
+    safeActionsRow.innerHTML = operationLabels.map((item) => safeButton(item, '/admin/notifications')).join('');
   }
 
   updateHeaderBadge(root);
