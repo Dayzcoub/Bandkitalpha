@@ -27,6 +27,7 @@ type AdminBillingResponse = {
 };
 
 const API_URL = '/api/v1/admin/billing';
+const FALLBACK_OPERATION_TYPES = ['manual_access', 'refunds', 'promocodes'];
 let cache: AdminBillingResponse | null = null;
 let loading = false;
 
@@ -96,7 +97,7 @@ function applyBilling(root: HTMLElement, data: AdminBillingResponse): void {
   const operationsCard = findCardByText(cards, ['Только через аудит и причину']);
   const operationsList = operationsCard?.querySelector<HTMLElement>('.bk-list');
   if (operationsList) {
-    const operations = data.operation_types?.length ? data.operation_types : ['manual_access', 'refunds', 'promocodes'];
+    const operations = data.operation_types?.length ? data.operation_types : FALLBACK_OPERATION_TYPES;
     operationsList.innerHTML = operations.map((operation) => listRow(
       operationLabel(operation),
       'Операция пока доступна только как read-only описание будущего коммерческого контура.',
