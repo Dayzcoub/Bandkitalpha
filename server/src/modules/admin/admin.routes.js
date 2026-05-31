@@ -2,6 +2,12 @@ import { getPool } from '../../db/client.js';
 import { sendError, sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+const REPORT_WORKFLOW = ['new', 'in_review', 'needs_more_data', 'escalated', 'resolved', 'rejected', 'appealed'];
+const MODERATION_QUEUES = ['content', 'reported_messages', 'profiles', 'entity_visibility'];
+const MODERATION_DECISIONS = ['hide', 'unpublish', 'restrict_messages', 'leave_unchanged', 'escalate'];
+const TRUST_SIGNAL_TYPES = ['link_risk', 'spam', 'suspicious_login', 'rating_dispute'];
+const TRUST_POLICIES = ['external_links', 'new_account_limits', 'high_risk_actions'];
+
 function errorDetails(error) {
   return {
     message: error?.message || String(error)
@@ -289,7 +295,7 @@ export async function handleAdminReports(req, res) {
       appeals: 0,
       source: 'not_connected_yet'
     },
-    workflow: ['new', 'in_review', 'needs_more_data', 'escalated', 'resolved', 'rejected', 'appealed'],
+    workflow: REPORT_WORKFLOW,
     guardrails: {
       write_actions_enabled: false,
       moderation_decisions_enabled: false,
@@ -313,8 +319,8 @@ export async function handleAdminModeration(req, res) {
       visibility: 0,
       source: 'not_connected_yet'
     },
-    queues: ['content', 'reported_messages', 'profiles', 'entity_visibility'],
-    decisions: ['hide', 'unpublish', 'restrict_messages', 'leave_unchanged', 'escalate'],
+    queues: MODERATION_QUEUES,
+    decisions: MODERATION_DECISIONS,
     guardrails: {
       write_actions_enabled: false,
       moderation_decisions_enabled: false,
@@ -340,8 +346,8 @@ export async function handleAdminTrust(req, res) {
       rating_dispute: 0,
       source: 'not_connected_yet'
     },
-    signal_types: ['link_risk', 'spam', 'suspicious_login', 'rating_dispute'],
-    policies: ['external_links', 'new_account_limits', 'high_risk_actions'],
+    signal_types: TRUST_SIGNAL_TYPES,
+    policies: TRUST_POLICIES,
     guardrails: {
       write_actions_enabled: false,
       sanctions_enabled: false,
