@@ -1,10 +1,11 @@
 import { sendJson } from '../../shared/http.js';
+import { nowIso } from './admin.shared.js';
 
 export async function handleAdminStaffCatalog(req, res) {
   sendJson(res, 200, {
     ok: true,
     mode: 'read_only',
-    generated_at: new Date().toISOString(),
+    generated_at: nowIso(),
     items: [
       {
         id: 'platform-owner',
