@@ -10,12 +10,14 @@ import { initPlatformAdminSettingsReadOnlyBridge } from './modules/PlatformAdmin
 import { initChatMessageControls } from './modules/ChatMessageControls.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 
+type AppRootInitializer = (root: HTMLElement) => void;
+
 const root = document.getElementById('app');
 if (!root) {
   throw new Error('BandKit root element was not found.');
 }
 
-const platformAdminInitializers: Array<(root: HTMLElement) => void> = [
+const platformAdminInitializers: AppRootInitializer[] = [
   initPlatformAdminConsole,
   initPlatformAdminReadOnlyDataBridge,
   initPlatformAdminBillingReadOnlyBridge,
