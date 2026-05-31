@@ -1,3 +1,5 @@
+import { badge, kpi, listRow, type AdminBridgeTone } from './PlatformAdminReadOnlyBridgeUi.js';
+
 type AdminOverviewResponse = {
   ok?: boolean;
   mode?: string;
@@ -154,32 +156,13 @@ let moderationLoading = false;
 let trustLoading = false;
 let auditLoading = false;
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
-}
-
 async function fetchJson<T>(url: string): Promise<T | null> {
   const response = await fetch(url, { headers: { accept: 'application/json' }, cache: 'no-store' });
   if (!response.ok) return null;
   return response.json() as Promise<T>;
 }
 
-function kpi(value: string, label: string): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(value)}</div><div class="bk-kpi-label">${escapeHtml(label)}</div></div>`;
-}
-
-function badge(label: string, tone: 'neutral' | 'positive' | 'warning' | 'danger' = 'neutral'): string {
-  const toneClass = tone === 'neutral' ? '' : ` bk-badge-${tone}`;
-  return `<span class="bk-badge${toneClass}">${escapeHtml(label)}</span>`;
-}
-
-function listRow(title: string, meta: string, details: string[], badges: Array<{ label: string; tone?: 'neutral' | 'positive' | 'warning' | 'danger' }>): string {
-  const detailHtml = details.map((item) => badge(item)).join('');
-  const badgeHtml = badges.map((item) => badge(item.label, item.tone)).join('');
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(title)}</div><div class="bk-meta">${escapeHtml(meta)}</div>${detailHtml ? `<div class="bk-chip-row">${detailHtml}</div>` : ''}</div>${badgeHtml ? `<div class="bk-chip-row">${badgeHtml}</div>` : ''}</div>`;
-}
-
-function statusTone(status?: string | null): 'neutral' | 'positive' | 'warning' | 'danger' {
+function statusTone(status?: string | null): AdminBridgeTone {
   if (status === 'active' || status === 'resolved') return 'positive';
   if (status === 'suspended' || status === 'blocked' || status === 'rejected') return 'danger';
   if (status === 'pending' || status === 'review' || status === 'in_review' || status === 'new' || status === 'escalated') return 'warning';
@@ -305,7 +288,7 @@ function formatDate(value?: string | null): string {
   return date.toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
 }
 
-function updateHeaderBadge(root: HTMLElement, text: string, tone: 'neutral' | 'positive' | 'warning' | 'danger' = 'positive'): void {
+function updateHeaderBadge(root: HTMLElement, text: string, tone: AdminBridgeTone = 'positive'): void {
   const chipRow = root.querySelector<HTMLElement>('.bk-main-column .bk-page-header .bk-chip-row');
   if (!chipRow || chipRow.dataset.adminApiHydrated === 'true') return;
   chipRow.insertAdjacentHTML('beforeend', badge(text, tone));
