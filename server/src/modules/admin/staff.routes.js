@@ -1,6 +1,7 @@
 import { sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+const STAFF_SOURCE_STATIC_POLICY_SEED = 'static_policy_seed';
 const STAFF_OPERATION_TYPES = ['review_matrix', 'open_history', 'check_2fa_status', 'review_restrictions', 'export_matrix'];
 
 export async function handleAdminStaffCatalog(req, res) {
@@ -42,7 +43,7 @@ export async function handleAdminStaffCatalog(req, res) {
       groups: 4,
       elevated: 1,
       scoped: 2,
-      source: 'static_policy_seed'
+      source: STAFF_SOURCE_STATIC_POLICY_SEED
     },
     operation_types: STAFF_OPERATION_TYPES,
     guardrails: {
