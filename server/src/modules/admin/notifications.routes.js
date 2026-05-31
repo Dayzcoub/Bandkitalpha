@@ -1,6 +1,7 @@
 import { sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+const NOTIFICATION_SOURCE_NOT_CONNECTED = 'not_connected_yet';
 const NOTIFICATION_CHANNELS = ['push', 'email', 'sms', 'in_app'];
 const NOTIFICATION_TEMPLATE_SCOPES = ['system', 'security', 'moderation', 'billing', 'entity_activity'];
 const NOTIFICATION_OPERATION_TYPES = ['review_queue', 'preview_template', 'check_delivery_status', 'audit_subscriptions'];
@@ -17,7 +18,7 @@ export async function handleAdminNotifications(req, res) {
       email: 0,
       sms: 0,
       templates: 0,
-      source: 'not_connected_yet'
+      source: NOTIFICATION_SOURCE_NOT_CONNECTED
     },
     channels: NOTIFICATION_CHANNELS,
     template_scopes: NOTIFICATION_TEMPLATE_SCOPES,
