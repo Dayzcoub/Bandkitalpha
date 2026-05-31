@@ -21,7 +21,32 @@ const ADMIN_ENDPOINTS = [
   { path: '/api/v1/admin/audit', file: 'src/modules/admin/admin.routes.js', handler: 'handleAdminAudit' }
 ];
 
-const DANGEROUS_GUARDRAIL_PATTERN = /(write|mutation|mutations|action|actions|grant|grants|editable|delete|deletion|send|refund|role|config|maintenance|provider|private|restriction|restrictions|sanction|sanctions|blocking|access)/i;
+const DANGEROUS_GUARDRAIL_TOKENS = [
+  'write',
+  'mutation',
+  'mutations',
+  'action',
+  'actions',
+  'grant',
+  'grants',
+  'editable',
+  'delete',
+  'deletion',
+  'send',
+  'refund',
+  'role',
+  'config',
+  'maintenance',
+  'provider',
+  'private',
+  'restriction',
+  'restrictions',
+  'sanction',
+  'sanctions',
+  'blocking',
+  'access'
+];
+const DANGEROUS_GUARDRAIL_PATTERN = new RegExp(`(${DANGEROUS_GUARDRAIL_TOKENS.join('|')})`, 'i');
 
 function fail(message) {
   throw new Error(`[admin-contract] ${message}`);
