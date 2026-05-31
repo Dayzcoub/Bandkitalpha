@@ -63,6 +63,10 @@ const DANGEROUS_GUARDRAIL_TOKENS = [
   'access'
 ];
 const DANGEROUS_GUARDRAIL_PATTERN = new RegExp(`(${DANGEROUS_GUARDRAIL_TOKENS.join('|')})`, 'i');
+const DANGEROUS_GUARDRAIL_TRUE_PATTERN = new RegExp(
+  `([a-zA-Z0-9_]*(?:${DANGEROUS_GUARDRAIL_TOKENS.join('|')})[a-zA-Z0-9_]*)\\s*:\\s*true`,
+  'g'
+);
 
 function fail(message) {
   throw new Error(`[admin-contract] ${message}`);
@@ -131,7 +135,7 @@ function assertStaticContract(endpoint) {
   assert(/mode:\s*['"]read_only['"]/.test(handlerSource), `${endpoint.path} must include mode: 'read_only'`);
   assert(/guardrails:\s*{/.test(handlerSource), `${endpoint.path} must include guardrails`);
 
-  const dangerousTrueMatch = handlerSource.match(/([a-zA-Z0-9_]*(?:enabled|editable|mutations|mutation|actions|action|grants|grant|access)[a-zA-Z0-9_]*)\s*:\s*true/g) || [];
+  const dangerousTrueMatch = handlerSource.match(DANGEROUS_GUARDRAIL_TRUE_PATTERN) || [];
   assert(
     dangerousTrueMatch.length === 0,
     `${endpoint.path} has dangerous guardrail set to true: ${dangerousTrueMatch.join(', ')}`
