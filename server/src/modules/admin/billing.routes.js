@@ -1,6 +1,8 @@
 import { sendJson } from '../../shared/http.js';
 import { nowIso } from './admin.shared.js';
 
+const BILLING_SOURCE_NOT_CONNECTED = 'not_connected_yet';
+
 const BILLING_PLAN_CATALOG = [
   {
     key: 'basic',
@@ -39,7 +41,7 @@ export async function handleAdminBilling(req, res) {
       subscriptions: 0,
       refunds: 0,
       manual_access: 0,
-      source: 'not_connected_yet'
+      source: BILLING_SOURCE_NOT_CONNECTED
     },
     plan_catalog: BILLING_PLAN_CATALOG,
     operation_types: BILLING_OPERATION_TYPES,
