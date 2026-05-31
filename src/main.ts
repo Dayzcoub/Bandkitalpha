@@ -1,5 +1,4 @@
 import { createBandKitApp } from './app/App.js';
-import { initPlatformAdminReadOnlyAccessScope } from './modules/PlatformAdminReadOnlyAccessScope.js';
 import { initPlatformAdminConsole } from './modules/PlatformAdminConsole.js';
 import { initPlatformAdminReadOnlyDataBridge } from './modules/PlatformAdminReadOnlyDataBridge.js';
 import { initPlatformAdminBillingReadOnlyBridge } from './modules/PlatformAdminBillingReadOnlyBridge.js';
@@ -17,7 +16,6 @@ if (!root) {
 }
 
 createBandKitApp(root);
-initPlatformAdminReadOnlyAccessScope(root);
 initPlatformAdminConsole(root);
 initPlatformAdminReadOnlyDataBridge(root);
 initPlatformAdminBillingReadOnlyBridge(root);
