@@ -56,6 +56,18 @@ function assert(condition, message) {
   if (!condition) fail(message);
 }
 
+function assertUniqueContracts() {
+  const paths = new Set();
+  const handlers = new Set();
+
+  for (const endpoint of ADMIN_ENDPOINTS) {
+    assert(!paths.has(endpoint.path), `duplicate endpoint path: ${endpoint.path}`);
+    assert(!handlers.has(endpoint.handler), `duplicate endpoint handler: ${endpoint.handler}`);
+    paths.add(endpoint.path);
+    handlers.add(endpoint.handler);
+  }
+}
+
 function readRouteFile(relativePath) {
   return readFileSync(path.join(serverRoot, relativePath), 'utf8');
 }
@@ -121,6 +133,8 @@ async function runHttpSmoke(baseUrl) {
     assertPayloadContract(endpoint, payload);
   }
 }
+
+assertUniqueContracts();
 
 for (const endpoint of ADMIN_ENDPOINTS) {
   assertStaticContract(endpoint);
