@@ -20,6 +20,8 @@ type AdminContentResponse = {
 };
 
 const API_URL = '/api/v1/admin/content';
+const FALLBACK_POLICY_SCOPES = ['categories', 'dictionaries', 'promo_surfaces'];
+const FALLBACK_OPERATION_TYPES = ['review_feed', 'review_media', 'manage_collections', 'dictionary_review'];
 let cache: AdminContentResponse | null = null;
 let loading = false;
 
@@ -85,7 +87,7 @@ function applyContent(root: HTMLElement, data: AdminContentResponse): void {
   const policyCard = findCardByText(cards, ['Правила и управляемые словари']);
   const policyList = policyCard?.querySelector<HTMLElement>('.bk-list');
   if (policyList) {
-    const policies = data.policy_scopes?.length ? data.policy_scopes : ['categories', 'dictionaries', 'promo_surfaces'];
+    const policies = data.policy_scopes?.length ? data.policy_scopes : FALLBACK_POLICY_SCOPES;
     policyList.innerHTML = policies.map((scope) => listRow(
       scopeLabel(scope),
       'Политика отображается только как read-only настройка будущего контентного контура.',
@@ -97,7 +99,7 @@ function applyContent(root: HTMLElement, data: AdminContentResponse): void {
   const matrixCard = findCardByText(cards, ['Что можно делать из /admin/content']);
   const matrixChips = matrixCard?.querySelector<HTMLElement>('.bk-chip-row');
   if (matrixChips) {
-    const operations = data.operation_types?.length ? data.operation_types : ['review_feed', 'review_media', 'manage_collections', 'dictionary_review'];
+    const operations = data.operation_types?.length ? data.operation_types : FALLBACK_OPERATION_TYPES;
     matrixChips.innerHTML = operations.map((item) => badge(operationLabel(item))).join('');
   }
 
