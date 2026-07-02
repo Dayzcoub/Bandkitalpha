@@ -28,14 +28,39 @@
 .bk-chat-thread > .bk-chat-composer-card.bk-chat-composer-inside-thread,
 .bk-chat-room-card > .bk-chat-composer-card.bk-chat-composer-outside-thread {
   width: auto;
-  margin: 10px -9px -13px;
-  padding: 8px 12px 11px;
+  margin: 8px -9px -10px;
+  padding: 6px 10px 8px;
   border-radius: 0 0 15px 15px;
-  box-shadow: 0 -14px 26px rgba(2, 6, 23, .22);
+  box-shadow: 0 -10px 22px rgba(2, 6, 23, .18);
 }
 
 .bk-chat-room-card > .bk-chat-composer-card.bk-chat-composer-outside-thread {
   margin-top: 0;
+}
+
+.bk-chat-composer-outside-thread .bk-field {
+  gap: 4px;
+  margin: 0;
+}
+
+.bk-chat-composer-outside-thread .bk-label {
+  display: none;
+}
+
+.bk-chat-composer-outside-thread .bk-textarea {
+  min-height: 38px;
+  padding-block: 8px;
+  resize: none;
+}
+
+.bk-chat-composer-outside-thread .bk-blocked-link {
+  margin-top: 5px;
+  padding: 5px 9px;
+  font-size: .68rem;
+}
+
+.bk-chat-composer-outside-thread .bk-action-row {
+  margin-top: 6px;
 }
 
 .bk-chat-composer-inside-thread::before,
@@ -60,13 +85,17 @@
 
   .bk-chat-thread > .bk-chat-composer-card.bk-chat-composer-inside-thread,
   .bk-chat-room-card > .bk-chat-composer-card.bk-chat-composer-outside-thread {
-    margin: 10px -7px -7px;
-    padding: 7px 8px calc(7px + env(safe-area-inset-bottom, 0px));
+    margin: 8px -7px -7px;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
     border-radius: 0 0 15px 15px;
-    background: linear-gradient(180deg, rgba(5, 9, 16, 0), rgba(5, 9, 16, .78) 36%, rgba(5, 9, 16, .94));
+    background: linear-gradient(180deg, rgba(5, 9, 16, 0), rgba(5, 9, 16, .72) 34%, rgba(5, 9, 16, .92));
   }
 
   .bk-chat-room-card > .bk-chat-composer-card.bk-chat-composer-outside-thread {
     margin-top: 0;
+  }
+
+  .bk-chat-composer-outside-thread .bk-textarea {
+    min-height: 36px;
   }
 }
