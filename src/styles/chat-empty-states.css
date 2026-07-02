@@ -76,17 +76,21 @@
 }
 
 .bk-chat-layout > .bk-list.is-chat-state-active > .bk-list-row,
-.bk-chat-layout > .bk-list.is-chat-state-active > [data-route^="/chats/"] {
+.bk-chat-layout > .bk-list.is-chat-state-active > [data-route^="/chats/"],
+.bk-chat-policy-card + .bk-card .bk-list.is-chat-state-active > .bk-list-row,
+.bk-chat-policy-card + .bk-card .bk-list.is-chat-state-active > [data-route^="/chats/"] {
   display: none !important;
 }
 
-.bk-chat-layout > .bk-list .bk-chat-state-card {
+.bk-chat-layout > .bk-list .bk-chat-state-card,
+.bk-chat-policy-card + .bk-card .bk-list .bk-chat-state-card {
   min-height: 140px;
   margin: 8px;
   padding: 18px 12px;
 }
 
-.bk-chat-layout > .bk-list .bk-chat-state-copy {
+.bk-chat-layout > .bk-list .bk-chat-state-copy,
+.bk-chat-policy-card + .bk-card .bk-list .bk-chat-state-copy {
   max-width: 210px;
   font-size: .8rem;
 }
