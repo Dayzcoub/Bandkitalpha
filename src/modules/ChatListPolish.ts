@@ -69,22 +69,23 @@ function decorateChatRow(row: HTMLElement, index: number): void {
   row.dataset.chatId = meta.id;
 
   const metaNode = row.querySelector<HTMLElement>('.bk-meta');
-  if (metaNode && metaNode.dataset.chatPreviewReady !== 'true') {
+  if (metaNode && metaNode.textContent !== meta.preview) {
     metaNode.textContent = meta.preview;
-    metaNode.dataset.chatPreviewReady = 'true';
   }
 
   Array.from(row.children).forEach((child) => {
     if (child instanceof HTMLElement && child.classList.contains('bk-badge')) child.remove();
   });
 
-  let side = row.querySelector<HTMLElement>(':scope > .bk-chat-row-side');
+  let side = Array.from(row.children).find((child): child is HTMLElement => child instanceof HTMLElement && child.classList.contains('bk-chat-row-side')) ?? null;
   if (!side) {
     side = document.createElement('span');
     side.className = 'bk-chat-row-side';
     row.appendChild(side);
   }
-  side.innerHTML = sideHtml(meta);
+
+  const nextSideHtml = sideHtml(meta);
+  if (side.innerHTML !== nextSideHtml) side.innerHTML = nextSideHtml;
 }
 
 function decorateChatLists(root: HTMLElement): void {
