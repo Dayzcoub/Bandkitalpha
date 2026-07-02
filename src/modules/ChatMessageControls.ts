@@ -104,12 +104,19 @@ function actionButtonClass(action: MockChatMessageAction): string {
   return 'bk-chat-reply-action';
 }
 
+function actionButtonLabel(action: MockChatMessageAction): string {
+  if (action.id === 'request_delete') return 'Удалить?';
+  if (action.id === 'add_safety_context') return 'Контекст';
+  if (action.id === 'report') return 'Жалоба';
+  return action.label;
+}
+
 function policyActionHtml(action: MockChatMessageAction): string {
   const control = action.id.replaceAll('_', '-');
   const disabled = action.enabled ? '' : ' disabled';
   const reason = action.reason ? ` title="${escapeHtml(action.reason)}"` : '';
   const pressed = action.id === 'pin' ? ' aria-pressed="false"' : '';
-  return `<button class="${actionButtonClass(action)}" type="button" data-chat-control="${control}" data-chat-action-id="${action.id}"${pressed}${disabled}${reason}>${escapeHtml(action.label)}</button>`;
+  return `<button class="${actionButtonClass(action)}" type="button" data-chat-control="${control}" data-chat-action-id="${action.id}"${pressed}${disabled}${reason}>${escapeHtml(actionButtonLabel(action))}</button>`;
 }
 
 function policyActionsHtml(message: HTMLElement): string {
