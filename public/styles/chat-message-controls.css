@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   opacity: 0;
   transform: translateY(-1px);
   transition: opacity .14s ease, transform .14s ease;
@@ -18,22 +18,26 @@
   transform: translateY(0);
 }
 
-.bk-chat-anchor-link,
-.bk-chat-reply-action,
-.bk-chat-pin-action,
-.bk-chat-delete-action,
-.bk-chat-policy-action {
-  appearance: none;
+.bk-chat-message-actions .bk-chat-anchor-link,
+.bk-chat-message-actions .bk-chat-reply-action,
+.bk-chat-message-actions .bk-chat-pin-action,
+.bk-chat-message-actions .bk-chat-delete-action,
+.bk-chat-message-actions .bk-chat-policy-action {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
-  min-height: 0;
   max-width: 100%;
   padding: 0 2px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: rgba(148, 163, 184, .72);
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(148, 163, 184, .72) !important;
   cursor: pointer;
-  font: inherit;
+  font-family: inherit;
   font-size: .68rem;
   font-weight: 800;
   line-height: 1.2;
@@ -43,43 +47,43 @@
   overflow-wrap: normal;
 }
 
-.bk-chat-anchor-link:hover,
-.bk-chat-reply-action:hover,
-.bk-chat-pin-action:hover,
-.bk-chat-delete-action:hover,
-.bk-chat-policy-action:hover,
-.bk-chat-anchor-link:focus-visible,
-.bk-chat-reply-action:focus-visible,
-.bk-chat-pin-action:focus-visible,
-.bk-chat-delete-action:focus-visible,
-.bk-chat-policy-action:focus-visible {
-  color: var(--bk-text);
+.bk-chat-message-actions .bk-chat-anchor-link:hover,
+.bk-chat-message-actions .bk-chat-reply-action:hover,
+.bk-chat-message-actions .bk-chat-pin-action:hover,
+.bk-chat-message-actions .bk-chat-delete-action:hover,
+.bk-chat-message-actions .bk-chat-policy-action:hover,
+.bk-chat-message-actions .bk-chat-anchor-link:focus-visible,
+.bk-chat-message-actions .bk-chat-reply-action:focus-visible,
+.bk-chat-message-actions .bk-chat-pin-action:focus-visible,
+.bk-chat-message-actions .bk-chat-delete-action:focus-visible,
+.bk-chat-message-actions .bk-chat-policy-action:focus-visible {
+  color: var(--bk-text) !important;
   outline: none;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-.bk-chat-pin-action[aria-pressed="true"] {
-  color: rgba(250, 204, 21, .92);
+.bk-chat-message-actions .bk-chat-pin-action[aria-pressed="true"] {
+  color: rgba(250, 204, 21, .92) !important;
   text-decoration: none;
 }
 
-.bk-chat-delete-action:hover,
-.bk-chat-delete-action:focus-visible {
-  color: rgb(252, 165, 165);
+.bk-chat-message-actions .bk-chat-delete-action:hover,
+.bk-chat-message-actions .bk-chat-delete-action:focus-visible {
+  color: rgb(252, 165, 165) !important;
 }
 
-.bk-chat-policy-action:hover,
-.bk-chat-policy-action:focus-visible {
-  color: rgb(125, 211, 252);
+.bk-chat-message-actions .bk-chat-policy-action:hover,
+.bk-chat-message-actions .bk-chat-policy-action:focus-visible {
+  color: rgb(125, 211, 252) !important;
 }
 
-.bk-chat-policy-action:disabled,
-.bk-chat-delete-action:disabled,
-.bk-chat-pin-action:disabled,
-.bk-chat-reply-action:disabled {
+.bk-chat-message-actions .bk-chat-policy-action:disabled,
+.bk-chat-message-actions .bk-chat-delete-action:disabled,
+.bk-chat-message-actions .bk-chat-pin-action:disabled,
+.bk-chat-message-actions .bk-chat-reply-action:disabled {
   cursor: default;
-  color: rgba(148, 163, 184, .5);
+  color: rgba(148, 163, 184, .5) !important;
   text-decoration: none;
 }
 
@@ -99,7 +103,7 @@
 
 @media (max-width: 767px) {
   .bk-chat-message-actions {
-    gap: 5px;
+    gap: 6px;
     opacity: 0;
     pointer-events: none;
   }
@@ -111,12 +115,12 @@
     pointer-events: auto;
   }
 
-  .bk-chat-anchor-link,
-  .bk-chat-reply-action,
-  .bk-chat-pin-action,
-  .bk-chat-delete-action,
-  .bk-chat-policy-action {
-    padding: 0 3px;
+  .bk-chat-message-actions .bk-chat-anchor-link,
+  .bk-chat-message-actions .bk-chat-reply-action,
+  .bk-chat-message-actions .bk-chat-pin-action,
+  .bk-chat-message-actions .bk-chat-delete-action,
+  .bk-chat-message-actions .bk-chat-policy-action {
+    padding: 0 2px;
     font-size: .66rem;
   }
 }
