@@ -26,6 +26,9 @@
 }
 
 .bk-chat-thread > .bk-chat-composer-card.bk-chat-composer-inside-thread {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
   width: auto;
   margin: 10px -9px -13px;
   padding: 8px 12px 11px;
