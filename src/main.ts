@@ -8,6 +8,7 @@ import { initPlatformAdminNotificationsReadOnlyBridge } from './modules/Platform
 import { initPlatformAdminRolesReadOnlyBridge } from './modules/PlatformAdminRolesReadOnlyBridge.js';
 import { initPlatformAdminSettingsReadOnlyBridge } from './modules/PlatformAdminSettingsReadOnlyBridge.js';
 import { initChatMessageControls } from './modules/ChatMessageControls.js';
+import { initChatEmptyStates } from './modules/ChatEmptyStates.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
@@ -33,4 +34,5 @@ for (const initPlatformAdminModule of platformAdminInitializers) {
   initPlatformAdminModule(root);
 }
 initChatMessageControls(root);
+initChatEmptyStates(root);
 initRealEntitiesPreview(root);
