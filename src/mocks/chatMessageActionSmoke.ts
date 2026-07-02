@@ -9,8 +9,33 @@ type MockChatMessageActionSmokeCase = {
   actualActionIds: MockChatMessageActionId[];
 };
 
+export type MockChatMessageActionSmokeResult = MockChatMessageActionSmokeCase & {
+  passed: boolean;
+  missingActionIds: MockChatMessageActionId[];
+  unexpectedActionIds: MockChatMessageActionId[];
+};
+
+export type MockChatMessageActionSmokeReport = {
+  passed: boolean;
+  total: number;
+  failed: number;
+  results: MockChatMessageActionSmokeResult[];
+};
+
 function actionIdsFor(chatId: string, context: Parameters<typeof chatMessageActionsForPolicy>[1]): MockChatMessageActionId[] {
   return chatMessageActionsForPolicy(mockChatPolicyForRoom(chatId), context).map((item) => item.id);
+}
+
+function sameActionIds(left: MockChatMessageActionId[], right: MockChatMessageActionId[]): boolean {
+  return left.length === right.length && left.every((item, index) => item === right[index]);
+}
+
+function missingActionIds(expected: MockChatMessageActionId[], actual: MockChatMessageActionId[]): MockChatMessageActionId[] {
+  return expected.filter((item) => !actual.includes(item));
+}
+
+function unexpectedActionIds(expected: MockChatMessageActionId[], actual: MockChatMessageActionId[]): MockChatMessageActionId[] {
+  return actual.filter((item) => !expected.includes(item));
 }
 
 export const mockChatMessageActionSmokeCases: MockChatMessageActionSmokeCase[] = [
@@ -50,3 +75,17 @@ export const mockChatMessageActionSmokeCases: MockChatMessageActionSmokeCase[] =
     actualActionIds: actionIdsFor('c1', { isOwnMessage: false, isSystemMessage: true }),
   },
 ];
+
+export const mockChatMessageActionSmokeResults: MockChatMessageActionSmokeResult[] = mockChatMessageActionSmokeCases.map((testCase) => ({
+  ...testCase,
+  passed: sameActionIds(testCase.expectedActionIds, testCase.actualActionIds),
+  missingActionIds: missingActionIds(testCase.expectedActionIds, testCase.actualActionIds),
+  unexpectedActionIds: unexpectedActionIds(testCase.expectedActionIds, testCase.actualActionIds),
+}));
+
+export const mockChatMessageActionSmokeReport: MockChatMessageActionSmokeReport = {
+  passed: mockChatMessageActionSmokeResults.every((result) => result.passed),
+  total: mockChatMessageActionSmokeResults.length,
+  failed: mockChatMessageActionSmokeResults.filter((result) => !result.passed).length,
+  results: mockChatMessageActionSmokeResults,
+};
