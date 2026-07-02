@@ -100,9 +100,8 @@ function messagePolicyActions(message: HTMLElement): MockChatMessageAction[] {
 
 function actionButtonClass(action: MockChatMessageAction): string {
   if (action.id === 'pin') return 'bk-chat-pin-action';
-  if (action.id === 'delete_for_everyone' || action.id === 'delete_for_me') return 'bk-chat-delete-action';
-  if (action.tone === 'danger') return 'bk-chat-delete-action';
-  return 'bk-chat-policy-action';
+  if (action.id === 'delete_for_me' || action.id === 'delete_for_everyone') return 'bk-chat-delete-action';
+  return 'bk-chat-reply-action';
 }
 
 function policyActionHtml(action: MockChatMessageAction): string {
