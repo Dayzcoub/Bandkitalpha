@@ -1,0 +1,107 @@
+/* Backend-ready chat state surfaces: empty, loading, error and no active chat. */
+
+.bk-chat-state-card {
+  box-sizing: border-box;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+  min-height: 168px;
+  margin: 10px 0;
+  padding: 24px 18px;
+  border: 1px dashed rgba(148, 163, 184, .22);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .035);
+  color: var(--bk-text);
+  text-align: center;
+}
+
+.bk-chat-state-card.is-danger {
+  border-color: rgba(251, 113, 133, .32);
+  background: rgba(251, 113, 133, .07);
+}
+
+.bk-chat-state-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(148, 163, 184, .18);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .055);
+  color: var(--bk-primary-strong);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.bk-chat-state-card.is-danger .bk-chat-state-icon {
+  color: var(--bk-danger);
+}
+
+.bk-chat-state-title {
+  margin: 0;
+  color: var(--bk-text);
+  font-size: .98rem;
+  font-weight: 760;
+  letter-spacing: -.01em;
+}
+
+.bk-chat-state-copy {
+  max-width: 360px;
+  margin: 0;
+  color: var(--bk-muted);
+  font-size: .88rem;
+  line-height: 1.45;
+}
+
+.bk-chat-state-action {
+  margin-top: 4px;
+  opacity: .72;
+  cursor: default;
+}
+
+.bk-chat-thread.is-chat-state-active > :not([data-chat-state-surface="true"]) {
+  display: none !important;
+}
+
+.bk-chat-thread.is-chat-state-active {
+  display: grid;
+  align-content: center;
+  padding: 12px;
+}
+
+.bk-chat-thread.is-chat-state-active .bk-chat-state-card {
+  min-height: 240px;
+  margin: auto;
+}
+
+.bk-chat-layout > .bk-list.is-chat-state-active > .bk-list-row,
+.bk-chat-layout > .bk-list.is-chat-state-active > [data-route^="/chats/"] {
+  display: none !important;
+}
+
+.bk-chat-layout > .bk-list .bk-chat-state-card {
+  min-height: 140px;
+  margin: 8px;
+  padding: 18px 12px;
+}
+
+.bk-chat-layout > .bk-list .bk-chat-state-copy {
+  max-width: 210px;
+  font-size: .8rem;
+}
+
+.bk-chat-thread-placeholder {
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .bk-chat-state-card {
+    min-height: 148px;
+    padding: 20px 14px;
+  }
+
+  .bk-chat-thread.is-chat-state-active .bk-chat-state-card {
+    min-height: 200px;
+  }
+}
