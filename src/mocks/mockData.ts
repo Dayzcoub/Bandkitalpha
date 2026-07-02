@@ -1,4 +1,6 @@
 import type { AssetKey } from '../lib/assets/assetRegistry.js';
+import type { MockChatPolicyPreview } from './chatPolicy.js';
+import { mockChatPolicyForRoom } from './chatPolicy.js';
 
 export type MockBadgeTone = 'neutral' | 'positive' | 'warning' | 'danger';
 
@@ -62,6 +64,7 @@ export interface MockChat {
   unread: number;
   suspicious?: boolean;
   lastMessageKey: string;
+  policy: MockChatPolicyPreview;
 }
 
 export interface MockDocument {
@@ -222,9 +225,9 @@ export const events: MockEvent[] = [
 ];
 
 export const chats: MockChat[] = [
-  { id: 'c1', title: 'Northern Lights Band', typeKey: 'chats.group', unread: 3, lastMessageKey: 'mock.chat.last.rehearsalMoved' },
-  { id: 'c2', title: 'Mira Voice', typeKey: 'chats.direct', unread: 0, lastMessageKey: 'mock.chat.last.vocalFiles' },
-  { id: 'c3', title: 'Suspicious outreach sample', typeKey: 'chats.direct', unread: 1, suspicious: true, lastMessageKey: 'mock.chat.last.suspicious' },
+  { id: 'c1', title: 'Northern Lights Band', typeKey: 'chats.group', unread: 3, lastMessageKey: 'mock.chat.last.rehearsalMoved', policy: mockChatPolicyForRoom('c1') },
+  { id: 'c2', title: 'Mira Voice', typeKey: 'chats.direct', unread: 0, lastMessageKey: 'mock.chat.last.vocalFiles', policy: mockChatPolicyForRoom('c2') },
+  { id: 'c3', title: 'Suspicious outreach sample', typeKey: 'chats.direct', unread: 1, suspicious: true, lastMessageKey: 'mock.chat.last.suspicious', policy: mockChatPolicyForRoom('c3') },
 ];
 
 export const messages: MockMessage[] = [
