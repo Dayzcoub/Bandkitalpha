@@ -13,6 +13,7 @@ import { handleListDocuments } from './modules/documents/documents.routes.js';
 import { handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
 import { handleListEvents } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
+import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { notFound, sendError } from './shared/http.js';
 import { logError, logInfo } from './shared/logger.js';
 
@@ -60,6 +61,31 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/dev/seed-demo`) {
         await handleDevSeedDemo(req, res, env);
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/auth/register`) {
+        await handleRegister(req, res, env);
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/auth/verify-email`) {
+        await handleVerifyEmail(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/auth/login`) {
+        await handleLogin(req, res, env);
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/auth/logout`) {
+        await handleLogout(req, res, env);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/auth/me`) {
+        await handleMe(req, res);
         return;
       }
 
