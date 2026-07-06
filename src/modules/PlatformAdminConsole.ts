@@ -1,3 +1,5 @@
+import { createTranslator, normalizeLocale } from '../lib/i18n/i18n.js';
+
 type AdminTone = 'neutral' | 'positive' | 'warning' | 'danger';
 type AdminAccess = 'moderator' | 'admin' | 'super_admin';
 
@@ -531,10 +533,151 @@ const sections: AdminSection[] = [
       },
     ],
   },
+  {
+    path: '/admin/support',
+    access: 'admin',
+    label: 'Поддержка',
+    title: 'Служба поддержки',
+    subtitle: 'Очередь тикетов, приоритеты SLA и контролируемый view-as-user только для чтения. Не даёт прав администратора сущности.',
+    kpis: [
+      { value: '5', label: 'открытых тикетов' },
+      { value: 'P0/P1', label: 'приоритеты SLA' },
+      { value: 'view-as', label: 'только чтение' },
+      { value: '0', label: 'просроченных SLA' },
+    ],
+    rows: [
+      { title: 'Приоритеты SLA', meta: 'P0 — инцидент, P1 — срочно, P2 — стандарт, P3 — фон. Время реакции задаётся политикой платформы.', tone: 'positive' },
+      { title: 'View-as-user', meta: 'Поддержка видит контекст пользователя только для чтения; это не вход в аккаунт и не права админа сущности.', tone: 'warning' },
+      { title: 'Граница', meta: 'Support agent помогает по тикету, не становясь администратором группы, студии или организации пользователя.', tone: 'neutral' },
+    ],
+    actions: ['Открыть очередь тикетов', 'Проверить SLA', 'Журнал обращений'],
+    details: [
+      {
+        eyebrow: 'Очередь поддержки',
+        title: 'Тикеты и приоритеты',
+        badge: { label: 'только чтение', tone: 'positive' },
+        rows: [
+          { title: 'SUP-2041 · вход и 2FA', meta: 'Пользователь потерял доступ к TOTP · нужна проверка личности', badges: [{ label: 'P1', tone: 'danger' }, { label: 'новая', tone: 'warning' }], details: ['recovery-процедура', 'проверка личности', 'без сброса вручную'] },
+          { title: 'SUP-2042 · спор по событию', meta: 'Вопрос по условиям участия · направляется в кейс, не решается поддержкой', badges: [{ label: 'P2', tone: 'warning' }, { label: 'эскалация' }], details: ['передать в модерацию', 'контекст сохранён'] },
+          { title: 'SUP-2043 · вопрос по тарифу', meta: 'Биллинг-запрос · возвраты и изменения тарифа — вне поддержки', badges: [{ label: 'P3' }, { label: 'биллинг' }], details: ['только консультация', 'изменения через биллинг'] },
+        ],
+      },
+      {
+        eyebrow: 'Контролируемый доступ',
+        title: 'Правила view-as-user',
+        badge: { label: 'аудит', tone: 'warning' },
+        chips: ['Только чтение', 'Логируется', 'Ограничено кейсом', 'Без приватных чатов', 'Без прав сущности', 'Причина обязательна'],
+      },
+    ],
+  },
+  {
+    path: '/admin/system',
+    access: 'super_admin',
+    label: 'Система',
+    title: 'Здоровье системы',
+    subtitle: 'Статус деплоя, здоровье API и БД, фоновые задачи и режим обслуживания. Только наблюдение, без управляющих действий.',
+    kpis: [
+      { value: 'OK', label: 'API /health' },
+      { value: 'OK', label: 'БД /health/db' },
+      { value: 'auto', label: 'staging деплой' },
+      { value: '0', label: 'активных инцидентов' },
+    ],
+    rows: [
+      { title: 'Health-эндпоинты', meta: 'Публичные проверки /api/v1/health и /api/v1/health/db отражают доступность бэкенда и БД.', tone: 'positive' },
+      { title: 'Пайплайн деплоя', meta: 'push main → GitHub Actions → VPS → staging-deploy.sh → smoke. Наблюдается, не запускается отсюда.', tone: 'neutral' },
+      { title: 'Режим обслуживания', meta: 'Maintenance mode и kill switch — критичные флаги; переключение требует подтверждения и аудита.', tone: 'warning' },
+    ],
+    actions: ['Открыть статус деплоя', 'Проверить health', 'Журнал инцидентов'],
+    details: [
+      {
+        eyebrow: 'Сервисы платформы',
+        title: 'Состояние компонентов',
+        badge: { label: 'режим просмотра', tone: 'positive' },
+        rows: [
+          { title: 'Backend API', meta: 'bandkit-backend systemd · nginx /api proxy', badges: [{ label: 'работает', tone: 'positive' }], details: ['/api/v1/health', 'версия API', 'аптайм'] },
+          { title: 'PostgreSQL', meta: 'Локальная БД staging · миграции применены', badges: [{ label: 'работает', tone: 'positive' }], details: ['/api/v1/health/db', 'лог миграций', 'бэкап-дрилл'] },
+          { title: 'Autodeploy', meta: 'GitHub Actions → VPS · последний деплой и smoke', badges: [{ label: 'наблюдение' }], details: ['staging-deploy.sh', 'staging-smoke-api.sh', 'git status чистый'] },
+        ],
+      },
+      {
+        eyebrow: 'Критичные переключатели',
+        title: 'Требуют подтверждения и аудита',
+        badge: { label: 'суперадмин', tone: 'warning' },
+        chips: ['Режим обслуживания', 'Kill switch', 'Feature rollout', 'Пауза фоновых задач', 'Dead letter queue', 'Ротация секретов'],
+      },
+    ],
+  },
+  {
+    path: '/admin/staff',
+    access: 'super_admin',
+    label: 'Команда',
+    title: 'Управление командой',
+    subtitle: 'Платформенные роли команды, назначения и эскалации. Смена ролей — через подтверждение и аудит; здесь только просмотр.',
+    kpis: [
+      { value: '4', label: 'сотрудника платформы' },
+      { value: '2FA', label: 'обязательно для всех' },
+      { value: '2', label: 'подтверждения на грант' },
+      { value: 'audit', label: 'все изменения' },
+    ],
+    rows: [
+      { title: 'Роли платформы', meta: 'super_admin, platform_admin, platform_moderator, support_agent, read_only_auditor — отдельно от ролей сущностей.', tone: 'positive' },
+      { title: 'Опасные гранты', meta: 'Выдача super_admin и снятие ролей требуют two-person approval, причины и неизменяемого аудита.', tone: 'warning' },
+      { title: 'Конфликт интересов', meta: 'Сотрудник не рассматривает кейсы, где он связанная сторона; назначение уходит другому.', tone: 'neutral' },
+    ],
+    actions: ['Открыть реестр команды', 'Матрица ролей', 'Журнал назначений'],
+    details: [
+      {
+        eyebrow: 'Реестр команды',
+        title: 'Сотрудники и платформенные роли',
+        badge: { label: 'только чтение', tone: 'positive' },
+        rows: [
+          { title: 'Owner', meta: 'super_admin · полный доступ · 2FA включена', badges: [{ label: 'super_admin', tone: 'danger' }, { label: '2FA', tone: 'positive' }], details: ['break-glass', 'аудит доступа'] },
+          { title: 'Platform Admin', meta: 'platform_admin · операции платформы без прав на каждую сущность', badges: [{ label: 'platform_admin', tone: 'warning' }], details: ['не админ сущностей', 'scoped доступ'] },
+          { title: 'Support / Auditor', meta: 'support_agent и read_only_auditor · ограниченный и только-читающий доступ', badges: [{ label: 'ограничено' }, { label: 'read-only' }], details: ['view-as только чтение', 'без мутаций'] },
+        ],
+      },
+      {
+        eyebrow: 'Правила изменения ролей',
+        title: 'Two-person approval и аудит',
+        badge: { label: 'суперадмин', tone: 'warning' },
+        chips: ['Выдать роль', 'Снять роль', 'Обязать 2FA', 'Break-glass доступ', 'Причина обязательна', 'Двойное подтверждение', 'Неизменяемый аудит'],
+      },
+    ],
+  },
 ];
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] ?? char));
+}
+
+function t(key: string): string {
+  const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('bandkit.locale') : null;
+  return createTranslator(normalizeLocale(stored))(key);
+}
+
+// Inline RU is the source string; EN (and any locale) overrides via key.
+// Missing key -> translator returns the key itself -> fall back to inline RU.
+// Example/mock rows deliberately have no EN key and stay in the seed language.
+function tf(key: string, fallback: string): string {
+  const value = t(key);
+  return value === key ? fallback : value;
+}
+
+function sectionId(path: string): string {
+  return path === ADMIN_ROOT ? 'overview' : path.slice(ADMIN_ROOT.length + 1);
+}
+
+function sectionTitle(section: AdminSection): string {
+  const id = sectionId(section.path);
+  return t(id === 'overview' ? 'admin.title' : `admin.${id}Title`);
+}
+
+function sectionSubtitle(section: AdminSection): string {
+  return t(`admin.${sectionId(section.path)}Subtitle`);
+}
+
+function sectionLabel(section: AdminSection): string {
+  return t(`admin.${sectionId(section.path)}Label`);
 }
 
 function currentSection(pathname = window.location.pathname): AdminSection | null {
@@ -559,19 +702,19 @@ function button(label: string, path: string, variant: 'primary' | 'secondary' | 
   return `<button class="bk-button bk-button-${variant}" type="button" data-admin-route="${escapeHtml(path)}">${escapeHtml(label)}</button>`;
 }
 
-function renderKpi(item: AdminKpi): string {
-  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(item.value)}</div><div class="bk-kpi-label">${escapeHtml(item.label)}</div></div>`;
+function renderKpi(item: AdminKpi, sid: string, i: number): string {
+  return `<div class="bk-kpi"><div class="bk-kpi-value">${escapeHtml(tf(`admin.${sid}.kpiv${i}`, item.value))}</div><div class="bk-kpi-label">${escapeHtml(tf(`admin.${sid}.kpi${i}`, item.label))}</div></div>`;
 }
 
 function toneLabel(tone: AdminTone): string {
-  if (tone === 'positive') return 'OK';
-  if (tone === 'warning') return 'РИСК';
-  if (tone === 'danger') return 'ВАЖНО';
-  return 'INFO';
+  if (tone === 'positive') return t('admin.tone.ok');
+  if (tone === 'warning') return t('admin.tone.risk');
+  if (tone === 'danger') return t('admin.tone.important');
+  return t('admin.tone.info');
 }
 
-function renderRow(row: AdminRow): string {
-  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(row.title)}</div><div class="bk-meta">${escapeHtml(row.meta)}</div></div>${badge(toneLabel(row.tone), row.tone)}</div>`;
+function renderRow(row: AdminRow, sid: string, i: number): string {
+  return `<div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">◇</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(tf(`admin.${sid}.row${i}`, row.title))}</div><div class="bk-meta">${escapeHtml(tf(`admin.${sid}.row${i}m`, row.meta))}</div></div>${badge(toneLabel(row.tone), row.tone)}</div>`;
 }
 
 function renderTableRow(row: AdminTableRow): string {
@@ -596,14 +739,15 @@ function renderAdminMain(section: AdminSection, root: HTMLElement): string {
   const shortcutButtons = sections
     .filter((item) => item.path !== section.path && canViewSection(root, item))
     .slice(0, 6)
-    .map((item) => button(item.label, item.path, 'ghost'))
+    .map((item) => button(sectionLabel(item), item.path, 'ghost'))
     .join('');
+  const sid = sectionId(section.path);
   const details = renderSectionDetails(section);
-  return `<header class="bk-page-header"><div class="bk-eyebrow">Платформенная консоль · операции владельца · режим просмотра</div><div class="bk-chip-row">${badge('/admin граница', 'positive')}${badge('админки сущностей отдельно', 'warning')}${badge('без критичных API')}</div><div class="bk-page-header-main"><div><h1 class="bk-title">${escapeHtml(section.title)}</h1><p class="bk-subtitle">${escapeHtml(section.subtitle)}</p></div><div class="bk-action-row">${button('В приложение', '/feed', 'secondary')}</div></div></header><section class="bk-card"><div class="bk-kpi-grid">${section.kpis.map(renderKpi).join('')}</div></section>${details}<section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">Операционная граница</div><h3 class="bk-card-title">Только действия уровня платформы</h3></div>${badge('сначала только чтение', 'positive')}</div><div class="bk-list">${section.rows.map(renderRow).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Безопасные действия</h3><p class="bk-state-copy">Эти кнопки пока являются UI-заглушками. Реальные блокировки, возвраты, смена ролей и доступ к данным должны проходить через серверные проверки прав, запрос причины и неизменяемый аудит.</p><div class="bk-action-row">${section.actions.map((action) => button(action, section.path, action.includes('Аудит') || action.includes('аудит') ? 'primary' : 'secondary')).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">Разделы платформы</h3><div class="bk-action-row">${shortcutButtons}</div></section>`;
+  return `<header class="bk-page-header"><div class="bk-eyebrow">${escapeHtml(t('admin.console.eyebrow'))}</div><div class="bk-chip-row">${badge(t('admin.console.boundaryBadge'), 'positive')}${badge(t('admin.console.entitySeparateBadge'), 'warning')}${badge(t('admin.console.noCriticalApiBadge'))}</div><div class="bk-page-header-main"><div><h1 class="bk-title">${escapeHtml(sectionTitle(section))}</h1><p class="bk-subtitle">${escapeHtml(sectionSubtitle(section))}</p></div><div class="bk-action-row">${button(t('admin.backToApp'), '/feed', 'secondary')}</div></div></header><section class="bk-card"><div class="bk-kpi-grid">${section.kpis.map((item, i) => renderKpi(item, sid, i)).join('')}</div></section>${details}<section class="bk-card"><div class="bk-card-section-head"><div><div class="bk-eyebrow">${escapeHtml(t('admin.console.operationalBoundary'))}</div><h3 class="bk-card-title">${escapeHtml(t('admin.console.platformActionsOnly'))}</h3></div>${badge(t('admin.console.readOnlyFirst'), 'positive')}</div><div class="bk-list">${section.rows.map((item, i) => renderRow(item, sid, i)).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">${escapeHtml(t('admin.console.safeActions'))}</h3><p class="bk-state-copy">${escapeHtml(t('admin.console.safeActionsCopy'))}</p><div class="bk-action-row">${section.actions.map((action, i) => button(tf(`admin.${sid}.act${i}`, action), section.path, action.includes('Аудит') || action.includes('аудит') ? 'primary' : 'secondary')).join('')}</div></section><section class="bk-card"><h3 class="bk-card-title">${escapeHtml(t('admin.console.platformSections'))}</h3><div class="bk-action-row">${shortcutButtons}</div></section>`;
 }
 
 function renderAdminRightRail(section: AdminSection): string {
-  return `<aside class="bk-right-rail"><section class="bk-card"><div class="bk-meta">Режим консоли</div><strong>${escapeHtml(section.label)}</strong><p class="bk-state-copy">Рабочее место владельца и команды платформы. Администраторы сущностей должны использовать свои будущие маршруты: /band/:id/admin, /studio/:id/admin, /org/:id/admin, /event/:id/admin.</p><div class="bk-chip-row">${badge('2FA обязательно', 'warning')}${badge('роли доступа')}${badge('аудит')}</div></section><section class="bk-card"><h3 class="bk-card-title">Не смешивать здесь</h3><div class="bk-list"><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">Настройки группы</div><div class="bk-meta">Относятся к админке сущности.</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">Настройки студии</div><div class="bk-meta">Относятся к будущему /studio/:id/admin.</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">Настройки пользователя</div><div class="bk-meta">Относятся к настройкам аккаунта, не к консоли владельца.</div></div></div></div></section></aside>`;
+  return `<aside class="bk-right-rail"><section class="bk-card"><div class="bk-meta">${escapeHtml(t('admin.console.mode'))}</div><strong>${escapeHtml(sectionLabel(section))}</strong><p class="bk-state-copy">${escapeHtml(t('admin.console.rightRailCopy'))}</p><div class="bk-chip-row">${badge(t('admin.console.twoFactorRequired'), 'warning')}${badge(t('admin.console.accessRoles'))}${badge(t('admin.console.auditChip'))}</div></section><section class="bk-card"><h3 class="bk-card-title">${escapeHtml(t('admin.console.doNotMix'))}</h3><div class="bk-list"><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t('admin.console.groupSettings'))}</div><div class="bk-meta">${escapeHtml(t('admin.console.groupSettingsMeta'))}</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t('admin.console.studioSettings'))}</div><div class="bk-meta">${escapeHtml(t('admin.console.studioSettingsMeta'))}</div></div></div><div class="bk-list-row"><span class="bk-avatar" aria-hidden="true">×</span><div class="bk-list-row-main"><div class="bk-list-row-title">${escapeHtml(t('admin.console.userSettings'))}</div><div class="bk-meta">${escapeHtml(t('admin.console.userSettingsMeta'))}</div></div></div></div></section></aside>`;
 }
 
 function updateActiveAdminNavigation(root: HTMLElement, section: AdminSection): void {

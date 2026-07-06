@@ -45,6 +45,9 @@ export const routes: RouteDefinition[] = [
   { path: '/admin/notifications', shell: 'admin', access: 'admin', titleKey: 'admin.notificationsTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.notifications', iconKey: 'navNotificationsInactive', section: 'admin', exact: true },
   { path: '/admin/audit', shell: 'admin', access: 'admin', titleKey: 'admin.auditTitle', subtitleKey: 'common.audit', navKey: 'nav.audit', iconKey: 'navFilesInactive', section: 'admin', exact: true },
   { path: '/admin/settings', shell: 'admin', access: 'super_admin', titleKey: 'admin.settingsTitle', subtitleKey: 'admin.subtitle', navKey: 'nav.settings', iconKey: 'navSettingsInactive', section: 'admin', exact: true },
+  { path: '/admin/support', shell: 'admin', access: 'admin', titleKey: 'admin.supportTitle', subtitleKey: 'admin.subtitle', navKey: 'admin.supportTitle', iconKey: 'navChatsInactive', section: 'admin', exact: true },
+  { path: '/admin/system', shell: 'admin', access: 'super_admin', titleKey: 'admin.systemTitle', subtitleKey: 'admin.subtitle', navKey: 'admin.systemTitle', iconKey: 'navFilesInactive', section: 'admin', exact: true },
+  { path: '/admin/staff', shell: 'admin', access: 'super_admin', titleKey: 'admin.staffTitle', subtitleKey: 'admin.subtitle', navKey: 'admin.staffTitle', iconKey: 'navAdminInactive', section: 'admin', exact: true },
 ];
 
 const notFoundRoute: RouteDefinition = { path: '*', shell: 'public', access: 'any', titleKey: 'state.notFoundTitle', subtitleKey: 'state.notFoundCopy', section: 'public', exact: true, wide: true };

@@ -28,19 +28,22 @@ export const appNavItems: NavItem[] = [
 ];
 
 export const adminNavItems: NavItem[] = [
-  { path: '/admin', labelKey: 'admin.title', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive' },
-  { path: '/admin/users', labelKey: 'admin.usersTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive' },
-  { path: '/admin/entities', labelKey: 'admin.entitiesTitle', activeIcon: 'navProjectsActive', inactiveIcon: 'navProjectsInactive' },
+  { path: '/admin', labelKey: 'admin.title', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', adminOnly: true },
+  { path: '/admin/users', labelKey: 'admin.usersTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', adminOnly: true },
+  { path: '/admin/entities', labelKey: 'admin.entitiesTitle', activeIcon: 'navProjectsActive', inactiveIcon: 'navProjectsInactive', adminOnly: true },
   { path: '/admin/reports', labelKey: 'admin.reportsTitle', activeIcon: 'navAdminActive', inactiveIcon: 'badgeWarning', moderatorOnly: true },
   { path: '/admin/moderation', labelKey: 'admin.moderationTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', moderatorOnly: true },
-  { path: '/admin/trust', labelKey: 'admin.trustTitle', activeIcon: 'navAdminActive', inactiveIcon: 'badgeWarning' },
+  { path: '/admin/trust', labelKey: 'admin.trustTitle', activeIcon: 'navAdminActive', inactiveIcon: 'badgeWarning', adminOnly: true },
   { path: '/admin/billing', labelKey: 'admin.billingTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive', superAdminOnly: true },
-  { path: '/admin/content', labelKey: 'admin.contentTitle', activeIcon: 'navFeedActive', inactiveIcon: 'navFeedInactive' },
+  { path: '/admin/content', labelKey: 'admin.contentTitle', activeIcon: 'navFeedActive', inactiveIcon: 'navFeedInactive', adminOnly: true },
   { path: '/admin/roles', labelKey: 'admin.rolesTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', superAdminOnly: true },
-  { path: '/admin/localization', labelKey: 'admin.localizationTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
-  { path: '/admin/notifications', labelKey: 'admin.notificationsTitle', activeIcon: 'navNotificationsActive', inactiveIcon: 'navNotificationsInactive' },
-  { path: '/admin/audit', labelKey: 'admin.auditTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive' },
+  { path: '/admin/localization', labelKey: 'admin.localizationTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive', adminOnly: true },
+  { path: '/admin/notifications', labelKey: 'admin.notificationsTitle', activeIcon: 'navNotificationsActive', inactiveIcon: 'navNotificationsInactive', adminOnly: true },
+  { path: '/admin/audit', labelKey: 'admin.auditTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive', adminOnly: true },
   { path: '/admin/settings', labelKey: 'admin.settingsTitle', activeIcon: 'navSettingsActive', inactiveIcon: 'navSettingsInactive', superAdminOnly: true },
+  { path: '/admin/support', labelKey: 'admin.supportTitle', activeIcon: 'navChatsActive', inactiveIcon: 'navChatsInactive', adminOnly: true },
+  { path: '/admin/system', labelKey: 'admin.systemTitle', activeIcon: 'navFilesActive', inactiveIcon: 'navFilesInactive', superAdminOnly: true },
+  { path: '/admin/staff', labelKey: 'admin.staffTitle', activeIcon: 'navAdminActive', inactiveIcon: 'navAdminInactive', superAdminOnly: true },
 ];
 
 function filteredNavItems(ctx: AppContext, mode: 'app' | 'admin'): NavItem[] {
