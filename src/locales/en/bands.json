@@ -8,5 +8,18 @@
   "bands.events": "Band events",
   "bands.documents": "Documents",
   "bands.chat": "Band chat",
-  "bands.joinRequests": "Requests"
+  "bands.joinRequests": "Requests",
+  "bands.member.title": "Add member (real API)",
+  "bands.member.entityLabel": "Entity",
+  "bands.member.emailLabel": "User email",
+  "bands.member.roleLabel": "Role",
+  "bands.member.roleMember": "Member",
+  "bands.member.roleGuest": "Guest",
+  "bands.member.add": "Add",
+  "bands.member.added": "Member added to the database.",
+  "bands.member.forbidden": "You do not have permission to manage this entity.",
+  "bands.member.notFound": "No user found with that email.",
+  "bands.member.already": "User is already a member of this entity.",
+  "bands.member.emailRequired": "Enter a user email.",
+  "bands.member.noEntities": "No entities you manage."
 }

@@ -138,7 +138,8 @@ function renderProfile(ctx: AppContext): string {
 
 function renderBands(ctx: AppContext): string {
   const grid = card(`<div class="bk-card-grid bk-card-grid-3">${bands.map((band) => bandCard(ctx, band)).join('')}</div>`, 'bk-grid-card');
-  return contentGrid([pageHeader(ctx, 'bands.title', 'bands.subtitle', 'bands.create', '/bands/new'), statusStrip(ctx), grid].join(''), defaultRightRail(ctx));
+  const memberPanel = ctx.state.currentUser ? '<div data-real-member-add></div>' : '';
+  return contentGrid([pageHeader(ctx, 'bands.title', 'bands.subtitle', 'bands.create', '/bands/new'), statusStrip(ctx), memberPanel, grid].join(''), defaultRightRail(ctx));
 }
 
 function renderBandDetail(ctx: AppContext): string {

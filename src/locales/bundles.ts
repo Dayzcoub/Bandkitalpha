@@ -362,7 +362,20 @@ export const localeBundles = {
       "bands.events": "Band events",
       "bands.documents": "Documents",
       "bands.chat": "Band chat",
-      "bands.joinRequests": "Requests"
+      "bands.joinRequests": "Requests",
+      "bands.member.title": "Add member (real API)",
+      "bands.member.entityLabel": "Entity",
+      "bands.member.emailLabel": "User email",
+      "bands.member.roleLabel": "Role",
+      "bands.member.roleMember": "Member",
+      "bands.member.roleGuest": "Guest",
+      "bands.member.add": "Add",
+      "bands.member.added": "Member added to the database.",
+      "bands.member.forbidden": "You do not have permission to manage this entity.",
+      "bands.member.notFound": "No user found with that email.",
+      "bands.member.already": "User is already a member of this entity.",
+      "bands.member.emailRequired": "Enter a user email.",
+      "bands.member.noEntities": "No entities you manage."
     },
     "chats": {
       "chats.title": "Chats",
@@ -1219,7 +1232,20 @@ export const localeBundles = {
       "bands.events": "События группы",
       "bands.documents": "Документы",
       "bands.chat": "Чат группы",
-      "bands.joinRequests": "Заявки"
+      "bands.joinRequests": "Заявки",
+      "bands.member.title": "Добавить участника (реальный API)",
+      "bands.member.entityLabel": "Сущность",
+      "bands.member.emailLabel": "Email пользователя",
+      "bands.member.roleLabel": "Роль",
+      "bands.member.roleMember": "Участник",
+      "bands.member.roleGuest": "Гость",
+      "bands.member.add": "Добавить",
+      "bands.member.added": "Участник добавлен в базу.",
+      "bands.member.forbidden": "У вас нет прав управлять этой сущностью.",
+      "bands.member.notFound": "Пользователь с таким email не найден.",
+      "bands.member.already": "Пользователь уже участник этой сущности.",
+      "bands.member.emailRequired": "Укажите email пользователя.",
+      "bands.member.noEntities": "Нет сущностей, которыми вы управляете."
     },
     "chats": {
       "chats.title": "Чаты",

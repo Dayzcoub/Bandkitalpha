@@ -15,6 +15,7 @@ import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 import { initAuthClient, hydrateSessionState } from './modules/AuthClient.js';
 import { initTwoFactor } from './modules/TwoFactor.js';
 import { initRealEventCreate } from './modules/RealEventCreate.js';
+import { initRealMemberAdd } from './modules/RealMemberAdd.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
 
@@ -49,3 +50,4 @@ initRealEntitiesPreview(root);
 initAuthClient(root);
 initTwoFactor(root);
 initRealEventCreate(root);
+initRealMemberAdd(root);

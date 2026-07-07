@@ -8,5 +8,18 @@
   "bands.events": "События группы",
   "bands.documents": "Документы",
   "bands.chat": "Чат группы",
-  "bands.joinRequests": "Заявки"
+  "bands.joinRequests": "Заявки",
+  "bands.member.title": "Добавить участника (реальный API)",
+  "bands.member.entityLabel": "Сущность",
+  "bands.member.emailLabel": "Email пользователя",
+  "bands.member.roleLabel": "Роль",
+  "bands.member.roleMember": "Участник",
+  "bands.member.roleGuest": "Гость",
+  "bands.member.add": "Добавить",
+  "bands.member.added": "Участник добавлен в базу.",
+  "bands.member.forbidden": "У вас нет прав управлять этой сущностью.",
+  "bands.member.notFound": "Пользователь с таким email не найден.",
+  "bands.member.already": "Пользователь уже участник этой сущности.",
+  "bands.member.emailRequired": "Укажите email пользователя.",
+  "bands.member.noEntities": "Нет сущностей, которыми вы управляете."
 }
