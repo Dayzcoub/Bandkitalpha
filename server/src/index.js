@@ -7,9 +7,9 @@ import { handleAdminLocalization } from './modules/admin/localization.routes.js'
 import { handleAdminNotifications } from './modules/admin/notifications.routes.js';
 import { handleAdminSettings } from './modules/admin/settings.routes.js';
 import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
-import { handleListChatRooms, handleListMessages, handleSendMessage } from './modules/chats/chats.routes.js';
+import { handleListChatRooms, handleListMessages, handleSendMessage, handleListMyRooms } from './modules/chats/chats.routes.js';
 import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
-import { handleListDocuments } from './modules/documents/documents.routes.js';
+import { handleListDocuments, handleListEntityDocuments, handleCreateEntityDocument } from './modules/documents/documents.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
 import { handleCreateEvent, handleListEvents } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
@@ -49,6 +49,7 @@ const server = http.createServer((req, res) => {
       const eventEngagementsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements$`));
       const eventEngagementDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements/([^/]+)$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
+      const entityDocumentsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/documents$`));
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/health`) {
         handleHealth(req, res, env);
@@ -173,8 +174,23 @@ const server = http.createServer((req, res) => {
         return;
       }
 
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/me/chat-rooms`) {
+        await handleListMyRooms(req, res);
+        return;
+      }
+
       if (req.method === 'GET' && roomMessagesMatch) {
         await handleListMessages(req, res, decodeURIComponent(roomMessagesMatch[1]));
+        return;
+      }
+
+      if (req.method === 'GET' && entityDocumentsMatch) {
+        await handleListEntityDocuments(req, res, decodeURIComponent(entityDocumentsMatch[1]));
+        return;
+      }
+
+      if (req.method === 'POST' && entityDocumentsMatch) {
+        await handleCreateEntityDocument(req, res, decodeURIComponent(entityDocumentsMatch[1]));
         return;
       }
 

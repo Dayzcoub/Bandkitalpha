@@ -388,7 +388,17 @@ export const localeBundles = {
       "chats.direct": "Direct chat",
       "chats.group": "Group chat",
       "chats.send": "Send",
-      "chats.empty": "No messages yet"
+      "chats.empty": "No messages yet",
+      "chats.real.title": "My chats (real API)",
+      "chats.real.roomLabel": "Room",
+      "chats.real.noRooms": "You are not in any chat rooms yet.",
+      "chats.real.placeholder": "Write a message…",
+      "chats.real.sent": "Message sent.",
+      "chats.real.empty": "No messages in this room yet.",
+      "chats.real.loadError": "Could not load your chats.",
+      "chats.real.sendError": "Could not send the message.",
+      "chats.real.readOnly": "This room is read-only for you.",
+      "chats.real.you": "You"
     },
     "common": {
       "access.admin": "admin",
@@ -1309,7 +1319,17 @@ export const localeBundles = {
       "chats.direct": "Личный чат",
       "chats.group": "Групповой чат",
       "chats.send": "Отправить",
-      "chats.empty": "Сообщений пока нет"
+      "chats.empty": "Сообщений пока нет",
+      "chats.real.title": "Мои чаты (реальный API)",
+      "chats.real.roomLabel": "Комната",
+      "chats.real.noRooms": "Вы пока не состоите ни в одной комнате.",
+      "chats.real.placeholder": "Напишите сообщение…",
+      "chats.real.sent": "Сообщение отправлено.",
+      "chats.real.empty": "В этой комнате пока нет сообщений.",
+      "chats.real.loadError": "Не удалось загрузить ваши чаты.",
+      "chats.real.sendError": "Не удалось отправить сообщение.",
+      "chats.real.readOnly": "Эта комната доступна вам только для чтения.",
+      "chats.real.you": "Вы"
     },
     "common": {
       "access.admin": "admin",

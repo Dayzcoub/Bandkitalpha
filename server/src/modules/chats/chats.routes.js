@@ -71,6 +71,33 @@ export async function handleListChatRooms(req, res) {
   }
 }
 
+// GET /me/chat-rooms — rooms the authenticated user belongs to (member-scoped;
+// not the full room list). Privacy: only your own rooms.
+export async function handleListMyRooms(req, res) {
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const result = await getPool().query(
+      `select r.id, r.type, r.title, r.status, m.status as member_status,
+              e.name as entity_name, ev.title as event_title
+         from chat_room_members m
+         join chat_rooms r on r.id = m.room_id
+         left join entities e on e.id = r.entity_id
+         left join events ev on ev.id = r.event_id
+        where m.user_id = $1 and m.status in ('active', 'read_only') and r.status <> 'hidden'
+        order by r.updated_at desc
+        limit 100`,
+      [actor.id]
+    );
+    sendJson(res, 200, { ok: true, rooms: result.rows });
+  } catch (error) {
+    sendError(res, 500, 'MY_ROOMS_FAILED', 'Failed to list rooms', { message: error?.message || String(error) });
+  }
+}
+
 // GET /chat-rooms/:id/messages — messages for a room, restricted to its members.
 export async function handleListMessages(req, res, roomId) {
   const client = await getPool().connect();

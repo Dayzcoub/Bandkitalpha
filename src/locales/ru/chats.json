@@ -9,5 +9,15 @@
   "chats.direct": "Личный чат",
   "chats.group": "Групповой чат",
   "chats.send": "Отправить",
-  "chats.empty": "Сообщений пока нет"
+  "chats.empty": "Сообщений пока нет",
+  "chats.real.title": "Мои чаты (реальный API)",
+  "chats.real.roomLabel": "Комната",
+  "chats.real.noRooms": "Вы пока не состоите ни в одной комнате.",
+  "chats.real.placeholder": "Напишите сообщение…",
+  "chats.real.sent": "Сообщение отправлено.",
+  "chats.real.empty": "В этой комнате пока нет сообщений.",
+  "chats.real.loadError": "Не удалось загрузить ваши чаты.",
+  "chats.real.sendError": "Не удалось отправить сообщение.",
+  "chats.real.readOnly": "Эта комната доступна вам только для чтения.",
+  "chats.real.you": "Вы"
 }

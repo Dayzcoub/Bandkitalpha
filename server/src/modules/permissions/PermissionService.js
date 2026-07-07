@@ -53,8 +53,15 @@ export class PermissionService {
     return Boolean(membership && membership.status === 'active');
   }
 
-  canViewDocument() {
-    return false;
+  // Creating a document under an entity requires a managing membership.
+  canCreateDocument(actor, membership) {
+    return this.canManageEntity(actor, membership);
+  }
+
+  // Viewing an entity's documents requires an active membership in that entity.
+  // Fine-grained per-document ACLs (document_permissions) are a later slice.
+  canViewEntityDocuments(actor, membership) {
+    return Boolean(actor && actor.id && membership && membership.status === 'active');
   }
 
   canExportDocument() {
