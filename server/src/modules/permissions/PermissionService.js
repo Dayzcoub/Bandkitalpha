@@ -23,6 +23,11 @@ export class PermissionService {
     return ['owner', 'admin', 'manager'].includes(membership.role);
   }
 
+  // Creating events for an entity requires a managing membership in that entity.
+  canCreateEvent(actor, membership) {
+    return this.canManageEntity(actor, membership);
+  }
+
   canViewRoom() {
     return false;
   }
