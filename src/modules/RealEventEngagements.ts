@@ -177,7 +177,7 @@ async function mount(host: HTMLElement): Promise<void> {
   host.addEventListener('change', (event) => {
     const el = event.target as HTMLElement;
     const statusFor = el.getAttribute?.('data-eng-status');
-    if (statusFor) { void changeStatus(host, state, statusFor, (el as HTMLSelectElement).value); return; }
+    if (statusFor) { (el as HTMLSelectElement).disabled = true; void changeStatus(host, state, statusFor, (el as HTMLSelectElement).value); return; }
     const field = el.getAttribute?.('data-eng-field');
     if (!field) return;
     const value = (el as HTMLSelectElement).value;
@@ -188,8 +188,11 @@ async function mount(host: HTMLElement): Promise<void> {
 
   host.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
-    if (!target?.closest('[data-eng-action="create"]')) return;
+    const createBtn = target?.closest<HTMLElement>('[data-eng-action="create"]');
+    if (!createBtn) return;
     event.preventDefault();
+    // Prevent double-submit while the POST is in flight; render() restores it.
+    (createBtn as HTMLButtonElement).disabled = true;
     void createEngagement(host, state);
   });
 

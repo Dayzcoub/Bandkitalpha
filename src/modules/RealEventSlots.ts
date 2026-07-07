@@ -180,6 +180,8 @@ async function mount(host: HTMLElement): Promise<void> {
     if (!action) return;
     event.preventDefault();
     if (!state.eventId) return;
+    // Prevent double-submit while the POST is in flight; render() restores it.
+    (action as HTMLButtonElement).disabled = true;
     void addSlot(host, state);
   });
 

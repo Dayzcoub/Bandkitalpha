@@ -153,7 +153,8 @@ async function mount(host: HTMLElement): Promise<void> {
       render(host, state);
       return;
     }
-    const action = target.closest<HTMLElement>('[data-rpe-action]')?.getAttribute('data-rpe-action');
+    const actionEl = target.closest<HTMLElement>('[data-rpe-action]');
+    const action = actionEl?.getAttribute('data-rpe-action');
     if (action === 'add') {
       event.preventDefault();
       const professionKey = state.pendingProfession;
@@ -170,6 +171,8 @@ async function mount(host: HTMLElement): Promise<void> {
     }
     if (action === 'save') {
       event.preventDefault();
+      // Prevent double-submit while the PUT is in flight; render() restores it.
+      if (actionEl) (actionEl as HTMLButtonElement).disabled = true;
       void save(host, state);
     }
   });

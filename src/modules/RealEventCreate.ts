@@ -67,15 +67,22 @@ async function submitCreate(host: HTMLElement): Promise<void> {
     setMsg(t('events.real.titleRequired'), 'error');
     return;
   }
-  const { status, data } = await api('/events', { entity_id: entityId, title });
-  if (status === 201) {
-    setMsg(t('events.real.created'), 'ok');
-    const input = host.querySelector<HTMLInputElement>('[data-rec-field="title"]');
-    if (input) input.value = '';
-  } else if (status === 403) {
-    setMsg(t('events.real.forbidden'), 'error');
-  } else {
-    setMsg(data?.error?.message || 'error', 'error');
+  // Disable the button while the POST is in flight to prevent double-submit.
+  const btn = host.querySelector<HTMLButtonElement>('[data-rec-action="create"]');
+  if (btn) btn.disabled = true;
+  try {
+    const { status, data } = await api('/events', { entity_id: entityId, title });
+    if (status === 201) {
+      setMsg(t('events.real.created'), 'ok');
+      const input = host.querySelector<HTMLInputElement>('[data-rec-field="title"]');
+      if (input) input.value = '';
+    } else if (status === 403) {
+      setMsg(t('events.real.forbidden'), 'error');
+    } else {
+      setMsg(data?.error?.message || 'error', 'error');
+    }
+  } finally {
+    if (btn) btn.disabled = false;
   }
 }
 
