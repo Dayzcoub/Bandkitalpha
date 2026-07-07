@@ -328,7 +328,15 @@ export const localeBundles = {
       "auth.twoFactor.title": "Two-factor protection",
       "auth.twoFactor.subtitle": "TOTP through authenticator app for admins, moderators and workspace owners.",
       "auth.otp": "Verification code",
-      "auth.securityHint": "All auth copy goes through i18n, errors go through messageKey."
+      "auth.securityHint": "All auth copy goes through i18n, errors go through messageKey.",
+      "auth.msg.working": "Sending…",
+      "auth.msg.loginFailed": "Invalid email or password.",
+      "auth.msg.registerFailed": "Registration failed.",
+      "auth.msg.checkEmail": "Check your email to confirm.",
+      "auth.msg.devToken": "Dev verification token:",
+      "auth.msg.verified": "Email verified. You can sign in now.",
+      "auth.msg.tokenInvalid": "Token is invalid or expired.",
+      "auth.logout": "Log out"
     },
     "bands": {
       "bands.title": "Bands and projects",
@@ -1155,7 +1163,15 @@ export const localeBundles = {
       "auth.twoFactor.title": "Двухфакторная защита",
       "auth.twoFactor.subtitle": "TOTP через authenticator app для админов, модераторов и владельцев workspace.",
       "auth.otp": "Код подтверждения",
-      "auth.securityHint": "Все auth-тексты идут через i18n, а ошибки — через messageKey."
+      "auth.securityHint": "Все auth-тексты идут через i18n, а ошибки — через messageKey.",
+      "auth.msg.working": "Отправляем…",
+      "auth.msg.loginFailed": "Неверный email или пароль.",
+      "auth.msg.registerFailed": "Не удалось зарегистрироваться.",
+      "auth.msg.checkEmail": "Проверьте почту для подтверждения.",
+      "auth.msg.devToken": "Dev-токен подтверждения:",
+      "auth.msg.verified": "Email подтверждён. Теперь можно войти.",
+      "auth.msg.tokenInvalid": "Токен неверный или истёк.",
+      "auth.logout": "Выйти"
     },
     "bands": {
       "bands.title": "Группы и проекты",

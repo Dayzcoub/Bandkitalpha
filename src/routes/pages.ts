@@ -75,8 +75,22 @@ function renderAuth(ctx: AppContext): string {
   const titleKey = ctx.match.route.titleKey;
   const subtitleKey = ctx.match.route.subtitleKey;
   const isRegister = ctx.path === '/register';
+  const isVerifyEmail = ctx.path === '/auth/verify-email';
+  const isLogin = ctx.path === '/login';
   const isVerify = ctx.path.includes('2fa') || ctx.path.includes('verify');
-  const form = `<form class="bk-form">${formField(ctx.t('auth.email'), '<input class="bk-input" type="email" autocomplete="email" />')}${isRegister ? formField(ctx.t('auth.phone'), '<input class="bk-input" type="tel" autocomplete="tel" />') : ''}${isRegister ? formField(ctx.t('auth.displayName'), '<input class="bk-input" type="text" autocomplete="name" />') : ''}${formField(ctx.t(isVerify ? 'auth.otp' : 'auth.password'), '<input class="bk-input" type="password" autocomplete="current-password" />', ctx.t('auth.securityHint'))}<div class="bk-auth-provider-grid">${button(ctx.t(isRegister ? 'auth.signUp' : 'auth.signIn'), 'primary')}${button(ctx.t('auth.google'), 'secondary')}${button(ctx.t('auth.apple'), 'secondary')}</div></form>`;
+  // Only login / register / verify-email are wired to the real backend so far.
+  const wired = isLogin || isRegister || isVerifyEmail;
+  const formKind = isVerifyEmail ? 'verify' : isRegister ? 'register' : 'login';
+  const fields = isVerifyEmail
+    ? formField(ctx.t('auth.otp'), '<input class="bk-input" type="text" data-auth-field="token" autocomplete="one-time-code" />', ctx.t('auth.securityHint'))
+    : `${formField(ctx.t('auth.email'), '<input class="bk-input" type="email" data-auth-field="email" autocomplete="email" />')}${isRegister ? formField(ctx.t('auth.displayName'), '<input class="bk-input" type="text" data-auth-field="display_name" autocomplete="name" />') : ''}${formField(ctx.t(isVerify ? 'auth.otp' : 'auth.password'), `<input class="bk-input" type="password" data-auth-field="password" autocomplete="${isRegister ? 'new-password' : 'current-password'}" />`, ctx.t('auth.securityHint'))}`;
+  const primaryLabel = isRegister ? ctx.t('auth.signUp') : isVerifyEmail ? ctx.t('actions.continue') : ctx.t('auth.signIn');
+  const primaryBtn = wired
+    ? `<button class="bk-button bk-button-primary" type="button" data-auth-submit>${primaryLabel}</button>`
+    : button(primaryLabel, 'primary');
+  const providers = isVerifyEmail ? '' : `${button(ctx.t('auth.google'), 'secondary')}${button(ctx.t('auth.apple'), 'secondary')}`;
+  const messageBox = wired ? '<div class="bk-meta" data-auth-message role="status"></div>' : '';
+  const form = `<form class="bk-form"${wired ? ` data-auth-form="${formKind}"` : ''}>${fields}${messageBox}<div class="bk-auth-provider-grid">${primaryBtn}${providers}</div></form>`;
   const cardHtml = card(`<h1 class="bk-title">${ctx.t(titleKey)}</h1><p class="bk-subtitle">${subtitleKey ? ctx.t(subtitleKey) : ''}</p>${form}`);
   return `<div class="bk-auth-shell"><div class="bk-auth-grid"><section class="bk-hero-copy">${img('logoPrimary', 'bk-brand-logo', ctx.t('asset.alt.logo'))}<h2 class="bk-hero-title">${ctx.t('common.security')}</h2><p class="bk-hero-subtitle">${ctx.t('security.authPromise')}</p>${securityBadges(ctx)}</section>${cardHtml}</div></div>`;
 }
@@ -215,7 +229,7 @@ function renderSettings(ctx: AppContext): string {
 
 function renderSecurity(ctx: AppContext): string {
   const checks = card(`<h3 class="bk-card-title">${ctx.t('trust.checks')}</h3><div class="bk-trust-list">${trustChecks.map((check) => trustCheckCard(ctx, check)).join('')}</div>`, 'bk-security-card');
-  return contentGrid([pageHeader(ctx, 'settings.securityTitle', 'common.security'), card(`${securityBadges(ctx)}<div class="bk-list">${listRow(ctx.t('auth.twoFactor.title'), ctx.t('security.twoFactorRequired'), 'badgeTwoFactor', button(ctx.t('actions.setup'), 'primary'))}${listRow(ctx.t('settings.sessions'), ctx.t('settings.logoutAll'), 'navAdminInactive', button(ctx.t('settings.logoutAll'), 'danger'))}</div>`), checks].join(''), defaultRightRail(ctx));
+  return contentGrid([pageHeader(ctx, 'settings.securityTitle', 'common.security'), card(`${securityBadges(ctx)}<div class="bk-list">${listRow(ctx.t('auth.twoFactor.title'), ctx.t('security.twoFactorRequired'), 'badgeTwoFactor', button(ctx.t('actions.setup'), 'primary'))}${listRow(ctx.t('settings.sessions'), ctx.t('settings.logoutAll'), 'navAdminInactive', `<button class="bk-button bk-button-danger" type="button" data-auth-action="logout">${ctx.t('auth.logout')}</button>`)}</div>`), checks].join(''), defaultRightRail(ctx));
 }
 
 function renderI18nSettings(ctx: AppContext): string {

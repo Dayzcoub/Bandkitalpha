@@ -1,5 +1,6 @@
 import { getPool } from '../../db/client.js';
 import { permissionService } from '../permissions/PermissionService.js';
+import { resolveSessionUser } from '../auth/session.js';
 import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 
 const allowedEntityTypes = new Set(['band', 'solo_artist', 'orchestra', 'project', 'organization', 'studio', 'venue', 'agency', 'other']);
@@ -131,15 +132,22 @@ export async function handleCreateEntity(req, res) {
       return;
     }
 
-    await client.query('begin');
-
-    const actor = await getDevActor(client, req);
-
+    // Actor comes from the session (server-side source of truth). The dev-header
+    // fallback stays only outside production for tooling/smoke scripts.
+    let actor = await resolveSessionUser(req);
+    if (!actor && process.env.NODE_ENV !== 'production') {
+      actor = await getDevActor(getPool(), req);
+    }
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required to create an entity');
+      return;
+    }
     if (!permissionService.canCreateEntity(actor)) {
-      await client.query('rollback');
       sendError(res, 403, 'ENTITY_CREATE_FORBIDDEN', 'Entity creation is not allowed for this actor');
       return;
     }
+
+    await client.query('begin');
 
     const entityResult = await client.query(
       `insert into entities (owner_user_id, type, name, slug, status, visibility, created_by_user_id)

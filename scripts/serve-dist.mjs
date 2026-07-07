@@ -34,8 +34,39 @@ if (!fs.existsSync(path.join(dist, 'index.html'))) {
   process.exit(1);
 }
 
+// Local dev: proxy /api/* to the backend so the SPA and API share one origin
+// (mirrors the VPS nginx setup and keeps session cookies working without CORS).
+const apiHost = process.env.BACKEND_HOST ?? '127.0.0.1';
+const apiPort = Number(process.env.BACKEND_PORT ?? 3001);
+
+function proxyApi(req, res) {
+  const proxyReq = http.request(
+    {
+      host: apiHost,
+      port: apiPort,
+      method: req.method,
+      path: req.url,
+      headers: { ...req.headers, host: `${apiHost}:${apiPort}` },
+    },
+    (proxyRes) => {
+      res.writeHead(proxyRes.statusCode ?? 502, proxyRes.headers);
+      proxyRes.pipe(res);
+    }
+  );
+  proxyReq.on('error', () => {
+    res.writeHead(502, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify({ error: { code: 'BACKEND_UNAVAILABLE', message: `Backend not reachable on ${apiHost}:${apiPort}` } }));
+  });
+  req.pipe(proxyReq);
+}
+
 const server = http.createServer((req, res) => {
   const requestPath = req.url ?? '/';
+
+  if (requestPath.startsWith('/api/')) {
+    proxyApi(req, res);
+    return;
+  }
 
   if (requestPath.startsWith('/__bandkit_health')) {
     const body = JSON.stringify({ ok: true, app: appName, version: appVersion, dist, port }, null, 2);

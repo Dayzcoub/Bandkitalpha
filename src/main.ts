@@ -12,6 +12,7 @@ import { initChatEmptyStates } from './modules/ChatEmptyStates.js';
 import { initChatPolicyDataset } from './modules/ChatPolicyDataset.js';
 import { initChatComposerPlacement } from './modules/ChatComposerPlacement.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
+import { initAuthClient } from './modules/AuthClient.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
 
@@ -40,3 +41,4 @@ initChatEmptyStates(root);
 initChatPolicyDataset(root);
 initChatComposerPlacement(root);
 initRealEntitiesPreview(root);
+initAuthClient(root);
