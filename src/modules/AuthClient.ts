@@ -9,12 +9,17 @@ function t(key: string): string {
 type ApiResult = { status: number; data: any };
 
 async function api(path: string, body?: unknown): Promise<ApiResult> {
+  // Timeout so a hung backend (accepted connection, no response) can't block the
+  // bootstrap /auth/me await and leave the SPA rendering nothing.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
   try {
     const res = await fetch(`/api/v1${path}`, {
       method: body ? 'POST' : 'GET',
       headers: body ? { 'content-type': 'application/json' } : {},
       body: body ? JSON.stringify(body) : undefined,
-      credentials: 'same-origin'
+      credentials: 'same-origin',
+      signal: controller.signal
     });
     let data: any = null;
     try {
@@ -24,8 +29,10 @@ async function api(path: string, body?: unknown): Promise<ApiResult> {
     }
     return { status: res.status, data };
   } catch {
-    // Backend unreachable — treat as unauthenticated so the app still renders.
+    // Backend unreachable / timed out — treat as unauthenticated so the app renders.
     return { status: 0, data: null };
+  } finally {
+    clearTimeout(timer);
   }
 }
 

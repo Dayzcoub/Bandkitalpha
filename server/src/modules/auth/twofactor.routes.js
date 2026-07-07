@@ -17,9 +17,11 @@ function newRecoveryCode() {
 export async function consumeRecoveryCode(client, userId, code) {
   const clean = String(code || '').trim().toLowerCase();
   if (!clean) return false;
+  // Atomic: the `used_at is null` filter lives in the UPDATE itself, so two
+  // concurrent requests with the same code cannot both consume it.
   const result = await client.query(
     `update recovery_codes set used_at = now()
-     where id = (select id from recovery_codes where user_id = $1 and code_hash = $2 and used_at is null limit 1)
+     where user_id = $1 and code_hash = $2 and used_at is null
      returning id`,
     [userId, hashToken(clean)]
   );

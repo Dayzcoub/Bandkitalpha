@@ -249,10 +249,14 @@ export async function handleAddEntityMember(req, res, entityId) {
     }
 
     await client.query('begin');
+    // Re-activate a previously removed/former/left membership; a currently
+    // active or invited one stays a 409 (no update, no row returned).
     const inserted = await client.query(
       `insert into entity_memberships (entity_id, user_id, role, status)
        values ($1, $2, $3, 'active')
-       on conflict (entity_id, user_id) do nothing
+       on conflict (entity_id, user_id) do update
+         set role = excluded.role, status = 'active', updated_at = now()
+         where entity_memberships.status in ('former', 'removed', 'left')
        returning role, status`,
       [entityId, target.id, role]
     );
