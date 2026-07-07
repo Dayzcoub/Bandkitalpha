@@ -200,3 +200,95 @@ export async function handleCreateEntity(req, res) {
     client.release();
   }
 }
+
+// POST /entities/:id/members — an entity manager adds a user as member/guest.
+// Elevated grants (manager/admin/owner) are out of scope for this slice; they
+// need stricter rules (TZ §15). Session-authenticated, entity-scoped.
+export async function handleAddEntityMember(req, res, entityId) {
+  const client = await getPool().connect();
+  try {
+    const body = await readJsonBody(req);
+    const email = body.email ? String(body.email).trim().toLowerCase() : '';
+    const handle = body.handle ? String(body.handle).trim() : '';
+    const role = String(body.role || 'member');
+
+    if (!email && !handle) {
+      sendError(res, 400, 'MEMBER_TARGET_REQUIRED', 'email or handle is required');
+      return;
+    }
+    if (!['member', 'guest'].includes(role)) {
+      sendError(res, 400, 'MEMBER_ROLE_INVALID', 'role must be member or guest');
+      return;
+    }
+
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+
+    const managerMembership = await client.query(
+      `select role, status from entity_memberships where entity_id = $1 and user_id = $2 limit 1`,
+      [entityId, actor.id]
+    );
+    if (!permissionService.canManageEntity(actor, managerMembership.rows[0] || null)) {
+      sendError(res, 403, 'MEMBER_ADD_FORBIDDEN', 'You do not manage this entity');
+      return;
+    }
+
+    const targetResult = await client.query(
+      `select id, email, handle, display_name from users
+       where ($1 <> '' and email = $1) or ($2 <> '' and handle = $2)
+       limit 1`,
+      [email, handle]
+    );
+    const target = targetResult.rows[0];
+    if (!target) {
+      sendError(res, 404, 'MEMBER_USER_NOT_FOUND', 'User not found');
+      return;
+    }
+
+    await client.query('begin');
+    const inserted = await client.query(
+      `insert into entity_memberships (entity_id, user_id, role, status)
+       values ($1, $2, $3, 'active')
+       on conflict (entity_id, user_id) do nothing
+       returning role, status`,
+      [entityId, target.id, role]
+    );
+    if (inserted.rowCount === 0) {
+      await client.query('rollback');
+      sendError(res, 409, 'MEMBER_ALREADY_EXISTS', 'User is already a member of this entity');
+      return;
+    }
+    await client.query(
+      `insert into audit_events (actor_user_id, action, entity_id, metadata)
+       values ($1, 'entity.member_added', $2, $3::jsonb)`,
+      [actor.id, entityId, JSON.stringify({ target_user_id: target.id, role })]
+    );
+    await client.query('commit');
+
+    sendJson(res, 201, {
+      ok: true,
+      membership: {
+        entity_id: entityId,
+        role,
+        status: 'active',
+        user: { id: target.id, email: target.email, handle: target.handle, display_name: target.display_name }
+      }
+    });
+  } catch (error) {
+    await client.query('rollback').catch(() => {});
+    if (error?.code === '23503') {
+      sendError(res, 404, 'MEMBER_ENTITY_NOT_FOUND', 'Entity not found');
+      return;
+    }
+    if (error?.code === 'BODY_TOO_LARGE') {
+      sendError(res, 413, 'BODY_TOO_LARGE', 'Request body is too large');
+      return;
+    }
+    sendError(res, 500, 'MEMBER_ADD_FAILED', 'Failed to add member', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}

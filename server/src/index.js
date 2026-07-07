@@ -10,7 +10,7 @@ import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
 import { handleListChatRooms } from './modules/chats/chats.routes.js';
 import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
 import { handleListDocuments } from './modules/documents/documents.routes.js';
-import { handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
+import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
 import { handleCreateEvent, handleListEvents } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
@@ -41,6 +41,7 @@ const server = http.createServer((req, res) => {
     .then(async () => {
       const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
       const entityDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)$`));
+      const entityMembersMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/members$`));
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/health`) {
         handleHealth(req, res, env);
@@ -117,6 +118,11 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && entityDetailMatch) {
         await handleGetEntity(req, res, decodeURIComponent(entityDetailMatch[1]));
+        return;
+      }
+
+      if (req.method === 'POST' && entityMembersMatch) {
+        await handleAddEntityMember(req, res, decodeURIComponent(entityMembersMatch[1]));
         return;
       }
 
