@@ -12,7 +12,7 @@ import { initChatEmptyStates } from './modules/ChatEmptyStates.js';
 import { initChatPolicyDataset } from './modules/ChatPolicyDataset.js';
 import { initChatComposerPlacement } from './modules/ChatComposerPlacement.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
-import { initAuthClient } from './modules/AuthClient.js';
+import { initAuthClient, hydrateSessionState } from './modules/AuthClient.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
 
@@ -31,6 +31,9 @@ const platformAdminInitializers: AppRootInitializer[] = [
   initPlatformAdminRolesReadOnlyBridge,
   initPlatformAdminSettingsReadOnlyBridge
 ];
+
+// Resolve the live session first so the very first render reflects real auth.
+await hydrateSessionState();
 
 createBandKitApp(root);
 for (const initPlatformAdminModule of platformAdminInitializers) {

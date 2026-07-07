@@ -1,4 +1,5 @@
 import { createTranslator, normalizeLocale } from '../lib/i18n/i18n.js';
+import { setSessionUser } from '../lib/auth/session.js';
 
 function t(key: string): string {
   const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('bandkit.locale') : null;
@@ -7,31 +8,36 @@ function t(key: string): string {
 
 type ApiResult = { status: number; data: any };
 
-// Bridge: the app's route guards still read localStorage['bandkit.role'].
-// Until they consume /auth/me directly, map the real session's platform_role
-// onto that mock role so a logged-in user passes the existing guards.
-function mockRoleFor(user: any): string {
-  const pr = user?.platform_role;
-  if (pr === 'super_admin') return 'super_admin';
-  if (pr === 'platform_admin') return 'admin';
-  if (pr === 'platform_moderator') return 'moderator';
-  return 'user';
+async function api(path: string, body?: unknown): Promise<ApiResult> {
+  try {
+    const res = await fetch(`/api/v1${path}`, {
+      method: body ? 'POST' : 'GET',
+      headers: body ? { 'content-type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined,
+      credentials: 'same-origin'
+    });
+    let data: any = null;
+    try {
+      data = await res.json();
+    } catch {
+      data = null;
+    }
+    return { status: res.status, data };
+  } catch {
+    // Backend unreachable — treat as unauthenticated so the app still renders.
+    return { status: 0, data: null };
+  }
 }
 
-async function api(path: string, body?: unknown): Promise<ApiResult> {
-  const res = await fetch(`/api/v1${path}`, {
-    method: body ? 'POST' : 'GET',
-    headers: body ? { 'content-type': 'application/json' } : {},
-    body: body ? JSON.stringify(body) : undefined,
-    credentials: 'same-origin'
-  });
-  let data: any = null;
-  try {
-    data = await res.json();
-  } catch {
-    data = null;
-  }
-  return { status: res.status, data };
+// Bootstrap: resolve the live session and make it the app's source of truth.
+// Awaited before the first render so guards reflect the real session (no flash).
+export async function hydrateSessionState(): Promise<void> {
+  const { status, data } = await api('/auth/me');
+  const user = status === 200 ? data?.user : null;
+  setSessionUser(user || null);
+  document.documentElement.dataset.bandkitAuthed = user ? 'true' : 'false';
+  if (user) document.documentElement.dataset.bandkitUser = user.email;
+  else delete document.documentElement.dataset.bandkitUser;
 }
 
 function fieldValue(form: HTMLElement, name: string): string {
@@ -52,7 +58,7 @@ async function submitAuthForm(form: HTMLElement): Promise<void> {
   if (kind === 'login') {
     const { status, data } = await api('/auth/login', { email: fieldValue(form, 'email'), password: fieldValue(form, 'password') });
     if (status === 200) {
-      localStorage.setItem('bandkit.role', mockRoleFor(data?.user));
+      // Full reload re-runs hydrateSessionState, so the session drives state.
       window.location.href = '/feed';
       return;
     }
@@ -75,23 +81,7 @@ async function submitAuthForm(form: HTMLElement): Promise<void> {
   }
 }
 
-// Reflect the real session on the document so the app/UI can react.
-async function reflectSession(): Promise<void> {
-  const { status, data } = await api('/auth/me');
-  const authed = status === 200 && Boolean(data?.user);
-  document.documentElement.dataset.bandkitAuthed = authed ? 'true' : 'false';
-  if (authed) {
-    document.documentElement.dataset.bandkitUser = data.user.email;
-    // Keep the mock guard role in sync with the live session (bridge).
-    localStorage.setItem('bandkit.role', mockRoleFor(data.user));
-  } else {
-    delete document.documentElement.dataset.bandkitUser;
-  }
-}
-
 export function initAuthClient(root: HTMLElement): void {
-  void reflectSession();
-
   root.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
@@ -112,6 +102,8 @@ export function initAuthClient(root: HTMLElement): void {
       event.preventDefault();
       event.stopImmediatePropagation();
       void api('/auth/logout', {}).then(() => {
+        setSessionUser(null);
+        // Explicit guest on logout so the mock fallback doesn't keep a stale role.
         localStorage.setItem('bandkit.role', 'guest');
         window.location.href = '/';
       });
