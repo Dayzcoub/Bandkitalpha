@@ -58,15 +58,21 @@ export function totp(secretBase32, atSeconds = Math.floor(Date.now() / 1000)) {
   return hotp(secretBase32, Math.floor(atSeconds / STEP_SECONDS));
 }
 
-// Verify a submitted code within +/- window steps to tolerate clock drift.
-export function verifyTotp(secretBase32, token, window = 1) {
+// Return the matched time-step counter within +/- window (tolerating drift), or
+// null. Callers use the counter to reject replay: a fresh code's step must be
+// strictly greater than the last step this user was authenticated with.
+export function matchTotp(secretBase32, token, window = 1) {
   const clean = String(token || '').replace(/\s/g, '');
-  if (!/^\d{6}$/.test(clean)) return false;
+  if (!/^\d{6}$/.test(clean)) return null;
   const counter = Math.floor(Date.now() / 1000 / STEP_SECONDS);
   for (let i = -window; i <= window; i += 1) {
-    if (hotp(secretBase32, counter + i) === clean) return true;
+    if (hotp(secretBase32, counter + i) === clean) return counter + i;
   }
-  return false;
+  return null;
+}
+
+export function verifyTotp(secretBase32, token, window = 1) {
+  return matchTotp(secretBase32, token, window) !== null;
 }
 
 export function otpauthUri(secretBase32, accountLabel, issuer = 'BandKit') {

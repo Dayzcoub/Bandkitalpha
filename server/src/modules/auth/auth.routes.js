@@ -1,7 +1,7 @@
 import { getPool } from '../../db/client.js';
 import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { logInfo } from '../../shared/logger.js';
-import { verifyTotp } from '../../shared/totp.js';
+import { matchTotp } from '../../shared/totp.js';
 import { decryptSecret } from '../../shared/secretbox.js';
 import { consumeRecoveryCode } from './twofactor.routes.js';
 import {
@@ -22,6 +22,14 @@ const MIN_PASSWORD_LEN = 8;
 
 function normalizeEmail(value) {
   return String(value || '').trim().toLowerCase();
+}
+
+// A stable scrypt hash used to equalize login timing when the email is unknown,
+// so response time doesn't reveal whether an account exists (code-review #7).
+let dummyHashPromise;
+function timingDecoyHash() {
+  dummyHashPromise ||= hashPassword('bandkit-timing-decoy');
+  return dummyHashPromise;
 }
 
 // Secure cookies need HTTPS; driven by env.cookieSecure (COOKIE_SECURE=true once
@@ -174,7 +182,7 @@ export async function handleLogin(req, res, env) {
 
     const found = await client.query(
       `select u.id, u.display_name, u.email, u.status, u.email_verified, u.platform_role,
-              u.two_factor_enabled, c.password_hash, tf.secret as totp_secret
+              u.two_factor_enabled, c.password_hash, tf.secret as totp_secret, tf.last_used_step
        from users u
        join auth_credentials c on c.user_id = u.id
        left join two_factor_secrets tf on tf.user_id = u.id and tf.confirmed_at is not null
@@ -184,9 +192,12 @@ export async function handleLogin(req, res, env) {
     );
     const row = found.rows[0];
 
-    // Same generic error whether the user is missing or the password is wrong (Security §1).
-    const ok = row ? await verifyPassword(password, row.password_hash) : false;
-    if (!ok) {
+    // Always run scrypt (against a decoy hash when the email is unknown) so login
+    // timing doesn't reveal whether an account exists (code-review #7). Same
+    // generic error either way (Security §1).
+    const storedHash = row ? row.password_hash : await timingDecoyHash();
+    const passwordOk = await verifyPassword(password, storedHash);
+    if (!row || !passwordOk) {
       sendError(res, 401, 'AUTH_INVALID_CREDENTIALS', 'Invalid email or password');
       return;
     }
@@ -195,24 +206,40 @@ export async function handleLogin(req, res, env) {
       return;
     }
 
-    // Second factor gate: enabled users must present a valid TOTP or recovery code.
+    const rawToken = generateToken();
+    const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
+
+    // Open the transaction before the 2FA gate so a consumed recovery code (or a
+    // bumped TOTP step) rolls back if session creation later fails (code-review #6).
+    await client.query('begin');
+
+    // Second factor gate: a valid, non-replayed TOTP or a one-time recovery code.
     if (row.two_factor_enabled) {
       const code = String(body.code || '');
       if (!code) {
+        await client.query('rollback');
         sendError(res, 401, 'AUTH_2FA_REQUIRED', 'Two-factor code required');
         return;
       }
-      const ok2fa = (row.totp_secret && verifyTotp(decryptSecret(row.totp_secret), code)) || (await consumeRecoveryCode(client, row.id, code));
+      let ok2fa = false;
+      if (row.totp_secret) {
+        const step = matchTotp(decryptSecret(row.totp_secret), code);
+        const lastStep = row.last_used_step === null ? -1 : Number(row.last_used_step);
+        // Reject a code whose step was already used (replay within the window, #5).
+        if (step !== null && step > lastStep) {
+          await client.query('update two_factor_secrets set last_used_step = $1 where user_id = $2', [step, row.id]);
+          ok2fa = true;
+        }
+      }
       if (!ok2fa) {
+        ok2fa = await consumeRecoveryCode(client, row.id, code);
+      }
+      if (!ok2fa) {
+        await client.query('rollback');
         sendError(res, 401, 'AUTH_2FA_INVALID', 'Invalid two-factor code');
         return;
       }
     }
-
-    const rawToken = generateToken();
-    const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
-
-    await client.query('begin');
     await client.query(
       `insert into sessions (user_id, token_hash, expires_at, ip, user_agent)
        values ($1, $2, $3, $4, $5)`,
