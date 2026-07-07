@@ -41,5 +41,21 @@
   "events.slots.loadError": "Не удалось загрузить слоты события.",
   "events.slots.saveError": "Не удалось добавить слот.",
   "events.slots.forbidden": "Вы не управляете этим событием.",
-  "events.slots.mismatch": "Эта специализация не относится к выбранной профессии."
+  "events.slots.mismatch": "Эта специализация не относится к выбранной профессии.",
+  "events.engagements.title": "Ангажементы (реальный API)",
+  "events.engagements.subtitle": "Кто нанят на реальное событие и на какой стадии. Только для управляющих.",
+  "events.engagements.eventLabel": "Событие",
+  "events.engagements.noEvents": "Пока нет реальных событий — сначала создайте его выше.",
+  "events.engagements.counterpartyLabel": "Контрагент",
+  "events.engagements.slotLabel": "Слот (необязательно)",
+  "events.engagements.slotNone": "— без слота —",
+  "events.engagements.statusLabel": "Статус",
+  "events.engagements.create": "Нанять",
+  "events.engagements.created": "Ангажемент создан.",
+  "events.engagements.statusChanged": "Статус обновлён.",
+  "events.engagements.empty": "Для этого события пока нет ангажементов.",
+  "events.engagements.loadError": "Не удалось загрузить ангажементы.",
+  "events.engagements.saveError": "Не удалось создать ангажемент.",
+  "events.engagements.forbidden": "Вы не управляете этим событием.",
+  "events.engagements.noCandidates": "Пока некого нанимать."
 }

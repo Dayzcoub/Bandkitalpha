@@ -163,6 +163,14 @@ export async function handleCreateEntity(req, res) {
       [entity.id, actor.id]
     );
 
+    // Every entity is also a party (organization) so it can be engaged as a
+    // counterparty. Idempotent via unique(entity_id).
+    await client.query(
+      `insert into parties (kind, entity_id) values ('organization', $1)
+       on conflict (entity_id) do nothing`,
+      [entity.id]
+    );
+
     await client.query(
       `insert into audit_events (actor_user_id, action, entity_id, metadata)
        values ($1, 'entity.created', $2, $3::jsonb)`,

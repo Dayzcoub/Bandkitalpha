@@ -35,6 +35,57 @@ async function loadProfessions(client, partyId) {
   return result.rows;
 }
 
+// GET /parties/candidates — parties the actor may engage as a counterparty.
+// Privacy-scoped (Security §2): NOT the full user directory. Returns only the
+// actor's own individual party plus organization parties for entities the actor
+// can already see (public/registered, or entities they are a member of). Missing
+// org parties are provisioned lazily so entities created before the party layer
+// (or between backfills) still appear.
+export async function handleListPartyCandidates(req, res) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    await ensureIndividualParty(client, actor.id);
+    await client.query(
+      `insert into parties (kind, entity_id)
+       select 'organization', e.id
+         from entities e
+        where e.status = 'active'
+          and (e.visibility in ('public', 'registered')
+               or e.id in (select entity_id from entity_memberships where user_id = $1 and status = 'active'))
+          and not exists (select 1 from parties p where p.entity_id = e.id)
+       on conflict (entity_id) do nothing`,
+      [actor.id]
+    );
+    const result = await client.query(
+      `select p.id as party_id, p.kind,
+              coalesce(u.display_name, ent.name) as label,
+              case when p.kind = 'individual' then 'personal' else ent.type end as subtitle
+         from parties p
+         left join users u on u.id = p.user_id
+         left join entities ent on ent.id = p.entity_id
+        where p.user_id = $1
+           or (p.entity_id is not null and ent.status = 'active'
+               and (ent.visibility in ('public', 'registered')
+                    or ent.id in (select entity_id from entity_memberships where user_id = $1 and status = 'active')))
+        order by p.kind, label
+        limit 100`,
+      [actor.id]
+    );
+    sendJson(res, 200, { ok: true, candidates: result.rows });
+  } catch (error) {
+    sendError(res, 500, 'PARTY_CANDIDATES_FAILED', 'Failed to load party candidates', {
+      message: error?.message || String(error)
+    });
+  } finally {
+    client.release();
+  }
+}
+
 // GET /me/professions — the professions on the authenticated user's own party.
 export async function handleGetMyProfessions(req, res) {
   const client = await getPool().connect();

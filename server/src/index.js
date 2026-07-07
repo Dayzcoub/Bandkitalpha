@@ -14,7 +14,7 @@ import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListE
 import { handleCreateEvent, handleListEvents } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
 import { handleGetTaxonomy } from './modules/taxonomy/taxonomy.routes.js';
-import { handleGetMyProfessions, handleReplaceMyProfessions } from './modules/parties/parties.routes.js';
+import { handleGetMyProfessions, handleReplaceMyProfessions, handleListPartyCandidates } from './modules/parties/parties.routes.js';
 import { handleCreateSlot, handleListSlots, handleCreateEngagement, handleListEngagements, handleUpdateEngagementStatus } from './modules/events/eventOps.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
@@ -179,6 +179,11 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/taxonomy`) {
         await handleGetTaxonomy(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/parties/candidates`) {
+        await handleListPartyCandidates(req, res);
         return;
       }
 

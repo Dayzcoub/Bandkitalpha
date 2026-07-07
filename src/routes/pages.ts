@@ -158,7 +158,8 @@ function renderEvents(ctx: AppContext): string {
   const schedule = card(`<div class="bk-timeline">${events.map((event) => `<div class="bk-timeline-item"><div class="bk-timeline-date">${formatDateTime(event.startsAt, ctx.state.locale)}</div>${eventCard(ctx, event)}</div>`).join('')}</div>`, 'bk-schedule-card');
   const createPanel = ctx.state.currentUser ? '<div data-real-event-create></div>' : '';
   const slotsPanel = ctx.state.currentUser ? '<div data-real-event-slots></div>' : '';
-  return contentGrid([pageHeader(ctx, 'events.title', 'events.subtitle', 'events.create', '/events/new'), createPanel, slotsPanel, schedule].join(''), defaultRightRail(ctx));
+  const engagementsPanel = ctx.state.currentUser ? '<div data-real-event-engagements></div>' : '';
+  return contentGrid([pageHeader(ctx, 'events.title', 'events.subtitle', 'events.create', '/events/new'), createPanel, slotsPanel, engagementsPanel, schedule].join(''), defaultRightRail(ctx));
 }
 
 function renderEventDetail(ctx: AppContext): string {

@@ -41,5 +41,21 @@
   "events.slots.loadError": "Could not load event slots.",
   "events.slots.saveError": "Could not add the slot.",
   "events.slots.forbidden": "You do not manage this event.",
-  "events.slots.mismatch": "That specialization does not belong to the chosen profession."
+  "events.slots.mismatch": "That specialization does not belong to the chosen profession.",
+  "events.engagements.title": "Engagements (real API)",
+  "events.engagements.subtitle": "Who is engaged on a real event and at what stage. Managers only.",
+  "events.engagements.eventLabel": "Event",
+  "events.engagements.noEvents": "No real events yet — create one above first.",
+  "events.engagements.counterpartyLabel": "Counterparty",
+  "events.engagements.slotLabel": "Slot (optional)",
+  "events.engagements.slotNone": "— no slot —",
+  "events.engagements.statusLabel": "Status",
+  "events.engagements.create": "Engage",
+  "events.engagements.created": "Engagement created.",
+  "events.engagements.statusChanged": "Status updated.",
+  "events.engagements.empty": "No engagements yet for this event.",
+  "events.engagements.loadError": "Could not load engagements.",
+  "events.engagements.saveError": "Could not create the engagement.",
+  "events.engagements.forbidden": "You do not manage this event.",
+  "events.engagements.noCandidates": "No parties available to engage yet."
 }
