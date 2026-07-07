@@ -2,6 +2,7 @@ import { getPool } from '../../db/client.js';
 import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { logInfo } from '../../shared/logger.js';
 import { verifyTotp } from '../../shared/totp.js';
+import { decryptSecret } from '../../shared/secretbox.js';
 import { consumeRecoveryCode } from './twofactor.routes.js';
 import {
   hashPassword,
@@ -201,7 +202,7 @@ export async function handleLogin(req, res, env) {
         sendError(res, 401, 'AUTH_2FA_REQUIRED', 'Two-factor code required');
         return;
       }
-      const ok2fa = (row.totp_secret && verifyTotp(row.totp_secret, code)) || (await consumeRecoveryCode(client, row.id, code));
+      const ok2fa = (row.totp_secret && verifyTotp(decryptSecret(row.totp_secret), code)) || (await consumeRecoveryCode(client, row.id, code));
       if (!ok2fa) {
         sendError(res, 401, 'AUTH_2FA_INVALID', 'Invalid two-factor code');
         return;

@@ -4,6 +4,7 @@ import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { resolveSessionUser } from './session.js';
 import { hashToken } from '../../shared/auth.js';
 import { generateSecret, verifyTotp, otpauthUri } from '../../shared/totp.js';
+import { encryptSecret, decryptSecret, twoFactorConfigured } from '../../shared/secretbox.js';
 import { logInfo } from '../../shared/logger.js';
 
 const RECOVERY_CODE_COUNT = 8;
@@ -36,6 +37,10 @@ export async function handleEnroll2fa(req, res) {
     sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
     return;
   }
+  if (!twoFactorConfigured()) {
+    sendError(res, 503, 'AUTH_2FA_UNAVAILABLE', 'Two-factor is not configured on the server');
+    return;
+  }
   const client = await getPool().connect();
   try {
     const existing = await client.query('select confirmed_at from two_factor_secrets where user_id = $1', [actor.id]);
@@ -44,11 +49,13 @@ export async function handleEnroll2fa(req, res) {
       return;
     }
     const secret = generateSecret();
+    // Store the secret encrypted at rest; the raw secret is returned once for the
+    // user's authenticator app.
     await client.query(
       `insert into two_factor_secrets (user_id, secret, confirmed_at, disabled_at)
        values ($1, $2, null, null)
        on conflict (user_id) do update set secret = excluded.secret, confirmed_at = null, disabled_at = null, updated_at = now()`,
-      [actor.id, secret]
+      [actor.id, encryptSecret(secret)]
     );
     sendJson(res, 200, { ok: true, secret, otpauth_uri: otpauthUri(secret, actor.email || actor.id) });
   } catch (error) {
@@ -78,7 +85,7 @@ export async function handleConfirm2fa(req, res) {
       sendError(res, 409, 'AUTH_2FA_ALREADY_ENABLED', 'Two-factor is already enabled');
       return;
     }
-    if (!verifyTotp(row.secret, String(body.code || ''))) {
+    if (!verifyTotp(decryptSecret(row.secret), String(body.code || ''))) {
       sendError(res, 400, 'AUTH_2FA_CODE_INVALID', 'Invalid verification code');
       return;
     }
@@ -120,7 +127,7 @@ export async function handleDisable2fa(req, res) {
       return;
     }
     const code = String(body.code || '');
-    const ok = verifyTotp(row.secret, code) || (await consumeRecoveryCode(client, actor.id, code));
+    const ok = verifyTotp(decryptSecret(row.secret), code) || (await consumeRecoveryCode(client, actor.id, code));
     if (!ok) {
       sendError(res, 400, 'AUTH_2FA_CODE_INVALID', 'Invalid verification code');
       return;
