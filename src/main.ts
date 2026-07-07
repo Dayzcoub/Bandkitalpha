@@ -13,6 +13,7 @@ import { initChatPolicyDataset } from './modules/ChatPolicyDataset.js';
 import { initChatComposerPlacement } from './modules/ChatComposerPlacement.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 import { initAuthClient, hydrateSessionState } from './modules/AuthClient.js';
+import { initTwoFactor } from './modules/TwoFactor.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
 
@@ -45,3 +46,4 @@ initChatPolicyDataset(root);
 initChatComposerPlacement(root);
 initRealEntitiesPreview(root);
 initAuthClient(root);
+initTwoFactor(root);

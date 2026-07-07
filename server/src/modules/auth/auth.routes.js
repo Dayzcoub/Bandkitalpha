@@ -1,6 +1,8 @@
 import { getPool } from '../../db/client.js';
 import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { logInfo } from '../../shared/logger.js';
+import { verifyTotp } from '../../shared/totp.js';
+import { consumeRecoveryCode } from './twofactor.routes.js';
 import {
   hashPassword,
   verifyPassword,
@@ -170,9 +172,11 @@ export async function handleLogin(req, res, env) {
     const password = String(body.password || '');
 
     const found = await client.query(
-      `select u.id, u.display_name, u.email, u.status, u.email_verified, u.platform_role, c.password_hash
+      `select u.id, u.display_name, u.email, u.status, u.email_verified, u.platform_role,
+              u.two_factor_enabled, c.password_hash, tf.secret as totp_secret
        from users u
        join auth_credentials c on c.user_id = u.id
+       left join two_factor_secrets tf on tf.user_id = u.id and tf.confirmed_at is not null
        where u.email = $1
        limit 1`,
       [email]
@@ -188,6 +192,20 @@ export async function handleLogin(req, res, env) {
     if (row.status === 'blocked' || row.status === 'deleted') {
       sendError(res, 403, 'AUTH_ACCOUNT_UNAVAILABLE', 'This account is not available');
       return;
+    }
+
+    // Second factor gate: enabled users must present a valid TOTP or recovery code.
+    if (row.two_factor_enabled) {
+      const code = String(body.code || '');
+      if (!code) {
+        sendError(res, 401, 'AUTH_2FA_REQUIRED', 'Two-factor code required');
+        return;
+      }
+      const ok2fa = (row.totp_secret && verifyTotp(row.totp_secret, code)) || (await consumeRecoveryCode(client, row.id, code));
+      if (!ok2fa) {
+        sendError(res, 401, 'AUTH_2FA_INVALID', 'Invalid two-factor code');
+        return;
+      }
     }
 
     const rawToken = generateToken();
@@ -255,7 +273,7 @@ export async function handleMe(req, res) {
       return;
     }
     const found = await getPool().query(
-      `select u.id, u.display_name, u.email, u.status, u.email_verified, u.platform_role
+      `select u.id, u.display_name, u.email, u.status, u.email_verified, u.platform_role, u.two_factor_enabled
        from sessions s
        join users u on u.id = s.user_id
        where s.token_hash = $1 and s.revoked_at is null and s.expires_at > now()

@@ -83,7 +83,7 @@ function renderAuth(ctx: AppContext): string {
   const formKind = isVerifyEmail ? 'verify' : isRegister ? 'register' : 'login';
   const fields = isVerifyEmail
     ? formField(ctx.t('auth.otp'), '<input class="bk-input" type="text" data-auth-field="token" autocomplete="one-time-code" />', ctx.t('auth.securityHint'))
-    : `${formField(ctx.t('auth.email'), '<input class="bk-input" type="email" data-auth-field="email" autocomplete="email" />')}${isRegister ? formField(ctx.t('auth.displayName'), '<input class="bk-input" type="text" data-auth-field="display_name" autocomplete="name" />') : ''}${formField(ctx.t(isVerify ? 'auth.otp' : 'auth.password'), `<input class="bk-input" type="password" data-auth-field="password" autocomplete="${isRegister ? 'new-password' : 'current-password'}" />`, ctx.t('auth.securityHint'))}`;
+    : `${formField(ctx.t('auth.email'), '<input class="bk-input" type="email" data-auth-field="email" autocomplete="email" />')}${isRegister ? formField(ctx.t('auth.displayName'), '<input class="bk-input" type="text" data-auth-field="display_name" autocomplete="name" />') : ''}${formField(ctx.t(isVerify ? 'auth.otp' : 'auth.password'), `<input class="bk-input" type="password" data-auth-field="password" autocomplete="${isRegister ? 'new-password' : 'current-password'}" />`, ctx.t('auth.securityHint'))}${isLogin ? `<div data-auth-2fa-wrap hidden>${formField(ctx.t('auth.2fa.codeLabel'), '<input class="bk-input" type="text" data-auth-field="code" autocomplete="one-time-code" inputmode="numeric" />')}</div>` : ''}`;
   const primaryLabel = isRegister ? ctx.t('auth.signUp') : isVerifyEmail ? ctx.t('actions.continue') : ctx.t('auth.signIn');
   const primaryBtn = wired
     ? `<button class="bk-button bk-button-primary" type="button" data-auth-submit>${primaryLabel}</button>`
@@ -229,7 +229,13 @@ function renderSettings(ctx: AppContext): string {
 
 function renderSecurity(ctx: AppContext): string {
   const checks = card(`<h3 class="bk-card-title">${ctx.t('trust.checks')}</h3><div class="bk-trust-list">${trustChecks.map((check) => trustCheckCard(ctx, check)).join('')}</div>`, 'bk-security-card');
-  return contentGrid([pageHeader(ctx, 'settings.securityTitle', 'common.security'), card(`${securityBadges(ctx)}<div class="bk-list">${listRow(ctx.t('auth.twoFactor.title'), ctx.t('security.twoFactorRequired'), 'badgeTwoFactor', button(ctx.t('actions.setup'), 'primary'))}${listRow(ctx.t('settings.sessions'), ctx.t('settings.logoutAll'), 'navAdminInactive', `<button class="bk-button bk-button-danger" type="button" data-auth-action="logout">${ctx.t('auth.logout')}</button>`)}</div>`), checks].join(''), defaultRightRail(ctx));
+  const twoFactorPanel = card(`<div class="bk-card-section-head"><h3 class="bk-card-title">${ctx.t('auth.2fa.panelTitle')}</h3><span class="bk-badge" data-2fa-status></span></div>`
+    + `<p class="bk-state-copy" data-2fa-message role="status"></p>`
+    + `<div class="bk-action-row"><button class="bk-button bk-button-primary" type="button" data-2fa-action="enroll">${ctx.t('auth.2fa.enable')}</button><button class="bk-button bk-button-danger" type="button" data-2fa-action="disable" hidden>${ctx.t('auth.2fa.disable')}</button></div>`
+    + `<div data-2fa-enroll hidden><p class="bk-state-copy">${ctx.t('auth.2fa.addHint')}</p><code class="bk-meta" data-2fa-secret></code>${formField(ctx.t('auth.2fa.codeLabel'), '<input class="bk-input" type="text" data-2fa-field="code" autocomplete="one-time-code" inputmode="numeric" />')}<div class="bk-action-row"><button class="bk-button bk-button-primary" type="button" data-2fa-action="confirm">${ctx.t('auth.2fa.confirm')}</button></div></div>`
+    + `<div data-2fa-disable-form hidden><p class="bk-state-copy">${ctx.t('auth.2fa.disablePrompt')}</p>${formField(ctx.t('auth.2fa.codeLabel'), '<input class="bk-input" type="text" data-2fa-field="disable-code" autocomplete="one-time-code" inputmode="numeric" />')}<div class="bk-action-row"><button class="bk-button bk-button-danger" type="button" data-2fa-action="disable-confirm">${ctx.t('auth.2fa.disable')}</button></div></div>`
+    + `<div data-2fa-recovery hidden><strong class="bk-meta">${ctx.t('auth.2fa.recoveryTitle')}</strong><pre class="bk-meta" data-2fa-recovery-list></pre></div>`, 'bk-security-card');
+  return contentGrid([pageHeader(ctx, 'settings.securityTitle', 'common.security'), card(`${securityBadges(ctx)}<div class="bk-list">${listRow(ctx.t('settings.sessions'), ctx.t('settings.logoutAll'), 'navAdminInactive', `<button class="bk-button bk-button-danger" type="button" data-auth-action="logout">${ctx.t('auth.logout')}</button>`)}</div>`), twoFactorPanel, checks].join(''), defaultRightRail(ctx));
 }
 
 function renderI18nSettings(ctx: AppContext): string {

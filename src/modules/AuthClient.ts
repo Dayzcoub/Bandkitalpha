@@ -56,10 +56,23 @@ async function submitAuthForm(form: HTMLElement): Promise<void> {
   setMessage(form, t('auth.msg.working'), 'info');
 
   if (kind === 'login') {
-    const { status, data } = await api('/auth/login', { email: fieldValue(form, 'email'), password: fieldValue(form, 'password') });
+    const code = fieldValue(form, 'code');
+    const body: Record<string, string> = { email: fieldValue(form, 'email'), password: fieldValue(form, 'password') };
+    if (code) body.code = code;
+    const { status, data } = await api('/auth/login', body);
     if (status === 200) {
       // Full reload re-runs hydrateSessionState, so the session drives state.
       window.location.href = '/feed';
+      return;
+    }
+    if (data?.error?.code === 'AUTH_2FA_REQUIRED') {
+      const wrap = form.querySelector<HTMLElement>('[data-auth-2fa-wrap]');
+      if (wrap) wrap.hidden = false;
+      setMessage(form, t('auth.2fa.required'), 'info');
+      return;
+    }
+    if (data?.error?.code === 'AUTH_2FA_INVALID') {
+      setMessage(form, t('auth.2fa.invalid'));
       return;
     }
     setMessage(form, data?.error?.message || t('auth.msg.loginFailed'));
