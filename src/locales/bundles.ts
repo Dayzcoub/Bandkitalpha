@@ -728,7 +728,15 @@ export const localeBundles = {
       "events.chatPreview": "Event chat",
       "events.status.confirmed": "Confirmed",
       "events.status.draft": "Draft",
-      "events.status.private": "Private"
+      "events.status.private": "Private",
+      "events.real.title": "Create event (real API)",
+      "events.real.entityLabel": "Entity",
+      "events.real.titleLabel": "Event title",
+      "events.real.create": "Create",
+      "events.real.created": "Event created in the database.",
+      "events.real.noEntities": "No entities available — create an entity you manage first.",
+      "events.real.forbidden": "You do not have permission to create events for this entity.",
+      "events.real.titleRequired": "Enter an event title."
     },
     "feed": {
       "feed.title": "Feed",
@@ -1577,7 +1585,15 @@ export const localeBundles = {
       "events.chatPreview": "Чат события",
       "events.status.confirmed": "Подтверждено",
       "events.status.draft": "Черновик",
-      "events.status.private": "Приватное"
+      "events.status.private": "Приватное",
+      "events.real.title": "Создать событие (реальный API)",
+      "events.real.entityLabel": "Сущность",
+      "events.real.titleLabel": "Название события",
+      "events.real.create": "Создать",
+      "events.real.created": "Событие создано в базе.",
+      "events.real.noEntities": "Нет доступных сущностей — сначала создайте сущность, которой вы управляете.",
+      "events.real.forbidden": "У вас нет прав создавать события для этой сущности.",
+      "events.real.titleRequired": "Укажите название события."
     },
     "feed": {
       "feed.title": "Лента",

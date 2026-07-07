@@ -13,5 +13,13 @@
   "events.chatPreview": "Event chat",
   "events.status.confirmed": "Confirmed",
   "events.status.draft": "Draft",
-  "events.status.private": "Private"
+  "events.status.private": "Private",
+  "events.real.title": "Create event (real API)",
+  "events.real.entityLabel": "Entity",
+  "events.real.titleLabel": "Event title",
+  "events.real.create": "Create",
+  "events.real.created": "Event created in the database.",
+  "events.real.noEntities": "No entities available — create an entity you manage first.",
+  "events.real.forbidden": "You do not have permission to create events for this entity.",
+  "events.real.titleRequired": "Enter an event title."
 }

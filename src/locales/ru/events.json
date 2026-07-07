@@ -13,5 +13,13 @@
   "events.chatPreview": "Чат события",
   "events.status.confirmed": "Подтверждено",
   "events.status.draft": "Черновик",
-  "events.status.private": "Приватное"
+  "events.status.private": "Приватное",
+  "events.real.title": "Создать событие (реальный API)",
+  "events.real.entityLabel": "Сущность",
+  "events.real.titleLabel": "Название события",
+  "events.real.create": "Создать",
+  "events.real.created": "Событие создано в базе.",
+  "events.real.noEntities": "Нет доступных сущностей — сначала создайте сущность, которой вы управляете.",
+  "events.real.forbidden": "У вас нет прав создавать события для этой сущности.",
+  "events.real.titleRequired": "Укажите название события."
 }

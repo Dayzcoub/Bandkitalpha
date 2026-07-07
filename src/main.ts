@@ -14,6 +14,7 @@ import { initChatComposerPlacement } from './modules/ChatComposerPlacement.js';
 import { initRealEntitiesPreview } from './modules/RealEntitiesPreview.js';
 import { initAuthClient, hydrateSessionState } from './modules/AuthClient.js';
 import { initTwoFactor } from './modules/TwoFactor.js';
+import { initRealEventCreate } from './modules/RealEventCreate.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
 
@@ -47,3 +48,4 @@ initChatComposerPlacement(root);
 initRealEntitiesPreview(root);
 initAuthClient(root);
 initTwoFactor(root);
+initRealEventCreate(root);
