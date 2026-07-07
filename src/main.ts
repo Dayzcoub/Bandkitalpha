@@ -17,6 +17,7 @@ import { initTwoFactor } from './modules/TwoFactor.js';
 import { initRealEventCreate } from './modules/RealEventCreate.js';
 import { initRealMemberAdd } from './modules/RealMemberAdd.js';
 import { initRealProfessionsEditor } from './modules/RealProfessionsEditor.js';
+import { initRealEventSlots } from './modules/RealEventSlots.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
 
@@ -53,3 +54,4 @@ initTwoFactor(root);
 initRealEventCreate(root);
 initRealMemberAdd(root);
 initRealProfessionsEditor(root);
+initRealEventSlots(root);
