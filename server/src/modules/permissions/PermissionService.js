@@ -34,12 +34,23 @@ export class PermissionService {
     return this.canManageEntity(actor, membership);
   }
 
-  canViewRoom() {
-    return false;
+  // Reading a room requires an active/read-only membership in it, and the room
+  // must not be hidden. Room membership is the tenant boundary here (IDOR is the
+  // primary risk — Security Standard §2).
+  canViewRoom(actor, membership, room) {
+    if (!actor || !actor.id || !room || room.status === 'hidden') {
+      return false;
+    }
+    return Boolean(membership && ['active', 'read_only'].includes(membership.status));
   }
 
-  canWriteMessage() {
-    return false;
+  // Posting requires an active membership (read_only members cannot write) and
+  // an active room (read_only/archived/hidden rooms reject writes).
+  canWriteMessage(actor, membership, room) {
+    if (!actor || !actor.id || !room || room.status !== 'active') {
+      return false;
+    }
+    return Boolean(membership && membership.status === 'active');
   }
 
   canViewDocument() {

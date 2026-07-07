@@ -7,7 +7,7 @@ import { handleAdminLocalization } from './modules/admin/localization.routes.js'
 import { handleAdminNotifications } from './modules/admin/notifications.routes.js';
 import { handleAdminSettings } from './modules/admin/settings.routes.js';
 import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
-import { handleListChatRooms } from './modules/chats/chats.routes.js';
+import { handleListChatRooms, handleListMessages, handleSendMessage } from './modules/chats/chats.routes.js';
 import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
 import { handleListDocuments } from './modules/documents/documents.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
@@ -48,6 +48,7 @@ const server = http.createServer((req, res) => {
       const eventSlotsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/slots$`));
       const eventEngagementsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements$`));
       const eventEngagementDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements/([^/]+)$`));
+      const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/health`) {
         handleHealth(req, res, env);
@@ -169,6 +170,16 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/chat-rooms`) {
         await handleListChatRooms(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && roomMessagesMatch) {
+        await handleListMessages(req, res, decodeURIComponent(roomMessagesMatch[1]));
+        return;
+      }
+
+      if (req.method === 'POST' && roomMessagesMatch) {
+        await handleSendMessage(req, res, decodeURIComponent(roomMessagesMatch[1]));
         return;
       }
 
