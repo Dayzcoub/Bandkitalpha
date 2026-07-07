@@ -38,5 +38,20 @@
   "profile.tabs.reviews": "Отзывы",
   "profile.contact": "Связаться",
   "profile.invite": "Пригласить",
-  "profile.openProfile": "Подробнее в профиль"
+  "profile.openProfile": "Подробнее в профиль",
+  "profile.professions.title": "Мои профессии",
+  "profile.professions.subtitle": "Чем вы занимаетесь — показывается в профиле и используется для подбора на слоты событий.",
+  "profile.professions.professionLabel": "Профессия",
+  "profile.professions.specializationLabel": "Специализация",
+  "profile.professions.specializationNone": "— нет —",
+  "profile.professions.primary": "Основная",
+  "profile.professions.add": "Добавить",
+  "profile.professions.remove": "Убрать",
+  "profile.professions.save": "Сохранить профессии",
+  "profile.professions.saved": "Профессии сохранены.",
+  "profile.professions.empty": "Профессий пока нет. Добавьте первую выше.",
+  "profile.professions.loadError": "Не удалось загрузить профессии.",
+  "profile.professions.saveError": "Не удалось сохранить профессии.",
+  "profile.professions.duplicate": "Эта профессия уже в списке.",
+  "profile.professions.mismatch": "Эта специализация не относится к выбранной профессии."
 }

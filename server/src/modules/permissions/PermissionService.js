@@ -15,6 +15,12 @@ export class PermissionService {
     return Boolean(actor && actor.id);
   }
 
+  // Managing your own individual party (e.g. your professions) only requires an
+  // active account; the party is always derived from the session, never input.
+  canManageOwnParty(actor) {
+    return Boolean(actor && actor.id && actor.status !== 'blocked' && actor.status !== 'deleted');
+  }
+
   canManageEntity(actor, membership) {
     if (!actor || !actor.id || !membership || membership.status !== 'active') {
       return false;

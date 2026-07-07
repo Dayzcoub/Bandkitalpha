@@ -16,6 +16,7 @@ import { initAuthClient, hydrateSessionState } from './modules/AuthClient.js';
 import { initTwoFactor } from './modules/TwoFactor.js';
 import { initRealEventCreate } from './modules/RealEventCreate.js';
 import { initRealMemberAdd } from './modules/RealMemberAdd.js';
+import { initRealProfessionsEditor } from './modules/RealProfessionsEditor.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
 
@@ -51,3 +52,4 @@ initAuthClient(root);
 initTwoFactor(root);
 initRealEventCreate(root);
 initRealMemberAdd(root);
+initRealProfessionsEditor(root);

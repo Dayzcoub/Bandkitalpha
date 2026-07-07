@@ -14,6 +14,8 @@ import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListE
 import { handleCreateEvent, handleListEvents } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
 import { handleGetTaxonomy } from './modules/taxonomy/taxonomy.routes.js';
+import { handleGetMyProfessions, handleReplaceMyProfessions } from './modules/parties/parties.routes.js';
+import { handleCreateSlot, handleListSlots, handleCreateEngagement, handleListEngagements, handleUpdateEngagementStatus } from './modules/events/eventOps.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { notFound, sendError } from './shared/http.js';
@@ -43,6 +45,9 @@ const server = http.createServer((req, res) => {
       const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
       const entityDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)$`));
       const entityMembersMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/members$`));
+      const eventSlotsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/slots$`));
+      const eventEngagementsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements$`));
+      const eventEngagementDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements/([^/]+)$`));
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/health`) {
         handleHealth(req, res, env);
@@ -137,6 +142,31 @@ const server = http.createServer((req, res) => {
         return;
       }
 
+      if (req.method === 'GET' && eventSlotsMatch) {
+        await handleListSlots(req, res, decodeURIComponent(eventSlotsMatch[1]));
+        return;
+      }
+
+      if (req.method === 'POST' && eventSlotsMatch) {
+        await handleCreateSlot(req, res, decodeURIComponent(eventSlotsMatch[1]));
+        return;
+      }
+
+      if (req.method === 'GET' && eventEngagementsMatch) {
+        await handleListEngagements(req, res, decodeURIComponent(eventEngagementsMatch[1]));
+        return;
+      }
+
+      if (req.method === 'POST' && eventEngagementsMatch) {
+        await handleCreateEngagement(req, res, decodeURIComponent(eventEngagementsMatch[1]));
+        return;
+      }
+
+      if (req.method === 'PATCH' && eventEngagementDetailMatch) {
+        await handleUpdateEngagementStatus(req, res, decodeURIComponent(eventEngagementDetailMatch[1]), decodeURIComponent(eventEngagementDetailMatch[2]));
+        return;
+      }
+
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/chat-rooms`) {
         await handleListChatRooms(req, res);
         return;
@@ -149,6 +179,16 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/taxonomy`) {
         await handleGetTaxonomy(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/me/professions`) {
+        await handleGetMyProfessions(req, res);
+        return;
+      }
+
+      if (req.method === 'PUT' && url.pathname === `${env.apiPrefix}/me/professions`) {
+        await handleReplaceMyProfessions(req, res);
         return;
       }
 
