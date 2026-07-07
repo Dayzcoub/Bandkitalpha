@@ -13,6 +13,7 @@ import { handleListDocuments } from './modules/documents/documents.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
 import { handleCreateEvent, handleListEvents } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
+import { handleGetTaxonomy } from './modules/taxonomy/taxonomy.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { notFound, sendError } from './shared/http.js';
@@ -143,6 +144,11 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/documents`) {
         await handleListDocuments(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/taxonomy`) {
+        await handleGetTaxonomy(req, res);
         return;
       }
 
