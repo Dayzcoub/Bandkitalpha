@@ -7,7 +7,7 @@ import { handleAdminLocalization } from './modules/admin/localization.routes.js'
 import { handleAdminNotifications } from './modules/admin/notifications.routes.js';
 import { handleAdminSettings } from './modules/admin/settings.routes.js';
 import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
-import { handleListChatRooms, handleListMessages, handleSendMessage, handleListMyRooms } from './modules/chats/chats.routes.js';
+import { handleListChatRooms, handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handlePinMessage } from './modules/chats/chats.routes.js';
 import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
 import { handleListDocuments, handleListEntityDocuments, handleCreateEntityDocument } from './modules/documents/documents.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
@@ -49,6 +49,8 @@ const server = http.createServer((req, res) => {
       const eventEngagementsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements$`));
       const eventEngagementDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements/([^/]+)$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
+      const roomDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)$`));
+      const roomMessageDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages/([^/]+)$`));
       const entityDocumentsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/documents$`));
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/health`) {
@@ -196,6 +198,16 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && roomMessagesMatch) {
         await handleSendMessage(req, res, decodeURIComponent(roomMessagesMatch[1]));
+        return;
+      }
+
+      if (req.method === 'PATCH' && roomMessageDetailMatch) {
+        await handlePinMessage(req, res, decodeURIComponent(roomMessageDetailMatch[1]), decodeURIComponent(roomMessageDetailMatch[2]));
+        return;
+      }
+
+      if (req.method === 'GET' && roomDetailMatch) {
+        await handleGetRoom(req, res, decodeURIComponent(roomDetailMatch[1]));
         return;
       }
 

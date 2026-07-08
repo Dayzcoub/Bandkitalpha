@@ -53,6 +53,16 @@ export class PermissionService {
     return Boolean(membership && membership.status === 'active');
   }
 
+  // Moderating a room (e.g. pinning messages) requires an active managing
+  // membership (owner/admin/manager) in an active room.
+  canModerateRoom(actor, membership, room) {
+    if (!actor || !actor.id || !room || room.status !== 'active') {
+      return false;
+    }
+    return Boolean(membership && membership.status === 'active'
+      && ['owner', 'admin', 'manager'].includes(membership.role));
+  }
+
   // Creating a document under an entity requires a managing membership.
   canCreateDocument(actor, membership) {
     return this.canManageEntity(actor, membership);

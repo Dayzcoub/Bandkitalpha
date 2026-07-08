@@ -26,7 +26,9 @@ async function requireRoomAccess(client, req, res, roomId, capability) {
   const membership = membershipResult.rows[0] || null;
   const allowed = capability === 'write'
     ? permissionService.canWriteMessage(actor, membership, room)
-    : permissionService.canViewRoom(actor, membership, room);
+    : capability === 'moderate'
+      ? permissionService.canModerateRoom(actor, membership, room)
+      : permissionService.canViewRoom(actor, membership, room);
   if (!allowed) {
     // 404 (not 403) when the actor is not a member: don't reveal the room exists.
     if (!membership) {
@@ -176,6 +178,81 @@ export async function handleSendMessage(req, res, roomId) {
       return;
     }
     sendError(res, 500, 'MESSAGE_SEND_FAILED', 'Failed to send message', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// GET /chat-rooms/:id — room header info for members: type, title, members (for
+// direct chats the "other" party names the room) and the caller's own role
+// (drives which moderation actions the UI offers).
+export async function handleGetRoom(req, res, roomId) {
+  const client = await getPool().connect();
+  try {
+    const access = await requireRoomAccess(client, req, res, roomId, 'view');
+    if (!access) return;
+    const detail = await client.query(
+      `select r.id, r.type, r.title, e.name as entity_name, ev.title as event_title
+         from chat_rooms r
+         left join entities e on e.id = r.entity_id
+         left join events ev on ev.id = r.event_id
+        where r.id = $1 limit 1`,
+      [roomId]
+    );
+    const members = await client.query(
+      `select m.user_id, m.role, m.status, u.display_name
+         from chat_room_members m
+         join users u on u.id = m.user_id
+        where m.room_id = $1 and m.status in ('active', 'read_only')
+        order by u.display_name`,
+      [roomId]
+    );
+    const rows = members.rows.map((m) => ({ ...m, is_self: m.user_id === access.actor.id }));
+    sendJson(res, 200, {
+      ok: true,
+      room: { ...detail.rows[0], member_count: rows.length },
+      members: rows,
+      my_role: access.membership?.role || null
+    });
+  } catch (error) {
+    sendError(res, 500, 'ROOM_GET_FAILED', 'Failed to load room', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// PATCH /chat-rooms/:id/messages/:messageId — pin/unpin a message. Only room
+// moderators (owner/admin/manager).
+export async function handlePinMessage(req, res, roomId, messageId) {
+  const client = await getPool().connect();
+  try {
+    const access = await requireRoomAccess(client, req, res, roomId, 'moderate');
+    if (!access) return;
+    const body = await readJsonBody(req);
+    const pinned = Boolean(body.pinned);
+
+    const result = await client.query(
+      `update chat_messages set is_pinned = $1
+        where id = $2 and room_id = $3 and status not in ('deleted', 'hidden')
+        returning id, is_pinned`,
+      [pinned, messageId, roomId]
+    );
+    if (!result.rows[0]) {
+      sendError(res, 404, 'MESSAGE_NOT_FOUND', 'Message not found in this room');
+      return;
+    }
+    await client.query(
+      `insert into audit_events (actor_user_id, action, room_id, message_id, metadata)
+       values ($1, $2, $3, $4, '{}'::jsonb)`,
+      [access.actor.id, pinned ? 'chat.message_pinned' : 'chat.message_unpinned', roomId, messageId]
+    );
+    sendJson(res, 200, { ok: true, message: result.rows[0] });
+  } catch (error) {
+    if (error?.code === 'BODY_TOO_LARGE') {
+      sendError(res, 413, 'BODY_TOO_LARGE', 'Request body is too large');
+      return;
+    }
+    sendError(res, 500, 'MESSAGE_PIN_FAILED', 'Failed to update message', { message: error?.message || String(error) });
   } finally {
     client.release();
   }

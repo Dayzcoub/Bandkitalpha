@@ -402,7 +402,10 @@ export const localeBundles = {
       "chats.real.reply": "Reply",
       "chats.real.actions": "Message actions",
       "chats.real.copy": "Copy",
-      "chats.real.report": "Report"
+      "chats.real.report": "Report",
+      "chats.real.pin": "Pin",
+      "chats.real.unpin": "Unpin",
+      "chats.real.pinned": "Pinned"
     },
     "common": {
       "access.admin": "admin",
@@ -1337,7 +1340,10 @@ export const localeBundles = {
       "chats.real.reply": "Ответить",
       "chats.real.actions": "Действия с сообщением",
       "chats.real.copy": "Копировать",
-      "chats.real.report": "Пожаловаться"
+      "chats.real.report": "Пожаловаться",
+      "chats.real.pin": "Закрепить",
+      "chats.real.unpin": "Открепить",
+      "chats.real.pinned": "Закреплено"
     },
     "common": {
       "access.admin": "admin",

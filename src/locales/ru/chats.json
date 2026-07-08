@@ -23,5 +23,8 @@
   "chats.real.reply": "Ответить",
   "chats.real.actions": "Действия с сообщением",
   "chats.real.copy": "Копировать",
-  "chats.real.report": "Пожаловаться"
+  "chats.real.report": "Пожаловаться",
+  "chats.real.pin": "Закрепить",
+  "chats.real.unpin": "Открепить",
+  "chats.real.pinned": "Закреплено"
 }

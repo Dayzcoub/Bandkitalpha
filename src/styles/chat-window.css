@@ -420,3 +420,57 @@
 .bk-chat-thread:has(.bk-real-msg) {
   padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
 }
+
+/* Others' messages get a neutral bubble (own stay highlighted). */
+.bk-chat-thread .bk-real-msg:not(.is-own) {
+  background: var(--bk-panel-2);
+  border-color: var(--bk-border);
+}
+
+/* Initials avatars (no photos in the schema) — a fixed palette picked by hash. */
+.bk-real-ava {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 800;
+  flex: 0 0 auto;
+}
+.bk-real-ava-lg { width: 40px; height: 40px; font-size: .9rem; }
+.bk-ava-0 { background: #6366f1; }
+.bk-ava-1 { background: #0ea5e9; }
+.bk-ava-2 { background: #10b981; }
+.bk-ava-3 { background: #f59e0b; }
+.bk-ava-4 { background: #ec4899; }
+.bk-ava-5 { background: #8b5cf6; }
+.bk-ava-6 { background: #ef4444; }
+.bk-ava-7 { background: #14b8a6; }
+
+/* Group chats: reserve an avatar column for others so bubbles align; the avatar
+   itself shows only on the first message of a run. */
+.bk-chat-thread .bk-real-msg.has-avatar { margin-left: 42px; }
+.bk-chat-thread .bk-real-msg .bk-real-ava {
+  position: absolute;
+  left: -38px;
+  bottom: 4px;
+}
+
+/* Pinned marker. */
+.bk-real-pin { margin-left: 6px; font-size: .82rem; vertical-align: middle; }
+.bk-chat-thread .bk-real-msg.is-pinned { box-shadow: inset 2px 0 0 var(--bk-gold); }
+
+/* Chat header: who/what this room is. */
+.bk-real-chat-header {
+  display: flex;
+  align-items: center;
+  gap: var(--bk-space-3);
+  padding: var(--bk-space-2) var(--bk-space-3);
+  margin-bottom: var(--bk-space-3);
+  border: 1px solid var(--bk-border);
+  border-radius: var(--bk-radius-control);
+  background: var(--bk-card-bg-soft);
+}
+.bk-real-chat-header-title { font-weight: 800; line-height: 1.2; }

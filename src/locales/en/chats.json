@@ -23,5 +23,8 @@
   "chats.real.reply": "Reply",
   "chats.real.actions": "Message actions",
   "chats.real.copy": "Copy",
-  "chats.real.report": "Report"
+  "chats.real.report": "Report",
+  "chats.real.pin": "Pin",
+  "chats.real.unpin": "Unpin",
+  "chats.real.pinned": "Pinned"
 }
