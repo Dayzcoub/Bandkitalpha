@@ -330,6 +330,19 @@
 .bk-chat-thread .bk-real-msg.is-own .bk-card-title {
   color: var(--bk-primary-strong);
 }
+/* Own messages: pin the name + time to the right edge of the bubble. */
+.bk-chat-thread .bk-real-msg.is-own .bk-list-row-main {
+  text-align: right;
+}
+/* Keep each action label on one line and let whole items wrap, so the muted
+   links (Ответить / Удалить у себя / Жалоба) never break mid-word. */
+.bk-chat-thread .bk-real-msg .bk-chat-message-actions {
+  flex-wrap: wrap;
+}
+.bk-chat-thread .bk-real-msg .bk-chat-message-actions > * {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
 /* The composer is a sticky bar (~83px) overlaying the bottom of the thread.
    Reserve space so the last real message is never hidden behind it. Scoped via
    :has to threads showing real messages, so the mock chat is untouched. */
