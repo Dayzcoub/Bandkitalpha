@@ -10,7 +10,7 @@
   "chats.group": "Group chat",
   "chats.send": "Send",
   "chats.empty": "No messages yet",
-  "chats.real.title": "My chats (real API)",
+  "chats.real.title": "My chats",
   "chats.real.roomLabel": "Room",
   "chats.real.noRooms": "You are not in any chat rooms yet.",
   "chats.real.placeholder": "Write a message…",

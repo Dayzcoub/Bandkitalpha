@@ -10,7 +10,7 @@
   "chats.group": "Групповой чат",
   "chats.send": "Отправить",
   "chats.empty": "Сообщений пока нет",
-  "chats.real.title": "Мои чаты (реальный API)",
+  "chats.real.title": "Мои чаты",
   "chats.real.roomLabel": "Комната",
   "chats.real.noRooms": "Вы пока не состоите ни в одной комнате.",
   "chats.real.placeholder": "Напишите сообщение…",

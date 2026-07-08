@@ -93,7 +93,7 @@ function render(host: HTMLElement, state: State): void {
   }
 
   host.innerHTML = `<section class="bk-card">`
-    + `<div class="bk-card-section-head"><div><h3 class="bk-card-title">${esc(t('events.engagements.title'))}</h3><p class="bk-state-copy">${esc(t('events.engagements.subtitle'))}</p></div><span class="bk-badge bk-badge-positive">API</span></div>`
+    + `<div class="bk-card-section-head"><div><h3 class="bk-card-title">${esc(t('events.engagements.title'))}</h3><p class="bk-state-copy">${esc(t('events.engagements.subtitle'))}</p></div></div>`
     + inner + `</section>`;
 }
 

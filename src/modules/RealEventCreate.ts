@@ -39,12 +39,12 @@ async function mount(host: HTMLElement): Promise<void> {
   const entities: Array<{ id: string; name: string }> = status === 200 ? (data?.entities ?? []) : [];
 
   if (entities.length === 0) {
-    host.innerHTML = `<section class="bk-card"><div class="bk-card-section-head"><h3 class="bk-card-title">${esc(t('events.real.title'))}</h3><span class="bk-badge">API</span></div><p class="bk-state-copy">${esc(t('events.real.noEntities'))}</p></section>`;
+    host.innerHTML = `<section class="bk-card"><div class="bk-card-section-head"><h3 class="bk-card-title">${esc(t('events.real.title'))}</h3></div><p class="bk-state-copy">${esc(t('events.real.noEntities'))}</p></section>`;
     return;
   }
 
   const options = entities.map((e) => `<option value="${esc(e.id)}">${esc(e.name)}</option>`).join('');
-  host.innerHTML = `<section class="bk-card"><div class="bk-card-section-head"><h3 class="bk-card-title">${esc(t('events.real.title'))}</h3><span class="bk-badge bk-badge-positive">API</span></div>`
+  host.innerHTML = `<section class="bk-card"><div class="bk-card-section-head"><h3 class="bk-card-title">${esc(t('events.real.title'))}</h3></div>`
     + `<label class="bk-field"><span class="bk-label">${esc(t('events.real.entityLabel'))}</span><select class="bk-input" data-rec-field="entity">${options}</select></label>`
     + `<label class="bk-field"><span class="bk-label">${esc(t('events.real.titleLabel'))}</span><input class="bk-input" type="text" data-rec-field="title" /></label>`
     + `<div class="bk-action-row"><button class="bk-button bk-button-primary" type="button" data-rec-action="create">${esc(t('events.real.create'))}</button></div>`

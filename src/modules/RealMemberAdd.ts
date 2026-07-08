@@ -39,12 +39,12 @@ async function mount(host: HTMLElement): Promise<void> {
   const entities: Array<{ id: string; name: string }> = status === 200 ? (data?.entities ?? []) : [];
 
   if (entities.length === 0) {
-    host.innerHTML = `<section class="bk-card"><div class="bk-card-section-head"><h3 class="bk-card-title">${esc(t('bands.member.title'))}</h3><span class="bk-badge">API</span></div><p class="bk-state-copy">${esc(t('bands.member.noEntities'))}</p></section>`;
+    host.innerHTML = `<section class="bk-card"><div class="bk-card-section-head"><h3 class="bk-card-title">${esc(t('bands.member.title'))}</h3></div><p class="bk-state-copy">${esc(t('bands.member.noEntities'))}</p></section>`;
     return;
   }
 
   const options = entities.map((e) => `<option value="${esc(e.id)}">${esc(e.name)}</option>`).join('');
-  host.innerHTML = `<section class="bk-card"><div class="bk-card-section-head"><h3 class="bk-card-title">${esc(t('bands.member.title'))}</h3><span class="bk-badge bk-badge-positive">API</span></div>`
+  host.innerHTML = `<section class="bk-card"><div class="bk-card-section-head"><h3 class="bk-card-title">${esc(t('bands.member.title'))}</h3></div>`
     + `<label class="bk-field"><span class="bk-label">${esc(t('bands.member.entityLabel'))}</span><select class="bk-input" data-rma-field="entity">${options}</select></label>`
     + `<label class="bk-field"><span class="bk-label">${esc(t('bands.member.emailLabel'))}</span><input class="bk-input" type="email" data-rma-field="email" autocomplete="email" /></label>`
     + `<label class="bk-field"><span class="bk-label">${esc(t('bands.member.roleLabel'))}</span><select class="bk-input" data-rma-field="role"><option value="member">${esc(t('bands.member.roleMember'))}</option><option value="guest">${esc(t('bands.member.roleGuest'))}</option></select></label>`

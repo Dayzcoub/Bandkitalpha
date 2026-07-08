@@ -9,7 +9,7 @@
   "bands.documents": "Documents",
   "bands.chat": "Band chat",
   "bands.joinRequests": "Requests",
-  "bands.member.title": "Add member (real API)",
+  "bands.member.title": "Add member",
   "bands.member.entityLabel": "Entity",
   "bands.member.emailLabel": "User email",
   "bands.member.roleLabel": "Role",

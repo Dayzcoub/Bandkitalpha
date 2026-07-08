@@ -9,7 +9,7 @@
   "bands.documents": "Документы",
   "bands.chat": "Чат группы",
   "bands.joinRequests": "Заявки",
-  "bands.member.title": "Добавить участника (реальный API)",
+  "bands.member.title": "Добавить участника",
   "bands.member.entityLabel": "Сущность",
   "bands.member.emailLabel": "Email пользователя",
   "bands.member.roleLabel": "Роль",

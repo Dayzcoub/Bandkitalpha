@@ -93,7 +93,7 @@ function render(host: HTMLElement, state: State): void {
 
   const noEvents = state.events.length === 0;
   host.innerHTML = `<section class="bk-card">`
-    + `<div class="bk-card-section-head"><div><h3 class="bk-card-title">${esc(t('events.slots.title'))}</h3><p class="bk-state-copy">${esc(t('events.slots.subtitle'))}</p></div><span class="bk-badge bk-badge-positive">API</span></div>`
+    + `<div class="bk-card-section-head"><div><h3 class="bk-card-title">${esc(t('events.slots.title'))}</h3><p class="bk-state-copy">${esc(t('events.slots.subtitle'))}</p></div></div>`
     + (noEvents
       ? `<p class="bk-state-copy">${esc(t('events.slots.noEvents'))}</p>`
       : `<label class="bk-field"><span class="bk-label">${esc(t('events.slots.eventLabel'))}</span><select class="bk-input" data-res-field="event">${eventOptions}</select></label>`
