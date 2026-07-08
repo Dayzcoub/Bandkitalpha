@@ -40,7 +40,16 @@ async function api(path: string, method: 'GET' | 'POST', body?: unknown): Promis
 }
 
 type Room = { id: string; title: string | null; type: string; entity_name: string | null; event_title: string | null };
-type Message = { id: string; author_name: string | null; body: string; created_at: string };
+type Message = { id: string; author_user_id: string | null; author_name: string | null; body: string; created_at: string };
+
+// Cached id of the current user, for own-vs-other message styling.
+let myUserId: string | null = null;
+async function ensureMe(): Promise<string | null> {
+  if (myUserId) return myUserId;
+  const { status, data } = await api('/auth/me', 'GET');
+  if (status === 200) myUserId = data?.user?.id ?? null;
+  return myUserId;
+}
 
 function roomLabel(r: Room): string {
   return r.title || r.entity_name || r.event_title || r.type;
@@ -56,12 +65,24 @@ function roomRow(r: Room): string {
     + `<div class="bk-meta">${esc(t('chats.messages'))}</div></div></div>`;
 }
 
-// Native message card (mirrors chatMessages() output).
-function messageCard(m: Message): string {
-  return `<section class="bk-card bk-social-card"><div class="bk-card-header"><div class="bk-list-row-main">`
-    + `<h3 class="bk-card-title">${esc(m.author_name || t('chats.real.you'))}</h3>`
+// Message card matching the native chat markup so the existing decorators apply:
+// the .bk-chat-message-card class + .bk-chat-message-actions footer let
+// ChatMessageControls' observer attach delete/report on hover/long-press, and
+// the reply link mirrors the mock. `is-own` right-aligns and highlights the
+// current user's own messages (VK/Telegram style).
+function messageCard(m: Message, index: number, myId: string | null): string {
+  const own = Boolean(myId && m.author_user_id === myId);
+  const author = m.author_name || t('chats.real.you');
+  return `<section class="bk-card bk-social-card bk-chat-message-card bk-real-msg${own ? ' is-own' : ''}"`
+    + ` id="chat-message-${esc(m.id)}" data-message-index="${index}"`
+    + ` data-reply-author="${esc(author)}" data-reply-body="${esc(m.body)}">`
+    + `<div class="bk-card-header"><div class="bk-list-row-main">`
+    + `<h3 class="bk-card-title">${esc(author)}</h3>`
     + `<div class="bk-meta">${esc(fmtTime(m.created_at))}</div></div></div>`
-    + `<p class="bk-card-body">${esc(m.body)}</p></section>`;
+    + `<p class="bk-card-body">${esc(m.body)}</p>`
+    + `<footer class="bk-chat-message-actions">`
+    + `<button class="bk-chat-reply-action" type="button" data-real-reply data-reply-author="${esc(author)}" data-reply-body="${esc(m.body)}">↩ ${esc(t('chats.real.reply'))}</button>`
+    + `</footer></section>`;
 }
 
 async function populateRooms(list: HTMLElement): Promise<void> {
@@ -74,15 +95,27 @@ async function populateRooms(list: HTMLElement): Promise<void> {
 }
 
 async function populateThread(thread: HTMLElement, roomId: string): Promise<void> {
-  const { status, data } = await api(`/chat-rooms/${encodeURIComponent(roomId)}/messages`, 'GET');
+  const [myId, res] = await Promise.all([ensureMe(), api(`/chat-rooms/${encodeURIComponent(roomId)}/messages`, 'GET')]);
+  const { status, data } = res;
+
+  // Replace only the message cards / chrome, never the sticky composer that the
+  // native decorators moved into the thread (wiping it caused the overlap bug).
+  thread.querySelectorAll('.bk-social-card, .bk-chat-stress-message, .bk-chat-unread-divider, .bk-chat-load-older, [data-real-empty], [data-real-error]')
+    .forEach((el) => el.remove());
+
+  let html: string;
   if (status !== 200) {
-    thread.innerHTML = `<p class="bk-state-copy" data-tone="error">${esc(t('chats.real.loadError'))}</p>`;
-    return;
+    html = `<p class="bk-state-copy" data-real-error data-tone="error">${esc(t('chats.real.loadError'))}</p>`;
+  } else {
+    const messages: Message[] = data?.messages ?? [];
+    html = messages.length
+      ? messages.map((m, i) => messageCard(m, i, myId)).join('')
+      : `<p class="bk-state-copy" data-real-empty>${esc(t('chats.real.empty'))}</p>`;
   }
-  const messages: Message[] = data?.messages ?? [];
-  thread.innerHTML = messages.length
-    ? messages.map(messageCard).join('')
-    : `<p class="bk-state-copy">${esc(t('chats.real.empty'))}</p>`;
+
+  const composer = thread.querySelector('.bk-chat-composer-inside-thread, [data-chat-composer]');
+  if (composer) composer.insertAdjacentHTML('beforebegin', html);
+  else thread.insertAdjacentHTML('beforeend', html);
 }
 
 function refresh(root: HTMLElement): void {
@@ -143,6 +176,19 @@ export function initRealChat(root: HTMLElement): void {
     if (send) {
       event.preventDefault();
       void sendCurrent(root, send);
+      return;
+    }
+    const reply = target.closest<HTMLElement>('[data-real-reply]');
+    if (reply) {
+      event.preventDefault();
+      const author = reply.getAttribute('data-reply-author') || '';
+      const body = reply.getAttribute('data-reply-body') || '';
+      const textarea = root.querySelector<HTMLTextAreaElement>('[data-chat-body]');
+      if (textarea) {
+        const quote = `> ${author}: ${body}\n`;
+        if (!textarea.value.startsWith(quote)) textarea.value = quote + textarea.value;
+        textarea.focus();
+      }
     }
   });
 

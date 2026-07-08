@@ -19,5 +19,6 @@
   "chats.real.loadError": "Could not load your chats.",
   "chats.real.sendError": "Could not send the message.",
   "chats.real.readOnly": "This room is read-only for you.",
-  "chats.real.you": "You"
+  "chats.real.you": "You",
+  "chats.real.reply": "Reply"
 }

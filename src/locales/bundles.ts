@@ -398,7 +398,8 @@ export const localeBundles = {
       "chats.real.loadError": "Could not load your chats.",
       "chats.real.sendError": "Could not send the message.",
       "chats.real.readOnly": "This room is read-only for you.",
-      "chats.real.you": "You"
+      "chats.real.you": "You",
+      "chats.real.reply": "Reply"
     },
     "common": {
       "access.admin": "admin",
@@ -1329,7 +1330,8 @@ export const localeBundles = {
       "chats.real.loadError": "Не удалось загрузить ваши чаты.",
       "chats.real.sendError": "Не удалось отправить сообщение.",
       "chats.real.readOnly": "Эта комната доступна вам только для чтения.",
-      "chats.real.you": "Вы"
+      "chats.real.you": "Вы",
+      "chats.real.reply": "Ответить"
     },
     "common": {
       "access.admin": "admin",
