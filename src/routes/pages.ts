@@ -174,11 +174,11 @@ function renderEventDetail(ctx: AppContext): string {
 
 function renderChats(ctx: AppContext): string {
   const policy = card(`<h3 class="bk-card-title">${ctx.t('chats.policyTitle')}</h3><p class="bk-state-copy">${ctx.t('chats.policyCopy')}</p><div class="bk-chip-row">${badge(ctx.t('security.linkNotice'), 'warning')}${badge(ctx.t('security.reportAvailable'), 'positive')}</div>`, 'bk-chat-policy-card');
-  return contentGrid([pageHeader(ctx, 'chats.title', 'chats.subtitle'), policy, card(`<h3 class="bk-card-title">${ctx.t('chats.rooms')}</h3><div class="bk-list">${chats.map((chat) => chatRow(ctx, chat)).join('')}</div>`)].join(''), defaultRightRail(ctx));
+  return contentGrid([pageHeader(ctx, 'chats.title', 'chats.subtitle'), policy, card(`<h3 class="bk-card-title">${ctx.t('chats.rooms')}</h3><div class="bk-list" data-real-room-list>${chats.map((chat) => chatRow(ctx, chat)).join('')}</div>`)].join(''), defaultRightRail(ctx));
 }
 
 function renderChatRoom(ctx: AppContext): string {
-  return contentGrid([pageHeader(ctx, 'chats.roomTitle', 'chats.subtitle'), card(`<div class="bk-chat-layout"><div class="bk-list">${chats.map((chat) => chatRow(ctx, chat)).join('')}</div><div class="bk-chat-thread">${chatMessages(ctx)}</div></div>`, 'bk-chat-room-card'), card(`<label class="bk-field"><span class="bk-label">${ctx.t('chats.composer')}</span><textarea class="bk-textarea" placeholder="${ctx.t('chats.composerPlaceholder')}"></textarea></label><div class="bk-blocked-link">${ctx.t('security.linkNotice')}</div><div class="bk-action-row">${button(ctx.t('chats.send'), 'primary')}${button(ctx.t('chats.attachments'), 'secondary')}</div>`)].join(''), defaultRightRail(ctx));
+  return contentGrid([pageHeader(ctx, 'chats.roomTitle', 'chats.subtitle'), card(`<div class="bk-chat-layout"><div class="bk-list" data-real-room-list>${chats.map((chat) => chatRow(ctx, chat)).join('')}</div><div class="bk-chat-thread" data-real-thread>${chatMessages(ctx)}</div></div>`, 'bk-chat-room-card'), card(`<label class="bk-field"><span class="bk-label">${ctx.t('chats.composer')}</span><textarea class="bk-textarea" data-chat-body placeholder="${ctx.t('chats.composerPlaceholder')}"></textarea></label><div class="bk-blocked-link">${ctx.t('security.linkNotice')}</div><div class="bk-action-row"><button class="bk-button bk-button-primary" type="button" data-chat-send>${ctx.t('chats.send')}</button>${button(ctx.t('chats.attachments'), 'secondary')}</div>`)].join(''), defaultRightRail(ctx));
 }
 
 function renderDocuments(ctx: AppContext): string {
