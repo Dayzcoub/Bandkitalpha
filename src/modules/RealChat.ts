@@ -116,6 +116,10 @@ async function populateThread(thread: HTMLElement, roomId: string): Promise<void
   const composer = thread.querySelector('.bk-chat-composer-inside-thread, [data-chat-composer]');
   if (composer) composer.insertAdjacentHTML('beforebegin', html);
   else thread.insertAdjacentHTML('beforeend', html);
+
+  // Show the newest message: scroll the thread to the bottom (on open and after
+  // sending), so a just-sent message isn't left hidden behind the composer.
+  thread.scrollTop = thread.scrollHeight;
 }
 
 function refresh(root: HTMLElement): void {

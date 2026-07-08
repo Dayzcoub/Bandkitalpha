@@ -315,11 +315,12 @@
 }
 
 /* Real chat message bubbles: own messages right-aligned and highlighted
-   (VK/Telegram style), others left. Keeps the native card look. */
+   (VK/Telegram style), others left. Bubble hugs its content. */
 .bk-chat-thread .bk-real-msg {
+  position: relative;
   width: fit-content;
   max-width: 82%;
-  margin-right: auto;
+  margin: 0 auto 10px 0;
 }
 .bk-chat-thread .bk-real-msg.is-own {
   margin-left: auto;
@@ -330,26 +331,43 @@
 .bk-chat-thread .bk-real-msg.is-own .bk-card-title {
   color: var(--bk-primary-strong);
 }
-/* Own messages: pin the name + time to the right edge of the bubble. */
+/* Own messages: pin name + time to the right edge of the bubble. */
 .bk-chat-thread .bk-real-msg.is-own .bk-list-row-main {
   text-align: right;
 }
-/* Keep each action label on one line and let whole items wrap, so the muted
-   links (Ответить / Удалить у себя / Жалоба) never break mid-word. */
+/* These messages have no avatar, so drop the avatar-alignment left indent:
+   text starts at the bubble edge and fills its width. */
+.bk-chat-thread .bk-real-msg .bk-card-header,
+.bk-chat-thread .bk-real-msg .bk-card-body {
+  padding-left: 0;
+}
+.bk-chat-thread .bk-real-msg .bk-card-body {
+  text-align: left;
+}
+/* Take the (normally hidden) actions footer out of flow so it neither reserves
+   vertical space nor widens the bubble; reveal it on hover/open, expanding the
+   bubble's bottom padding just enough so it never overlaps the text. */
 .bk-chat-thread .bk-real-msg .bk-chat-message-actions {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 6px;
+  margin: 0;
+  padding-left: 0;
   flex-wrap: wrap;
 }
 .bk-chat-thread .bk-real-msg .bk-chat-message-actions > * {
   flex: 0 0 auto;
   white-space: nowrap;
 }
+.bk-chat-thread .bk-real-msg:hover,
+.bk-chat-thread .bk-real-msg:focus-within,
+.bk-chat-thread .bk-real-msg.is-chat-actions-open {
+  padding-bottom: 38px;
+}
 /* The composer is a sticky bar (~83px) overlaying the bottom of the thread.
    Reserve space so the last real message is never hidden behind it. Scoped via
    :has to threads showing real messages, so the mock chat is untouched. */
 .bk-chat-thread:has(.bk-real-msg) {
   padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
-}
-/* Left-align the text inside own bubbles (bubble sits right, text reads left). */
-.bk-chat-thread .bk-real-msg .bk-card-body {
-  text-align: left;
 }
