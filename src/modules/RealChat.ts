@@ -51,6 +51,16 @@ async function ensureMe(): Promise<string | null> {
   return myUserId;
 }
 
+// Cached rooms, used to know a room's type (direct chats hide sender names).
+let roomsCache: Room[] | null = null;
+async function ensureRooms(): Promise<Room[]> {
+  if (roomsCache) return roomsCache;
+  const { status, data } = await api('/me/chat-rooms', 'GET');
+  const rooms: Room[] = status === 200 ? (data?.rooms ?? []) : [];
+  roomsCache = rooms;
+  return rooms;
+}
+
 function roomLabel(r: Room): string {
   return r.title || r.entity_name || r.event_title || r.type;
 }
@@ -67,32 +77,38 @@ function roomRow(r: Room): string {
 
 // Message bubble. `is-own` right-aligns and highlights the current user's own
 // messages (VK/Telegram style). Actions live in a popup menu opened from the ⋮
-// button (desktop) or a long-press (mobile) — see the menu logic below — so they
-// never clutter or overlap short messages.
-function messageCard(m: Message, myId: string | null): string {
+// button (desktop) or a long-press (mobile). `showName` is false in direct chats
+// and for a run of consecutive messages from the same author (only the first
+// shows the name); such grouped bubbles get the is-grouped class for tighter
+// spacing.
+function messageCard(m: Message, myId: string | null, showName: boolean): string {
   const own = Boolean(myId && m.author_user_id === myId);
   const author = m.author_name || t('chats.real.you');
-  return `<section class="bk-card bk-social-card bk-real-msg${own ? ' is-own' : ''}"`
+  const header = showName
+    ? `<h3 class="bk-card-title">${esc(author)}</h3><div class="bk-meta">${esc(fmtTime(m.created_at))}</div>`
+    : `<div class="bk-meta">${esc(fmtTime(m.created_at))}</div>`;
+  return `<section class="bk-card bk-social-card bk-real-msg${own ? ' is-own' : ''}${showName ? '' : ' is-grouped'}"`
     + ` data-msg-author="${esc(author)}" data-msg-body="${esc(m.body)}">`
     + `<button class="bk-real-msg-menu" type="button" data-real-menu aria-haspopup="menu" aria-label="${esc(t('chats.real.actions'))}">⋯</button>`
-    + `<div class="bk-card-header"><div class="bk-list-row-main">`
-    + `<h3 class="bk-card-title">${esc(author)}</h3>`
-    + `<div class="bk-meta">${esc(fmtTime(m.created_at))}</div></div></div>`
+    + `<div class="bk-card-header"><div class="bk-list-row-main">${header}</div></div>`
     + `<p class="bk-card-body">${esc(m.body)}</p></section>`;
 }
 
 async function populateRooms(list: HTMLElement): Promise<void> {
-  const { status, data } = await api('/me/chat-rooms', 'GET');
-  if (status !== 200) return; // leave the native placeholder list as-is
-  const rooms: Room[] = data?.rooms ?? [];
+  const rooms = await ensureRooms();
   list.innerHTML = rooms.length
     ? rooms.map(roomRow).join('')
     : `<p class="bk-state-copy">${esc(t('chats.real.noRooms'))}</p>`;
 }
 
 async function populateThread(thread: HTMLElement, roomId: string): Promise<void> {
-  const [myId, res] = await Promise.all([ensureMe(), api(`/chat-rooms/${encodeURIComponent(roomId)}/messages`, 'GET')]);
+  const [myId, rooms, res] = await Promise.all([
+    ensureMe(),
+    ensureRooms(),
+    api(`/chat-rooms/${encodeURIComponent(roomId)}/messages`, 'GET')
+  ]);
   const { status, data } = res;
+  const isDirect = rooms.find((r) => r.id === roomId)?.type === 'direct';
 
   // Replace only the message cards / chrome, never the sticky composer that the
   // native decorators moved into the thread (wiping it caused the overlap bug).
@@ -104,8 +120,15 @@ async function populateThread(thread: HTMLElement, roomId: string): Promise<void
     html = `<p class="bk-state-copy" data-real-error data-tone="error">${esc(t('chats.real.loadError'))}</p>`;
   } else {
     const messages: Message[] = data?.messages ?? [];
+    // Show the sender name only when it changes: hidden in direct chats, and for
+    // a run of consecutive messages from the same author (name on the first).
+    let prevAuthor: string | null = null;
     html = messages.length
-      ? messages.map((m) => messageCard(m, myId)).join('')
+      ? messages.map((m) => {
+          const sameRun = Boolean(m.author_user_id) && m.author_user_id === prevAuthor;
+          prevAuthor = m.author_user_id;
+          return messageCard(m, myId, !isDirect && !sameRun);
+        }).join('')
       : `<p class="bk-state-copy" data-real-empty>${esc(t('chats.real.empty'))}</p>`;
   }
 

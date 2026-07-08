@@ -320,7 +320,19 @@
   position: relative;
   width: fit-content;
   max-width: 82%;
-  margin: 0 auto 10px 0;
+  margin: 10px auto 0 0;
+  padding: 6px 11px;
+}
+/* Tight, chat-sized spacing (the base .bk-social-card is feed-sized). */
+.bk-chat-thread .bk-real-msg .bk-card-header {
+  margin: 0 0 1px;
+}
+.bk-chat-thread .bk-real-msg .bk-card-body {
+  margin: 0;
+}
+/* Consecutive messages from the same author sit closer together. */
+.bk-chat-thread .bk-real-msg.is-grouped {
+  margin-top: 3px;
 }
 .bk-chat-thread .bk-real-msg.is-own {
   margin-left: auto;
