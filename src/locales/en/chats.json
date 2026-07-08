@@ -20,5 +20,8 @@
   "chats.real.sendError": "Could not send the message.",
   "chats.real.readOnly": "This room is read-only for you.",
   "chats.real.you": "You",
-  "chats.real.reply": "Reply"
+  "chats.real.reply": "Reply",
+  "chats.real.actions": "Message actions",
+  "chats.real.copy": "Copy",
+  "chats.real.report": "Report"
 }

@@ -344,27 +344,64 @@
 .bk-chat-thread .bk-real-msg .bk-card-body {
   text-align: left;
 }
-/* Take the (normally hidden) actions footer out of flow so it neither reserves
-   vertical space nor widens the bubble; reveal it on hover/open, expanding the
-   bubble's bottom padding just enough so it never overlaps the text. */
-.bk-chat-thread .bk-real-msg .bk-chat-message-actions {
+/* Actions live in a popup menu (⋮ / long-press), so nothing clutters the
+   bubble. The ⋮ trigger sits opposite the header text and shows on hover. */
+.bk-real-msg-menu {
   position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 6px;
-  margin: 0;
-  padding-left: 0;
-  flex-wrap: wrap;
+  top: 2px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--bk-muted);
+  cursor: pointer;
+  font-size: 1.15rem;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity .14s ease, background .14s ease;
 }
-.bk-chat-thread .bk-real-msg .bk-chat-message-actions > * {
-  flex: 0 0 auto;
-  white-space: nowrap;
+.bk-real-msg:not(.is-own) .bk-real-msg-menu { inset-inline-end: 2px; }
+.bk-real-msg.is-own .bk-real-msg-menu { inset-inline-start: 2px; }
+.bk-real-msg:hover .bk-real-msg-menu,
+.bk-real-msg:focus-within .bk-real-msg-menu { opacity: .85; }
+.bk-real-msg-menu:hover,
+.bk-real-msg-menu:focus-visible { opacity: 1; color: var(--bk-text); background: var(--bk-surface-soft); }
+
+/* Floating action menu. */
+.bk-real-menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid var(--bk-border-strong);
+  border-radius: 14px;
+  background: var(--bk-surface-raised);
+  box-shadow: var(--bk-shadow);
+  backdrop-filter: blur(18px);
 }
-.bk-chat-thread .bk-real-msg:hover,
-.bk-chat-thread .bk-real-msg:focus-within,
-.bk-chat-thread .bk-real-msg.is-chat-actions-open {
-  padding-bottom: 38px;
+.bk-real-menu[hidden] { display: none; }
+.bk-real-menu button {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: var(--bk-space-2);
+  padding: 0 var(--bk-space-3);
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--bk-text);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 640;
+  text-align: left;
 }
+.bk-real-menu button:hover,
+.bk-real-menu button:focus-visible { background: var(--bk-surface-soft); outline: none; }
+.bk-real-menu button.is-danger { color: var(--bk-danger); }
 /* The composer is a sticky bar (~83px) overlaying the bottom of the thread.
    Reserve space so the last real message is never hidden behind it. Scoped via
    :has to threads showing real messages, so the mock chat is untouched. */

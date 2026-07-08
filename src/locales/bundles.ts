@@ -399,7 +399,10 @@ export const localeBundles = {
       "chats.real.sendError": "Could not send the message.",
       "chats.real.readOnly": "This room is read-only for you.",
       "chats.real.you": "You",
-      "chats.real.reply": "Reply"
+      "chats.real.reply": "Reply",
+      "chats.real.actions": "Message actions",
+      "chats.real.copy": "Copy",
+      "chats.real.report": "Report"
     },
     "common": {
       "access.admin": "admin",
@@ -1331,7 +1334,10 @@ export const localeBundles = {
       "chats.real.sendError": "Не удалось отправить сообщение.",
       "chats.real.readOnly": "Эта комната доступна вам только для чтения.",
       "chats.real.you": "Вы",
-      "chats.real.reply": "Ответить"
+      "chats.real.reply": "Ответить",
+      "chats.real.actions": "Действия с сообщением",
+      "chats.real.copy": "Копировать",
+      "chats.real.report": "Пожаловаться"
     },
     "common": {
       "access.admin": "admin",

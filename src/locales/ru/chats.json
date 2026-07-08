@@ -20,5 +20,8 @@
   "chats.real.sendError": "Не удалось отправить сообщение.",
   "chats.real.readOnly": "Эта комната доступна вам только для чтения.",
   "chats.real.you": "Вы",
-  "chats.real.reply": "Ответить"
+  "chats.real.reply": "Ответить",
+  "chats.real.actions": "Действия с сообщением",
+  "chats.real.copy": "Копировать",
+  "chats.real.report": "Пожаловаться"
 }

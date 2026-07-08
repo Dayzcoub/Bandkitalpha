@@ -65,24 +65,20 @@ function roomRow(r: Room): string {
     + `<div class="bk-meta">${esc(t('chats.messages'))}</div></div></div>`;
 }
 
-// Message card matching the native chat markup so the existing decorators apply:
-// the .bk-chat-message-card class + .bk-chat-message-actions footer let
-// ChatMessageControls' observer attach delete/report on hover/long-press, and
-// the reply link mirrors the mock. `is-own` right-aligns and highlights the
-// current user's own messages (VK/Telegram style).
-function messageCard(m: Message, index: number, myId: string | null): string {
+// Message bubble. `is-own` right-aligns and highlights the current user's own
+// messages (VK/Telegram style). Actions live in a popup menu opened from the ⋮
+// button (desktop) or a long-press (mobile) — see the menu logic below — so they
+// never clutter or overlap short messages.
+function messageCard(m: Message, myId: string | null): string {
   const own = Boolean(myId && m.author_user_id === myId);
   const author = m.author_name || t('chats.real.you');
-  return `<section class="bk-card bk-social-card bk-chat-message-card bk-real-msg${own ? ' is-own' : ''}"`
-    + ` id="chat-message-${esc(m.id)}" data-message-index="${index}"`
-    + ` data-reply-author="${esc(author)}" data-reply-body="${esc(m.body)}">`
+  return `<section class="bk-card bk-social-card bk-real-msg${own ? ' is-own' : ''}"`
+    + ` data-msg-author="${esc(author)}" data-msg-body="${esc(m.body)}">`
+    + `<button class="bk-real-msg-menu" type="button" data-real-menu aria-haspopup="menu" aria-label="${esc(t('chats.real.actions'))}">⋯</button>`
     + `<div class="bk-card-header"><div class="bk-list-row-main">`
     + `<h3 class="bk-card-title">${esc(author)}</h3>`
     + `<div class="bk-meta">${esc(fmtTime(m.created_at))}</div></div></div>`
-    + `<p class="bk-card-body">${esc(m.body)}</p>`
-    + `<footer class="bk-chat-message-actions">`
-    + `<button class="bk-chat-reply-action" type="button" data-real-reply data-reply-author="${esc(author)}" data-reply-body="${esc(m.body)}">↩ ${esc(t('chats.real.reply'))}</button>`
-    + `</footer></section>`;
+    + `<p class="bk-card-body">${esc(m.body)}</p></section>`;
 }
 
 async function populateRooms(list: HTMLElement): Promise<void> {
@@ -109,7 +105,7 @@ async function populateThread(thread: HTMLElement, roomId: string): Promise<void
   } else {
     const messages: Message[] = data?.messages ?? [];
     html = messages.length
-      ? messages.map((m, i) => messageCard(m, i, myId)).join('')
+      ? messages.map((m) => messageCard(m, myId)).join('')
       : `<p class="bk-state-copy" data-real-empty>${esc(t('chats.real.empty'))}</p>`;
   }
 
@@ -162,13 +158,86 @@ async function sendCurrent(root: HTMLElement, btn: HTMLButtonElement): Promise<v
   }
 }
 
+// --- Message context menu (⋮ / long-press), VK/Telegram style ------------
+
+let menuEl: HTMLElement | null = null;
+let menuMsg: { author: string; body: string } | null = null;
+
+function buildMenu(root: HTMLElement): HTMLElement {
+  if (menuEl) return menuEl;
+  const el = document.createElement('div');
+  el.className = 'bk-real-menu';
+  el.setAttribute('role', 'menu');
+  el.hidden = true;
+  el.innerHTML =
+    `<button type="button" role="menuitem" data-menu-act="reply">↩ ${esc(t('chats.real.reply'))}</button>`
+    + `<button type="button" role="menuitem" data-menu-act="copy">⧉ ${esc(t('chats.real.copy'))}</button>`
+    + `<button type="button" role="menuitem" data-menu-act="report" class="is-danger">⚑ ${esc(t('chats.real.report'))}</button>`;
+  root.appendChild(el);
+  menuEl = el;
+  return el;
+}
+
+function openMenu(root: HTMLElement, anchor: HTMLElement, msg: { author: string; body: string }): void {
+  const menu = buildMenu(root);
+  menuMsg = msg;
+  menu.hidden = false;
+  const r = anchor.getBoundingClientRect();
+  const mw = menu.offsetWidth || 200;
+  const mh = menu.offsetHeight || 132;
+  const left = Math.max(8, Math.min(r.right - mw, window.innerWidth - mw - 8));
+  let top = r.bottom + 6;
+  if (top + mh > window.innerHeight - 8) top = Math.max(8, r.top - mh - 6);
+  menu.style.left = `${left}px`;
+  menu.style.top = `${top}px`;
+}
+
+function closeMenu(): void {
+  if (menuEl) menuEl.hidden = true;
+  menuMsg = null;
+}
+
+function replyTo(root: HTMLElement, author: string, body: string): void {
+  const textarea = root.querySelector<HTMLTextAreaElement>('[data-chat-body]');
+  if (!textarea) return;
+  const quote = `> ${author}: ${body}\n`;
+  if (!textarea.value.startsWith(quote)) textarea.value = quote + textarea.value;
+  textarea.focus();
+}
+
+const LONG_PRESS_MS = 480;
+
 export function initRealChat(root: HTMLElement): void {
   refresh(root);
   new MutationObserver(() => refresh(root)).observe(root, { childList: true, subtree: true });
 
+  let longPressTimer: number | null = null;
+  let suppressClick = false;
+  const clearLongPress = () => { if (longPressTimer !== null) { window.clearTimeout(longPressTimer); longPressTimer = null; } };
+
   root.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
+
+    const menuItem = target.closest<HTMLElement>('[data-menu-act]');
+    if (menuItem) {
+      event.preventDefault();
+      const act = menuItem.getAttribute('data-menu-act');
+      const msg = menuMsg;
+      closeMenu();
+      if (msg && act === 'reply') replyTo(root, msg.author, msg.body);
+      else if (msg && act === 'copy') navigator.clipboard?.writeText(msg.body).catch(() => {});
+      else if (act === 'report') navTo('/complaints/new');
+      return;
+    }
+    const trigger = target.closest<HTMLElement>('[data-real-menu]');
+    if (trigger) {
+      event.preventDefault();
+      event.stopPropagation();
+      const el = trigger.closest<HTMLElement>('.bk-real-msg');
+      if (el) openMenu(root, trigger, { author: el.dataset.msgAuthor || '', body: el.dataset.msgBody || '' });
+      return;
+    }
     const nav = target.closest<HTMLElement>('[data-real-room-nav]');
     if (nav) {
       event.preventDefault();
@@ -182,21 +251,28 @@ export function initRealChat(root: HTMLElement): void {
       void sendCurrent(root, send);
       return;
     }
-    const reply = target.closest<HTMLElement>('[data-real-reply]');
-    if (reply) {
-      event.preventDefault();
-      const author = reply.getAttribute('data-reply-author') || '';
-      const body = reply.getAttribute('data-reply-body') || '';
-      const textarea = root.querySelector<HTMLTextAreaElement>('[data-chat-body]');
-      if (textarea) {
-        const quote = `> ${author}: ${body}\n`;
-        if (!textarea.value.startsWith(quote)) textarea.value = quote + textarea.value;
-        textarea.focus();
-      }
-    }
+    // A click anywhere else (or the click that follows a long-press) closes the menu.
+    if (menuEl && !menuEl.hidden && !suppressClick) closeMenu();
+    suppressClick = false;
   });
 
+  // Long-press a message bubble to open its menu on touch devices.
+  root.addEventListener('pointerdown', (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const el = target?.closest<HTMLElement>('.bk-real-msg');
+    if (!el || target?.closest('[data-real-menu]')) return;
+    clearLongPress();
+    longPressTimer = window.setTimeout(() => {
+      suppressClick = true;
+      openMenu(root, el, { author: el.dataset.msgAuthor || '', body: el.dataset.msgBody || '' });
+    }, LONG_PRESS_MS);
+  });
+  root.addEventListener('pointerup', clearLongPress);
+  root.addEventListener('pointercancel', clearLongPress);
+  root.addEventListener('pointermove', clearLongPress);
+
   root.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') { closeMenu(); return; }
     if (event.key !== 'Enter') return;
     const target = event.target instanceof Element ? event.target : null;
     const nav = target?.closest<HTMLElement>('[data-real-room-nav]');
@@ -206,4 +282,7 @@ export function initRealChat(root: HTMLElement): void {
       if (path) navTo(path);
     }
   });
+
+  // Close the menu when the thread scrolls (it is anchored to a message rect).
+  root.addEventListener('scroll', () => { if (menuEl && !menuEl.hidden) closeMenu(); }, true);
 }
