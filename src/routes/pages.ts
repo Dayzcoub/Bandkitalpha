@@ -174,8 +174,7 @@ function renderEventDetail(ctx: AppContext): string {
 
 function renderChats(ctx: AppContext): string {
   const policy = card(`<h3 class="bk-card-title">${ctx.t('chats.policyTitle')}</h3><p class="bk-state-copy">${ctx.t('chats.policyCopy')}</p><div class="bk-chip-row">${badge(ctx.t('security.linkNotice'), 'warning')}${badge(ctx.t('security.reportAvailable'), 'positive')}</div>`, 'bk-chat-policy-card');
-  const realChat = ctx.state.currentUser ? '<div data-real-chat></div>' : '';
-  return contentGrid([pageHeader(ctx, 'chats.title', 'chats.subtitle'), policy, realChat, card(`<h3 class="bk-card-title">${ctx.t('chats.rooms')}</h3><div class="bk-list">${chats.map((chat) => chatRow(ctx, chat)).join('')}</div>`)].join(''), defaultRightRail(ctx));
+  return contentGrid([pageHeader(ctx, 'chats.title', 'chats.subtitle'), policy, card(`<h3 class="bk-card-title">${ctx.t('chats.rooms')}</h3><div class="bk-list">${chats.map((chat) => chatRow(ctx, chat)).join('')}</div>`)].join(''), defaultRightRail(ctx));
 }
 
 function renderChatRoom(ctx: AppContext): string {
