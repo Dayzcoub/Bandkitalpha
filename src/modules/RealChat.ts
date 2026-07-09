@@ -23,7 +23,7 @@ function roomIdFromPath(): string | null {
   return id && UUID.test(id) ? id : null;
 }
 
-async function api(path: string, method: 'GET' | 'POST' | 'PATCH', body?: unknown): Promise<{ status: number; data: any }> {
+async function api(path: string, method: 'GET' | 'POST' | 'PATCH' | 'DELETE', body?: unknown): Promise<{ status: number; data: any }> {
   try {
     const res = await fetch(`/api/v1${path}`, {
       method,
@@ -40,7 +40,16 @@ async function api(path: string, method: 'GET' | 'POST' | 'PATCH', body?: unknow
 }
 
 type Room = { id: string; title: string | null; type: string; entity_name: string | null; event_title: string | null };
-type Message = { id: string; author_user_id: string | null; author_name: string | null; body: string; created_at: string; is_pinned?: boolean };
+type Message = {
+  id: string; author_user_id: string | null; author_name: string | null;
+  body: string; created_at: string; is_pinned?: boolean; edited_at?: string | null;
+  reply_author?: string | null; reply_body?: string | null;
+};
+
+function excerpt(text: string, n = 80): string {
+  const s = (text || '').replace(/\s+/g, ' ').trim();
+  return s.length > n ? `${s.slice(0, n)}…` : s;
+}
 
 const MODERATOR_ROLES = ['owner', 'admin', 'manager'];
 
@@ -108,15 +117,21 @@ function messageCard(m: Message, myId: string | null, showName: boolean, isDirec
   const header = showName
     ? `<h3 class="bk-card-title">${esc(author)}</h3><div class="bk-meta">${esc(fmtTime(m.created_at))}</div>`
     : `<div class="bk-meta">${esc(fmtTime(m.created_at))}</div>`;
+  const replyRef = m.reply_author
+    ? `<div class="bk-real-reply"><span class="bk-real-reply-author">${esc(m.reply_author)}</span>${esc(excerpt(m.reply_body || '', 90))}</div>`
+    : '';
+  const edited = m.edited_at ? ` <span class="bk-real-edited">(${esc(t('chats.real.edited'))})</span>` : '';
   return `<section class="bk-card bk-social-card bk-real-msg${own ? ' is-own' : ''}${showName ? '' : ' is-grouped'}`
     + `${avatarSlot ? ' has-avatar' : ''}${pinned ? ' is-pinned' : ''}"`
-    + ` data-msg-id="${esc(m.id)}" data-msg-author="${esc(author)}" data-msg-body="${esc(m.body)}" data-msg-pinned="${pinned ? '1' : '0'}">`
+    + ` data-msg-id="${esc(m.id)}" data-msg-author="${esc(author)}" data-msg-body="${esc(m.body)}"`
+    + ` data-msg-pinned="${pinned ? '1' : '0'}" data-msg-own="${own ? '1' : '0'}">`
     + (avatarSlot && showName ? avatarHtml(author) : '')
     + `<button class="bk-real-msg-menu" type="button" data-real-menu aria-haspopup="menu" aria-label="${esc(t('chats.real.actions'))}">⋯</button>`
     + `<div class="bk-card-header"><div class="bk-list-row-main">${header}`
     + (pinned ? `<span class="bk-real-pin" title="${esc(t('chats.real.pinned'))}">📌</span>` : '')
     + `</div></div>`
-    + `<p class="bk-card-body">${esc(m.body)}</p></section>`;
+    + replyRef
+    + `<p class="bk-card-body">${esc(m.body)}${edited}</p></section>`;
 }
 
 async function populateRooms(list: HTMLElement): Promise<void> {
@@ -124,6 +139,28 @@ async function populateRooms(list: HTMLElement): Promise<void> {
   list.innerHTML = rooms.length
     ? rooms.map(roomRow).join('')
     : `<p class="bk-state-copy">${esc(t('chats.real.noRooms'))}</p>`;
+}
+
+// A pinned-message bar under the header (like Telegram); click scrolls to it.
+function updatePinnedBar(thread: HTMLElement, pinned: Message[]): void {
+  const card = thread.closest<HTMLElement>('.bk-chat-room-card');
+  if (!card) return;
+  const header = card.querySelector<HTMLElement>('[data-real-chat-header]');
+  let bar = card.querySelector<HTMLElement>('[data-real-pinned-bar]');
+  if (!pinned.length) { bar?.remove(); return; }
+  const last = pinned[pinned.length - 1];
+  if (!bar) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'bk-real-pinned-bar';
+    btn.setAttribute('data-real-pinned-bar', '');
+    if (header) header.insertAdjacentElement('afterend', btn);
+    else card.insertAdjacentElement('afterbegin', btn);
+    bar = btn;
+  }
+  bar.dataset.target = last.id;
+  bar.innerHTML = `<span class="bk-real-pin">📌</span>`
+    + `<span class="bk-real-pinned-text"><span class="bk-real-reply-author">${esc(t('chats.real.pinned'))}</span> ${esc(excerpt(last.body, 80))}</span>`;
 }
 
 async function populateThread(thread: HTMLElement, roomId: string): Promise<void> {
@@ -141,10 +178,12 @@ async function populateThread(thread: HTMLElement, roomId: string): Promise<void
     .forEach((el) => el.remove());
 
   let html: string;
+  let pinned: Message[] = [];
   if (status !== 200) {
     html = `<p class="bk-state-copy" data-real-error data-tone="error">${esc(t('chats.real.loadError'))}</p>`;
   } else {
     const messages: Message[] = data?.messages ?? [];
+    pinned = messages.filter((m) => m.is_pinned);
     // Show the sender name only when it changes: hidden in direct chats, and for
     // a run of consecutive messages from the same author (name on the first).
     let prevAuthor: string | null = null;
@@ -156,6 +195,7 @@ async function populateThread(thread: HTMLElement, roomId: string): Promise<void
         }).join('')
       : `<p class="bk-state-copy" data-real-empty>${esc(t('chats.real.empty'))}</p>`;
   }
+  updatePinnedBar(thread, pinned);
 
   const composer = thread.querySelector('.bk-chat-composer-inside-thread, [data-chat-composer]');
   if (composer) composer.insertAdjacentHTML('beforebegin', html);
@@ -237,9 +277,19 @@ async function sendCurrent(root: HTMLElement, btn: HTMLButtonElement): Promise<v
   if (!roomId || !text) return;
   btn.disabled = true;
   try {
-    const { status } = await api(`/chat-rooms/${encodeURIComponent(roomId)}/messages`, 'POST', { body: text });
-    if (status === 201) {
+    let ok = false;
+    if (composerMode?.kind === 'edit') {
+      const { status } = await api(`/chat-rooms/${encodeURIComponent(roomId)}/messages/${encodeURIComponent(composerMode.id)}`, 'PATCH', { body: text });
+      ok = status === 200;
+    } else {
+      const payload: Record<string, unknown> = { body: text };
+      if (composerMode?.kind === 'reply') payload.reply_to_message_id = composerMode.id;
+      const { status } = await api(`/chat-rooms/${encodeURIComponent(roomId)}/messages`, 'POST', payload);
+      ok = status === 201;
+    }
+    if (ok) {
       if (textarea) textarea.value = '';
+      setComposerMode(root, null);
       const thread = root.querySelector<HTMLElement>('[data-real-thread]');
       if (thread) await populateThread(thread, roomId);
     }
@@ -250,7 +300,7 @@ async function sendCurrent(root: HTMLElement, btn: HTMLButtonElement): Promise<v
 
 // --- Message context menu (⋮ / long-press), VK/Telegram style ------------
 
-type MenuMsg = { id: string; author: string; body: string; pinned: boolean };
+type MenuMsg = { id: string; author: string; body: string; pinned: boolean; own: boolean };
 let menuEl: HTMLElement | null = null;
 let menuMsg: MenuMsg | null = null;
 
@@ -270,12 +320,15 @@ function getMenu(root: HTMLElement): HTMLElement {
 function openMenu(root: HTMLElement, anchor: HTMLElement, msg: MenuMsg): void {
   const menu = getMenu(root);
   menuMsg = msg;
-  // Build items per message: Pin/Unpin only for room moderators.
-  const canPin = Boolean(currentRole && MODERATOR_ROLES.includes(currentRole) && currentRoomId === roomIdFromPath());
+  // Build items per message: Edit only for your own; Pin and Delete for room
+  // moderators (Delete also for your own).
+  const isMod = Boolean(currentRole && MODERATOR_ROLES.includes(currentRole) && currentRoomId === roomIdFromPath());
   const items = [
     `<button type="button" role="menuitem" data-menu-act="reply">↩ ${esc(t('chats.real.reply'))}</button>`,
     `<button type="button" role="menuitem" data-menu-act="copy">⧉ ${esc(t('chats.real.copy'))}</button>`,
-    canPin ? `<button type="button" role="menuitem" data-menu-act="pin">📌 ${esc(msg.pinned ? t('chats.real.unpin') : t('chats.real.pin'))}</button>` : '',
+    msg.own ? `<button type="button" role="menuitem" data-menu-act="edit">✎ ${esc(t('chats.real.edit'))}</button>` : '',
+    isMod ? `<button type="button" role="menuitem" data-menu-act="pin">📌 ${esc(msg.pinned ? t('chats.real.unpin') : t('chats.real.pin'))}</button>` : '',
+    (msg.own || isMod) ? `<button type="button" role="menuitem" data-menu-act="delete" class="is-danger">🗑 ${esc(t('chats.real.delete'))}</button>` : '',
     `<button type="button" role="menuitem" data-menu-act="report" class="is-danger">⚑ ${esc(t('chats.real.report'))}</button>`
   ].filter(Boolean);
   menu.innerHTML = items.join('');
@@ -295,21 +348,53 @@ function closeMenu(): void {
   menuMsg = null;
 }
 
-function replyTo(root: HTMLElement, author: string, body: string): void {
-  const textarea = root.querySelector<HTMLTextAreaElement>('[data-chat-body]');
-  if (!textarea) return;
-  const quote = `> ${author}: ${body}\n`;
-  if (!textarea.value.startsWith(quote)) textarea.value = quote + textarea.value;
-  textarea.focus();
-}
-
 function msgFromEl(el: HTMLElement): MenuMsg {
   return {
     id: el.dataset.msgId || '',
     author: el.dataset.msgAuthor || '',
     body: el.dataset.msgBody || '',
-    pinned: el.dataset.msgPinned === '1'
+    pinned: el.dataset.msgPinned === '1',
+    own: el.dataset.msgOwn === '1'
   };
+}
+
+// The composer either sends a new message, replies to one, or edits one. This
+// state drives the context banner above the input and how sendCurrent behaves.
+type ComposerMode = { kind: 'reply'; id: string; author: string; body: string } | { kind: 'edit'; id: string };
+let composerMode: ComposerMode | null = null;
+
+function composerCard(root: HTMLElement): HTMLElement | null {
+  return root.querySelector<HTMLElement>('[data-chat-send]')?.closest<HTMLElement>('.bk-chat-composer-card, section') || null;
+}
+
+function renderComposerContext(root: HTMLElement): void {
+  const card = composerCard(root);
+  if (!card) return;
+  let banner = card.querySelector<HTMLElement>('[data-real-context]');
+  if (!composerMode) { banner?.remove(); return; }
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.className = 'bk-real-ctx';
+    banner.setAttribute('data-real-context', '');
+    card.insertAdjacentElement('afterbegin', banner);
+  }
+  const label = composerMode.kind === 'reply' ? t('chats.real.replyingTo') : t('chats.real.editing');
+  const detail = composerMode.kind === 'reply' ? `${esc(composerMode.author)}: ${esc(excerpt(composerMode.body, 70))}` : '';
+  banner.innerHTML = `<div class="bk-real-ctx-main"><span class="bk-real-ctx-label">${esc(label)}</span>${detail}</div>`
+    + `<button class="bk-real-ctx-clear" type="button" data-real-context-clear aria-label="${esc(t('chats.real.cancel'))}">×</button>`;
+}
+
+function setComposerMode(root: HTMLElement, mode: ComposerMode | null): void {
+  composerMode = mode;
+  renderComposerContext(root);
+  const textarea = root.querySelector<HTMLTextAreaElement>('[data-chat-body]');
+  if (mode?.kind === 'edit') {
+    const el = root.querySelector<HTMLElement>(`.bk-real-msg[data-msg-id="${CSS.escape(mode.id)}"]`);
+    if (textarea && el) textarea.value = el.dataset.msgBody || '';
+  } else if (!mode && textarea) {
+    // leave textarea as-is on cancel of reply; clear it when leaving edit handled by caller
+  }
+  textarea?.focus();
 }
 
 async function pinMessage(root: HTMLElement, msg: MenuMsg): Promise<void> {
@@ -319,6 +404,19 @@ async function pinMessage(root: HTMLElement, msg: MenuMsg): Promise<void> {
     `/chat-rooms/${encodeURIComponent(roomId)}/messages/${encodeURIComponent(msg.id)}`,
     'PATCH',
     { pinned: !msg.pinned }
+  );
+  if (status === 200) {
+    const thread = root.querySelector<HTMLElement>('[data-real-thread]');
+    if (thread) await populateThread(thread, roomId);
+  }
+}
+
+async function deleteMessage(root: HTMLElement, msg: MenuMsg): Promise<void> {
+  const roomId = roomIdFromPath();
+  if (!roomId || !msg.id) return;
+  const { status } = await api(
+    `/chat-rooms/${encodeURIComponent(roomId)}/messages/${encodeURIComponent(msg.id)}`,
+    'DELETE'
   );
   if (status === 200) {
     const thread = root.querySelector<HTMLElement>('[data-real-thread]');
@@ -346,10 +444,21 @@ export function initRealChat(root: HTMLElement): void {
       const act = menuItem.getAttribute('data-menu-act');
       const msg = menuMsg;
       closeMenu();
-      if (msg && act === 'reply') replyTo(root, msg.author, msg.body);
+      if (msg && act === 'reply') setComposerMode(root, { kind: 'reply', id: msg.id, author: msg.author, body: msg.body });
+      else if (msg && act === 'edit') setComposerMode(root, { kind: 'edit', id: msg.id });
       else if (msg && act === 'copy') navigator.clipboard?.writeText(msg.body).catch(() => {});
       else if (msg && act === 'pin') void pinMessage(root, msg);
+      else if (msg && act === 'delete') void deleteMessage(root, msg);
       else if (act === 'report') navTo('/complaints/new');
+      return;
+    }
+    const ctxClear = target.closest<HTMLElement>('[data-real-context-clear]');
+    if (ctxClear) {
+      event.preventDefault();
+      const wasEdit = composerMode?.kind === 'edit';
+      setComposerMode(root, null);
+      const textarea = root.querySelector<HTMLTextAreaElement>('[data-chat-body]');
+      if (wasEdit && textarea) textarea.value = '';
       return;
     }
     const trigger = target.closest<HTMLElement>('[data-real-menu]');
@@ -358,6 +467,18 @@ export function initRealChat(root: HTMLElement): void {
       event.stopPropagation();
       const el = trigger.closest<HTMLElement>('.bk-real-msg');
       if (el) openMenu(root, trigger, msgFromEl(el));
+      return;
+    }
+    const pinnedBar = target.closest<HTMLElement>('[data-real-pinned-bar]');
+    if (pinnedBar) {
+      event.preventDefault();
+      const id = pinnedBar.dataset.target;
+      const el = id ? root.querySelector<HTMLElement>(`.bk-real-msg[data-msg-id="${CSS.escape(id)}"]`) : null;
+      if (el) {
+        el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        el.classList.add('is-flash');
+        window.setTimeout(() => el.classList.remove('is-flash'), 1200);
+      }
       return;
     }
     const nav = target.closest<HTMLElement>('[data-real-room-nav]');

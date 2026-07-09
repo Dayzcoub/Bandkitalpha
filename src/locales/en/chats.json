@@ -26,5 +26,11 @@
   "chats.real.report": "Report",
   "chats.real.pin": "Pin",
   "chats.real.unpin": "Unpin",
-  "chats.real.pinned": "Pinned"
+  "chats.real.pinned": "Pinned",
+  "chats.real.edit": "Edit",
+  "chats.real.delete": "Delete",
+  "chats.real.editing": "Editing message",
+  "chats.real.replyingTo": "Reply to",
+  "chats.real.edited": "edited",
+  "chats.real.cancel": "Cancel"
 }

@@ -7,7 +7,7 @@ import { handleAdminLocalization } from './modules/admin/localization.routes.js'
 import { handleAdminNotifications } from './modules/admin/notifications.routes.js';
 import { handleAdminSettings } from './modules/admin/settings.routes.js';
 import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
-import { handleListChatRooms, handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handlePinMessage } from './modules/chats/chats.routes.js';
+import { handleListChatRooms, handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handleUpdateMessage, handleDeleteMessage } from './modules/chats/chats.routes.js';
 import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
 import { handleListDocuments, handleListEntityDocuments, handleCreateEntityDocument } from './modules/documents/documents.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
@@ -202,7 +202,12 @@ const server = http.createServer((req, res) => {
       }
 
       if (req.method === 'PATCH' && roomMessageDetailMatch) {
-        await handlePinMessage(req, res, decodeURIComponent(roomMessageDetailMatch[1]), decodeURIComponent(roomMessageDetailMatch[2]));
+        await handleUpdateMessage(req, res, decodeURIComponent(roomMessageDetailMatch[1]), decodeURIComponent(roomMessageDetailMatch[2]));
+        return;
+      }
+
+      if (req.method === 'DELETE' && roomMessageDetailMatch) {
+        await handleDeleteMessage(req, res, decodeURIComponent(roomMessageDetailMatch[1]), decodeURIComponent(roomMessageDetailMatch[2]));
         return;
       }
 

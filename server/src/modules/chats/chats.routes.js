@@ -108,9 +108,12 @@ export async function handleListMessages(req, res, roomId) {
     if (!access) return;
     const result = await client.query(
       `select m.id, m.author_user_id, u.display_name as author_name, m.kind, m.body,
-              m.reply_to_message_id, m.is_pinned, m.created_at
+              m.reply_to_message_id, m.is_pinned, m.status, m.created_at, m.edited_at,
+              ru.display_name as reply_author, rp.body as reply_body
          from chat_messages m
          left join users u on u.id = m.author_user_id
+         left join chat_messages rp on rp.id = m.reply_to_message_id and rp.status not in ('deleted', 'hidden')
+         left join users ru on ru.id = rp.author_user_id
         where m.room_id = $1 and m.status not in ('deleted', 'hidden')
         order by m.created_at
         limit 200`,
@@ -222,37 +225,123 @@ export async function handleGetRoom(req, res, roomId) {
 }
 
 // PATCH /chat-rooms/:id/messages/:messageId — pin/unpin a message. Only room
-// moderators (owner/admin/manager).
-export async function handlePinMessage(req, res, roomId, messageId) {
+// moderators (owner/admin/manager); editing the body is author-only.
+export async function handleUpdateMessage(req, res, roomId, messageId) {
   const client = await getPool().connect();
   try {
-    const access = await requireRoomAccess(client, req, res, roomId, 'moderate');
+    const access = await requireRoomAccess(client, req, res, roomId, 'view');
     if (!access) return;
     const body = await readJsonBody(req);
-    const pinned = Boolean(body.pinned);
 
-    const result = await client.query(
-      `update chat_messages set is_pinned = $1
-        where id = $2 and room_id = $3 and status not in ('deleted', 'hidden')
-        returning id, is_pinned`,
-      [pinned, messageId, roomId]
+    const msgRes = await client.query(
+      `select id, author_user_id from chat_messages
+        where id = $1 and room_id = $2 and status not in ('deleted', 'hidden') limit 1`,
+      [messageId, roomId]
     );
-    if (!result.rows[0]) {
+    const message = msgRes.rows[0];
+    if (!message) {
       sendError(res, 404, 'MESSAGE_NOT_FOUND', 'Message not found in this room');
       return;
     }
-    await client.query(
-      `insert into audit_events (actor_user_id, action, room_id, message_id, metadata)
-       values ($1, $2, $3, $4, '{}'::jsonb)`,
-      [access.actor.id, pinned ? 'chat.message_pinned' : 'chat.message_unpinned', roomId, messageId]
-    );
-    sendJson(res, 200, { ok: true, message: result.rows[0] });
+
+    // Pin/unpin — room moderators only.
+    if (typeof body.pinned === 'boolean') {
+      if (!permissionService.canModerateRoom(access.actor, access.membership, access.room)) {
+        sendError(res, 403, 'ROOM_ACCESS_FORBIDDEN', 'You cannot moderate this room');
+        return;
+      }
+      const result = await client.query(
+        'update chat_messages set is_pinned = $1 where id = $2 returning id, is_pinned',
+        [body.pinned, messageId]
+      );
+      await client.query(
+        `insert into audit_events (actor_user_id, action, room_id, message_id, metadata)
+         values ($1, $2, $3, $4, '{}'::jsonb)`,
+        [access.actor.id, body.pinned ? 'chat.message_pinned' : 'chat.message_unpinned', roomId, messageId]
+      );
+      sendJson(res, 200, { ok: true, message: result.rows[0] });
+      return;
+    }
+
+    // Edit body — author only, active membership and room.
+    if (body.body !== undefined) {
+      if (message.author_user_id !== access.actor.id) {
+        sendError(res, 403, 'MESSAGE_EDIT_FORBIDDEN', 'You can only edit your own messages');
+        return;
+      }
+      if (access.room.status !== 'active' || access.membership?.status !== 'active') {
+        sendError(res, 403, 'ROOM_ACCESS_FORBIDDEN', 'This room is read-only for you');
+        return;
+      }
+      const text = String(body.body || '').trim();
+      if (!text) {
+        sendError(res, 400, 'MESSAGE_EMPTY', 'Message body is required');
+        return;
+      }
+      if (text.length > MAX_MESSAGE_LENGTH) {
+        sendError(res, 400, 'MESSAGE_TOO_LONG', `Message must be at most ${MAX_MESSAGE_LENGTH} characters`);
+        return;
+      }
+      const result = await client.query(
+        `update chat_messages set body = $1, status = 'edited', edited_at = now()
+          where id = $2 returning id, body, edited_at`,
+        [text, messageId]
+      );
+      await client.query(
+        `insert into audit_events (actor_user_id, action, room_id, message_id, metadata)
+         values ($1, 'chat.message_edited', $2, $3, '{}'::jsonb)`,
+        [access.actor.id, roomId, messageId]
+      );
+      sendJson(res, 200, { ok: true, message: result.rows[0] });
+      return;
+    }
+
+    sendError(res, 400, 'MESSAGE_UPDATE_INVALID', 'Nothing to update');
   } catch (error) {
     if (error?.code === 'BODY_TOO_LARGE') {
       sendError(res, 413, 'BODY_TOO_LARGE', 'Request body is too large');
       return;
     }
-    sendError(res, 500, 'MESSAGE_PIN_FAILED', 'Failed to update message', { message: error?.message || String(error) });
+    sendError(res, 500, 'MESSAGE_UPDATE_FAILED', 'Failed to update message', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// DELETE /chat-rooms/:id/messages/:msgId — soft-delete. Author or moderator.
+export async function handleDeleteMessage(req, res, roomId, messageId) {
+  const client = await getPool().connect();
+  try {
+    const access = await requireRoomAccess(client, req, res, roomId, 'view');
+    if (!access) return;
+    const msgRes = await client.query(
+      `select id, author_user_id from chat_messages
+        where id = $1 and room_id = $2 and status not in ('deleted', 'hidden') limit 1`,
+      [messageId, roomId]
+    );
+    const message = msgRes.rows[0];
+    if (!message) {
+      sendError(res, 404, 'MESSAGE_NOT_FOUND', 'Message not found in this room');
+      return;
+    }
+    const isAuthor = message.author_user_id === access.actor.id;
+    const isModerator = permissionService.canModerateRoom(access.actor, access.membership, access.room);
+    if (!isAuthor && !isModerator) {
+      sendError(res, 403, 'MESSAGE_DELETE_FORBIDDEN', 'You cannot delete this message');
+      return;
+    }
+    await client.query(
+      `update chat_messages set status = 'deleted', deleted_at = now(), is_pinned = false where id = $1`,
+      [messageId]
+    );
+    await client.query(
+      `insert into audit_events (actor_user_id, action, room_id, message_id, metadata)
+       values ($1, 'chat.message_deleted', $2, $3, jsonb_build_object('by', $4::text))`,
+      [access.actor.id, roomId, messageId, isAuthor ? 'author' : 'moderator']
+    );
+    sendJson(res, 200, { ok: true });
+  } catch (error) {
+    sendError(res, 500, 'MESSAGE_DELETE_FAILED', 'Failed to delete message', { message: error?.message || String(error) });
   } finally {
     client.release();
   }

@@ -405,7 +405,13 @@ export const localeBundles = {
       "chats.real.report": "Report",
       "chats.real.pin": "Pin",
       "chats.real.unpin": "Unpin",
-      "chats.real.pinned": "Pinned"
+      "chats.real.pinned": "Pinned",
+      "chats.real.edit": "Edit",
+      "chats.real.delete": "Delete",
+      "chats.real.editing": "Editing message",
+      "chats.real.replyingTo": "Reply to",
+      "chats.real.edited": "edited",
+      "chats.real.cancel": "Cancel"
     },
     "common": {
       "access.admin": "admin",
@@ -1343,7 +1349,13 @@ export const localeBundles = {
       "chats.real.report": "Пожаловаться",
       "chats.real.pin": "Закрепить",
       "chats.real.unpin": "Открепить",
-      "chats.real.pinned": "Закреплено"
+      "chats.real.pinned": "Закреплено",
+      "chats.real.edit": "Изменить",
+      "chats.real.delete": "Удалить",
+      "chats.real.editing": "Редактирование",
+      "chats.real.replyingTo": "Ответ",
+      "chats.real.edited": "изменено",
+      "chats.real.cancel": "Отмена"
     },
     "common": {
       "access.admin": "admin",
