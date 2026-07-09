@@ -174,7 +174,7 @@ async function populateThread(thread: HTMLElement, roomId: string): Promise<void
 
   // Replace only the message cards / chrome, never the sticky composer that the
   // native decorators moved into the thread (wiping it caused the overlap bug).
-  thread.querySelectorAll('.bk-social-card, .bk-chat-stress-message, .bk-chat-unread-divider, .bk-chat-load-older, [data-real-empty], [data-real-error]')
+  thread.querySelectorAll('.bk-social-card, .bk-chat-stress-message, .bk-chat-unread-divider, .bk-chat-load-older, .bk-chat-pinned-strip, .bk-chat-date-divider, [data-real-empty], [data-real-error]')
     .forEach((el) => el.remove());
 
   let html: string;
@@ -474,8 +474,13 @@ export function initRealChat(root: HTMLElement): void {
       event.preventDefault();
       const id = pinnedBar.dataset.target;
       const el = id ? root.querySelector<HTMLElement>(`.bk-real-msg[data-msg-id="${CSS.escape(id)}"]`) : null;
-      if (el) {
-        el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      const thread = el?.closest<HTMLElement>('.bk-chat-thread');
+      if (el && thread) {
+        // Scroll the thread only — scrollIntoView would also scroll the page and
+        // push the header off-screen.
+        const tr = thread.getBoundingClientRect();
+        const er = el.getBoundingClientRect();
+        thread.scrollTo({ top: thread.scrollTop + (er.top - tr.top) - thread.clientHeight / 2 + er.height / 2, behavior: 'smooth' });
         el.classList.add('is-flash');
         window.setTimeout(() => el.classList.remove('is-flash'), 1200);
       }
