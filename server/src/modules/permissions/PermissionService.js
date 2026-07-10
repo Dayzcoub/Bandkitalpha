@@ -77,6 +77,20 @@ export class PermissionService {
   canExportDocument() {
     return false;
   }
+
+  // Recording a reliability event about an engagement's counterparty is an
+  // organizer-side action: it requires a managing membership in the event's
+  // owning entity (Reputation Rules: records come from verified collaboration
+  // context, the organizer/participant relationship — not arbitrary visitors).
+  canRecordReliabilityEvent(actor, membership) {
+    return this.canManageEntity(actor, membership);
+  }
+
+  // Reading an engagement's reliability records is manager-scoped for now; the
+  // public/party-level reputation summary is a later, anti-abuse-gated slice.
+  canViewReliabilityEvents(actor, membership) {
+    return this.canManageEntity(actor, membership);
+  }
 }
 
 export const permissionService = new PermissionService();

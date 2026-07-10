@@ -16,6 +16,7 @@ import { handleDatabaseHealth, handleHealth } from './modules/health/health.rout
 import { handleGetTaxonomy } from './modules/taxonomy/taxonomy.routes.js';
 import { handleGetMyProfessions, handleReplaceMyProfessions, handleListPartyCandidates } from './modules/parties/parties.routes.js';
 import { handleCreateSlot, handleListSlots, handleCreateEngagement, handleListEngagements, handleUpdateEngagementStatus } from './modules/events/eventOps.routes.js';
+import { handleListReliabilityCatalogue, handleRecordReliabilityEvent, handleListReliabilityEvents } from './modules/reliability/reliability.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { notFound, sendError } from './shared/http.js';
@@ -48,6 +49,7 @@ const server = http.createServer((req, res) => {
       const eventSlotsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/slots$`));
       const eventEngagementsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements$`));
       const eventEngagementDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements/([^/]+)$`));
+      const engagementReliabilityMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements/([^/]+)/reliability$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
       const roomDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)$`));
       const roomMessageDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages/([^/]+)$`));
@@ -168,6 +170,21 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'PATCH' && eventEngagementDetailMatch) {
         await handleUpdateEngagementStatus(req, res, decodeURIComponent(eventEngagementDetailMatch[1]), decodeURIComponent(eventEngagementDetailMatch[2]));
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/reliability/event-types`) {
+        await handleListReliabilityCatalogue(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && engagementReliabilityMatch) {
+        await handleListReliabilityEvents(req, res, decodeURIComponent(engagementReliabilityMatch[1]), decodeURIComponent(engagementReliabilityMatch[2]));
+        return;
+      }
+
+      if (req.method === 'POST' && engagementReliabilityMatch) {
+        await handleRecordReliabilityEvent(req, res, decodeURIComponent(engagementReliabilityMatch[1]), decodeURIComponent(engagementReliabilityMatch[2]));
         return;
       }
 
