@@ -57,5 +57,16 @@
   "events.engagements.loadError": "Не удалось загрузить ангажементы.",
   "events.engagements.saveError": "Не удалось создать ангажемент.",
   "events.engagements.forbidden": "Вы не управляете этим событием.",
-  "events.engagements.noCandidates": "Пока некого нанимать."
+  "events.engagements.noCandidates": "Пока некого нанимать.",
+  "events.reliability.toggle": "Надёжность",
+  "events.reliability.typeLabel": "Событие надёжности",
+  "events.reliability.reasonLabel": "Причина (необязательно)",
+  "events.reliability.reasonNone": "— без причины —",
+  "events.reliability.noteLabel": "Заметка (необязательно)",
+  "events.reliability.disputedLabel": "Пометить как спорное",
+  "events.reliability.disputedBadge": "спорно",
+  "events.reliability.record": "Записать",
+  "events.reliability.recorded": "Событие надёжности записано.",
+  "events.reliability.empty": "Пока нет записей надёжности.",
+  "events.reliability.saveError": "Не удалось записать событие надёжности."
 }

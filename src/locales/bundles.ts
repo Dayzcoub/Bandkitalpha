@@ -808,7 +808,18 @@ export const localeBundles = {
       "events.engagements.loadError": "Could not load engagements.",
       "events.engagements.saveError": "Could not create the engagement.",
       "events.engagements.forbidden": "You do not manage this event.",
-      "events.engagements.noCandidates": "No parties available to engage yet."
+      "events.engagements.noCandidates": "No parties available to engage yet.",
+      "events.reliability.toggle": "Reliability",
+      "events.reliability.typeLabel": "Reliability event",
+      "events.reliability.reasonLabel": "Reason (optional)",
+      "events.reliability.reasonNone": "— no reason —",
+      "events.reliability.noteLabel": "Note (optional)",
+      "events.reliability.disputedLabel": "Mark disputed",
+      "events.reliability.disputedBadge": "disputed",
+      "events.reliability.record": "Record",
+      "events.reliability.recorded": "Reliability event recorded.",
+      "events.reliability.empty": "No reliability records yet.",
+      "events.reliability.saveError": "Could not record the reliability event."
     },
     "feed": {
       "feed.title": "Feed",
@@ -1752,7 +1763,18 @@ export const localeBundles = {
       "events.engagements.loadError": "Не удалось загрузить ангажементы.",
       "events.engagements.saveError": "Не удалось создать ангажемент.",
       "events.engagements.forbidden": "Вы не управляете этим событием.",
-      "events.engagements.noCandidates": "Пока некого нанимать."
+      "events.engagements.noCandidates": "Пока некого нанимать.",
+      "events.reliability.toggle": "Надёжность",
+      "events.reliability.typeLabel": "Событие надёжности",
+      "events.reliability.reasonLabel": "Причина (необязательно)",
+      "events.reliability.reasonNone": "— без причины —",
+      "events.reliability.noteLabel": "Заметка (необязательно)",
+      "events.reliability.disputedLabel": "Пометить как спорное",
+      "events.reliability.disputedBadge": "спорно",
+      "events.reliability.record": "Записать",
+      "events.reliability.recorded": "Событие надёжности записано.",
+      "events.reliability.empty": "Пока нет записей надёжности.",
+      "events.reliability.saveError": "Не удалось записать событие надёжности."
     },
     "feed": {
       "feed.title": "Лента",

@@ -57,5 +57,16 @@
   "events.engagements.loadError": "Could not load engagements.",
   "events.engagements.saveError": "Could not create the engagement.",
   "events.engagements.forbidden": "You do not manage this event.",
-  "events.engagements.noCandidates": "No parties available to engage yet."
+  "events.engagements.noCandidates": "No parties available to engage yet.",
+  "events.reliability.toggle": "Reliability",
+  "events.reliability.typeLabel": "Reliability event",
+  "events.reliability.reasonLabel": "Reason (optional)",
+  "events.reliability.reasonNone": "— no reason —",
+  "events.reliability.noteLabel": "Note (optional)",
+  "events.reliability.disputedLabel": "Mark disputed",
+  "events.reliability.disputedBadge": "disputed",
+  "events.reliability.record": "Record",
+  "events.reliability.recorded": "Reliability event recorded.",
+  "events.reliability.empty": "No reliability records yet.",
+  "events.reliability.saveError": "Could not record the reliability event."
 }

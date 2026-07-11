@@ -117,6 +117,113 @@ export async function handleRecordReliabilityEvent(req, res, eventId, engagement
   }
 }
 
+// Platform staff roles that may see moderation-only reliability records and any
+// party's summary (Reputation Rules: moderation-only visibility layer).
+const STAFF_ROLES = new Set(['super_admin', 'platform_admin', 'platform_moderator', 'read_only_auditor']);
+
+// GET /parties/:partyId/reliability-summary — a structured, layered reliability
+// summary for one party. Deliberately NOT a public rating number (Reputation
+// Rules MVP): it returns counts by polarity and by type over records the viewer
+// is allowed to see. Disputed records are held out of the polarity totals
+// ("not final public negative reputation until reviewed") and surfaced separately.
+//
+// Who may view (verified-context rule, not arbitrary visitors):
+//   - platform staff (also sees moderation-only records);
+//   - the party's own owner (individual party's user, or an entity they manage);
+//   - a manager of an entity that has actually engaged this party.
+export async function handlePartyReliabilitySummary(req, res, partyId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+
+    const partyResult = await client.query('select id, user_id, entity_id from parties where id = $1 limit 1', [partyId]);
+    const party = partyResult.rows[0];
+    if (!party) {
+      sendError(res, 404, 'PARTY_NOT_FOUND', 'Party not found');
+      return;
+    }
+
+    const isStaff = STAFF_ROLES.has(actor.platform_role);
+    let allowed = isStaff || party.user_id === actor.id;
+    if (!allowed && party.entity_id) {
+      const ownEntity = await client.query(
+        `select 1 from entity_memberships
+          where entity_id = $1 and user_id = $2 and status = 'active' and role in ('owner','admin','manager') limit 1`,
+        [party.entity_id, actor.id]
+      );
+      allowed = ownEntity.rowCount > 0;
+    }
+    if (!allowed) {
+      // Has the viewer actually collaborated with this party (managed an entity
+      // that engaged them)? That is the only other doorway to the summary.
+      const collab = await client.query(
+        `select 1
+           from engagements e
+           join events ev on ev.id = e.event_id
+           join entity_memberships m on m.entity_id = ev.entity_id and m.user_id = $2
+          where e.counterparty_party_id = $1
+            and m.status = 'active' and m.role in ('owner','admin','manager')
+          limit 1`,
+        [partyId, actor.id]
+      );
+      allowed = collab.rowCount > 0;
+    }
+    if (!allowed) {
+      sendError(res, 403, 'RELIABILITY_SUMMARY_FORBIDDEN', 'You cannot view this party\'s reliability summary');
+      return;
+    }
+
+    // Staff see moderation-only records too; everyone else sees the organizer /
+    // collaborator layers. `hidden` records are never aggregated here.
+    const visibilities = isStaff
+      ? ['organizers', 'collaborators', 'moderation']
+      : ['organizers', 'collaborators'];
+
+    const rows = await client.query(
+      `select t.polarity, r.type_key, t.label as type_label, r.disputed, count(*)::int as count
+         from reliability_events r
+         join reliability_event_types t on t.key = r.type_key
+        where r.subject_party_id = $1
+          and r.visibility = any($2)
+        group by t.polarity, r.type_key, t.label, r.disputed
+        order by t.label`,
+      [partyId, visibilities]
+    );
+
+    const totals = { positive: 0, neutral: 0, negative: 0, disputed: 0 };
+    const byTypeMap = new Map();
+    for (const row of rows.rows) {
+      if (row.disputed) {
+        totals.disputed += row.count;
+      } else {
+        totals[row.polarity] += row.count;
+      }
+      const existing = byTypeMap.get(row.type_key)
+        || { type_key: row.type_key, label: row.type_label, polarity: row.polarity, count: 0, disputed: 0 };
+      existing.count += row.count;
+      if (row.disputed) existing.disputed += row.count;
+      byTypeMap.set(row.type_key, existing);
+    }
+
+    sendJson(res, 200, {
+      ok: true,
+      summary: {
+        party_id: partyId,
+        totals,
+        by_type: Array.from(byTypeMap.values())
+      }
+    });
+  } catch (error) {
+    sendError(res, 500, 'RELIABILITY_SUMMARY_FAILED', 'Failed to load reliability summary', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
 // GET /events/:eventId/engagements/:engagementId/reliability — manager-scoped
 // list of reliability records for one engagement (the working roster view, not a
 // public reputation summary).
