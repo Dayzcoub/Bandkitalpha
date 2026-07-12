@@ -819,7 +819,14 @@ export const localeBundles = {
       "events.reliability.record": "Record",
       "events.reliability.recorded": "Reliability event recorded.",
       "events.reliability.empty": "No reliability records yet.",
-      "events.reliability.saveError": "Could not record the reliability event."
+      "events.reliability.saveError": "Could not record the reliability event.",
+      "events.reliability.disputeState.open": "dispute: open",
+      "events.reliability.disputeState.upheld": "dispute: upheld",
+      "events.reliability.disputeState.retracted": "dispute: retracted",
+      "events.reliability.resolveUphold": "Uphold",
+      "events.reliability.resolveRetract": "Retract",
+      "events.reliability.disputeResolved": "Dispute resolved.",
+      "events.reliability.resolveError": "Could not resolve the dispute."
     },
     "feed": {
       "feed.title": "Feed",
@@ -1774,7 +1781,14 @@ export const localeBundles = {
       "events.reliability.record": "Записать",
       "events.reliability.recorded": "Событие надёжности записано.",
       "events.reliability.empty": "Пока нет записей надёжности.",
-      "events.reliability.saveError": "Не удалось записать событие надёжности."
+      "events.reliability.saveError": "Не удалось записать событие надёжности.",
+      "events.reliability.disputeState.open": "спор: открыт",
+      "events.reliability.disputeState.upheld": "спор: поддержан",
+      "events.reliability.disputeState.retracted": "спор: отозван",
+      "events.reliability.resolveUphold": "Поддержать",
+      "events.reliability.resolveRetract": "Отозвать",
+      "events.reliability.disputeResolved": "Спор разрешён.",
+      "events.reliability.resolveError": "Не удалось разрешить спор."
     },
     "feed": {
       "feed.title": "Лента",

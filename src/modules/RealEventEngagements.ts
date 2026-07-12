@@ -33,6 +33,7 @@ type RelReason = { key: string; label: string };
 type RelRecord = {
   id: string; type_key: string; type_label: string; polarity: string;
   reason_key: string | null; reason_label: string | null; disputed: boolean; note: string | null;
+  dispute_state: string | null;
 };
 type Engagement = {
   id: string; slot_id: string | null; status_key: string;
@@ -75,11 +76,20 @@ function reliabilityPanel(state: State, eng: Engagement): string {
     : `<div class="bk-list">${records.map((r) => {
         const parts: string[] = [];
         if (r.reason_label) parts.push(esc(r.reason_label));
-        if (r.disputed) parts.push(esc(t('events.reliability.disputedBadge')));
+        if (r.dispute_state) parts.push(esc(t(`events.reliability.disputeState.${r.dispute_state}`)));
+        else if (r.disputed) parts.push(esc(t('events.reliability.disputedBadge')));
         if (r.note) parts.push(esc(r.note));
         const meta = parts.length ? `<span class="bk-state-copy">${parts.join(' · ')}</span>` : '';
+        // Resolving an open dispute is the organizer/staff side, so the roster
+        // offers it here; opening a dispute is the subject's action elsewhere.
+        const resolve = r.dispute_state === 'open'
+          ? `<div class="bk-action-row">`
+            + `<button class="bk-button bk-button-secondary" type="button" data-dispute-resolve="upheld" data-rel-id="${esc(r.id)}">${esc(t('events.reliability.resolveUphold'))}</button>`
+            + `<button class="bk-button bk-button-secondary" type="button" data-dispute-resolve="retracted" data-rel-id="${esc(r.id)}">${esc(t('events.reliability.resolveRetract'))}</button>`
+            + `</div>`
+          : '';
         return `<div class="bk-list-row"><div class="bk-list-row-main">`
-          + `<span class="bk-list-row-title">${esc(r.type_label)}</span>${meta}</div></div>`;
+          + `<span class="bk-list-row-title">${esc(r.type_label)}</span>${meta}${resolve}</div></div>`;
       }).join('')}</div>`;
 
   const typeOptions = state.relTypes
@@ -238,6 +248,19 @@ async function recordReliability(host: HTMLElement, state: State, engagementId: 
   render(host, state);
 }
 
+async function resolveDispute(host: HTMLElement, state: State, reliabilityId: string, resolution: string): Promise<void> {
+  const { status, data } = await api(`/reliability-events/${encodeURIComponent(reliabilityId)}/dispute`, 'PATCH', { resolution });
+  if (status === 200) {
+    state.message = t('events.reliability.disputeResolved'); state.tone = 'ok';
+    if (state.openRel) await loadReliability(state, state.openRel);
+  } else if (status === 403) {
+    state.message = t('events.engagements.forbidden'); state.tone = 'error';
+  } else {
+    state.message = data?.error?.message || t('events.reliability.resolveError'); state.tone = 'error';
+  }
+  render(host, state);
+}
+
 async function mount(host: HTMLElement): Promise<void> {
   if (host.dataset.ready === '1') return;
   host.dataset.ready = '1';
@@ -301,6 +324,13 @@ async function mount(host: HTMLElement): Promise<void> {
       event.preventDefault();
       (recordBtn as HTMLButtonElement).disabled = true;
       void recordReliability(host, state, recordBtn.getAttribute('data-rel-eng') || '');
+      return;
+    }
+    const resolveBtn = target?.closest<HTMLElement>('[data-dispute-resolve]');
+    if (resolveBtn) {
+      event.preventDefault();
+      (resolveBtn as HTMLButtonElement).disabled = true;
+      void resolveDispute(host, state, resolveBtn.getAttribute('data-rel-id') || '', resolveBtn.getAttribute('data-dispute-resolve') || '');
       return;
     }
     const createBtn = target?.closest<HTMLElement>('[data-eng-action="create"]');

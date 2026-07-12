@@ -68,5 +68,12 @@
   "events.reliability.record": "Record",
   "events.reliability.recorded": "Reliability event recorded.",
   "events.reliability.empty": "No reliability records yet.",
-  "events.reliability.saveError": "Could not record the reliability event."
+  "events.reliability.saveError": "Could not record the reliability event.",
+  "events.reliability.disputeState.open": "dispute: open",
+  "events.reliability.disputeState.upheld": "dispute: upheld",
+  "events.reliability.disputeState.retracted": "dispute: retracted",
+  "events.reliability.resolveUphold": "Uphold",
+  "events.reliability.resolveRetract": "Retract",
+  "events.reliability.disputeResolved": "Dispute resolved.",
+  "events.reliability.resolveError": "Could not resolve the dispute."
 }

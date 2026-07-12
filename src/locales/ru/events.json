@@ -68,5 +68,12 @@
   "events.reliability.record": "Записать",
   "events.reliability.recorded": "Событие надёжности записано.",
   "events.reliability.empty": "Пока нет записей надёжности.",
-  "events.reliability.saveError": "Не удалось записать событие надёжности."
+  "events.reliability.saveError": "Не удалось записать событие надёжности.",
+  "events.reliability.disputeState.open": "спор: открыт",
+  "events.reliability.disputeState.upheld": "спор: поддержан",
+  "events.reliability.disputeState.retracted": "спор: отозван",
+  "events.reliability.resolveUphold": "Поддержать",
+  "events.reliability.resolveRetract": "Отозвать",
+  "events.reliability.disputeResolved": "Спор разрешён.",
+  "events.reliability.resolveError": "Не удалось разрешить спор."
 }
