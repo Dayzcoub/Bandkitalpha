@@ -189,6 +189,7 @@ export async function handlePartyReliabilitySummary(req, res, partyId) {
          join reliability_event_types t on t.key = r.type_key
         where r.subject_party_id = $1
           and r.visibility = any($2)
+          and (r.dispute_state is null or r.dispute_state <> 'retracted')
         group by t.polarity, r.type_key, t.label, r.disputed
         order by t.label`,
       [partyId, visibilities]
@@ -235,10 +236,12 @@ export async function handleListReliabilityEvents(req, res, eventId, engagementI
     const result = await client.query(
       `select r.id, r.type_key, t.label as type_label, t.polarity,
               r.reason_key, rs.label as reason_label,
-              r.subject_party_id, r.visibility, r.disputed, r.note, r.created_at
+              r.subject_party_id, r.visibility, r.disputed, r.note, r.created_at,
+              r.dispute_state, ds.label as dispute_state_label
          from reliability_events r
          join reliability_event_types t on t.key = r.type_key
          left join reliability_reasons rs on rs.key = r.reason_key
+         left join reliability_dispute_states ds on ds.key = r.dispute_state
         where r.engagement_id = $1
         order by r.created_at`,
       [guard.engagement.id]
@@ -246,6 +249,163 @@ export async function handleListReliabilityEvents(req, res, eventId, engagementI
     sendJson(res, 200, { ok: true, reliability_events: result.rows });
   } catch (error) {
     sendError(res, 500, 'RELIABILITY_LIST_FAILED', 'Failed to list reliability events', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// Platform staff who may resolve a dispute (a read-only auditor may see, but not
+// act — so it is deliberately excluded here).
+const DISPUTE_RESOLVER_ROLES = new Set(['super_admin', 'platform_admin', 'platform_moderator']);
+
+// POST /reliability-events/:id/dispute — the subject of a record contests it.
+// Only the party the record is about (its user owner, or a manager of its owning
+// entity) may open a dispute, and only once. Opening a dispute marks the record
+// disputed so it drops out of reputation totals until resolved.
+export async function handleOpenDispute(req, res, reliabilityId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const found = await client.query(
+      `select r.id, r.dispute_state, p.user_id as subject_user_id, p.entity_id as subject_entity_id
+         from reliability_events r
+         join parties p on p.id = r.subject_party_id
+        where r.id = $1 limit 1`,
+      [reliabilityId]
+    );
+    const row = found.rows[0];
+    if (!row) {
+      sendError(res, 404, 'RELIABILITY_NOT_FOUND', 'Reliability event not found');
+      return;
+    }
+    // Only the subject may dispute a record about themselves.
+    let isSubject = row.subject_user_id === actor.id;
+    if (!isSubject && row.subject_entity_id) {
+      const m = await client.query(
+        `select 1 from entity_memberships
+          where entity_id = $1 and user_id = $2 and status = 'active' and role in ('owner','admin','manager') limit 1`,
+        [row.subject_entity_id, actor.id]
+      );
+      isSubject = m.rowCount > 0;
+    }
+    if (!isSubject) {
+      sendError(res, 403, 'DISPUTE_FORBIDDEN', 'Only the subject of a reliability record can dispute it');
+      return;
+    }
+    if (row.dispute_state) {
+      sendError(res, 409, 'DISPUTE_EXISTS', 'This record already has a dispute');
+      return;
+    }
+
+    const body = await readJsonBody(req);
+    const reasonKey = body.reason_key ? String(body.reason_key).trim() : null;
+    const note = body.note ? String(body.note).trim().slice(0, 2000) : null;
+
+    const updated = await client.query(
+      `update reliability_events
+          set dispute_state = 'open', disputed = true, dispute_opened_by = $2,
+              dispute_reason_key = $3, dispute_note = $4, dispute_opened_at = now()
+        where id = $1
+        returning id, dispute_state, dispute_reason_key, dispute_note, dispute_opened_at`,
+      [reliabilityId, actor.id, reasonKey, note]
+    );
+    await client.query(
+      `insert into audit_events (actor_user_id, action, metadata)
+       values ($1, 'reliability.dispute.opened', jsonb_build_object('reliability_id', $2::text))`,
+      [actor.id, reliabilityId]
+    );
+    sendJson(res, 201, { ok: true, reliability_event: updated.rows[0] });
+  } catch (error) {
+    if (error?.code === '23503') {
+      sendError(res, 400, 'REFERENCE_UNKNOWN', 'Referenced dispute reason does not exist');
+      return;
+    }
+    if (error?.code === 'BODY_TOO_LARGE') {
+      sendError(res, 413, 'BODY_TOO_LARGE', 'Request body is too large');
+      return;
+    }
+    sendError(res, 500, 'DISPUTE_OPEN_FAILED', 'Failed to open dispute', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// PATCH /reliability-events/:id/dispute — resolve an open dispute. The organizer
+// side (a manager of the event's owning entity) or platform staff decides. An
+// `upheld` record stands and resumes counting; a `retracted` record is excluded
+// from reputation entirely.
+export async function handleResolveDispute(req, res, reliabilityId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const found = await client.query(
+      `select r.id, r.dispute_state, ev.entity_id
+         from reliability_events r
+         join events ev on ev.id = r.event_id
+        where r.id = $1 limit 1`,
+      [reliabilityId]
+    );
+    const row = found.rows[0];
+    if (!row) {
+      sendError(res, 404, 'RELIABILITY_NOT_FOUND', 'Reliability event not found');
+      return;
+    }
+    let canResolve = DISPUTE_RESOLVER_ROLES.has(actor.platform_role);
+    if (!canResolve && row.entity_id) {
+      const m = await client.query(
+        'select role, status from entity_memberships where entity_id = $1 and user_id = $2 limit 1',
+        [row.entity_id, actor.id]
+      );
+      canResolve = permissionService.canManageEntity(actor, m.rows[0] || null);
+    }
+    if (!canResolve) {
+      sendError(res, 403, 'DISPUTE_RESOLVE_FORBIDDEN', 'You cannot resolve this dispute');
+      return;
+    }
+    if (row.dispute_state !== 'open') {
+      sendError(res, 409, 'DISPUTE_NOT_OPEN', 'There is no open dispute to resolve');
+      return;
+    }
+
+    const body = await readJsonBody(req);
+    const resolution = String(body.resolution || '').trim();
+    if (resolution !== 'upheld' && resolution !== 'retracted') {
+      sendError(res, 400, 'DISPUTE_RESOLUTION_INVALID', 'resolution must be "upheld" or "retracted"');
+      return;
+    }
+    const note = body.note ? String(body.note).trim().slice(0, 2000) : null;
+
+    // Both outcomes are terminal and clear the "contested" flag: an upheld record
+    // resumes counting; a retracted one is filtered out of the summary by state.
+    const updated = await client.query(
+      `update reliability_events
+          set dispute_state = $2, disputed = false, dispute_resolved_by = $3,
+              dispute_resolution = $4, dispute_resolved_at = now()
+        where id = $1
+        returning id, dispute_state, dispute_resolution, dispute_resolved_at`,
+      [reliabilityId, resolution, actor.id, note]
+    );
+    await client.query(
+      `insert into audit_events (actor_user_id, action, metadata)
+       values ($1, 'reliability.dispute.resolved',
+               jsonb_build_object('reliability_id', $2::text, 'resolution', $3::text))`,
+      [actor.id, reliabilityId, resolution]
+    );
+    sendJson(res, 200, { ok: true, reliability_event: updated.rows[0] });
+  } catch (error) {
+    if (error?.code === 'BODY_TOO_LARGE') {
+      sendError(res, 413, 'BODY_TOO_LARGE', 'Request body is too large');
+      return;
+    }
+    sendError(res, 500, 'DISPUTE_RESOLVE_FAILED', 'Failed to resolve dispute', { message: error?.message || String(error) });
   } finally {
     client.release();
   }
