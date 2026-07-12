@@ -2,6 +2,7 @@ import { getPool } from '../../db/client.js';
 import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
+import { checkLinkPolicy } from '../../shared/linkPolicy.js';
 
 const MAX_MESSAGE_LENGTH = 4000;
 
@@ -146,6 +147,18 @@ export async function handleSendMessage(req, res, roomId) {
       sendError(res, 400, 'MESSAGE_TOO_LONG', `Message must be at most ${MAX_MESSAGE_LENGTH} characters`);
       return;
     }
+    // Link guard (AntiFraud §4): block external links / shorteners / lookalike
+    // domains server-side, and record the attempt as an anti-fraud signal.
+    const link = checkLinkPolicy(text);
+    if (link.blocked) {
+      await client.query(
+        `insert into audit_events (actor_user_id, action, room_id, metadata)
+         values ($1, 'chat.message_link_blocked', $2, jsonb_build_object('reason', $3::text))`,
+        [access.actor.id, roomId, link.reason]
+      );
+      sendError(res, 422, 'MESSAGE_LINK_BLOCKED', 'External links are not allowed in messages', { reason: link.reason });
+      return;
+    }
     // A reply target must be a live message in the same room (no cross-room reply).
     if (replyTo) {
       const parent = await client.query(
@@ -280,6 +293,17 @@ export async function handleUpdateMessage(req, res, roomId, messageId) {
       }
       if (text.length > MAX_MESSAGE_LENGTH) {
         sendError(res, 400, 'MESSAGE_TOO_LONG', `Message must be at most ${MAX_MESSAGE_LENGTH} characters`);
+        return;
+      }
+      // Link guard also applies to edits — a message can't smuggle a link in later.
+      const editLink = checkLinkPolicy(text);
+      if (editLink.blocked) {
+        await client.query(
+          `insert into audit_events (actor_user_id, action, room_id, message_id, metadata)
+           values ($1, 'chat.message_link_blocked', $2, $3, jsonb_build_object('reason', $4::text))`,
+          [access.actor.id, roomId, messageId, editLink.reason]
+        );
+        sendError(res, 422, 'MESSAGE_LINK_BLOCKED', 'External links are not allowed in messages', { reason: editLink.reason });
         return;
       }
       const result = await client.query(
