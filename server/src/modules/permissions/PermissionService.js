@@ -91,6 +91,18 @@ export class PermissionService {
   canViewReliabilityEvents(actor, membership) {
     return this.canManageEntity(actor, membership);
   }
+
+  // Any active account can file a moderation report (Moderation Rules: reporting
+  // is a safety affordance available to users, not a privileged action).
+  canFileReport(actor) {
+    return Boolean(actor && actor.id && actor.status !== 'blocked' && actor.status !== 'deleted');
+  }
+
+  // Triaging/acting on reports is platform moderation staff only. Entity admins
+  // moderate inside their entity separately; a read-only auditor cannot act.
+  canModeratePlatform(actor) {
+    return Boolean(actor && ['super_admin', 'platform_admin', 'platform_moderator'].includes(actor.platform_role));
+  }
 }
 
 export const permissionService = new PermissionService();

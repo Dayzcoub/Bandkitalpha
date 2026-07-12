@@ -17,6 +17,7 @@ import { handleGetTaxonomy } from './modules/taxonomy/taxonomy.routes.js';
 import { handleGetMyProfessions, handleReplaceMyProfessions, handleListPartyCandidates } from './modules/parties/parties.routes.js';
 import { handleCreateSlot, handleListSlots, handleCreateEngagement, handleListEngagements, handleUpdateEngagementStatus } from './modules/events/eventOps.routes.js';
 import { handleListReliabilityCatalogue, handleRecordReliabilityEvent, handleListReliabilityEvents, handlePartyReliabilitySummary, handleOpenDispute, handleResolveDispute, handleListMyReliability } from './modules/reliability/reliability.routes.js';
+import { handleReportCatalogue, handleCreateReport, handleListReports, handleGetReport, handleUpdateReport } from './modules/moderation/reports.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { notFound, sendError } from './shared/http.js';
@@ -52,6 +53,7 @@ const server = http.createServer((req, res) => {
       const engagementReliabilityMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements/([^/]+)/reliability$`));
       const partyReliabilitySummaryMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/parties/([^/]+)/reliability-summary$`));
       const reliabilityDisputeMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reliability-events/([^/]+)/dispute$`));
+      const reportDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reports/([^/]+)$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
       const roomDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)$`));
       const roomMessageDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages/([^/]+)$`));
@@ -262,6 +264,31 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'PATCH' && reliabilityDisputeMatch) {
         await handleResolveDispute(req, res, decodeURIComponent(reliabilityDisputeMatch[1]));
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/moderation/report-catalogue`) {
+        await handleReportCatalogue(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/reports`) {
+        await handleCreateReport(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/reports`) {
+        await handleListReports(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && reportDetailMatch) {
+        await handleGetReport(req, res, decodeURIComponent(reportDetailMatch[1]));
+        return;
+      }
+
+      if (req.method === 'PATCH' && reportDetailMatch) {
+        await handleUpdateReport(req, res, decodeURIComponent(reportDetailMatch[1]));
         return;
       }
 
