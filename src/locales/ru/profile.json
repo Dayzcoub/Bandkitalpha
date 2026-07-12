@@ -53,5 +53,20 @@
   "profile.professions.loadError": "Не удалось загрузить профессии.",
   "profile.professions.saveError": "Не удалось сохранить профессии.",
   "profile.professions.duplicate": "Эта профессия уже в списке.",
-  "profile.professions.mismatch": "Эта специализация не относится к выбранной профессии."
+  "profile.professions.mismatch": "Эта специализация не относится к выбранной профессии.",
+  "profile.reliability.title": "Моя надёжность",
+  "profile.reliability.subtitle": "Записи, которые оставили о вас коллеги по работе. С той, с которой не согласны, можно открыть спор.",
+  "profile.reliability.empty": "Пока о вас нет записей надёжности.",
+  "profile.reliability.disputedBadge": "спорно",
+  "profile.reliability.disputeState.open": "спор: открыт",
+  "profile.reliability.disputeState.upheld": "спор: поддержан",
+  "profile.reliability.disputeState.retracted": "спор: отозван",
+  "profile.reliability.dispute": "Оспорить",
+  "profile.reliability.reasonLabel": "Причина (необязательно)",
+  "profile.reliability.reasonNone": "— без причины —",
+  "profile.reliability.noteLabel": "Ваше пояснение (необязательно)",
+  "profile.reliability.submitDispute": "Открыть спор",
+  "profile.reliability.cancel": "Отмена",
+  "profile.reliability.disputeOpened": "Спор открыт.",
+  "profile.reliability.disputeError": "Не удалось открыть спор."
 }

@@ -135,7 +135,10 @@ function renderProfile(ctx: AppContext): string {
   const about = card(`<h3 class="bk-card-title">${ctx.t('profile.about')}</h3><div class="bk-card-grid bk-card-grid-3">${kpi(profile.city, ctx.t('profile.city'))}${kpi(ctx.t(profile.availabilityKey), ctx.t('profile.availability'))}${kpi(ctx.t(profile.trustLevelKey), ctx.t('profile.trust'))}</div>`, 'bk-about-card');
   // Real professions editor (backed by /me/professions), only on your own profile when logged in.
   const professionsPanel = ctx.path === '/profile/me' && ctx.state.currentUser ? '<div data-real-professions></div>' : '';
-  return contentGrid([pageHeader(ctx, ctx.path === '/profile/me' ? 'profile.meTitle' : 'profile.title', 'profile.subtitle'), profileHeader(ctx, profile), card(`<div class="bk-tab-row"><span class="bk-badge bk-badge-positive">${ctx.t('profile.tabs.activity')}</span><span class="bk-badge">${ctx.t('profile.tabs.about')}</span><span class="bk-badge">${ctx.t('profile.tabs.reviews')}</span></div>`), about, professionsPanel, activity].join(''), defaultRightRail(ctx));
+  // Subject-facing reliability records (backed by /me/reliability): see what has
+  // been recorded about you and open a dispute. Own profile, logged in only.
+  const reliabilityPanel = ctx.path === '/profile/me' && ctx.state.currentUser ? '<div data-real-my-reliability></div>' : '';
+  return contentGrid([pageHeader(ctx, ctx.path === '/profile/me' ? 'profile.meTitle' : 'profile.title', 'profile.subtitle'), profileHeader(ctx, profile), card(`<div class="bk-tab-row"><span class="bk-badge bk-badge-positive">${ctx.t('profile.tabs.activity')}</span><span class="bk-badge">${ctx.t('profile.tabs.about')}</span><span class="bk-badge">${ctx.t('profile.tabs.reviews')}</span></div>`), about, professionsPanel, reliabilityPanel, activity].join(''), defaultRightRail(ctx));
 }
 
 function renderBands(ctx: AppContext): string {

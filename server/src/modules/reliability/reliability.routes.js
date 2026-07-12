@@ -254,6 +254,40 @@ export async function handleListReliabilityEvents(req, res, eventId, engagementI
   }
 }
 
+// GET /me/reliability — the subject-facing view: reliability records about the
+// authenticated user's own party, so they can see what has been recorded and open
+// a dispute. Moderation-only and hidden records are not surfaced to the subject
+// (those are the internal layer); they see the organizer/collaborator layer that
+// actually affects their reputation.
+export async function handleListMyReliability(req, res) {
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const result = await getPool().query(
+      `select r.id, r.type_key, t.label as type_label, t.polarity,
+              r.reason_key, rs.label as reason_label, r.note, r.created_at,
+              r.disputed, r.dispute_state, ds.label as dispute_state_label,
+              ev.title as event_title
+         from reliability_events r
+         join reliability_event_types t on t.key = r.type_key
+         join parties p on p.id = r.subject_party_id
+         left join reliability_reasons rs on rs.key = r.reason_key
+         left join reliability_dispute_states ds on ds.key = r.dispute_state
+         left join events ev on ev.id = r.event_id
+        where p.user_id = $1 and r.visibility in ('organizers', 'collaborators')
+        order by r.created_at desc
+        limit 200`,
+      [actor.id]
+    );
+    sendJson(res, 200, { ok: true, reliability_events: result.rows });
+  } catch (error) {
+    sendError(res, 500, 'MY_RELIABILITY_FAILED', 'Failed to load your reliability records', { message: error?.message || String(error) });
+  }
+}
+
 // Platform staff who may resolve a dispute (a read-only auditor may see, but not
 // act — so it is deliberately excluded here).
 const DISPUTE_RESOLVER_ROLES = new Set(['super_admin', 'platform_admin', 'platform_moderator']);

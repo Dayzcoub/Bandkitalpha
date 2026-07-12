@@ -19,6 +19,7 @@ import { initRealMemberAdd } from './modules/RealMemberAdd.js';
 import { initRealProfessionsEditor } from './modules/RealProfessionsEditor.js';
 import { initRealEventSlots } from './modules/RealEventSlots.js';
 import { initRealEventEngagements } from './modules/RealEventEngagements.js';
+import { initRealMyReliability } from './modules/RealMyReliability.js';
 import { initRealChat } from './modules/RealChat.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
@@ -58,4 +59,5 @@ initRealMemberAdd(root);
 initRealProfessionsEditor(root);
 initRealEventSlots(root);
 initRealEventEngagements(root);
+initRealMyReliability(root);
 initRealChat(root);

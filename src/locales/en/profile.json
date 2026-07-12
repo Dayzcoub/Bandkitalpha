@@ -46,5 +46,20 @@
   "profile.professions.loadError": "Could not load professions right now.",
   "profile.professions.saveError": "Could not save professions.",
   "profile.professions.duplicate": "That profession is already in your list.",
-  "profile.professions.mismatch": "That specialization does not belong to the chosen profession."
+  "profile.professions.mismatch": "That specialization does not belong to the chosen profession.",
+  "profile.reliability.title": "My reliability",
+  "profile.reliability.subtitle": "Records collaborators have logged about you. You can dispute one you disagree with.",
+  "profile.reliability.empty": "No reliability records about you yet.",
+  "profile.reliability.disputedBadge": "disputed",
+  "profile.reliability.disputeState.open": "dispute: open",
+  "profile.reliability.disputeState.upheld": "dispute: upheld",
+  "profile.reliability.disputeState.retracted": "dispute: retracted",
+  "profile.reliability.dispute": "Dispute",
+  "profile.reliability.reasonLabel": "Reason (optional)",
+  "profile.reliability.reasonNone": "— no reason —",
+  "profile.reliability.noteLabel": "Your statement (optional)",
+  "profile.reliability.submitDispute": "Open dispute",
+  "profile.reliability.cancel": "Cancel",
+  "profile.reliability.disputeOpened": "Dispute opened.",
+  "profile.reliability.disputeError": "Could not open the dispute."
 }
