@@ -32,5 +32,15 @@
   "chats.real.editing": "Editing message",
   "chats.real.replyingTo": "Reply to",
   "chats.real.edited": "edited",
-  "chats.real.cancel": "Cancel"
+  "chats.real.cancel": "Cancel",
+  "chats.report.title": "Report this message",
+  "chats.report.reason.spam": "Spam",
+  "chats.report.reason.harassment": "Harassment / insults",
+  "chats.report.reason.threats": "Threats",
+  "chats.report.reason.scam": "Scam / fraud",
+  "chats.report.reason.suspicious_link": "Suspicious link",
+  "chats.report.reason.impersonation": "Impersonation",
+  "chats.report.reason.other": "Other",
+  "chats.report.sent": "Report sent. We saved the message and its context for review.",
+  "chats.report.error": "Could not send the report."
 }

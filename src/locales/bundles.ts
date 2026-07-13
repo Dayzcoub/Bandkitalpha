@@ -411,7 +411,17 @@ export const localeBundles = {
       "chats.real.editing": "Editing message",
       "chats.real.replyingTo": "Reply to",
       "chats.real.edited": "edited",
-      "chats.real.cancel": "Cancel"
+      "chats.real.cancel": "Cancel",
+      "chats.report.title": "Report this message",
+      "chats.report.reason.spam": "Spam",
+      "chats.report.reason.harassment": "Harassment / insults",
+      "chats.report.reason.threats": "Threats",
+      "chats.report.reason.scam": "Scam / fraud",
+      "chats.report.reason.suspicious_link": "Suspicious link",
+      "chats.report.reason.impersonation": "Impersonation",
+      "chats.report.reason.other": "Other",
+      "chats.report.sent": "Report sent. We saved the message and its context for review.",
+      "chats.report.error": "Could not send the report."
     },
     "common": {
       "access.admin": "admin",
@@ -889,7 +899,21 @@ export const localeBundles = {
       "moderation.action.warn": "Warn",
       "moderation.action.restrict": "Restrict",
       "moderation.action.hide": "Hide content",
-      "moderation.auditTrail": "Audit trail"
+      "moderation.auditTrail": "Audit trail",
+      "moderation.reports.title": "Reports queue",
+      "moderation.reports.subtitle": "Real user reports with preserved evidence. Advance a case by changing its state.",
+      "moderation.reports.empty": "No reports to review.",
+      "moderation.reports.by": "by",
+      "moderation.reports.stateLabel": "State",
+      "moderation.reports.updated": "Case updated.",
+      "moderation.reports.updateError": "Could not update the case.",
+      "moderation.reports.state.created": "Created",
+      "moderation.reports.state.triage": "Triage",
+      "moderation.reports.state.in_review": "In review",
+      "moderation.reports.state.action_required": "Action required",
+      "moderation.reports.state.resolved": "Resolved",
+      "moderation.reports.state.rejected": "Rejected",
+      "moderation.reports.state.closed": "Closed"
     },
     "notifications": {
       "notifications.title": "Notification center",
@@ -1388,7 +1412,17 @@ export const localeBundles = {
       "chats.real.editing": "Редактирование",
       "chats.real.replyingTo": "Ответ",
       "chats.real.edited": "изменено",
-      "chats.real.cancel": "Отмена"
+      "chats.real.cancel": "Отмена",
+      "chats.report.title": "Пожаловаться на сообщение",
+      "chats.report.reason.spam": "Спам",
+      "chats.report.reason.harassment": "Оскорбления / травля",
+      "chats.report.reason.threats": "Угрозы",
+      "chats.report.reason.scam": "Мошенничество",
+      "chats.report.reason.suspicious_link": "Подозрительная ссылка",
+      "chats.report.reason.impersonation": "Выдаёт себя за другого",
+      "chats.report.reason.other": "Другое",
+      "chats.report.sent": "Жалоба отправлена. Мы сохранили сообщение и контекст для проверки.",
+      "chats.report.error": "Не удалось отправить жалобу."
     },
     "common": {
       "access.admin": "admin",
@@ -1866,7 +1900,21 @@ export const localeBundles = {
       "moderation.action.warn": "Предупредить",
       "moderation.action.restrict": "Ограничить",
       "moderation.action.hide": "Скрыть контент",
-      "moderation.auditTrail": "История аудита"
+      "moderation.auditTrail": "История аудита",
+      "moderation.reports.title": "Очередь жалоб",
+      "moderation.reports.subtitle": "Реальные жалобы пользователей с сохранённым контекстом. Меняйте состояние, чтобы вести дело.",
+      "moderation.reports.empty": "Нет жалоб для проверки.",
+      "moderation.reports.by": "от",
+      "moderation.reports.stateLabel": "Состояние",
+      "moderation.reports.updated": "Дело обновлено.",
+      "moderation.reports.updateError": "Не удалось обновить дело.",
+      "moderation.reports.state.created": "Создано",
+      "moderation.reports.state.triage": "Сортировка",
+      "moderation.reports.state.in_review": "На рассмотрении",
+      "moderation.reports.state.action_required": "Требует действия",
+      "moderation.reports.state.resolved": "Решено",
+      "moderation.reports.state.rejected": "Отклонено",
+      "moderation.reports.state.closed": "Закрыто"
     },
     "notifications": {
       "notifications.title": "Центр уведомлений",

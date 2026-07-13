@@ -13,5 +13,19 @@
   "moderation.action.warn": "Предупредить",
   "moderation.action.restrict": "Ограничить",
   "moderation.action.hide": "Скрыть контент",
-  "moderation.auditTrail": "История аудита"
+  "moderation.auditTrail": "История аудита",
+  "moderation.reports.title": "Очередь жалоб",
+  "moderation.reports.subtitle": "Реальные жалобы пользователей с сохранённым контекстом. Меняйте состояние, чтобы вести дело.",
+  "moderation.reports.empty": "Нет жалоб для проверки.",
+  "moderation.reports.by": "от",
+  "moderation.reports.stateLabel": "Состояние",
+  "moderation.reports.updated": "Дело обновлено.",
+  "moderation.reports.updateError": "Не удалось обновить дело.",
+  "moderation.reports.state.created": "Создано",
+  "moderation.reports.state.triage": "Сортировка",
+  "moderation.reports.state.in_review": "На рассмотрении",
+  "moderation.reports.state.action_required": "Требует действия",
+  "moderation.reports.state.resolved": "Решено",
+  "moderation.reports.state.rejected": "Отклонено",
+  "moderation.reports.state.closed": "Закрыто"
 }

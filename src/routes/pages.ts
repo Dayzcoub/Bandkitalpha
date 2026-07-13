@@ -258,7 +258,10 @@ function renderComplaintForm(ctx: AppContext): string {
 
 function renderModeration(ctx: AppContext): string {
   const queueStats = card(`<div class="bk-kpi-grid">${kpi(complaints.length, ctx.t('moderation.queue'))}${kpi('1', ctx.t('moderation.priority.high'))}${kpi('0', ctx.t('moderation.slaBreaches'))}</div>`, 'bk-moderation-kpi-card');
-  return contentGrid([pageHeader(ctx, 'moderation.title', 'moderation.subtitle'), queueStats, card(`<h3 class="bk-card-title">${ctx.t('moderation.filters')}</h3><div class="bk-chip-row">${badge(ctx.t('moderation.priority.high'), 'danger')}${badge(ctx.t('moderation.priority.medium'), 'warning')}${badge(ctx.t('moderation.priority.low'))}</div>`), ...complaints.map((c) => complaintCard(ctx, c))].join(''), defaultRightRail(ctx));
+  // Real reports queue (backed by /reports), rendered for platform moderation
+  // staff only; the module empties it for everyone else, leaving the mock queue.
+  const realReports = ctx.state.currentUser ? '<div data-real-moderation-reports></div>' : '';
+  return contentGrid([pageHeader(ctx, 'moderation.title', 'moderation.subtitle'), queueStats, realReports, card(`<h3 class="bk-card-title">${ctx.t('moderation.filters')}</h3><div class="bk-chip-row">${badge(ctx.t('moderation.priority.high'), 'danger')}${badge(ctx.t('moderation.priority.medium'), 'warning')}${badge(ctx.t('moderation.priority.low'))}</div>`), ...complaints.map((c) => complaintCard(ctx, c))].join(''), defaultRightRail(ctx));
 }
 
 function renderComplaintDetail(ctx: AppContext): string {

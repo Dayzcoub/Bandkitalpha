@@ -13,5 +13,19 @@
   "moderation.action.warn": "Warn",
   "moderation.action.restrict": "Restrict",
   "moderation.action.hide": "Hide content",
-  "moderation.auditTrail": "Audit trail"
+  "moderation.auditTrail": "Audit trail",
+  "moderation.reports.title": "Reports queue",
+  "moderation.reports.subtitle": "Real user reports with preserved evidence. Advance a case by changing its state.",
+  "moderation.reports.empty": "No reports to review.",
+  "moderation.reports.by": "by",
+  "moderation.reports.stateLabel": "State",
+  "moderation.reports.updated": "Case updated.",
+  "moderation.reports.updateError": "Could not update the case.",
+  "moderation.reports.state.created": "Created",
+  "moderation.reports.state.triage": "Triage",
+  "moderation.reports.state.in_review": "In review",
+  "moderation.reports.state.action_required": "Action required",
+  "moderation.reports.state.resolved": "Resolved",
+  "moderation.reports.state.rejected": "Rejected",
+  "moderation.reports.state.closed": "Closed"
 }

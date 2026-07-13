@@ -424,6 +424,41 @@ async function deleteMessage(root: HTMLElement, msg: MenuMsg): Promise<void> {
   }
 }
 
+// Chat-relevant report reasons (stable keys validated server-side; labels are
+// localized here so the reason list is not English-only). The full reason
+// catalogue lives in the backend for other surfaces.
+const REPORT_REASONS = ['spam', 'harassment', 'threats', 'scam', 'suspicious_link', 'impersonation', 'other'];
+
+// Repopulate the open context menu with a reason picker for the message being
+// reported (keeps the same floating element, so no new UI/CSS is needed).
+function openReportMenu(): void {
+  if (!menuEl || !menuMsg) return;
+  const items = REPORT_REASONS
+    .map((key) => `<button type="button" role="menuitem" data-report-reason="${esc(key)}">${esc(t(`chats.report.reason.${key}`))}</button>`)
+    .join('');
+  menuEl.innerHTML = `<div class="bk-real-menu-note">${esc(t('chats.report.title'))}</div>${items}`;
+  menuEl.hidden = false;
+}
+
+// Show a short confirmation inside the menu, then close it. Anchored to the
+// reported message; no toast infrastructure required.
+function menuNote(text: string): void {
+  if (!menuEl) return;
+  menuEl.innerHTML = `<div class="bk-real-menu-note">${esc(text)}</div>`;
+  window.setTimeout(closeMenu, 1900);
+}
+
+async function submitReport(msg: MenuMsg, reasonKey: string): Promise<void> {
+  if (!msg.id || !reasonKey) return;
+  const { status } = await api('/reports', 'POST', {
+    object_type: 'chat_message',
+    object_id: msg.id,
+    reason_key: reasonKey
+  });
+  // Spec user-facing behavior: confirm receipt, promise no specific outcome.
+  menuNote(status === 201 ? t('chats.report.sent') : t('chats.report.error'));
+}
+
 const LONG_PRESS_MS = 480;
 
 export function initRealChat(root: HTMLElement): void {
@@ -438,18 +473,28 @@ export function initRealChat(root: HTMLElement): void {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
 
+    // A reason chosen from the report picker (menu stays open until then).
+    const reasonBtn = target.closest<HTMLElement>('[data-report-reason]');
+    if (reasonBtn) {
+      event.preventDefault();
+      const msg = menuMsg;
+      if (msg) void submitReport(msg, reasonBtn.getAttribute('data-report-reason') || '');
+      return;
+    }
+
     const menuItem = target.closest<HTMLElement>('[data-menu-act]');
     if (menuItem) {
       event.preventDefault();
       const act = menuItem.getAttribute('data-menu-act');
       const msg = menuMsg;
+      // Report swaps the menu for a reason picker in place; everything else closes it.
+      if (act === 'report') { openReportMenu(); return; }
       closeMenu();
       if (msg && act === 'reply') setComposerMode(root, { kind: 'reply', id: msg.id, author: msg.author, body: msg.body });
       else if (msg && act === 'edit') setComposerMode(root, { kind: 'edit', id: msg.id });
       else if (msg && act === 'copy') navigator.clipboard?.writeText(msg.body).catch(() => {});
       else if (msg && act === 'pin') void pinMessage(root, msg);
       else if (msg && act === 'delete') void deleteMessage(root, msg);
-      else if (act === 'report') navTo('/complaints/new');
       return;
     }
     const ctxClear = target.closest<HTMLElement>('[data-real-context-clear]');

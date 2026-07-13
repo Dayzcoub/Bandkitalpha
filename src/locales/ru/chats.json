@@ -32,5 +32,15 @@
   "chats.real.editing": "Редактирование",
   "chats.real.replyingTo": "Ответ",
   "chats.real.edited": "изменено",
-  "chats.real.cancel": "Отмена"
+  "chats.real.cancel": "Отмена",
+  "chats.report.title": "Пожаловаться на сообщение",
+  "chats.report.reason.spam": "Спам",
+  "chats.report.reason.harassment": "Оскорбления / травля",
+  "chats.report.reason.threats": "Угрозы",
+  "chats.report.reason.scam": "Мошенничество",
+  "chats.report.reason.suspicious_link": "Подозрительная ссылка",
+  "chats.report.reason.impersonation": "Выдаёт себя за другого",
+  "chats.report.reason.other": "Другое",
+  "chats.report.sent": "Жалоба отправлена. Мы сохранили сообщение и контекст для проверки.",
+  "chats.report.error": "Не удалось отправить жалобу."
 }
