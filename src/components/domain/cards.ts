@@ -24,9 +24,12 @@ function profileRoute(profile: MockProfile): string {
   return `/profile/${encodeURIComponent(profile.id)}`;
 }
 
-function reportLink(extraClass = ''): string {
+// A real report affordance: RealReportTarget opens a reason picker on click and
+// posts to /reports with this object type/id (polymorphic — works for mock ids
+// today and real ones later).
+function reportLink(ctx: AppContext, objectType: string, objectId: string, extraClass = ''): string {
   const className = `bk-report-link${extraClass ? ` ${extraClass}` : ''}`;
-  return `<a class="${className}" href="/complaints/new" data-route="/complaints/new">⚑ Пожаловаться</a>`;
+  return `<button class="${className}" type="button" data-report-target data-report-type="${escapeHtml(objectType)}" data-report-id="${escapeHtml(objectId)}">⚑ ${escapeHtml(ctx.t('actions.report'))}</button>`;
 }
 
 function metaIconChip(label: string, icon: string, tone: 'neutral' | 'positive' | 'warning' = 'neutral', value = ''): string {
@@ -222,7 +225,7 @@ export function postCard(ctx: AppContext, post: MockPost): string {
   const warning = linkPolicy.hasBlockedLink ? `<div class="bk-blocked-link">${ctx.t('security.linkBlocked')}</div>` : '';
   const flag = post.flagged ? badge(ctx.t('badge.warning'), 'warning') : badge(ctx.t(post.scopeKey));
   const authorMeta = `${escapeHtml(author.handle)} · ${ctx.t(author.profileTypeKey)} · ${ctx.t(post.scopeKey)} · ${formatDateTime(post.createdAt, ctx.state.locale)}`;
-  return card(`${profileLinkHeader(ctx, author, authorMeta)}<div class="bk-card-body"><p>${escapeHtml(body)}</p>${warning}${entityPostOrigin(ctx, post)}</div><footer class="bk-action-row bk-social-actions bk-social-metric-row"><span class="bk-social-scope-chip">${flag}</span>${socialMetricChip(ctx.t('feed.like'), '♥', formatNumber(post.likes, ctx.state.locale))}${socialMetricChip(ctx.t('feed.comment'), '☰', formatNumber(post.comments, ctx.state.locale))}${socialMetricChip(ctx.t('feed.repost'), '↻', formatNumber(post.reposts, ctx.state.locale))}</footer>`, 'bk-social-card');
+  return card(`${profileLinkHeader(ctx, author, authorMeta)}<div class="bk-card-body"><p>${escapeHtml(body)}</p>${warning}${entityPostOrigin(ctx, post)}</div><footer class="bk-action-row bk-social-actions bk-social-metric-row"><span class="bk-social-scope-chip">${flag}</span>${socialMetricChip(ctx.t('feed.like'), '♥', formatNumber(post.likes, ctx.state.locale))}${socialMetricChip(ctx.t('feed.comment'), '☰', formatNumber(post.comments, ctx.state.locale))}${socialMetricChip(ctx.t('feed.repost'), '↻', formatNumber(post.reposts, ctx.state.locale))}<button class="bk-social-metric-chip" type="button" title="${escapeHtml(ctx.t('actions.report'))}" aria-label="${escapeHtml(ctx.t('actions.report'))}" data-report-target data-report-type="post" data-report-id="${escapeHtml(post.id)}"><span class="bk-social-metric-icon" aria-hidden="true">⚑</span></button></footer>`, 'bk-social-card');
 }
 
 function profileRelationshipActions(ctx: AppContext, profile: MockProfile): string {
@@ -230,7 +233,7 @@ function profileRelationshipActions(ctx: AppContext, profile: MockProfile): stri
   if (isOwnProfile) {
     return `<div class="bk-action-row bk-profile-social-actions">${button(ctx.t('feed.createPost'), 'primary', '/feed')}${button('Редактировать профиль', 'secondary', '/settings')}${button('Настройки приватности', 'ghost', '/settings')}</div>`;
   }
-  return `<div class="bk-action-row bk-profile-social-actions">${button('Добавить в друзья', 'primary')}${button('Подписаться', 'secondary')}${button(ctx.t('profile.contact'), 'ghost')}${reportLink()}</div>`;
+  return `<div class="bk-action-row bk-profile-social-actions">${button('Добавить в друзья', 'primary')}${button('Подписаться', 'secondary')}${button(ctx.t('profile.contact'), 'ghost')}${reportLink(ctx, 'user_profile', profile.id)}</div>`;
 }
 
 function profileCover(ctx: AppContext): string {

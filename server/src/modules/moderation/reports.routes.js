@@ -184,9 +184,132 @@ export async function handleGetReport(req, res, reportId) {
       sendError(res, 404, 'REPORT_NOT_FOUND', 'Report not found');
       return;
     }
-    sendJson(res, 200, { ok: true, report: result.rows[0] });
+    // Include the case's action history — part of the preserved evidence trail.
+    const actions = await getPool().query(
+      `select a.id, a.action_key, at.label as action_label, a.target_user_id,
+              tu.display_name as target_name, a.reason, a.created_at,
+              au.display_name as actor_name
+         from moderation_actions a
+         join moderation_action_types at on at.key = a.action_key
+         left join users tu on tu.id = a.target_user_id
+         left join users au on au.id = a.actor_user_id
+        where a.report_id = $1
+        order by a.created_at`,
+      [reportId]
+    );
+    sendJson(res, 200, { ok: true, report: result.rows[0], actions: actions.rows });
   } catch (error) {
     sendError(res, 500, 'REPORT_GET_FAILED', 'Failed to load report', { message: error?.message || String(error) });
+  }
+}
+
+// POST /reports/:id/actions — a moderator takes a concrete action on the case.
+// Spec: every sensitive action requires a reason and an audit event. Effects are
+// real: hide_content hides the reported chat message; restrict_user / suspend_user
+// change the target's account status (enforced by PermissionService / login).
+export async function handleReportAction(req, res, reportId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    if (!permissionService.canModeratePlatform(actor)) {
+      sendError(res, 403, 'MODERATION_FORBIDDEN', 'Platform moderation access is required');
+      return;
+    }
+    const found = await client.query(
+      'select id, object_type, object_id, accused_user_id, context from reports where id = $1 limit 1',
+      [reportId]
+    );
+    const report = found.rows[0];
+    if (!report) {
+      sendError(res, 404, 'REPORT_NOT_FOUND', 'Report not found');
+      return;
+    }
+
+    const body = await readJsonBody(req);
+    const actionKey = String(body.action_key || '').trim();
+    const reason = body.reason ? String(body.reason).trim().slice(0, 2000) : '';
+    if (!actionKey) {
+      sendError(res, 400, 'ACTION_REQUIRED', 'action_key is required');
+      return;
+    }
+    if (!reason) {
+      sendError(res, 400, 'ACTION_REASON_REQUIRED', 'A reason is required for moderation actions');
+      return;
+    }
+
+    // Target for user-level actions: explicit override, else the accused, else
+    // the author preserved in the evidence snapshot.
+    const targetUserId = (body.target_user_id ? String(body.target_user_id).trim() : null)
+      || report.accused_user_id
+      || report.context?.author_user_id
+      || null;
+
+    if (actionKey === 'restrict_user' || actionKey === 'suspend_user') {
+      if (!targetUserId) {
+        sendError(res, 400, 'ACTION_TARGET_REQUIRED', 'This action needs a target user');
+        return;
+      }
+      const targetRow = await client.query('select id, platform_role from users where id = $1 limit 1', [targetUserId]);
+      const target = targetRow.rows[0];
+      if (!target) {
+        sendError(res, 400, 'ACTION_TARGET_UNKNOWN', 'Target user does not exist');
+        return;
+      }
+      // Staff cannot be sanctioned through the case flow, and nobody sanctions
+      // themselves — staff management is a separate, dual-approval concern.
+      if (target.id === actor.id || permissionService.canModeratePlatform(target)) {
+        sendError(res, 403, 'ACTION_TARGET_FORBIDDEN', 'This target cannot be sanctioned from a moderation case');
+        return;
+      }
+    }
+    if (actionKey === 'hide_content' && (report.object_type !== 'chat_message' || !report.object_id)) {
+      sendError(res, 400, 'ACTION_OBJECT_UNSUPPORTED', 'hide_content currently supports reported chat messages only');
+      return;
+    }
+
+    await client.query('begin');
+    // Apply the real effect first, then record the action row.
+    if (actionKey === 'hide_content') {
+      await client.query(
+        `update chat_messages set is_pinned = false, status = 'hidden' where id = $1`,
+        [report.object_id]
+      );
+    } else if (actionKey === 'restrict_user') {
+      await client.query(`update users set status = 'restricted', updated_at = now() where id = $1`, [targetUserId]);
+    } else if (actionKey === 'suspend_user') {
+      await client.query(`update users set status = 'blocked', updated_at = now() where id = $1`, [targetUserId]);
+    }
+    const inserted = await client.query(
+      `insert into moderation_actions (report_id, action_key, target_user_id, reason, actor_user_id)
+       values ($1, $2, $3, $4, $5)
+       returning id, action_key, target_user_id, reason, created_at`,
+      [reportId, actionKey, (actionKey === 'restrict_user' || actionKey === 'suspend_user') ? targetUserId : null, reason, actor.id]
+    );
+    await client.query(
+      `insert into audit_events (actor_user_id, action, metadata)
+       values ($1, 'moderation.action.taken',
+               jsonb_build_object('report_id', $2::text, 'action', $3::text, 'target', $4::text))`,
+      [actor.id, reportId, actionKey, targetUserId]
+    );
+    await client.query('commit');
+    sendJson(res, 200, { ok: true, action: inserted.rows[0] });
+  } catch (error) {
+    await client.query('rollback').catch(() => {});
+    if (error?.code === '23503') {
+      sendError(res, 400, 'REFERENCE_UNKNOWN', 'Referenced action type or target does not exist');
+      return;
+    }
+    if (error?.code === 'BODY_TOO_LARGE') {
+      sendError(res, 413, 'BODY_TOO_LARGE', 'Request body is too large');
+      return;
+    }
+    sendError(res, 500, 'ACTION_FAILED', 'Failed to apply moderation action', { message: error?.message || String(error) });
+  } finally {
+    client.release();
   }
 }
 

@@ -17,7 +17,7 @@ import { handleGetTaxonomy } from './modules/taxonomy/taxonomy.routes.js';
 import { handleGetMyProfessions, handleReplaceMyProfessions, handleListPartyCandidates } from './modules/parties/parties.routes.js';
 import { handleCreateSlot, handleListSlots, handleCreateEngagement, handleListEngagements, handleUpdateEngagementStatus } from './modules/events/eventOps.routes.js';
 import { handleListReliabilityCatalogue, handleRecordReliabilityEvent, handleListReliabilityEvents, handlePartyReliabilitySummary, handleOpenDispute, handleResolveDispute, handleListMyReliability } from './modules/reliability/reliability.routes.js';
-import { handleReportCatalogue, handleCreateReport, handleListReports, handleGetReport, handleUpdateReport } from './modules/moderation/reports.routes.js';
+import { handleReportCatalogue, handleCreateReport, handleListReports, handleGetReport, handleUpdateReport, handleReportAction } from './modules/moderation/reports.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { notFound, sendError } from './shared/http.js';
@@ -54,6 +54,7 @@ const server = http.createServer((req, res) => {
       const partyReliabilitySummaryMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/parties/([^/]+)/reliability-summary$`));
       const reliabilityDisputeMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reliability-events/([^/]+)/dispute$`));
       const reportDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reports/([^/]+)$`));
+      const reportActionsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reports/([^/]+)/actions$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
       const roomDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)$`));
       const roomMessageDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages/([^/]+)$`));
@@ -279,6 +280,11 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/reports`) {
         await handleListReports(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && reportActionsMatch) {
+        await handleReportAction(req, res, decodeURIComponent(reportActionsMatch[1]));
         return;
       }
 

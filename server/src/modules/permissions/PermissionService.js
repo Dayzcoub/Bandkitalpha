@@ -1,6 +1,10 @@
+// Account statuses under a moderation sanction (restrict/suspend) or gone.
+// Reading generally stays available to 'restricted'; writing does not.
+const SANCTIONED_STATUSES = new Set(['restricted', 'blocked', 'deleted']);
+
 export class PermissionService {
   canCreateEntity(actor) {
-    return Boolean(actor && actor.id && actor.status !== 'blocked' && actor.status !== 'deleted');
+    return Boolean(actor && actor.id && !SANCTIONED_STATUSES.has(actor.status));
   }
 
   canViewEntity(actor, entity) {
@@ -44,10 +48,12 @@ export class PermissionService {
     return Boolean(membership && ['active', 'read_only'].includes(membership.status));
   }
 
-  // Posting requires an active membership (read_only members cannot write) and
-  // an active room (read_only/archived/hidden rooms reject writes).
+  // Posting requires an active membership (read_only members cannot write), an
+  // active room (read_only/archived/hidden rooms reject writes), and an
+  // unsanctioned account — a moderation-restricted user loses write access
+  // (Moderation Rules: "restrict user action").
   canWriteMessage(actor, membership, room) {
-    if (!actor || !actor.id || !room || room.status !== 'active') {
+    if (!actor || !actor.id || SANCTIONED_STATUSES.has(actor.status) || !room || room.status !== 'active') {
       return false;
     }
     return Boolean(membership && membership.status === 'active');
