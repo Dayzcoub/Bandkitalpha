@@ -8,6 +8,7 @@ import { emptyState, errorState, loadingState, restrictedState } from '../compon
 import { auditEvents, bands, chats, complaints, documents, events, marketplaceOffers, notifications, posts, profiles, quickActions, trustChecks } from '../mocks/mockData.js';
 import { auditEventRow, bandCard, chatMessages, chatRow, complaintCard, documentCard, eventCard, offerCard, postCard, profileCompactCard, profileHeader, quickActionCard, statusStrip, trustCheckCard } from '../components/domain/cards.js';
 import { formatDateTime } from '../lib/format/format.js';
+import { escapeHtml } from '../lib/security/linkPolicy.js';
 
 export function renderPage(ctx: AppContext): string {
   if (!canAccess(ctx.match.route.access, ctx.state)) {
@@ -151,7 +152,9 @@ function renderBands(ctx: AppContext): string {
 }
 
 function renderBandDetail(ctx: AppContext): string {
-  return inDevelopment(ctx, 'bands.detailTitle', 'bands.title', '/bands');
+  // Real entity detail (backed by GET /entities/:id + its posts feed).
+  const ref = ctx.match.params.bandId ?? '';
+  return contentGrid([pageHeader(ctx, 'bands.detailTitle', 'bands.subtitle'), `<div data-real-entity-detail="${escapeHtml(ref)}"></div>`].join(''), defaultRightRail(ctx));
 }
 
 function renderEvents(ctx: AppContext): string {

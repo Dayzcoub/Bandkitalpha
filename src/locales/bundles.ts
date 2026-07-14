@@ -395,7 +395,16 @@ export const localeBundles = {
       "entities.real.type.studio": "Studio",
       "entities.real.type.venue": "Venue",
       "entities.real.type.agency": "Agency",
-      "entities.real.type.other": "Other"
+      "entities.real.type.other": "Other",
+      "entityDetail.notFound": "Entity not found.",
+      "entityDetail.loading": "Loading…",
+      "entityDetail.postsTitle": "Posts",
+      "entityDetail.noPosts": "No posts yet.",
+      "entityDetail.members": "member(s)",
+      "entityDetail.visibility.private": "Private",
+      "entityDetail.visibility.members": "Members",
+      "entityDetail.visibility.registered": "Registered users",
+      "entityDetail.visibility.public": "Public"
     },
     "chats": {
       "chats.title": "Chats",
@@ -1487,7 +1496,16 @@ export const localeBundles = {
       "entities.real.type.studio": "Студия",
       "entities.real.type.venue": "Площадка",
       "entities.real.type.agency": "Агентство",
-      "entities.real.type.other": "Другое"
+      "entities.real.type.other": "Другое",
+      "entityDetail.notFound": "Сущность не найдена.",
+      "entityDetail.loading": "Загрузка…",
+      "entityDetail.postsTitle": "Посты",
+      "entityDetail.noPosts": "Пока нет постов.",
+      "entityDetail.members": "участник(ов)",
+      "entityDetail.visibility.private": "Приватная",
+      "entityDetail.visibility.members": "Участники",
+      "entityDetail.visibility.registered": "Зарегистрированные",
+      "entityDetail.visibility.public": "Публичная"
     },
     "chats": {
       "chats.title": "Чаты",

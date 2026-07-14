@@ -9,6 +9,14 @@ function esc(value: string): string {
   return String(value).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] ?? c));
 }
 
+// Client-side navigation for asynchronously-injected rows (the app's own
+// [data-route] binding only runs at render time, before these rows exist). The
+// SPA re-renders on popstate.
+function navigateTo(path: string): void {
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}
+
 async function api(path: string, method: 'GET' | 'POST', body?: unknown): Promise<{ status: number; data: any }> {
   try {
     const res = await fetch(`/api/v1${path}`, {
@@ -40,7 +48,7 @@ async function mountEntities(host: HTMLElement): Promise<void> {
     const list = entities.length === 0
       ? `<p class="bk-state-copy">${esc(t('entities.real.empty'))}</p>`
       : `<div class="bk-list">${entities.map((e) => `<div class="bk-list-row"><div class="bk-list-row-main">`
-          + `<span class="bk-list-row-title">${esc(e.name)}</span>`
+          + `<a class="bk-list-row-title" href="/bands/${esc(e.slug || e.id)}" data-ent-open="${esc(e.slug || e.id)}">${esc(e.name)}</a>`
           + `<span class="bk-state-copy">${esc(t(`entities.real.type.${e.type}`) )} · ${esc(String(e.member_count ?? ''))} ${esc(t('entities.real.members'))}</span>`
           + `</div></div>`).join('')}</div>`;
     const typeOptions = ENTITY_TYPES.map((k) => `<option value="${esc(k)}">${esc(t(`entities.real.type.${k}`))}</option>`).join('');
@@ -58,6 +66,8 @@ async function mountEntities(host: HTMLElement): Promise<void> {
   }
 
   host.addEventListener('click', (event) => {
+    const open = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-ent-open]') : null;
+    if (open) { event.preventDefault(); navigateTo(`/bands/${open.getAttribute('data-ent-open')}`); return; }
     const btn = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-ent-create]') : null;
     if (!btn) return;
     event.preventDefault();

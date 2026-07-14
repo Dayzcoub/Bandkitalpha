@@ -41,5 +41,14 @@
   "entities.real.type.studio": "Studio",
   "entities.real.type.venue": "Venue",
   "entities.real.type.agency": "Agency",
-  "entities.real.type.other": "Other"
+  "entities.real.type.other": "Other",
+  "entityDetail.notFound": "Entity not found.",
+  "entityDetail.loading": "Loading…",
+  "entityDetail.postsTitle": "Posts",
+  "entityDetail.noPosts": "No posts yet.",
+  "entityDetail.members": "member(s)",
+  "entityDetail.visibility.private": "Private",
+  "entityDetail.visibility.members": "Members",
+  "entityDetail.visibility.registered": "Registered users",
+  "entityDetail.visibility.public": "Public"
 }
