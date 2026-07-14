@@ -19,6 +19,43 @@ export async function handleReportCatalogue(req, res) {
   }
 }
 
+// Snapshots a reported entity post as evidence. Posts are a public-ish surface;
+// snapshot only what the reporter could see anyway (a post whose visibility layer
+// includes them) — for MVP that is the public layer plus subscriber/member layers
+// checked in one query. No row → no snapshot, same response (no probing).
+async function snapshotEntityPost(client, reporterId, postId) {
+  const result = await client.query(
+    `select p.id, p.entity_id, p.author_user_id, p.body, p.visibility,
+            p.moderation_state, p.published_at
+       from entity_posts p
+      where p.id = $1
+        and (p.visibility = 'public'
+          or (p.visibility = 'subscribers' and (
+                exists (select 1 from entity_subscriptions s
+                         where s.entity_id = p.entity_id and s.user_id = $2 and s.status in ('active','muted'))
+             or exists (select 1 from entity_memberships m
+                         where m.entity_id = p.entity_id and m.user_id = $2 and m.status = 'active')))
+          or (p.visibility = 'members' and exists (
+                select 1 from entity_memberships m
+                 where m.entity_id = p.entity_id and m.user_id = $2 and m.status = 'active')))
+      limit 1`,
+    [postId, reporterId]
+  );
+  const row = result.rows[0];
+  if (!row) return null;
+  return {
+    kind: 'entity_post',
+    post_id: row.id,
+    entity_id: row.entity_id,
+    author_user_id: row.author_user_id,
+    body: row.body,
+    visibility: row.visibility,
+    moderation_state: row.moderation_state,
+    published_at: row.published_at,
+    snapshotted_at: new Date().toISOString()
+  };
+}
+
 // Snapshots a reported chat message as evidence, but only if the reporter can
 // actually see it (is a member of the room). Returns the snapshot object or null.
 // Non-members simply get no snapshot — the same response either way, so reporting
@@ -82,6 +119,8 @@ export async function handleCreateReport(req, res) {
     let context = null;
     if (objectType === 'chat_message' && objectId) {
       context = await snapshotChatMessage(client, actor.id, objectId);
+    } else if (objectType === 'post' && objectId) {
+      context = await snapshotEntityPost(client, actor.id, objectId);
     }
 
     const result = await client.query(
@@ -210,6 +249,9 @@ export async function handleGetReport(req, res, reportId) {
     if (report.object_type === 'chat_message' && report.object_id) {
       const om = await getPool().query('select status from chat_messages where id = $1 limit 1', [report.object_id]);
       objectStatus = om.rows[0]?.status ?? null;
+    } else if (report.object_type === 'post' && report.object_id) {
+      const op = await getPool().query('select moderation_state from entity_posts where id = $1 limit 1', [report.object_id]);
+      objectStatus = op.rows[0]?.moderation_state ?? null;
     }
     sendJson(res, 200, { ok: true, report, actions: actions.rows, target_status: targetStatus, object_status: objectStatus });
   } catch (error) {
@@ -294,24 +336,28 @@ export async function handleReportAction(req, res, reportId) {
       }
     }
 
-    let message = null;
+    // Content actions cover the object kinds whose backends exist: chat messages
+    // (status column) and entity posts (moderation_state column).
+    let contentState = null;
     if (CONTENT_ACTIONS.has(actionKey)) {
-      if (report.object_type !== 'chat_message' || !report.object_id) {
-        sendError(res, 400, 'ACTION_OBJECT_UNSUPPORTED', 'Content actions currently support reported chat messages only');
+      if (!report.object_id || (report.object_type !== 'chat_message' && report.object_type !== 'post')) {
+        sendError(res, 400, 'ACTION_OBJECT_UNSUPPORTED', 'Content actions support reported chat messages and posts only');
         return;
       }
-      const msgRow = await client.query('select id, status from chat_messages where id = $1 limit 1', [report.object_id]);
-      message = msgRow.rows[0];
-      if (!message) {
-        sendError(res, 400, 'ACTION_OBJECT_UNKNOWN', 'Reported message no longer exists');
+      const row = report.object_type === 'chat_message'
+        ? await client.query('select status as state from chat_messages where id = $1 limit 1', [report.object_id])
+        : await client.query('select moderation_state as state from entity_posts where id = $1 limit 1', [report.object_id]);
+      contentState = row.rows[0]?.state ?? null;
+      if (contentState === null) {
+        sendError(res, 400, 'ACTION_OBJECT_UNKNOWN', 'Reported content no longer exists');
         return;
       }
-      if (actionKey === 'hide_content' && message.status === 'hidden') {
-        sendError(res, 409, 'ACTION_STATE_MISMATCH', 'Message is already hidden');
+      if (actionKey === 'hide_content' && contentState === 'hidden') {
+        sendError(res, 409, 'ACTION_STATE_MISMATCH', 'Content is already hidden');
         return;
       }
-      if (actionKey === 'unhide_content' && message.status !== 'hidden') {
-        sendError(res, 409, 'ACTION_STATE_MISMATCH', 'Message is not hidden');
+      if (actionKey === 'unhide_content' && contentState !== 'hidden') {
+        sendError(res, 409, 'ACTION_STATE_MISMATCH', 'Content is not hidden');
         return;
       }
     }
@@ -333,12 +379,20 @@ export async function handleReportAction(req, res, reportId) {
     // snapshot the prior status into metadata; restores read it back.
     let metadata = null;
     if (actionKey === 'hide_content') {
-      metadata = { prior_status: message.status };
-      await client.query(`update chat_messages set is_pinned = false, status = 'hidden' where id = $1`, [report.object_id]);
+      metadata = { prior_status: contentState };
+      if (report.object_type === 'chat_message') {
+        await client.query(`update chat_messages set is_pinned = false, status = 'hidden' where id = $1`, [report.object_id]);
+      } else {
+        await client.query(`update entity_posts set is_pinned = false, moderation_state = 'hidden' where id = $1`, [report.object_id]);
+      }
     } else if (actionKey === 'unhide_content') {
-      const restored = await priorStatus('hide_content', 'active');
+      const restored = await priorStatus('hide_content', report.object_type === 'chat_message' ? 'active' : 'clean');
       metadata = { restored_status: restored };
-      await client.query(`update chat_messages set status = $2 where id = $1`, [report.object_id, restored]);
+      if (report.object_type === 'chat_message') {
+        await client.query(`update chat_messages set status = $2 where id = $1`, [report.object_id, restored]);
+      } else {
+        await client.query(`update entity_posts set moderation_state = $2 where id = $1`, [report.object_id, restored]);
+      }
     } else if (actionKey === 'restrict_user') {
       metadata = { prior_status: target.status };
       await client.query(`update users set status = 'restricted', updated_at = now() where id = $1`, [targetUserId]);

@@ -18,6 +18,7 @@ import { handleGetMyProfessions, handleReplaceMyProfessions, handleListPartyCand
 import { handleCreateSlot, handleListSlots, handleCreateEngagement, handleListEngagements, handleUpdateEngagementStatus } from './modules/events/eventOps.routes.js';
 import { handleListReliabilityCatalogue, handleRecordReliabilityEvent, handleListReliabilityEvents, handlePartyReliabilitySummary, handleOpenDispute, handleResolveDispute, handleListMyReliability } from './modules/reliability/reliability.routes.js';
 import { handleReportCatalogue, handleCreateReport, handleListReports, handleGetReport, handleUpdateReport, handleReportAction } from './modules/moderation/reports.routes.js';
+import { handleSubscribe, handleUnsubscribe, handleCreateEntityPost, handleListEntityPosts, handleMyFeed } from './modules/feed/feed.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { notFound, sendError } from './shared/http.js';
@@ -55,6 +56,8 @@ const server = http.createServer((req, res) => {
       const reliabilityDisputeMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reliability-events/([^/]+)/dispute$`));
       const reportDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reports/([^/]+)$`));
       const reportActionsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reports/([^/]+)/actions$`));
+      const entitySubscriptionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/subscription$`));
+      const entityPostsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/posts$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
       const roomDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)$`));
       const roomMessageDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages/([^/]+)$`));
@@ -140,6 +143,31 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && entityMembersMatch) {
         await handleAddEntityMember(req, res, decodeURIComponent(entityMembersMatch[1]));
+        return;
+      }
+
+      if (req.method === 'PUT' && entitySubscriptionMatch) {
+        await handleSubscribe(req, res, decodeURIComponent(entitySubscriptionMatch[1]));
+        return;
+      }
+
+      if (req.method === 'DELETE' && entitySubscriptionMatch) {
+        await handleUnsubscribe(req, res, decodeURIComponent(entitySubscriptionMatch[1]));
+        return;
+      }
+
+      if (req.method === 'POST' && entityPostsMatch) {
+        await handleCreateEntityPost(req, res, decodeURIComponent(entityPostsMatch[1]));
+        return;
+      }
+
+      if (req.method === 'GET' && entityPostsMatch) {
+        await handleListEntityPosts(req, res, decodeURIComponent(entityPostsMatch[1]));
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/me/feed`) {
+        await handleMyFeed(req, res);
         return;
       }
 

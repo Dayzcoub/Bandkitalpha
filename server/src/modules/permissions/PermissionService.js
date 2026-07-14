@@ -109,6 +109,18 @@ export class PermissionService {
   canModeratePlatform(actor) {
     return Boolean(actor && ['super_admin', 'platform_admin', 'platform_moderator'].includes(actor.platform_role));
   }
+
+  // Subscribing to an entity feed is a read-side affordance: any account that is
+  // not blocked/deleted may follow. Subscription never grants workspace access.
+  canSubscribe(actor) {
+    return Boolean(actor && actor.id && actor.status !== 'blocked' && actor.status !== 'deleted');
+  }
+
+  // Publishing an entity post requires a managing role in the entity AND an
+  // unsanctioned account (Feed Rules: "restricted/read-only users cannot post").
+  canPublishEntityPost(actor, membership) {
+    return Boolean(actor && !SANCTIONED_STATUSES.has(actor.status) && this.canManageEntity(actor, membership));
+  }
 }
 
 export const permissionService = new PermissionService();
