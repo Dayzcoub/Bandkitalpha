@@ -126,7 +126,10 @@ function renderFeed(ctx: AppContext): string {
   const composer = card(`<div class="bk-composer-head">${img('avatarMusician', 'bk-avatar', ctx.t('asset.alt.avatar'))}<div><h3 class="bk-card-title">${ctx.t('feed.createPost')}</h3><div class="bk-meta">${ctx.t('security.linkNotice')}</div></div></div><textarea class="bk-textarea" aria-label="${ctx.t('feed.composerPlaceholder')}" placeholder="${ctx.t('feed.composerPlaceholder')}"></textarea><div class="bk-action-row">${button(ctx.t('feed.createPost'), 'primary')}${button(ctx.t('actions.report'), 'danger', '/complaints/new')}</div>`, 'bk-composer-card');
   const filter = card(`<div class="bk-chip-row"><span class="bk-badge bk-badge-positive">${ctx.t('feed.all')}</span><span class="bk-badge">${ctx.t('feed.projects')}</span><span class="bk-badge">${ctx.t('feed.events')}</span><span class="bk-badge">${ctx.t('feed.trustedOnly')}</span></div>`, 'bk-feed-filter-card');
   const list = posts.map((post) => postCard(ctx, post)).join('');
-  return contentGrid([greeting, hero, quick, composer, filter, list].join(''), defaultRightRail(ctx));
+  // Real feed panel (backed by /me/feed): subscriptions, real entity posts and a
+  // manager composer, above the mock social cards.
+  const realFeed = ctx.state.currentUser ? '<div data-real-feed></div>' : '';
+  return contentGrid([greeting, hero, quick, realFeed, composer, filter, list].join(''), defaultRightRail(ctx));
 }
 
 function renderProfile(ctx: AppContext): string {

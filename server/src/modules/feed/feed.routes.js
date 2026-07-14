@@ -214,6 +214,29 @@ export async function handleListEntityPosts(req, res, entityId) {
   }
 }
 
+// GET /me/subscriptions — the caller's active subscriptions (drives the UI's
+// subscribe/unsubscribe toggles).
+export async function handleMySubscriptions(req, res) {
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const result = await getPool().query(
+      `select s.entity_id, s.status, s.notification_level, e.name as entity_name
+         from entity_subscriptions s
+         join entities e on e.id = s.entity_id
+        where s.user_id = $1 and s.status in ('active', 'muted')
+        order by e.name`,
+      [actor.id]
+    );
+    sendJson(res, 200, { ok: true, subscriptions: result.rows });
+  } catch (error) {
+    sendError(res, 500, 'SUBSCRIPTIONS_FAILED', 'Failed to list subscriptions', { message: error?.message || String(error) });
+  }
+}
+
 // GET /me/feed — the chronological home feed (spec: default MVP sorting stays
 // chronological). Sources: entities the caller subscribes to (public +
 // subscribers layers) and entities they are an active member of (all three

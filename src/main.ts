@@ -22,6 +22,7 @@ import { initRealEventEngagements } from './modules/RealEventEngagements.js';
 import { initRealMyReliability } from './modules/RealMyReliability.js';
 import { initRealModerationReports } from './modules/RealModerationReports.js';
 import { initRealReportTarget } from './modules/RealReportTarget.js';
+import { initRealFeed } from './modules/RealFeed.js';
 import { initRealChat } from './modules/RealChat.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
@@ -64,4 +65,5 @@ initRealEventEngagements(root);
 initRealMyReliability(root);
 initRealModerationReports(root);
 initRealReportTarget(root);
+initRealFeed(root);
 initRealChat(root);
