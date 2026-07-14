@@ -197,7 +197,21 @@ export async function handleGetReport(req, res, reportId) {
         order by a.created_at`,
       [reportId]
     );
-    sendJson(res, 200, { ok: true, report: result.rows[0], actions: actions.rows });
+    // Live state of the case's target user and reported object, so the UI can
+    // offer only the applicable sanction/restore actions.
+    const report = result.rows[0];
+    let targetStatus = null;
+    const targetUserId = report.accused_user_id || report.context?.author_user_id || null;
+    if (targetUserId) {
+      const tu = await getPool().query('select status from users where id = $1 limit 1', [targetUserId]);
+      targetStatus = tu.rows[0]?.status ?? null;
+    }
+    let objectStatus = null;
+    if (report.object_type === 'chat_message' && report.object_id) {
+      const om = await getPool().query('select status from chat_messages where id = $1 limit 1', [report.object_id]);
+      objectStatus = om.rows[0]?.status ?? null;
+    }
+    sendJson(res, 200, { ok: true, report, actions: actions.rows, target_status: targetStatus, object_status: objectStatus });
   } catch (error) {
     sendError(res, 500, 'REPORT_GET_FAILED', 'Failed to load report', { message: error?.message || String(error) });
   }
@@ -241,6 +255,9 @@ export async function handleReportAction(req, res, reportId) {
       return;
     }
 
+    const USER_ACTIONS = new Set(['restrict_user', 'suspend_user', 'unrestrict_user', 'unsuspend_user']);
+    const CONTENT_ACTIONS = new Set(['hide_content', 'unhide_content']);
+
     // Target for user-level actions: explicit override, else the accused, else
     // the author preserved in the evidence snapshot.
     const targetUserId = (body.target_user_id ? String(body.target_user_id).trim() : null)
@@ -248,13 +265,14 @@ export async function handleReportAction(req, res, reportId) {
       || report.context?.author_user_id
       || null;
 
-    if (actionKey === 'restrict_user' || actionKey === 'suspend_user') {
+    let target = null;
+    if (USER_ACTIONS.has(actionKey)) {
       if (!targetUserId) {
         sendError(res, 400, 'ACTION_TARGET_REQUIRED', 'This action needs a target user');
         return;
       }
-      const targetRow = await client.query('select id, platform_role from users where id = $1 limit 1', [targetUserId]);
-      const target = targetRow.rows[0];
+      const targetRow = await client.query('select id, status, platform_role from users where id = $1 limit 1', [targetUserId]);
+      target = targetRow.rows[0];
       if (!target) {
         sendError(res, 400, 'ACTION_TARGET_UNKNOWN', 'Target user does not exist');
         return;
@@ -265,29 +283,82 @@ export async function handleReportAction(req, res, reportId) {
         sendError(res, 403, 'ACTION_TARGET_FORBIDDEN', 'This target cannot be sanctioned from a moderation case');
         return;
       }
+      // Restores only make sense from the matching sanctioned state.
+      if (actionKey === 'unrestrict_user' && target.status !== 'restricted') {
+        sendError(res, 409, 'ACTION_STATE_MISMATCH', 'Target user is not restricted');
+        return;
+      }
+      if (actionKey === 'unsuspend_user' && target.status !== 'blocked') {
+        sendError(res, 409, 'ACTION_STATE_MISMATCH', 'Target user is not suspended');
+        return;
+      }
     }
-    if (actionKey === 'hide_content' && (report.object_type !== 'chat_message' || !report.object_id)) {
-      sendError(res, 400, 'ACTION_OBJECT_UNSUPPORTED', 'hide_content currently supports reported chat messages only');
-      return;
+
+    let message = null;
+    if (CONTENT_ACTIONS.has(actionKey)) {
+      if (report.object_type !== 'chat_message' || !report.object_id) {
+        sendError(res, 400, 'ACTION_OBJECT_UNSUPPORTED', 'Content actions currently support reported chat messages only');
+        return;
+      }
+      const msgRow = await client.query('select id, status from chat_messages where id = $1 limit 1', [report.object_id]);
+      message = msgRow.rows[0];
+      if (!message) {
+        sendError(res, 400, 'ACTION_OBJECT_UNKNOWN', 'Reported message no longer exists');
+        return;
+      }
+      if (actionKey === 'hide_content' && message.status === 'hidden') {
+        sendError(res, 409, 'ACTION_STATE_MISMATCH', 'Message is already hidden');
+        return;
+      }
+      if (actionKey === 'unhide_content' && message.status !== 'hidden') {
+        sendError(res, 409, 'ACTION_STATE_MISMATCH', 'Message is not hidden');
+        return;
+      }
+    }
+
+    // Looks up the prior status snapshotted by the matching sanction on this
+    // case, so a restore puts back what was there (not blindly 'active').
+    async function priorStatus(sanctionKey, fallback) {
+      const prev = await client.query(
+        `select metadata->>'prior_status' as prior from moderation_actions
+          where report_id = $1 and action_key = $2 and metadata ? 'prior_status'
+          order by created_at desc limit 1`,
+        [reportId, sanctionKey]
+      );
+      return prev.rows[0]?.prior || fallback;
     }
 
     await client.query('begin');
-    // Apply the real effect first, then record the action row.
+    // Apply the real effect first, then record the action row. Sanctions
+    // snapshot the prior status into metadata; restores read it back.
+    let metadata = null;
     if (actionKey === 'hide_content') {
-      await client.query(
-        `update chat_messages set is_pinned = false, status = 'hidden' where id = $1`,
-        [report.object_id]
-      );
+      metadata = { prior_status: message.status };
+      await client.query(`update chat_messages set is_pinned = false, status = 'hidden' where id = $1`, [report.object_id]);
+    } else if (actionKey === 'unhide_content') {
+      const restored = await priorStatus('hide_content', 'active');
+      metadata = { restored_status: restored };
+      await client.query(`update chat_messages set status = $2 where id = $1`, [report.object_id, restored]);
     } else if (actionKey === 'restrict_user') {
+      metadata = { prior_status: target.status };
       await client.query(`update users set status = 'restricted', updated_at = now() where id = $1`, [targetUserId]);
     } else if (actionKey === 'suspend_user') {
+      metadata = { prior_status: target.status };
       await client.query(`update users set status = 'blocked', updated_at = now() where id = $1`, [targetUserId]);
+    } else if (actionKey === 'unrestrict_user') {
+      const restored = await priorStatus('restrict_user', 'active');
+      metadata = { restored_status: restored };
+      await client.query(`update users set status = $2, updated_at = now() where id = $1`, [targetUserId, restored]);
+    } else if (actionKey === 'unsuspend_user') {
+      const restored = await priorStatus('suspend_user', 'active');
+      metadata = { restored_status: restored };
+      await client.query(`update users set status = $2, updated_at = now() where id = $1`, [targetUserId, restored]);
     }
     const inserted = await client.query(
-      `insert into moderation_actions (report_id, action_key, target_user_id, reason, actor_user_id)
-       values ($1, $2, $3, $4, $5)
+      `insert into moderation_actions (report_id, action_key, target_user_id, reason, actor_user_id, metadata)
+       values ($1, $2, $3, $4, $5, $6::jsonb)
        returning id, action_key, target_user_id, reason, created_at`,
-      [reportId, actionKey, (actionKey === 'restrict_user' || actionKey === 'suspend_user') ? targetUserId : null, reason, actor.id]
+      [reportId, actionKey, USER_ACTIONS.has(actionKey) ? targetUserId : null, reason, actor.id, metadata ? JSON.stringify(metadata) : null]
     );
     await client.query(
       `insert into audit_events (actor_user_id, action, metadata)

@@ -27,8 +27,6 @@ async function api(path: string, method: 'GET' | 'POST' | 'PATCH', body?: unknow
 
 // The practical triage transitions (the full case machine lives in the backend).
 const STATES = ['created', 'triage', 'in_review', 'action_required', 'resolved', 'rejected', 'closed'];
-// Case actions offered in the detail view; hide_content only fits chat messages.
-const ACTIONS = ['warning', 'hide_content', 'restrict_user', 'suspend_user'];
 
 type Report = {
   id: string; object_type: string; object_type_label: string; object_id: string | null;
@@ -36,7 +34,25 @@ type Report = {
   reporter_name: string | null; created_at: string;
 };
 type CaseAction = { action_key: string; action_label: string; reason: string; actor_name: string | null; target_name: string | null };
-type Detail = { evidence_body: string | null; details: string | null; actions: CaseAction[] };
+type Detail = {
+  evidence_body: string | null; details: string | null; actions: CaseAction[];
+  target_status: string | null; object_status: string | null;
+};
+
+// Only the actions that apply to the current live state are offered: a hidden
+// message can be unhidden (not re-hidden), a restricted user unrestricted, etc.
+function applicableActions(r: Report, d: Detail): string[] {
+  const out = ['warning'];
+  if (r.object_type === 'chat_message' && r.object_id) {
+    out.push(d.object_status === 'hidden' ? 'unhide_content' : 'hide_content');
+  }
+  if (d.target_status) {
+    if (d.target_status === 'restricted') out.push('unrestrict_user');
+    else if (d.target_status === 'blocked') out.push('unsuspend_user');
+    else { out.push('restrict_user'); out.push('suspend_user'); }
+  }
+  return out;
+}
 
 type State = {
   reports: Report[];
@@ -68,8 +84,7 @@ function detailPanel(state: State, r: Report): string {
         + `<span class="bk-state-copy">${esc(a.reason)}${a.target_name ? ` · ${esc(a.target_name)}` : ''}${a.actor_name ? ` · ${esc(a.actor_name)}` : ''}</span>`
         + `</div></div>`).join('')}</div>`
     : '';
-  const actionButtons = ACTIONS
-    .filter((key) => key !== 'hide_content' || (r.object_type === 'chat_message' && r.object_id))
+  const actionButtons = applicableActions(r, d)
     .map((key) => `<button class="bk-button bk-button-secondary" type="button" data-case-action="${esc(key)}" data-case-id="${esc(r.id)}">${esc(t(`moderation.reports.action.${key}`))}</button>`)
     .join('');
   const form = `<div class="bk-field-row">`
@@ -115,7 +130,9 @@ async function loadDetail(state: State, reportId: string): Promise<void> {
   state.details[reportId] = {
     evidence_body: data?.report?.context?.body ?? null,
     details: data?.report?.details ?? null,
-    actions: data?.actions ?? []
+    actions: data?.actions ?? [],
+    target_status: data?.target_status ?? null,
+    object_status: data?.object_status ?? null
   };
 }
 
