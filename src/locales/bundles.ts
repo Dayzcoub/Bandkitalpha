@@ -375,7 +375,27 @@ export const localeBundles = {
       "bands.member.notFound": "No user found with that email.",
       "bands.member.already": "User is already a member of this entity.",
       "bands.member.emailRequired": "Enter a user email.",
-      "bands.member.noEntities": "No entities you manage."
+      "bands.member.noEntities": "No entities you manage.",
+      "entities.real.title": "My groups and organizations",
+      "entities.real.subtitle": "Real entities from the database. Create one to get a workspace.",
+      "entities.real.empty": "No entities yet — create the first one below.",
+      "entities.real.members": "member(s)",
+      "entities.real.createTitle": "Create entity",
+      "entities.real.nameLabel": "Name",
+      "entities.real.typeLabel": "Type",
+      "entities.real.create": "Create",
+      "entities.real.created": "Entity created.",
+      "entities.real.createError": "Could not create the entity.",
+      "entities.real.nameRequired": "Enter a name.",
+      "entities.real.type.band": "Band",
+      "entities.real.type.solo_artist": "Solo artist",
+      "entities.real.type.orchestra": "Orchestra",
+      "entities.real.type.project": "Project",
+      "entities.real.type.organization": "Organization",
+      "entities.real.type.studio": "Studio",
+      "entities.real.type.venue": "Venue",
+      "entities.real.type.agency": "Agency",
+      "entities.real.type.other": "Other"
     },
     "chats": {
       "chats.title": "Chats",
@@ -732,7 +752,9 @@ export const localeBundles = {
       "security.emailConfirmed": "Email confirmed",
       "security.phoneConfirmed": "Phone confirmed",
       "security.twoFactorEnabled": "2FA enabled",
-      "security.recommendationsSaved": "Recommendations saved"
+      "security.recommendationsSaved": "Recommendations saved",
+      "state.inDevTitle": "In development",
+      "state.inDevCopy": "This section is not wired to the real backend yet. Everything you see elsewhere is live data."
     },
     "documents": {
       "documents.title": "Documents",
@@ -745,7 +767,11 @@ export const localeBundles = {
       "documents.stagePlot": "Stage plot",
       "documents.version": "Version",
       "documents.permissions": "Document permissions",
-      "documents.empty": "No documents yet"
+      "documents.empty": "No documents yet",
+      "documents.real.title": "Documents",
+      "documents.real.subtitle": "Real document records from the database (metadata).",
+      "documents.real.empty": "No documents yet.",
+      "documents.real.storageNote": "File upload and storage are a later phase — today documents are metadata records attached to entities."
     },
     "errors": {
       "errors.generic": "Something went wrong",
@@ -836,11 +862,15 @@ export const localeBundles = {
       "events.reliability.resolveUphold": "Uphold",
       "events.reliability.resolveRetract": "Retract",
       "events.reliability.disputeResolved": "Dispute resolved.",
-      "events.reliability.resolveError": "Could not resolve the dispute."
+      "events.reliability.resolveError": "Could not resolve the dispute.",
+      "events.list.title": "Real events",
+      "events.list.subtitle": "Events from the database, with their entity and participants.",
+      "events.list.empty": "No events yet — create one below.",
+      "events.list.participants": "participant(s)"
     },
     "feed": {
       "feed.title": "Feed",
-      "feed.subtitle": "Posts, reposts, comments, reports and link policy on mock data.",
+      "feed.subtitle": "Live posts from entities you follow or belong to.",
       "feed.createPost": "Create post",
       "feed.composerPlaceholder": "What is happening in the project?",
       "feed.filters": "Feed filters",
@@ -1437,7 +1467,27 @@ export const localeBundles = {
       "bands.member.notFound": "Пользователь с таким email не найден.",
       "bands.member.already": "Пользователь уже участник этой сущности.",
       "bands.member.emailRequired": "Укажите email пользователя.",
-      "bands.member.noEntities": "Нет сущностей, которыми вы управляете."
+      "bands.member.noEntities": "Нет сущностей, которыми вы управляете.",
+      "entities.real.title": "Мои группы и организации",
+      "entities.real.subtitle": "Реальные сущности из базы. Создайте свою, чтобы получить рабочее пространство.",
+      "entities.real.empty": "Пока нет сущностей — создайте первую ниже.",
+      "entities.real.members": "участник(ов)",
+      "entities.real.createTitle": "Создать сущность",
+      "entities.real.nameLabel": "Название",
+      "entities.real.typeLabel": "Тип",
+      "entities.real.create": "Создать",
+      "entities.real.created": "Сущность создана.",
+      "entities.real.createError": "Не удалось создать сущность.",
+      "entities.real.nameRequired": "Укажите название.",
+      "entities.real.type.band": "Группа",
+      "entities.real.type.solo_artist": "Сольный исполнитель",
+      "entities.real.type.orchestra": "Оркестр",
+      "entities.real.type.project": "Проект",
+      "entities.real.type.organization": "Организация",
+      "entities.real.type.studio": "Студия",
+      "entities.real.type.venue": "Площадка",
+      "entities.real.type.agency": "Агентство",
+      "entities.real.type.other": "Другое"
     },
     "chats": {
       "chats.title": "Чаты",
@@ -1794,7 +1844,9 @@ export const localeBundles = {
       "security.emailConfirmed": "Email подтверждён",
       "security.phoneConfirmed": "Телефон подтверждён",
       "security.twoFactorEnabled": "2FA включена",
-      "security.recommendationsSaved": "Рекомендации сохранены"
+      "security.recommendationsSaved": "Рекомендации сохранены",
+      "state.inDevTitle": "В разработке",
+      "state.inDevCopy": "Этот раздел ещё не подключён к реальному бэкенду. Всё остальное в приложении — живые данные."
     },
     "documents": {
       "documents.title": "Документы",
@@ -1807,7 +1859,11 @@ export const localeBundles = {
       "documents.stagePlot": "Stage plot",
       "documents.version": "Версия",
       "documents.permissions": "Права документа",
-      "documents.empty": "Документов пока нет"
+      "documents.empty": "Документов пока нет",
+      "documents.real.title": "Документы",
+      "documents.real.subtitle": "Реальные записи документов из базы (метаданные).",
+      "documents.real.empty": "Пока нет документов.",
+      "documents.real.storageNote": "Загрузка и хранение файлов — следующая фаза; сейчас документы — это записи-метаданные, привязанные к сущностям."
     },
     "errors": {
       "errors.generic": "Что-то пошло не так",
@@ -1898,11 +1954,15 @@ export const localeBundles = {
       "events.reliability.resolveUphold": "Поддержать",
       "events.reliability.resolveRetract": "Отозвать",
       "events.reliability.disputeResolved": "Спор разрешён.",
-      "events.reliability.resolveError": "Не удалось разрешить спор."
+      "events.reliability.resolveError": "Не удалось разрешить спор.",
+      "events.list.title": "Реальные события",
+      "events.list.subtitle": "События из базы — с сущностью и участниками.",
+      "events.list.empty": "Пока нет событий — создайте первое ниже.",
+      "events.list.participants": "участник(ов)"
     },
     "feed": {
       "feed.title": "Лента",
-      "feed.subtitle": "Посты, репосты, комментарии, жалобы и link policy на mock-данных.",
+      "feed.subtitle": "Живые посты сущностей, на которые вы подписаны или в которых состоите.",
       "feed.createPost": "Создать пост",
       "feed.composerPlaceholder": "Что происходит в проекте?",
       "feed.filters": "Фильтры ленты",

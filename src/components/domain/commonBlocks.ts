@@ -11,9 +11,7 @@ import { formatDateTime } from '../../lib/format/format.js';
 export function defaultRightRail(ctx: AppContext): string {
   return [
     profileRailCard(ctx),
-    reliabilityRailCard(ctx),
     securityRailCard(ctx),
-    workspaceRailCard(ctx),
     qaControlCard(ctx),
   ].join('');
 }
@@ -25,8 +23,13 @@ export function routeInspector(ctx: AppContext): string {
 }
 
 export function profileRailCard(ctx: AppContext): string {
-  const profile = profiles[0];
-  return card(`<div class="bk-rail-card-head"><h3 class="bk-card-title">${ctx.t('rightRail.profile')}</h3><button class="bk-rail-close" type="button" aria-label="${ctx.t('actions.close')}">×</button></div><div class="bk-rail-profile-row">${img(profile.avatar, 'bk-avatar bk-avatar-lg', ctx.t('asset.alt.avatar'))}<div><h3 class="bk-card-title">${escapeHtml(profile.name)}</h3><div class="bk-meta">${ctx.t(profile.roleKey)} · ${escapeHtml(profile.city)}</div><div class="bk-chip-row">${badge(ctx.t(profile.availabilityKey), 'positive')}</div></div></div><div class="bk-action-row">${button(ctx.t('profile.openProfile'), 'ghost', '/profile/me')}</div>`, 'bk-rail-card bk-profile-rail-card');
+  // Real session user only — guests get no fake identity card.
+  const user = ctx.state.currentUser;
+  if (!user) return '';
+  const verifiedBadge = ctx.state.verification === 'verified'
+    ? badge(ctx.t('badge.email'), 'positive')
+    : badge(ctx.t('security.verificationRequired'), 'warning');
+  return card(`<div class="bk-rail-card-head"><h3 class="bk-card-title">${ctx.t('rightRail.profile')}</h3></div><div class="bk-rail-profile-row">${img('avatarMusician', 'bk-avatar bk-avatar-lg', ctx.t('asset.alt.avatar'))}<div><h3 class="bk-card-title">${escapeHtml(user.displayName)}</h3><div class="bk-meta">${escapeHtml(user.handle)}</div><div class="bk-chip-row">${verifiedBadge}</div></div></div><div class="bk-action-row">${button(ctx.t('profile.openProfile'), 'ghost', '/profile/me')}</div>`, 'bk-rail-card bk-profile-rail-card');
 }
 
 export function reliabilityRailCard(ctx: AppContext): string {
@@ -39,11 +42,12 @@ export function workspaceRailCard(ctx: AppContext): string {
 }
 
 export function qaControlCard(ctx: AppContext): string {
-  const roleSwitcher = select(ctx, 'role', ctx.t('common.role'), ['guest', 'user', 'moderator', 'admin', 'super_admin'], ctx.state.role);
+  const prefs = `${select(ctx, 'locale', ctx.t('common.language'), ['ru', 'en'], ctx.state.locale)}${select(ctx, 'theme', ctx.t('common.theme'), ['dark', 'light'], ctx.state.theme)}`;
+  // Role/verification/uiState switchers are QA machinery — super_admin only.
   if (!canSeeDiagnostics(ctx)) {
-    return card(`<details class="bk-qa-details"><summary>${ctx.t('common.role')}</summary><div class="bk-qa-grid">${roleSwitcher}</div></details>`, 'bk-rail-card bk-qa-card');
+    return card(`<details class="bk-qa-details"><summary>${ctx.t('common.language')}</summary><div class="bk-qa-grid">${prefs}</div></details>`, 'bk-rail-card bk-qa-card');
   }
-  return card(`<details class="bk-qa-details" open><summary>${ctx.t('rightRail.qa')}</summary><p class="bk-state-copy">${ctx.t('qa.controlsCopy')}</p><div class="bk-qa-grid">${select(ctx, 'locale', ctx.t('common.language'), ['ru', 'en'], ctx.state.locale)}${roleSwitcher}${select(ctx, 'verification', ctx.t('common.security'), ['verified', 'emailPending', 'phonePending', 'twoFactorRequired', 'restrictedAccount'], ctx.state.verification)}${select(ctx, 'uiState', ctx.t('common.state'), ['normal', 'loading', 'empty', 'error', 'restricted', 'long'], ctx.state.uiState)}${select(ctx, 'theme', ctx.t('common.theme'), ['dark', 'light'], ctx.state.theme)}</div></details>`, 'bk-rail-card bk-qa-card');
+  return card(`<details class="bk-qa-details" open><summary>${ctx.t('rightRail.qa')}</summary><p class="bk-state-copy">${ctx.t('qa.controlsCopy')}</p><div class="bk-qa-grid">${prefs}${select(ctx, 'role', ctx.t('common.role'), ['guest', 'user', 'moderator', 'admin', 'super_admin'], ctx.state.role)}${select(ctx, 'verification', ctx.t('common.security'), ['verified', 'emailPending', 'phonePending', 'twoFactorRequired', 'restrictedAccount'], ctx.state.verification)}${select(ctx, 'uiState', ctx.t('common.state'), ['normal', 'loading', 'empty', 'error', 'restricted', 'long'], ctx.state.uiState)}</div></details>`, 'bk-rail-card bk-qa-card');
 }
 
 function select(
@@ -72,8 +76,12 @@ export function safetyRailCard(ctx: AppContext): string {
 }
 
 export function securityRailCard(ctx: AppContext): string {
-  const diagnostics = canSeeDiagnostics(ctx) ? `<div>${badge(ctx.t('security.auditReady'), 'positive')}<span>${ctx.t('security.recommendationsSaved')}</span></div>` : '';
-  return card(`<div class="bk-rail-card-head"><h3 class="bk-card-title">${ctx.t('rightRail.securityTitle')}</h3><button class="bk-rail-close" type="button" aria-label="${ctx.t('actions.close')}">×</button></div><div class="bk-security-list"><div>${badge(ctx.t('badge.email'), 'positive')}<span>${ctx.t('security.emailConfirmed')}</span></div><div>${badge(ctx.t('badge.phone'), 'positive')}<span>${ctx.t('security.phoneConfirmed')}</span></div><div>${badge(ctx.t('badge.twoFactor'), 'positive')}<span>${ctx.t('security.twoFactorEnabled')}</span></div>${diagnostics}</div><div class="bk-action-row">${button(ctx.t('settings.securityTitle'), 'ghost', '/settings/security')}</div>`, 'bk-rail-card bk-security-rail-card');
+  // Honest security card: only states we actually know from the session.
+  if (!ctx.state.currentUser) return '';
+  const emailRow = ctx.state.verification === 'verified'
+    ? `<div>${badge(ctx.t('badge.email'), 'positive')}<span>${ctx.t('security.emailConfirmed')}</span></div>`
+    : `<div>${badge(ctx.t('badge.email'), 'warning')}<span>${ctx.t('security.verificationRequired')}</span></div>`;
+  return card(`<div class="bk-rail-card-head"><h3 class="bk-card-title">${ctx.t('rightRail.securityTitle')}</h3></div><div class="bk-security-list">${emailRow}</div><div class="bk-action-row">${button(ctx.t('settings.securityTitle'), 'ghost', '/settings/security')}</div>`, 'bk-rail-card bk-security-rail-card');
 }
 
 export function securityBadges(ctx: AppContext): string {

@@ -75,5 +75,9 @@
   "events.reliability.resolveUphold": "Поддержать",
   "events.reliability.resolveRetract": "Отозвать",
   "events.reliability.disputeResolved": "Спор разрешён.",
-  "events.reliability.resolveError": "Не удалось разрешить спор."
+  "events.reliability.resolveError": "Не удалось разрешить спор.",
+  "events.list.title": "Реальные события",
+  "events.list.subtitle": "События из базы — с сущностью и участниками.",
+  "events.list.empty": "Пока нет событий — создайте первое ниже.",
+  "events.list.participants": "участник(ов)"
 }

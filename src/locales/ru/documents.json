@@ -9,5 +9,9 @@
   "documents.stagePlot": "Stage plot",
   "documents.version": "Версия",
   "documents.permissions": "Права документа",
-  "documents.empty": "Документов пока нет"
+  "documents.empty": "Документов пока нет",
+  "documents.real.title": "Документы",
+  "documents.real.subtitle": "Реальные записи документов из базы (метаданные).",
+  "documents.real.empty": "Пока нет документов.",
+  "documents.real.storageNote": "Загрузка и хранение файлов — следующая фаза; сейчас документы — это записи-метаданные, привязанные к сущностям."
 }

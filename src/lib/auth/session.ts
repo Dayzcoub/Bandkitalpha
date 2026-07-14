@@ -52,18 +52,14 @@ export function loadAppState(): AppState {
   const uiState = read<UiStateMode>(storageKeys.uiState, ['normal', 'loading', 'empty', 'error', 'restricted', 'long'], 'normal');
   const theme = read<ThemeMode>(storageKeys.theme, ['dark', 'light'], 'dark');
 
-  // Real session wins over the localStorage mock values.
+  // The live session is the only source of identity. No session = guest —
+  // the app never pretends someone is logged in (no mock fallback user).
   if (sessionUser) {
     const role = roleFromPlatformRole(sessionUser.platform_role);
     const verification: VerificationMode = sessionUser.email_verified ? 'verified' : 'emailPending';
     return { locale, role, verification, uiState, theme, currentUser: sessionCurrentUser(sessionUser, role, verification) };
   }
-
-  // Dev / mock fallback (no session).
-  const role = read<Role>(storageKeys.role, ['guest', 'user', 'moderator', 'admin', 'super_admin'], 'user');
-  const verification = read<VerificationMode>(storageKeys.verification, ['verified', 'emailPending', 'phonePending', 'twoFactorRequired', 'restrictedAccount'], 'verified');
-  const currentUser = role === 'guest' ? null : createCurrentUser(role, verification);
-  return { locale, role, verification, uiState, theme, currentUser };
+  return { locale, role: 'guest', verification: 'emailPending', uiState, theme, currentUser: null };
 }
 
 function sessionCurrentUser(user: SessionUser, role: Role, verification: VerificationMode): CurrentUser {
@@ -75,17 +71,6 @@ function sessionCurrentUser(user: SessionUser, role: Role, verification: Verific
     roles: elevatedRoles(role),
     verification,
     reputationScore: 98,
-  };
-}
-
-function createCurrentUser(role: Role, verification: VerificationMode): CurrentUser {
-  return {
-    id: 'mock-current-user',
-    displayName: role === 'admin' ? 'BandKit Admin' : role === 'moderator' ? 'BandKit Moderator' : 'Alex Rhythm',
-    handle: role === 'admin' ? '@admin' : role === 'moderator' ? '@moderator' : '@alex-rhythm',
-    roles: elevatedRoles(role),
-    verification,
-    reputationScore: role === 'user' ? 92 : 98,
   };
 }
 

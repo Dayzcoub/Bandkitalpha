@@ -1,6 +1,6 @@
 {
   "feed.title": "Лента",
-  "feed.subtitle": "Посты, репосты, комментарии, жалобы и link policy на mock-данных.",
+  "feed.subtitle": "Живые посты сущностей, на которые вы подписаны или в которых состоите.",
   "feed.createPost": "Создать пост",
   "feed.composerPlaceholder": "Что происходит в проекте?",
   "feed.filters": "Фильтры ленты",

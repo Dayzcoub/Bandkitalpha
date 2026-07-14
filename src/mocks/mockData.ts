@@ -255,8 +255,8 @@ export const notifications = [
 
 export const quickActions: MockQuickAction[] = [
   { id: 'qa-post', titleKey: 'quick.post.title', copyKey: 'quick.post.copy', route: '/feed', icon: 'navFeedInactive', accessKey: 'access.user' },
-  { id: 'qa-band', titleKey: 'quick.band.title', copyKey: 'quick.band.copy', route: '/bands/new', icon: 'roleGroup', accessKey: 'access.verified' },
-  { id: 'qa-event', titleKey: 'quick.event.title', copyKey: 'quick.event.copy', route: '/events/new', icon: 'navEventsInactive', accessKey: 'access.verified' },
+  { id: 'qa-band', titleKey: 'quick.band.title', copyKey: 'quick.band.copy', route: '/bands', icon: 'roleGroup', accessKey: 'access.verified' },
+  { id: 'qa-event', titleKey: 'quick.event.title', copyKey: 'quick.event.copy', route: '/events', icon: 'navEventsInactive', accessKey: 'access.verified' },
   { id: 'qa-doc', titleKey: 'quick.document.title', copyKey: 'quick.document.copy', route: '/documents', icon: 'docRider', accessKey: 'access.user' },
 ];
 

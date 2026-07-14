@@ -75,5 +75,9 @@
   "events.reliability.resolveUphold": "Uphold",
   "events.reliability.resolveRetract": "Retract",
   "events.reliability.disputeResolved": "Dispute resolved.",
-  "events.reliability.resolveError": "Could not resolve the dispute."
+  "events.reliability.resolveError": "Could not resolve the dispute.",
+  "events.list.title": "Real events",
+  "events.list.subtitle": "Events from the database, with their entity and participants.",
+  "events.list.empty": "No events yet — create one below.",
+  "events.list.participants": "participant(s)"
 }

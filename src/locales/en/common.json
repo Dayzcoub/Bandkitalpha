@@ -307,5 +307,7 @@
   "security.emailConfirmed": "Email confirmed",
   "security.phoneConfirmed": "Phone confirmed",
   "security.twoFactorEnabled": "2FA enabled",
-  "security.recommendationsSaved": "Recommendations saved"
+  "security.recommendationsSaved": "Recommendations saved",
+  "state.inDevTitle": "In development",
+  "state.inDevCopy": "This section is not wired to the real backend yet. Everything you see elsewhere is live data."
 }

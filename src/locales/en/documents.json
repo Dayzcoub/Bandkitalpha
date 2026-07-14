@@ -9,5 +9,9 @@
   "documents.stagePlot": "Stage plot",
   "documents.version": "Version",
   "documents.permissions": "Document permissions",
-  "documents.empty": "No documents yet"
+  "documents.empty": "No documents yet",
+  "documents.real.title": "Documents",
+  "documents.real.subtitle": "Real document records from the database (metadata).",
+  "documents.real.empty": "No documents yet.",
+  "documents.real.storageNote": "File upload and storage are a later phase — today documents are metadata records attached to entities."
 }

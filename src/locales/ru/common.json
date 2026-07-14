@@ -307,5 +307,7 @@
   "security.emailConfirmed": "Email подтверждён",
   "security.phoneConfirmed": "Телефон подтверждён",
   "security.twoFactorEnabled": "2FA включена",
-  "security.recommendationsSaved": "Рекомендации сохранены"
+  "security.recommendationsSaved": "Рекомендации сохранены",
+  "state.inDevTitle": "В разработке",
+  "state.inDevCopy": "Этот раздел ещё не подключён к реальному бэкенду. Всё остальное в приложении — живые данные."
 }

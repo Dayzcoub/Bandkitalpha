@@ -127,10 +127,9 @@ export async function handleCreateEntity(req, res) {
       return;
     }
 
-    if (!requestedSlug) {
-      sendError(res, 400, 'ENTITY_SLUG_INVALID', 'Entity slug is invalid');
-      return;
-    }
+    // Non-latin names (e.g. Cyrillic) slugify to nothing — fall back to a
+    // generated slug instead of rejecting the name.
+    const finalSlug = requestedSlug || `entity-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
     // Actor comes from the session (server-side source of truth). The dev-header
     // fallback stays only outside production for tooling/smoke scripts.
@@ -153,7 +152,7 @@ export async function handleCreateEntity(req, res) {
       `insert into entities (owner_user_id, type, name, slug, status, visibility, created_by_user_id)
        values ($1, $2, $3, $4, 'active', $5, $1)
        returning id, name, slug, type, status, visibility, created_at`,
-      [actor.id, type, name, requestedSlug, visibility]
+      [actor.id, type, name, finalSlug, visibility]
     );
     const entity = entityResult.rows[0];
 
