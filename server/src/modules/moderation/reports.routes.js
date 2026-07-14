@@ -56,6 +56,42 @@ async function snapshotEntityPost(client, reporterId, postId) {
   };
 }
 
+// Snapshots a reported comment as evidence — allowed when the reporter can see
+// the parent post (comments follow post visibility).
+async function snapshotComment(client, reporterId, commentId) {
+  const result = await client.query(
+    `select i.id, i.post_id, i.user_id as author_user_id, i.body, i.moderation_state, i.created_at,
+            p.entity_id, p.visibility as post_visibility
+       from entity_post_interactions i
+       join entity_posts p on p.id = i.post_id
+      where i.id = $1 and i.type = 'comment'
+        and (p.visibility = 'public'
+          or (p.visibility = 'subscribers' and (
+                exists (select 1 from entity_subscriptions s
+                         where s.entity_id = p.entity_id and s.user_id = $2 and s.status in ('active','muted'))
+             or exists (select 1 from entity_memberships m
+                         where m.entity_id = p.entity_id and m.user_id = $2 and m.status = 'active')))
+          or (p.visibility = 'members' and exists (
+                select 1 from entity_memberships m
+                 where m.entity_id = p.entity_id and m.user_id = $2 and m.status = 'active')))
+      limit 1`,
+    [commentId, reporterId]
+  );
+  const row = result.rows[0];
+  if (!row) return null;
+  return {
+    kind: 'comment',
+    comment_id: row.id,
+    post_id: row.post_id,
+    entity_id: row.entity_id,
+    author_user_id: row.author_user_id,
+    body: row.body,
+    moderation_state: row.moderation_state,
+    created_at: row.created_at,
+    snapshotted_at: new Date().toISOString()
+  };
+}
+
 // Snapshots a reported chat message as evidence, but only if the reporter can
 // actually see it (is a member of the room). Returns the snapshot object or null.
 // Non-members simply get no snapshot — the same response either way, so reporting
@@ -121,6 +157,8 @@ export async function handleCreateReport(req, res) {
       context = await snapshotChatMessage(client, actor.id, objectId);
     } else if (objectType === 'post' && objectId) {
       context = await snapshotEntityPost(client, actor.id, objectId);
+    } else if (objectType === 'comment' && objectId) {
+      context = await snapshotComment(client, actor.id, objectId);
     }
 
     const result = await client.query(
@@ -252,6 +290,9 @@ export async function handleGetReport(req, res, reportId) {
     } else if (report.object_type === 'post' && report.object_id) {
       const op = await getPool().query('select moderation_state from entity_posts where id = $1 limit 1', [report.object_id]);
       objectStatus = op.rows[0]?.moderation_state ?? null;
+    } else if (report.object_type === 'comment' && report.object_id) {
+      const oc = await getPool().query(`select moderation_state from entity_post_interactions where id = $1 and type = 'comment' limit 1`, [report.object_id]);
+      objectStatus = oc.rows[0]?.moderation_state ?? null;
     }
     sendJson(res, 200, { ok: true, report, actions: actions.rows, target_status: targetStatus, object_status: objectStatus });
   } catch (error) {
@@ -340,13 +381,15 @@ export async function handleReportAction(req, res, reportId) {
     // (status column) and entity posts (moderation_state column).
     let contentState = null;
     if (CONTENT_ACTIONS.has(actionKey)) {
-      if (!report.object_id || (report.object_type !== 'chat_message' && report.object_type !== 'post')) {
-        sendError(res, 400, 'ACTION_OBJECT_UNSUPPORTED', 'Content actions support reported chat messages and posts only');
+      if (!report.object_id || !['chat_message', 'post', 'comment'].includes(report.object_type)) {
+        sendError(res, 400, 'ACTION_OBJECT_UNSUPPORTED', 'Content actions support reported chat messages, posts and comments only');
         return;
       }
       const row = report.object_type === 'chat_message'
         ? await client.query('select status as state from chat_messages where id = $1 limit 1', [report.object_id])
-        : await client.query('select moderation_state as state from entity_posts where id = $1 limit 1', [report.object_id]);
+        : report.object_type === 'post'
+          ? await client.query('select moderation_state as state from entity_posts where id = $1 limit 1', [report.object_id])
+          : await client.query(`select moderation_state as state from entity_post_interactions where id = $1 and type = 'comment' limit 1`, [report.object_id]);
       contentState = row.rows[0]?.state ?? null;
       if (contentState === null) {
         sendError(res, 400, 'ACTION_OBJECT_UNKNOWN', 'Reported content no longer exists');
@@ -382,16 +425,20 @@ export async function handleReportAction(req, res, reportId) {
       metadata = { prior_status: contentState };
       if (report.object_type === 'chat_message') {
         await client.query(`update chat_messages set is_pinned = false, status = 'hidden' where id = $1`, [report.object_id]);
-      } else {
+      } else if (report.object_type === 'post') {
         await client.query(`update entity_posts set is_pinned = false, moderation_state = 'hidden' where id = $1`, [report.object_id]);
+      } else {
+        await client.query(`update entity_post_interactions set moderation_state = 'hidden' where id = $1`, [report.object_id]);
       }
     } else if (actionKey === 'unhide_content') {
       const restored = await priorStatus('hide_content', report.object_type === 'chat_message' ? 'active' : 'clean');
       metadata = { restored_status: restored };
       if (report.object_type === 'chat_message') {
         await client.query(`update chat_messages set status = $2 where id = $1`, [report.object_id, restored]);
-      } else {
+      } else if (report.object_type === 'post') {
         await client.query(`update entity_posts set moderation_state = $2 where id = $1`, [report.object_id, restored]);
+      } else {
+        await client.query(`update entity_post_interactions set moderation_state = $2 where id = $1`, [report.object_id, restored]);
       }
     } else if (actionKey === 'restrict_user') {
       metadata = { prior_status: target.status };

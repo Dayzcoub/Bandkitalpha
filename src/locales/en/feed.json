@@ -54,5 +54,18 @@
   "feed.real.publishError": "Could not publish the post.",
   "feed.real.bodyRequired": "Enter the post text.",
   "feed.real.linkBlocked": "External links are not allowed in posts.",
-  "feed.real.forbidden": "You cannot publish for this entity."
+  "feed.real.forbidden": "You cannot publish for this entity.",
+  "feed.real.like": "Like",
+  "feed.real.comments": "Comments",
+  "feed.real.report": "Report",
+  "feed.real.noComments": "No comments yet.",
+  "feed.real.commentLabel": "Comment",
+  "feed.real.commentSend": "Send",
+  "feed.real.commentSent": "Comment added.",
+  "feed.real.commentError": "Could not add the comment.",
+  "feed.real.mute": "Hide from feed",
+  "feed.real.unmute": "Show in feed",
+  "feed.real.muted": "Hidden from your feed.",
+  "feed.real.unmuted": "Back in your feed.",
+  "feed.real.mutedBadge": "(hidden)"
 }

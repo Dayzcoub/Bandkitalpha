@@ -54,5 +54,18 @@
   "feed.real.publishError": "Не удалось опубликовать пост.",
   "feed.real.bodyRequired": "Введите текст поста.",
   "feed.real.linkBlocked": "Внешние ссылки в постах запрещены.",
-  "feed.real.forbidden": "Вы не можете публиковать от имени этой сущности."
+  "feed.real.forbidden": "Вы не можете публиковать от имени этой сущности.",
+  "feed.real.like": "Нравится",
+  "feed.real.comments": "Комментарии",
+  "feed.real.report": "Пожаловаться",
+  "feed.real.noComments": "Пока нет комментариев.",
+  "feed.real.commentLabel": "Комментарий",
+  "feed.real.commentSend": "Отправить",
+  "feed.real.commentSent": "Комментарий добавлен.",
+  "feed.real.commentError": "Не удалось добавить комментарий.",
+  "feed.real.mute": "Скрыть из ленты",
+  "feed.real.unmute": "Вернуть в ленту",
+  "feed.real.muted": "Скрыто из вашей ленты.",
+  "feed.real.unmuted": "Снова в вашей ленте.",
+  "feed.real.mutedBadge": "(скрыто)"
 }

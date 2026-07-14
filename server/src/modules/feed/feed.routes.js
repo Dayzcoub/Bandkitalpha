@@ -189,7 +189,13 @@ export async function handleListEntityPosts(req, res, entityId) {
     const layers = await allowedVisibilities(client, actor?.id ?? null, entityId);
     const result = await client.query(
       `select p.id, p.entity_id, e.name as entity_name, p.body, p.visibility,
-              p.is_pinned, p.published_at, u.display_name as author_name
+              p.is_pinned, p.published_at, u.display_name as author_name,
+              (select count(*)::int from entity_post_interactions i
+                where i.post_id = p.id and i.type = 'like') as like_count,
+              (select count(*)::int from entity_post_interactions i
+                where i.post_id = p.id and i.type = 'comment' and i.moderation_state in ('clean','flagged')) as comment_count,
+              exists (select 1 from entity_post_interactions i
+                where i.post_id = p.id and i.type = 'like' and i.user_id = $3) as liked
          from entity_posts p
          join entities e on e.id = p.entity_id
          left join users u on u.id = p.author_user_id
@@ -198,7 +204,7 @@ export async function handleListEntityPosts(req, res, entityId) {
           and p.moderation_state in ('clean', 'flagged')
         order by p.is_pinned desc, p.published_at desc
         limit 100`,
-      [entityId, layers]
+      [entityId, layers, actor?.id ?? null]
     );
     const subscribed = actor
       ? (await client.query(
@@ -209,6 +215,208 @@ export async function handleListEntityPosts(req, res, entityId) {
     sendJson(res, 200, { ok: true, posts: result.rows, subscribed });
   } catch (error) {
     sendError(res, 500, 'POSTS_LIST_FAILED', 'Failed to list posts', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// Resolves a post the actor is allowed to see (visibility-checked, hidden
+// excluded), or ends the request. Interactions follow post visibility (Feed
+// Rules: comments follow visibility/moderation rules), and a 404 for unseen
+// posts avoids existence probing.
+async function requireVisiblePost(client, res, actorId, postId) {
+  const result = await client.query('select id, entity_id, visibility, moderation_state from entity_posts where id = $1 limit 1', [postId]);
+  const post = result.rows[0];
+  if (!post || !['clean', 'flagged'].includes(post.moderation_state)) {
+    sendError(res, 404, 'POST_NOT_FOUND', 'Post not found');
+    return null;
+  }
+  const layers = await allowedVisibilities(client, actorId, post.entity_id);
+  if (!layers.includes(post.visibility)) {
+    sendError(res, 404, 'POST_NOT_FOUND', 'Post not found');
+    return null;
+  }
+  return post;
+}
+
+// POST /posts/:id/comments — comment on a visible post. Sanctioned accounts
+// cannot comment (Feed Rules: restricted/read-only users cannot comment); the
+// link guard applies, same as every UGC surface.
+export async function handleCreateComment(req, res, postId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    if (!permissionService.canInteractSocially(actor)) {
+      sendError(res, 403, 'COMMENT_FORBIDDEN', 'Your account cannot comment');
+      return;
+    }
+    const post = await requireVisiblePost(client, res, actor.id, postId);
+    if (!post) return;
+
+    const body = await readJsonBody(req);
+    const text = String(body.body || '').trim();
+    if (!text) {
+      sendError(res, 400, 'COMMENT_EMPTY', 'Comment body is required');
+      return;
+    }
+    if (text.length > 2000) {
+      sendError(res, 400, 'COMMENT_TOO_LONG', 'Comment must be at most 2000 characters');
+      return;
+    }
+    const link = checkLinkPolicy(text);
+    if (link.blocked) {
+      await client.query(
+        `insert into audit_events (actor_user_id, action, entity_id, metadata)
+         values ($1, 'feed.comment_link_blocked', $2, jsonb_build_object('reason', $3::text))`,
+        [actor.id, post.entity_id, link.reason]
+      );
+      sendError(res, 422, 'COMMENT_LINK_BLOCKED', 'External links are not allowed in comments', { reason: link.reason });
+      return;
+    }
+
+    const result = await client.query(
+      `insert into entity_post_interactions (post_id, user_id, type, body)
+       values ($1, $2, 'comment', $3)
+       returning id, post_id, body, created_at`,
+      [postId, actor.id, text]
+    );
+    await client.query(
+      `insert into audit_events (actor_user_id, action, entity_id, metadata)
+       values ($1, 'feed.comment_created', $2, jsonb_build_object('post_id', $3::text, 'comment_id', $4::text))`,
+      [actor.id, post.entity_id, postId, result.rows[0].id]
+    );
+    sendJson(res, 201, { ok: true, comment: { ...result.rows[0], author_name: actor.display_name } });
+  } catch (error) {
+    if (error?.code === 'BODY_TOO_LARGE') {
+      sendError(res, 413, 'BODY_TOO_LARGE', 'Request body is too large');
+      return;
+    }
+    sendError(res, 500, 'COMMENT_CREATE_FAILED', 'Failed to comment', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// GET /posts/:id/comments — comments on a visible post, hidden ones excluded.
+export async function handleListComments(req, res, postId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    const post = await requireVisiblePost(client, res, actor?.id ?? null, postId);
+    if (!post) return;
+    const result = await client.query(
+      `select i.id, i.body, i.created_at, u.display_name as author_name
+         from entity_post_interactions i
+         left join users u on u.id = i.user_id
+        where i.post_id = $1 and i.type = 'comment' and i.moderation_state in ('clean', 'flagged')
+        order by i.created_at
+        limit 200`,
+      [postId]
+    );
+    sendJson(res, 200, { ok: true, comments: result.rows });
+  } catch (error) {
+    sendError(res, 500, 'COMMENTS_LIST_FAILED', 'Failed to list comments', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// PUT /posts/:id/like — like a visible post (idempotent). DELETE removes it.
+// Reactions are lightweight social feedback, never an acknowledgement (spec).
+export async function handleLikePost(req, res, postId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    if (!permissionService.canInteractSocially(actor)) {
+      sendError(res, 403, 'LIKE_FORBIDDEN', 'Your account cannot react');
+      return;
+    }
+    const post = await requireVisiblePost(client, res, actor.id, postId);
+    if (!post) return;
+    await client.query(
+      `insert into entity_post_interactions (post_id, user_id, type)
+       values ($1, $2, 'like') on conflict do nothing`,
+      [postId, actor.id]
+    );
+    sendJson(res, 200, { ok: true });
+  } catch (error) {
+    sendError(res, 500, 'LIKE_FAILED', 'Failed to like', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+export async function handleUnlikePost(req, res, postId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    await client.query(
+      `delete from entity_post_interactions where post_id = $1 and user_id = $2 and type = 'like'`,
+      [postId, actor.id]
+    );
+    sendJson(res, 200, { ok: true });
+  } catch (error) {
+    sendError(res, 500, 'UNLIKE_FAILED', 'Failed to remove like', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// PATCH /entities/:id/subscription — mute/unmute and notification level.
+export async function handleUpdateSubscription(req, res, entityId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const body = await readJsonBody(req);
+    const status = body.status !== undefined ? String(body.status) : null;
+    const level = body.notification_level !== undefined ? String(body.notification_level) : null;
+    if (status !== null && !['active', 'muted'].includes(status)) {
+      sendError(res, 400, 'SUBSCRIPTION_STATUS_INVALID', 'status must be "active" or "muted"');
+      return;
+    }
+    if (level !== null && !['all', 'important', 'events_only', 'silent', 'muted'].includes(level)) {
+      sendError(res, 400, 'NOTIFICATION_LEVEL_INVALID', 'Unknown notification_level');
+      return;
+    }
+    if (status === null && level === null) {
+      sendError(res, 400, 'SUBSCRIPTION_UPDATE_EMPTY', 'Nothing to update');
+      return;
+    }
+    const result = await client.query(
+      `update entity_subscriptions
+          set status = coalesce($3, status),
+              notification_level = coalesce($4, notification_level)
+        where user_id = $1 and entity_id = $2 and status in ('active', 'muted')
+        returning id, entity_id, status, notification_level`,
+      [actor.id, entityId, status, level]
+    );
+    if (!result.rows[0]) {
+      sendError(res, 404, 'SUBSCRIPTION_NOT_FOUND', 'You are not subscribed to this entity');
+      return;
+    }
+    sendJson(res, 200, { ok: true, subscription: result.rows[0] });
+  } catch (error) {
+    if (error?.code === 'BODY_TOO_LARGE') {
+      sendError(res, 413, 'BODY_TOO_LARGE', 'Request body is too large');
+      return;
+    }
+    sendError(res, 500, 'SUBSCRIPTION_UPDATE_FAILED', 'Failed to update subscription', { message: error?.message || String(error) });
   } finally {
     client.release();
   }
@@ -250,7 +458,13 @@ export async function handleMyFeed(req, res) {
     }
     const result = await getPool().query(
       `select p.id, p.entity_id, e.name as entity_name, p.body, p.visibility,
-              p.is_pinned, p.published_at, u.display_name as author_name
+              p.is_pinned, p.published_at, u.display_name as author_name,
+              (select count(*)::int from entity_post_interactions i
+                where i.post_id = p.id and i.type = 'like') as like_count,
+              (select count(*)::int from entity_post_interactions i
+                where i.post_id = p.id and i.type = 'comment' and i.moderation_state in ('clean','flagged')) as comment_count,
+              exists (select 1 from entity_post_interactions i
+                where i.post_id = p.id and i.type = 'like' and i.user_id = $1) as liked
          from entity_posts p
          join entities e on e.id = p.entity_id
          left join users u on u.id = p.author_user_id

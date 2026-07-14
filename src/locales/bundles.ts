@@ -894,7 +894,20 @@ export const localeBundles = {
       "feed.real.publishError": "Could not publish the post.",
       "feed.real.bodyRequired": "Enter the post text.",
       "feed.real.linkBlocked": "External links are not allowed in posts.",
-      "feed.real.forbidden": "You cannot publish for this entity."
+      "feed.real.forbidden": "You cannot publish for this entity.",
+      "feed.real.like": "Like",
+      "feed.real.comments": "Comments",
+      "feed.real.report": "Report",
+      "feed.real.noComments": "No comments yet.",
+      "feed.real.commentLabel": "Comment",
+      "feed.real.commentSend": "Send",
+      "feed.real.commentSent": "Comment added.",
+      "feed.real.commentError": "Could not add the comment.",
+      "feed.real.mute": "Hide from feed",
+      "feed.real.unmute": "Show in feed",
+      "feed.real.muted": "Hidden from your feed.",
+      "feed.real.unmuted": "Back in your feed.",
+      "feed.real.mutedBadge": "(hidden)"
     },
     "marketplace": {
       "marketplace.title": "Marketplace / Search",
@@ -1943,7 +1956,20 @@ export const localeBundles = {
       "feed.real.publishError": "Не удалось опубликовать пост.",
       "feed.real.bodyRequired": "Введите текст поста.",
       "feed.real.linkBlocked": "Внешние ссылки в постах запрещены.",
-      "feed.real.forbidden": "Вы не можете публиковать от имени этой сущности."
+      "feed.real.forbidden": "Вы не можете публиковать от имени этой сущности.",
+      "feed.real.like": "Нравится",
+      "feed.real.comments": "Комментарии",
+      "feed.real.report": "Пожаловаться",
+      "feed.real.noComments": "Пока нет комментариев.",
+      "feed.real.commentLabel": "Комментарий",
+      "feed.real.commentSend": "Отправить",
+      "feed.real.commentSent": "Комментарий добавлен.",
+      "feed.real.commentError": "Не удалось добавить комментарий.",
+      "feed.real.mute": "Скрыть из ленты",
+      "feed.real.unmute": "Вернуть в ленту",
+      "feed.real.muted": "Скрыто из вашей ленты.",
+      "feed.real.unmuted": "Снова в вашей ленте.",
+      "feed.real.mutedBadge": "(скрыто)"
     },
     "marketplace": {
       "marketplace.title": "Marketplace / Поиск",

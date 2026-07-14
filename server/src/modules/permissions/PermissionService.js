@@ -121,6 +121,12 @@ export class PermissionService {
   canPublishEntityPost(actor, membership) {
     return Boolean(actor && !SANCTIONED_STATUSES.has(actor.status) && this.canManageEntity(actor, membership));
   }
+
+  // Social interactions (comments, reactions) are open to any unsanctioned
+  // account; post visibility is checked separately at the route.
+  canInteractSocially(actor) {
+    return Boolean(actor && actor.id && !SANCTIONED_STATUSES.has(actor.status));
+  }
 }
 
 export const permissionService = new PermissionService();

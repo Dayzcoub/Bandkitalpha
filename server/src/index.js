@@ -18,7 +18,7 @@ import { handleGetMyProfessions, handleReplaceMyProfessions, handleListPartyCand
 import { handleCreateSlot, handleListSlots, handleCreateEngagement, handleListEngagements, handleUpdateEngagementStatus } from './modules/events/eventOps.routes.js';
 import { handleListReliabilityCatalogue, handleRecordReliabilityEvent, handleListReliabilityEvents, handlePartyReliabilitySummary, handleOpenDispute, handleResolveDispute, handleListMyReliability } from './modules/reliability/reliability.routes.js';
 import { handleReportCatalogue, handleCreateReport, handleListReports, handleGetReport, handleUpdateReport, handleReportAction } from './modules/moderation/reports.routes.js';
-import { handleSubscribe, handleUnsubscribe, handleCreateEntityPost, handleListEntityPosts, handleMyFeed, handleMySubscriptions } from './modules/feed/feed.routes.js';
+import { handleSubscribe, handleUnsubscribe, handleCreateEntityPost, handleListEntityPosts, handleMyFeed, handleMySubscriptions, handleCreateComment, handleListComments, handleLikePost, handleUnlikePost, handleUpdateSubscription } from './modules/feed/feed.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { notFound, sendError } from './shared/http.js';
@@ -58,6 +58,8 @@ const server = http.createServer((req, res) => {
       const reportActionsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reports/([^/]+)/actions$`));
       const entitySubscriptionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/subscription$`));
       const entityPostsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/posts$`));
+      const postCommentsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/comments$`));
+      const postLikeMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/like$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
       const roomDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)$`));
       const roomMessageDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages/([^/]+)$`));
@@ -153,6 +155,31 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'DELETE' && entitySubscriptionMatch) {
         await handleUnsubscribe(req, res, decodeURIComponent(entitySubscriptionMatch[1]));
+        return;
+      }
+
+      if (req.method === 'PATCH' && entitySubscriptionMatch) {
+        await handleUpdateSubscription(req, res, decodeURIComponent(entitySubscriptionMatch[1]));
+        return;
+      }
+
+      if (req.method === 'POST' && postCommentsMatch) {
+        await handleCreateComment(req, res, decodeURIComponent(postCommentsMatch[1]));
+        return;
+      }
+
+      if (req.method === 'GET' && postCommentsMatch) {
+        await handleListComments(req, res, decodeURIComponent(postCommentsMatch[1]));
+        return;
+      }
+
+      if (req.method === 'PUT' && postLikeMatch) {
+        await handleLikePost(req, res, decodeURIComponent(postLikeMatch[1]));
+        return;
+      }
+
+      if (req.method === 'DELETE' && postLikeMatch) {
+        await handleUnlikePost(req, res, decodeURIComponent(postLikeMatch[1]));
         return;
       }
 
