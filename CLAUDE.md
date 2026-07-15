@@ -20,7 +20,7 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
    модель личных диалогов и чатов сущностей. Заменяет ТЗ v1.2 §8 и уточняет §9
    в части сообщений.
 4. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
-5. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_10_26.md` — где остановились.
+5. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_15_1.md` — где остановились.
 
 Полное ТЗ: `docs/handoff/spec/BandKit_TZ_v1_2.md`.
 
