@@ -84,14 +84,18 @@ async function submitAuthForm(form: HTMLElement): Promise<void> {
     }
     setMessage(form, data?.error?.message || t('auth.msg.loginFailed'));
   } else if (kind === 'register') {
+    const locale = typeof localStorage !== 'undefined' ? localStorage.getItem('bandkit.locale') : null;
     const { status, data } = await api('/auth/register', {
       email: fieldValue(form, 'email'),
       password: fieldValue(form, 'password'),
-      display_name: fieldValue(form, 'display_name')
+      display_name: fieldValue(form, 'display_name'),
+      locale: normalizeLocale(locale)
     });
     if (status === 201) {
+      // Only a run without a mail provider hands back a token; say so honestly
+      // instead of always claiming an email was sent.
       const devToken = data?.dev_verify_token ? ` ${t('auth.msg.devToken')} ${data.dev_verify_token}` : '';
-      setMessage(form, `${t('auth.msg.checkEmail')}${devToken}`, 'ok');
+      setMessage(form, `${t(data?.email_sent ? 'auth.msg.checkEmail' : 'auth.msg.noMailProvider')}${devToken}`, 'ok');
       return;
     }
     setMessage(form, data?.error?.message || t('auth.msg.registerFailed'));
@@ -101,7 +105,25 @@ async function submitAuthForm(form: HTMLElement): Promise<void> {
   }
 }
 
+// A verification link from the email lands on /auth/verify-email?token=... —
+// prefill the field and submit it, so the user only has to click the link.
+function consumeVerifyTokenFromUrl(root: HTMLElement): void {
+  const form = root.querySelector<HTMLElement>('form[data-auth-form="verify"]');
+  if (!form || form.dataset.tokenApplied === '1') return;
+  const token = new URLSearchParams(window.location.search).get('token');
+  if (!token) return;
+  form.dataset.tokenApplied = '1';
+  const field = form.querySelector<HTMLInputElement>('[data-auth-field="token"]');
+  if (field) field.value = token;
+  // Drop the token from the address bar so it is not kept in history/referrer.
+  window.history.replaceState({}, '', window.location.pathname);
+  void submitAuthForm(form);
+}
+
 export function initAuthClient(root: HTMLElement): void {
+  consumeVerifyTokenFromUrl(root);
+  new MutationObserver(() => consumeVerifyTokenFromUrl(root)).observe(root, { childList: true, subtree: true });
+
   root.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;

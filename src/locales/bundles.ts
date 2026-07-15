@@ -350,7 +350,8 @@ export const localeBundles = {
       "auth.2fa.disabledMsg": "2FA disabled.",
       "auth.2fa.disablePrompt": "Enter a code to disable 2FA.",
       "auth.2fa.required": "Enter your two-factor code.",
-      "auth.2fa.invalid": "Invalid code."
+      "auth.2fa.invalid": "Invalid code.",
+      "auth.msg.noMailProvider": "Account created. Email delivery is not configured on this server — use the token below."
     },
     "bands": {
       "bands.title": "Bands and projects",
@@ -1451,7 +1452,8 @@ export const localeBundles = {
       "auth.2fa.disabledMsg": "2FA выключена.",
       "auth.2fa.disablePrompt": "Введите код, чтобы выключить 2FA.",
       "auth.2fa.required": "Введите код двухфакторной аутентификации.",
-      "auth.2fa.invalid": "Неверный код."
+      "auth.2fa.invalid": "Неверный код.",
+      "auth.msg.noMailProvider": "Аккаунт создан. Отправка почты на этом сервере не настроена — используйте токен ниже."
     },
     "bands": {
       "bands.title": "Группы и проекты",

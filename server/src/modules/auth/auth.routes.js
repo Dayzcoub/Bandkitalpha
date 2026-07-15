@@ -4,6 +4,7 @@ import { logInfo } from '../../shared/logger.js';
 import { matchTotp } from '../../shared/totp.js';
 import { decryptSecret } from '../../shared/secretbox.js';
 import { consumeRecoveryCode } from './twofactor.routes.js';
+import { sendMail, mailerConfigured, verificationEmail } from '../../shared/mailer.js';
 import {
   hashPassword,
   verifyPassword,
@@ -39,8 +40,9 @@ function cookieSecure(env) {
 }
 
 // POST /auth/register — email + password. Creates user + credentials + a one-time
-// email verification token. In non-production the token is returned/logged so the
-// flow is testable without a mail provider (spec §9 step 3).
+// email verification token and mails the verification link (spec §9 step 3).
+// Without a configured mail provider, non-production still returns the token so
+// the flow stays testable locally.
 export async function handleRegister(req, res, env) {
   const client = await getPool().connect();
   try {
@@ -48,6 +50,8 @@ export async function handleRegister(req, res, env) {
     const email = normalizeEmail(body.email);
     const password = String(body.password || '');
     const displayName = String(body.display_name || '').trim();
+    // The client knows the UI language; the email follows it.
+    const locale = body.locale === 'en' ? 'en' : 'ru';
 
     if (!EMAIL_RE.test(email)) {
       sendError(res, 400, 'AUTH_EMAIL_INVALID', 'A valid email is required');
@@ -98,12 +102,21 @@ export async function handleRegister(req, res, env) {
 
     logInfo('User registered', { userId: user.id });
 
+    // Mail the verification link. A provider failure must not fail registration:
+    // the account and token already exist, and the mail can be retried later.
+    const verifyUrl = `${env.appBaseUrl}/auth/verify-email?token=${encodeURIComponent(rawToken)}`;
+    const { subject, html, text } = verificationEmail(locale, { displayName: user.display_name, verifyUrl });
+    const mail = await sendMail(env, { to: user.email, subject, html, text });
+
     const payload = {
       ok: true,
-      user: { id: user.id, email: user.email, display_name: user.display_name, status: user.status }
+      user: { id: user.id, email: user.email, display_name: user.display_name, status: user.status },
+      email_sent: mail.sent
     };
-    // Never expose verification tokens in production responses (Security §8).
-    if (env.nodeEnv !== 'production') {
+    // The token is only ever handed back when no mail went out (local dev without
+    // a provider). Once mail works, it travels by email only — never in a
+    // response or a log (Security §8).
+    if (!mail.sent && env.nodeEnv !== 'production') {
       payload.dev_verify_token = rawToken;
     }
     sendJson(res, 201, payload);
