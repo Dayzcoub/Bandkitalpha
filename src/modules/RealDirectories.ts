@@ -98,13 +98,20 @@ async function mountEvents(host: HTMLElement): Promise<void> {
         if (e.location) meta.push(esc(e.location));
         meta.push(`${e.participant_count ?? 0} ${esc(t('events.list.participants'))}`);
         return `<div class="bk-list-row"><div class="bk-list-row-main">`
-          + `<span class="bk-list-row-title">${esc(e.title)}</span>`
+          + `<a class="bk-list-row-title" href="/events/${esc(e.id)}" data-ev-open="${esc(e.id)}">${esc(e.title)}</a>`
           + `<span class="bk-state-copy">${meta.join(' · ')}</span>`
           + `</div></div>`;
       }).join('')}</div>`;
   host.innerHTML = `<section class="bk-card">`
     + `<div class="bk-card-section-head"><div><h3 class="bk-card-title">${esc(t('events.list.title'))}</h3><p class="bk-state-copy">${esc(t('events.list.subtitle'))}</p></div></div>`
     + list + `</section>`;
+
+  host.addEventListener('click', (event) => {
+    const open = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-ev-open]') : null;
+    if (!open) return;
+    event.preventDefault();
+    navigateTo(`/events/${open.getAttribute('data-ev-open')}`);
+  });
 }
 
 async function mountDocuments(host: HTMLElement): Promise<void> {

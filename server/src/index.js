@@ -12,7 +12,7 @@ import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
 import { handleListDocuments, handleListEntityDocuments, handleCreateEntityDocument } from './modules/documents/documents.routes.js';
 import { handleUploadDocumentFile, handleDownloadDocumentFile, handleListDocumentFiles } from './modules/documents/files.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
-import { handleCreateEvent, handleListEvents } from './modules/events/events.routes.js';
+import { handleCreateEvent, handleListEvents, handleGetEvent } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
 import { handleGetTaxonomy } from './modules/taxonomy/taxonomy.routes.js';
 import { handleGetMyProfessions, handleReplaceMyProfessions, handleListPartyCandidates } from './modules/parties/parties.routes.js';
@@ -50,6 +50,7 @@ const server = http.createServer((req, res) => {
       const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
       const entityDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)$`));
       const entityMembersMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/members$`));
+      const eventDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)$`));
       const eventSlotsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/slots$`));
       const eventEngagementsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements$`));
       const eventEngagementDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/events/([^/]+)/engagements/([^/]+)$`));
@@ -230,6 +231,11 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/events`) {
         await handleCreateEvent(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && eventDetailMatch) {
+        await handleGetEvent(req, res, decodeURIComponent(eventDetailMatch[1]));
         return;
       }
 

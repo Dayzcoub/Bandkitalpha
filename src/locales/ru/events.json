@@ -79,5 +79,22 @@
   "events.list.title": "Реальные события",
   "events.list.subtitle": "События из базы — с сущностью и участниками.",
   "events.list.empty": "Пока нет событий — создайте первое ниже.",
-  "events.list.participants": "участник(ов)"
+  "events.list.participants": "участник(ов)",
+  "eventDetail.notFound": "Событие не найдено.",
+  "eventDetail.loading": "Загрузка…",
+  "eventDetail.slotsTitle": "Требования",
+  "eventDetail.noSlots": "Слотов-требований пока нет.",
+  "eventDetail.rosterTitle": "Состав",
+  "eventDetail.noEngagements": "Пока никто не нанят.",
+  "eventDetail.requirement.party": "Человек",
+  "eventDetail.requirement.resource": "Ресурс",
+  "eventDetail.status.draft": "Черновик",
+  "eventDetail.status.published": "Опубликовано",
+  "eventDetail.status.recruiting": "Набор",
+  "eventDetail.status.confirmed": "Подтверждено",
+  "eventDetail.status.in_progress": "Идёт",
+  "eventDetail.status.completed": "Завершено",
+  "eventDetail.status.archived": "В архиве",
+  "eventDetail.status.cancelled": "Отменено",
+  "eventDetail.status.rescheduled": "Перенесено"
 }

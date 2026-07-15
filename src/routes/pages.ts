@@ -166,7 +166,9 @@ function renderEvents(ctx: AppContext): string {
 }
 
 function renderEventDetail(ctx: AppContext): string {
-  return inDevelopment(ctx, 'events.detailTitle', 'events.title', '/events');
+  // Real event detail (GET /events/:id + its slots, and the roster for managers).
+  const ref = ctx.match.params.eventId ?? '';
+  return contentGrid([pageHeader(ctx, 'events.detailTitle', 'events.subtitle'), `<div data-real-event-detail="${escapeHtml(ref)}"></div>`].join(''), defaultRightRail(ctx));
 }
 
 function renderChats(ctx: AppContext): string {

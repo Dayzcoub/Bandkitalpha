@@ -97,10 +97,12 @@ expect_contains "$DETAIL_BY_SLUG" '"ok":true' 'entity detail by slug ok'
 expect_contains "$DETAIL_BY_SLUG" "$ENTITY_SLUG" 'detail by slug contains slug'
 expect_contains "$DETAIL_BY_SLUG" '"member_count":1' 'detail by slug member count'
 
-log "Checking events read API"
-EVENTS_RESPONSE="$(request GET /events)"
+log "Checking events read API requires auth"
+# Events carry location and schedule and have no public visibility level:
+# anonymous callers must be rejected, not served.
+EVENTS_RESPONSE="$(request_allow_error GET /events)"
 echo "$EVENTS_RESPONSE"
-expect_contains "$EVENTS_RESPONSE" '"ok":true' 'events list ok'
+expect_contains "$EVENTS_RESPONSE" 'AUTH_REQUIRED' 'events list is protected'
 
 log "Checking chat rooms read API"
 ROOMS_RESPONSE="$(request GET /chat-rooms)"

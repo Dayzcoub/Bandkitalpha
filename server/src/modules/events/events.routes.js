@@ -78,8 +78,44 @@ export async function handleCreateEvent(req, res) {
   }
 }
 
+// Events carry no visibility flag: they are workspace data, so "can see" means
+// an active membership in the owning entity, or being a participant of the event
+// itself (Security DoD §16.2). Exported so every event-scoped surface — detail,
+// slots — answers the question the same way.
+export async function canViewEvent(client, actorId, eventId) {
+  if (!actorId) return false;
+  const result = await client.query(
+    `select 1
+       from events ev
+      where ev.id = $1
+        and (
+          exists (
+            select 1 from entity_memberships m
+             where m.entity_id = ev.entity_id and m.user_id = $2 and m.status = 'active'
+          )
+          or exists (
+            select 1 from event_participants p
+             where p.event_id = ev.id and p.user_id = $2
+               and p.status in ('invited', 'applied', 'confirmed', 'completed')
+          )
+        )
+      limit 1`,
+    [eventId, actorId]
+  );
+  return result.rowCount > 0;
+}
+
 export async function handleListEvents(req, res) {
   try {
+    // Previously unauthenticated and unscoped: it returned every event on the
+    // platform — including location and schedule — to anonymous callers. Events
+    // have no public visibility level, so the list is now session-scoped to the
+    // caller's entities and the events they take part in.
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
     const result = await getPool().query(
       `select
          ev.id,
@@ -95,9 +131,19 @@ export async function handleListEvents(req, res) {
        from events ev
        left join entities e on e.id = ev.entity_id
        left join event_participants ep on ep.event_id = ev.id and ep.status = 'confirmed'
+       where exists (
+               select 1 from entity_memberships m
+                where m.entity_id = ev.entity_id and m.user_id = $1 and m.status = 'active'
+             )
+          or exists (
+               select 1 from event_participants p
+                where p.event_id = ev.id and p.user_id = $1
+                  and p.status in ('invited', 'applied', 'confirmed', 'completed')
+             )
        group by ev.id, e.id
        order by ev.created_at desc
-       limit 50`
+       limit 50`,
+      [actor.id]
     );
 
     sendJson(res, 200, {
@@ -108,5 +154,48 @@ export async function handleListEvents(req, res) {
     sendError(res, 500, 'EVENTS_LIST_FAILED', 'Failed to list events', {
       message: error?.message || String(error)
     });
+  }
+}
+
+
+// GET /events/:id — one event for someone entitled to see it. Unknown or
+// invisible both answer 404: never confirm an event exists to an outsider.
+export async function handleGetEvent(req, res, eventId) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    if (!(await canViewEvent(client, actor.id, eventId))) {
+      sendError(res, 404, 'EVENT_NOT_FOUND', 'Event not found');
+      return;
+    }
+    const result = await client.query(
+      `select ev.id, ev.title, ev.description, ev.status, ev.location,
+              ev.starts_at, ev.ends_at, ev.created_at,
+              e.id as entity_id, e.name as entity_name, e.slug as entity_slug,
+              coalesce((select count(*) from event_participants p
+                         where p.event_id = ev.id and p.status = 'confirmed'), 0)::int as participant_count
+         from events ev
+         left join entities e on e.id = ev.entity_id
+        where ev.id = $1 limit 1`,
+      [eventId]
+    );
+    const membership = await client.query(
+      'select role, status from entity_memberships where entity_id = $1 and user_id = $2 limit 1',
+      [result.rows[0].entity_id, actor.id]
+    );
+    sendJson(res, 200, {
+      ok: true,
+      event: result.rows[0],
+      // Lets the UI offer manager-only surfaces without guessing.
+      can_manage: permissionService.canManageEntity(actor, membership.rows[0] || null)
+    });
+  } catch (error) {
+    sendError(res, 500, 'EVENT_GET_FAILED', 'Failed to load the event');
+  } finally {
+    client.release();
   }
 }

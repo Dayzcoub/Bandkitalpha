@@ -2,6 +2,7 @@ import { getPool } from '../../db/client.js';
 import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
+import { canViewEvent } from './events.routes.js';
 
 // Resolves the event and asserts the actor is a manager of the event's owning
 // entity. Returns { actor, event } on success, or null after sending an error.
@@ -99,10 +100,22 @@ export async function handleCreateSlot(req, res, eventId) {
   }
 }
 
-// GET /events/:eventId/slots — public list of an event's requirement slots.
+// GET /events/:eventId/slots — an event's requirement slots. Not public: slots
+// describe what an event needs, so they follow the event's own visibility —
+// otherwise they'd let anyone enumerate a private event's plans by id.
 export async function handleListSlots(req, res, eventId) {
+  const client = await getPool().connect();
   try {
-    const result = await getPool().query(
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    if (!(await canViewEvent(client, actor.id, eventId))) {
+      sendError(res, 404, 'EVENT_NOT_FOUND', 'Event not found');
+      return;
+    }
+    const result = await client.query(
       `select s.id, s.requirement, s.profession_key, pr.label as profession_label,
               s.specialization_key, sp.label as specialization_label,
               s.resource_type, s.count, s.terms, s.sort_order
@@ -116,6 +129,8 @@ export async function handleListSlots(req, res, eventId) {
     sendJson(res, 200, { ok: true, slots: result.rows });
   } catch (error) {
     sendError(res, 500, 'SLOTS_LIST_FAILED', 'Failed to list slots', { message: error?.message || String(error) });
+  } finally {
+    client.release();
   }
 }
 
