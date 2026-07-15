@@ -13,5 +13,15 @@
   "documents.real.title": "Документы",
   "documents.real.subtitle": "Реальные записи документов из базы (метаданные).",
   "documents.real.empty": "Пока нет документов.",
-  "documents.real.storageNote": "Загрузка и хранение файлов — следующая фаза; сейчас документы — это записи-метаданные, привязанные к сущностям."
+  "documents.real.storageNote": "Файлы хранятся на сервере и отдаются только участникам через проверку прав. Объектное хранилище и внешний экспорт — позже.",
+  "documents.real.download": "Скачать",
+  "documents.real.upload": "Загрузить файл",
+  "documents.real.replace": "Загрузить новую версию",
+  "documents.real.noFile": "Файл не прикреплён",
+  "documents.real.uploading": "Загрузка…",
+  "documents.real.uploaded": "Файл загружен как новая версия.",
+  "documents.real.uploadError": "Не удалось загрузить файл.",
+  "documents.real.uploadForbidden": "У вас нет прав загружать файлы для этого документа.",
+  "documents.real.typeRejected": "Такой тип файла не разрешён. Используйте PDF, PNG, JPEG или WebP.",
+  "documents.real.tooLarge": "Файл слишком большой."
 }

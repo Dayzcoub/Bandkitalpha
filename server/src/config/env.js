@@ -15,6 +15,10 @@ export function getEnv() {
     // Verified sender, e.g. "BandKit <noreply@yourdomain>".
     mailFrom: process.env.MAIL_FROM || '',
     // Public origin used to build links in emails (no trailing slash).
-    appBaseUrl: (process.env.APP_BASE_URL || 'https://bandkitdev.mywire.org').replace(/\/+$/, '')
+    appBaseUrl: (process.env.APP_BASE_URL || 'https://bandkitdev.mywire.org').replace(/\/+$/, ''),
+    // Where uploaded document files live. Must stay OUTSIDE the web root — files
+    // are served only through the permission-checked proxy (Security §6).
+    filesDir: process.env.FILES_DIR || '/var/lib/bandkit/files',
+    maxUploadBytes: Number.parseInt(process.env.MAX_UPLOAD_BYTES || '', 10) || 25 * 1024 * 1024
   };
 }

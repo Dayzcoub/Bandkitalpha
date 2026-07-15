@@ -110,23 +110,67 @@ async function mountEvents(host: HTMLElement): Promise<void> {
 async function mountDocuments(host: HTMLElement): Promise<void> {
   if (host.dataset.ready === '1') return;
   host.dataset.ready = '1';
-  const { status, data } = await api('/documents', 'GET');
-  const docs: any[] = status === 200 ? (data?.documents ?? []) : [];
-  const list = docs.length === 0
-    ? `<p class="bk-state-copy">${esc(t('documents.real.empty'))}</p>`
-    : `<div class="bk-list">${docs.map((d) => {
-        const meta: string[] = [];
-        if (d.document_type) meta.push(esc(d.document_type));
-        if (d.status) meta.push(esc(d.status));
-        if (d.entity_name) meta.push(esc(d.entity_name));
-        return `<div class="bk-list-row"><div class="bk-list-row-main">`
-          + `<span class="bk-list-row-title">${esc(d.title)}</span>`
-          + `<span class="bk-state-copy">${meta.join(' · ')}</span>`
-          + `</div></div>`;
-      }).join('')}</div>`;
-  host.innerHTML = `<section class="bk-card">`
-    + `<div class="bk-card-section-head"><div><h3 class="bk-card-title">${esc(t('documents.real.title'))}</h3><p class="bk-state-copy">${esc(t('documents.real.subtitle'))}</p></div></div>`
-    + list + `</section>`;
+
+  function sizeLabel(bytes: number): string {
+    if (!bytes) return '';
+    const kb = bytes / 1024;
+    return kb < 1024 ? `${Math.round(kb)} KB` : `${(kb / 1024).toFixed(1)} MB`;
+  }
+
+  async function draw(message = '', tone = ''): Promise<void> {
+    const { status, data } = await api('/documents', 'GET');
+    const docs: any[] = status === 200 ? (data?.documents ?? []) : [];
+    const list = docs.length === 0
+      ? `<p class="bk-state-copy">${esc(t('documents.real.empty'))}</p>`
+      : `<div class="bk-list">${docs.map((d) => {
+          const meta: string[] = [];
+          if (d.document_type) meta.push(esc(d.document_type));
+          if (d.status) meta.push(esc(d.status));
+          if (d.entity_name) meta.push(esc(d.entity_name));
+          if (d.has_file) meta.push(`v${esc(String(d.version_number))} · ${esc(sizeLabel(Number(d.size_bytes)))}`);
+          const fileAction = d.has_file
+            ? `<a class="bk-button bk-button-secondary" href="/api/v1/documents/${esc(d.id)}/file" download>${esc(t('documents.real.download'))}</a>`
+            : `<span class="bk-state-copy">${esc(t('documents.real.noFile'))}</span>`;
+          return `<div class="bk-list-row"><div class="bk-list-row-main">`
+            + `<span class="bk-list-row-title">${esc(d.title)}</span>`
+            + `<span class="bk-state-copy">${meta.join(' · ')}</span>`
+            + `<div class="bk-action-row">${fileAction}`
+            + `<label class="bk-button bk-button-ghost" for="up-${esc(d.id)}">${esc(t(d.has_file ? 'documents.real.replace' : 'documents.real.upload'))}</label>`
+            + `<input id="up-${esc(d.id)}" class="bk-visually-hidden" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" data-doc-upload="${esc(d.id)}" />`
+            + `</div></div></div>`;
+        }).join('')}</div>`;
+    host.innerHTML = `<section class="bk-card">`
+      + `<div class="bk-card-section-head"><div><h3 class="bk-card-title">${esc(t('documents.real.title'))}</h3><p class="bk-state-copy">${esc(t('documents.real.subtitle'))}</p></div></div>`
+      + list
+      + `<p class="bk-state-copy" data-doc-message role="status"${tone ? ` data-tone="${tone}"` : ''}>${esc(message)}</p>`
+      + `</section>`;
+  }
+
+  // Raw-body upload: the file streams as-is, the name travels percent-encoded in
+  // a header (no multipart parser needed on the backend).
+  host.addEventListener('change', (event) => {
+    const input = event.target as HTMLInputElement;
+    const docId = input?.getAttribute?.('data-doc-upload');
+    if (!docId) return;
+    const file = input.files?.[0];
+    if (!file) return;
+    void draw(t('documents.real.uploading'), '');
+    void fetch(`/api/v1/documents/${encodeURIComponent(docId)}/file`, {
+      method: 'POST',
+      headers: { 'content-type': file.type || 'application/octet-stream', 'x-filename': encodeURIComponent(file.name) },
+      body: file,
+      credentials: 'same-origin'
+    }).then(async (res) => {
+      const body = await res.json().catch(() => null);
+      if (res.status === 201) return draw(t('documents.real.uploaded'), 'ok');
+      if (res.status === 415) return draw(t('documents.real.typeRejected'), 'error');
+      if (res.status === 413) return draw(t('documents.real.tooLarge'), 'error');
+      if (res.status === 403 || res.status === 404) return draw(t('documents.real.uploadForbidden'), 'error');
+      return draw(body?.error?.message || t('documents.real.uploadError'), 'error');
+    }).catch(() => draw(t('documents.real.uploadError'), 'error'));
+  });
+
+  await draw();
 }
 
 function maybeMount(root: HTMLElement): void {

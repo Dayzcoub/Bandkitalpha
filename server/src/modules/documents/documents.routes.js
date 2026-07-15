@@ -30,6 +30,16 @@ async function resolveEntityActor(client, req, res, entityId) {
 
 export async function handleListDocuments(req, res) {
   try {
+    // Documents are workspace data: the list is scoped to the caller's active
+    // memberships (plus their own personal documents). Previously this endpoint
+    // was unauthenticated and returned every document on the platform, which
+    // broke the Security DoD (§16.1 auth, §16.2 membership scoping) — and became
+    // untenable once documents carry real files.
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
     const result = await getPool().query(
       `select
          d.id,
@@ -37,14 +47,26 @@ export async function handleListDocuments(req, res) {
          d.document_type,
          d.status,
          d.version_number,
+         d.mime_type,
+         d.size_bytes,
+         (d.storage_key is not null) as has_file,
          d.created_at,
          e.name as entity_name,
          ev.title as event_title
        from documents d
        left join entities e on e.id = d.entity_id
        left join events ev on ev.id = d.event_id
+       where d.status <> 'deleted'
+         and (
+           exists (
+             select 1 from entity_memberships m
+              where m.entity_id = d.entity_id and m.user_id = $1 and m.status = 'active'
+           )
+           or d.owner_user_id = $1
+         )
        order by d.created_at desc
-       limit 50`
+       limit 50`,
+      [actor.id]
     );
 
     sendJson(res, 200, {

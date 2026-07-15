@@ -10,6 +10,7 @@ import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
 import { handleListChatRooms, handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handleUpdateMessage, handleDeleteMessage } from './modules/chats/chats.routes.js';
 import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
 import { handleListDocuments, handleListEntityDocuments, handleCreateEntityDocument } from './modules/documents/documents.routes.js';
+import { handleUploadDocumentFile, handleDownloadDocumentFile, handleListDocumentFiles } from './modules/documents/files.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
 import { handleCreateEvent, handleListEvents } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
@@ -64,6 +65,8 @@ const server = http.createServer((req, res) => {
       const roomDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)$`));
       const roomMessageDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages/([^/]+)$`));
       const entityDocumentsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/documents$`));
+      const documentFileMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/documents/([^/]+)/file$`));
+      const documentFilesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/documents/([^/]+)/files$`));
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/health`) {
         handleHealth(req, res, env);
@@ -300,6 +303,21 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/documents`) {
         await handleListDocuments(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && documentFileMatch) {
+        await handleUploadDocumentFile(req, res, env, decodeURIComponent(documentFileMatch[1]));
+        return;
+      }
+
+      if (req.method === 'GET' && documentFileMatch) {
+        await handleDownloadDocumentFile(req, res, env, decodeURIComponent(documentFileMatch[1]));
+        return;
+      }
+
+      if (req.method === 'GET' && documentFilesMatch) {
+        await handleListDocumentFiles(req, res, decodeURIComponent(documentFilesMatch[1]));
         return;
       }
 

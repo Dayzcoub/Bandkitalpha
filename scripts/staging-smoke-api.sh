@@ -107,9 +107,10 @@ ROOMS_RESPONSE="$(request GET /chat-rooms)"
 echo "$ROOMS_RESPONSE"
 expect_contains "$ROOMS_RESPONSE" '"ok":true' 'chat rooms list ok'
 
-log "Checking documents read API"
-DOCUMENTS_RESPONSE="$(request GET /documents)"
+log "Checking documents read API requires auth"
+# Documents are workspace data: anonymous callers must be rejected, not served.
+DOCUMENTS_RESPONSE="$(request_allow_error GET /documents)"
 echo "$DOCUMENTS_RESPONSE"
-expect_contains "$DOCUMENTS_RESPONSE" '"ok":true' 'documents list ok'
+expect_contains "$DOCUMENTS_RESPONSE" 'AUTH_REQUIRED' 'documents list is protected'
 
 log "Smoke API test completed"

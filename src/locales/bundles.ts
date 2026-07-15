@@ -781,7 +781,17 @@ export const localeBundles = {
       "documents.real.title": "Documents",
       "documents.real.subtitle": "Real document records from the database (metadata).",
       "documents.real.empty": "No documents yet.",
-      "documents.real.storageNote": "File upload and storage are a later phase — today documents are metadata records attached to entities."
+      "documents.real.storageNote": "Files are stored on the server and served only to members through a permission check. Object storage and external export come later.",
+      "documents.real.download": "Download",
+      "documents.real.upload": "Upload file",
+      "documents.real.replace": "Upload new version",
+      "documents.real.noFile": "No file attached",
+      "documents.real.uploading": "Uploading…",
+      "documents.real.uploaded": "File uploaded as a new version.",
+      "documents.real.uploadError": "Could not upload the file.",
+      "documents.real.uploadForbidden": "You cannot upload files for this document.",
+      "documents.real.typeRejected": "This file type is not allowed. Use PDF, PNG, JPEG or WebP.",
+      "documents.real.tooLarge": "The file is too large."
     },
     "errors": {
       "errors.generic": "Something went wrong",
@@ -1883,7 +1893,17 @@ export const localeBundles = {
       "documents.real.title": "Документы",
       "documents.real.subtitle": "Реальные записи документов из базы (метаданные).",
       "documents.real.empty": "Пока нет документов.",
-      "documents.real.storageNote": "Загрузка и хранение файлов — следующая фаза; сейчас документы — это записи-метаданные, привязанные к сущностям."
+      "documents.real.storageNote": "Файлы хранятся на сервере и отдаются только участникам через проверку прав. Объектное хранилище и внешний экспорт — позже.",
+      "documents.real.download": "Скачать",
+      "documents.real.upload": "Загрузить файл",
+      "documents.real.replace": "Загрузить новую версию",
+      "documents.real.noFile": "Файл не прикреплён",
+      "documents.real.uploading": "Загрузка…",
+      "documents.real.uploaded": "Файл загружен как новая версия.",
+      "documents.real.uploadError": "Не удалось загрузить файл.",
+      "documents.real.uploadForbidden": "У вас нет прав загружать файлы для этого документа.",
+      "documents.real.typeRejected": "Такой тип файла не разрешён. Используйте PDF, PNG, JPEG или WebP.",
+      "documents.real.tooLarge": "Файл слишком большой."
     },
     "errors": {
       "errors.generic": "Что-то пошло не так",
