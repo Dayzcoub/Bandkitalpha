@@ -24,6 +24,8 @@ import { handleSubscribe, handleUnsubscribe, handleCreateEntityPost, handleListE
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { notFound, sendError } from './shared/http.js';
+import { permissionService } from './modules/permissions/PermissionService.js';
+import { resolveSessionUser } from './modules/auth/session.js';
 import { logError, logInfo } from './shared/logger.js';
 
 const env = getEnv();
@@ -84,6 +86,19 @@ const server = http.createServer((req, res) => {
       if (req.method === 'GET') {
         const adminRoute = adminGetRoutes.find((route) => url.pathname === `${env.apiPrefix}${route.path}`);
         if (adminRoute) {
+          // One gate for the whole console: the handlers below read platform-wide
+          // data (user registry, entities, audit log) and must never be reachable
+          // without staff rights. Guarding the dispatch, not each handler, is what
+          // keeps a newly added admin route from shipping unguarded.
+          const actor = await resolveSessionUser(req);
+          if (!actor) {
+            sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+            return;
+          }
+          if (!permissionService.canReadAdminConsole(actor)) {
+            sendError(res, 403, 'ADMIN_FORBIDDEN', 'Platform staff access is required');
+            return;
+          }
           await adminRoute.handler(req, res);
           return;
         }

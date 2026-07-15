@@ -163,13 +163,24 @@ function assertPayloadContract(endpoint, payload) {
 
 async function runHttpSmoke(baseUrl) {
   const normalizedBaseUrl = baseUrl.replace(/\/$/, '');
+  const cookie = process.env.ADMIN_CONTRACT_COOKIE || '';
 
   for (const endpoint of ADMIN_ENDPOINTS) {
-    const response = await fetch(`${normalizedBaseUrl}${endpoint.path}`, {
+    // The console is staff-only. A guest must get 401 and no payload — this is
+    // the security contract, checked first and always.
+    const guest = await fetch(`${normalizedBaseUrl}${endpoint.path}`, {
       headers: { accept: 'application/json' }
     });
+    assert(guest.status === 401, `${endpoint.path} must answer 401 without a session, got ${guest.status}`);
 
-    assert(response.status === 200, `${endpoint.path} expected HTTP 200, got ${response.status}`);
+    // The payload contract needs a staff session; skip it when none was given.
+    if (!cookie) continue;
+
+    const response = await fetch(`${normalizedBaseUrl}${endpoint.path}`, {
+      headers: { accept: 'application/json', cookie }
+    });
+
+    assert(response.status === 200, `${endpoint.path} expected HTTP 200 for staff, got ${response.status}`);
     const payload = await response.json();
     assertPayloadContract(endpoint, payload);
   }
@@ -187,4 +198,5 @@ if (process.env.ADMIN_CONTRACT_BASE_URL) {
 } else {
   console.log(`[admin-contract] static checks passed for ${ADMIN_ENDPOINTS.length} endpoints`);
   console.log('[admin-contract] set ADMIN_CONTRACT_BASE_URL=http://host to run live HTTP smoke checks');
+  console.log('[admin-contract] add ADMIN_CONTRACT_COOKIE=bandkit_session=<token> to also check staff payloads');
 }

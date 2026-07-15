@@ -2,6 +2,16 @@
 // Reading generally stays available to 'restricted'; writing does not.
 const SANCTIONED_STATUSES = new Set(['restricted', 'blocked', 'deleted']);
 
+// Platform staff roles, mirroring the users.platform_role CHECK in migration
+// 0003 (Owner Console spec, "Access model").
+const PLATFORM_STAFF_ROLES = new Set([
+  'super_admin',
+  'platform_admin',
+  'platform_moderator',
+  'support_agent',
+  'read_only_auditor'
+]);
+
 export class PermissionService {
   canCreateEntity(actor) {
     return Boolean(actor && actor.id && !SANCTIONED_STATUSES.has(actor.status));
@@ -126,6 +136,18 @@ export class PermissionService {
   // account; post visibility is checked separately at the route.
   canInteractSocially(actor) {
     return Boolean(actor && actor.id && !SANCTIONED_STATUSES.has(actor.status));
+  }
+
+  // Reading the platform owner console. It is read-only, so every staff role may
+  // look — read_only_auditor exists for exactly this — but nobody outside staff
+  // may: these screens expose the whole user registry and the audit log.
+  canReadAdminConsole(actor) {
+    return Boolean(
+      actor
+      && actor.id
+      && !SANCTIONED_STATUSES.has(actor.status)
+      && PLATFORM_STAFF_ROLES.has(actor.platform_role)
+    );
   }
 }
 
