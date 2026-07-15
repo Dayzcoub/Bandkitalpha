@@ -6,8 +6,8 @@ WEB_DIR="${WEB_DIR:-/var/www/bandkit/current}"
 BACKEND_SERVICE="${BACKEND_SERVICE:-bandkit-backend}"
 API_HEALTH_URL="${API_HEALTH_URL:-http://127.0.0.1:3001/api/v1/health}"
 API_DB_HEALTH_URL="${API_DB_HEALTH_URL:-http://127.0.0.1:3001/api/v1/health/db}"
-PUBLIC_API_HEALTH_URL="${PUBLIC_API_HEALTH_URL:-http://141.98.87.9/api/v1/health}"
-PUBLIC_API_DB_HEALTH_URL="${PUBLIC_API_DB_HEALTH_URL:-http://141.98.87.9/api/v1/health/db}"
+PUBLIC_API_HEALTH_URL="${PUBLIC_API_HEALTH_URL:-https://bandkitdev.mywire.org/api/v1/health}"
+PUBLIC_API_DB_HEALTH_URL="${PUBLIC_API_DB_HEALTH_URL:-https://bandkitdev.mywire.org/api/v1/health/db}"
 
 log() {
   printf '\n[bandkit deploy] %s\n' "$*"

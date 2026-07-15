@@ -8,7 +8,7 @@
 - First clean GitHub baseline commit: `a178eb6`
 - Package version: `1.10.0`
 - Local preview port: `http://127.0.0.1:5199`
-- VPS staging preview: `http://141.98.87.9`
+- VPS staging preview: `https://bandkitdev.mywire.org`
 - Current stage: MVP Shell + Staging Backend Foundation
 - Current accepted staging checkpoint: `1.10.18 staging deploy script verified`
 
@@ -22,8 +22,9 @@ The project now also has a verified staging backend foundation:
 - MVP core database schema;
 - systemd service `bandkit-backend`;
 - Nginx `/api` proxy;
-- verified public health endpoints;
-- one-command staging deploy script.
+- verified public HTTPS health endpoints;
+- wrapper-based staging deploy on VPS;
+- GitHub Actions staging autodeploy prepared to SSH as `bandkit-deploy` and run `/usr/local/sbin/bandkit-staging-deploy`.
 
 Frontend mock screens are not yet connected to real backend business APIs. Real registration, entity creation, chat messages and document actions still require API modules and frontend integration.
 
@@ -67,17 +68,22 @@ PowerShell requires `./` or `.\` before local batch files, for example:
 For normal staging updates on VPS:
 
 ```bash
-cd /opt/Bandkitalpha
-sudo scripts/staging-deploy.sh
+sudo /usr/local/sbin/bandkit-staging-deploy
 ```
 
-This pulls latest `main`, builds frontend, publishes `dist/`, installs backend dependencies, runs migrations, restarts backend, reloads Nginx and checks API health.
+This pulls latest `main`, builds frontend, publishes `dist/`, installs backend dependencies, runs migrations, restarts backend, reloads Nginx, checks local health, checks public HTTPS health and leaves the Git working tree clean.
+
+GitHub Actions staging autodeploy is expected to:
+
+1. SSH to `bandkitdev.mywire.org` as `bandkit-deploy`;
+2. run `sudo -n /usr/local/sbin/bandkit-staging-deploy`;
+3. run `scripts/staging-smoke-api.sh`.
 
 Public API checks:
 
 ```bash
-curl http://141.98.87.9/api/v1/health
-curl http://141.98.87.9/api/v1/health/db
+curl https://bandkitdev.mywire.org/api/v1/health
+curl https://bandkitdev.mywire.org/api/v1/health/db
 ```
 
 ## Backend local commands

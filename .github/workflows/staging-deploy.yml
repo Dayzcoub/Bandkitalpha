@@ -65,14 +65,10 @@ jobs:
             -o StrictHostKeyChecking=yes \
             "$STAGING_USER@$STAGING_HOST" \
             'set -euo pipefail
-             if [ "$(id -u)" -eq 0 ]; then
-               /bin/bash /opt/Bandkitalpha/scripts/staging-deploy.sh
-             else
-               sudo -n /bin/bash /opt/Bandkitalpha/scripts/staging-deploy.sh
-             fi
+             sudo -n /usr/local/sbin/bandkit-staging-deploy
              cd /opt/Bandkitalpha
              git config --global --add safe.directory /opt/Bandkitalpha 2>/dev/null || true
-             /bin/bash scripts/staging-smoke-api.sh
+             API_BASE="${API_BASE:-https://bandkitdev.mywire.org/api/v1}" /bin/bash scripts/staging-smoke-api.sh
              STATUS="$(git status --short)"
              if [ -n "$STATUS" ]; then
                printf "%s\n" "$STATUS"

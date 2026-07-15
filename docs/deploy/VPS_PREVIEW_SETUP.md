@@ -1,143 +1,121 @@
-# BandKit VPS preview deployment
+# BandKit staging VPS deploy
 
-This document describes the GitHub → VPS preview flow for BandKit.
+This document describes the current GitHub Actions → VPS staging flow for BandKit.
 
-## Current preview status
+## Current staging status
 
-Current temporary public preview URL:
-
-```text
-http://141.98.87.9
-```
-
-Current status:
+Current public staging URL:
 
 ```text
-GitHub main → GitHub Actions → build → VPS → Nginx → public preview
+https://bandkitdev.mywire.org
 ```
 
-The preview is intentionally served by IP for now. A domain name and HTTPS certificate will be connected in a separate stage after the final domain/brand direction is selected.
-
-This temporary IP preview is used for:
-
-- desktop UI checks;
-- mobile UI checks from real devices;
-- direct SPA route checks such as `/feed`, `/bands`, `/profile/p2`;
-- demonstration of the current mock/prototype without local launch.
-
-## Target scheme
+Current deploy chain:
 
 ```text
-GitHub repo Dayzcoub/Bandkitalpha main
-  -> GitHub Actions build
-  -> rsync dist/ to VPS
-  -> Nginx serves /var/www/bandkit/current
+GitHub main -> GitHub Actions -> SSH as bandkit-deploy -> sudo /usr/local/sbin/bandkit-staging-deploy -> scripts/staging-smoke-api.sh -> Nginx -> public HTTPS staging
 ```
 
-The workflow file is:
+The old IP-only preview is no longer the current public entry point. Direct IP access may still redirect to the domain for operator convenience, but the public staging URL is the domain above.
+
+## Secrets expected by GitHub Actions
+
+The workflow uses these repository secrets:
 
 ```text
-.github/workflows/deploy-vps.yml
+STAGING_HOST=bandkitdev.mywire.org
+STAGING_USER=bandkit-deploy
+STAGING_PORT=22
+STAGING_SSH_KEY=<private key content>
+STAGING_KNOWN_HOSTS=<known_hosts content>
 ```
 
-## GitHub Secrets
+Do not commit private keys or known_hosts secrets into the repository.
 
-Add these secrets in GitHub repository settings:
+## VPS-side deploy contract
+
+The server-side deployment entry point is:
 
 ```text
-VPS_HOST=your.server.ip.or.domain
-VPS_USER=bandkit
-VPS_PORT=22
-VPS_DEPLOY_PATH=/var/www/bandkit
-VPS_SSH_KEY=private deploy key content
+/usr/local/sbin/bandkit-staging-deploy
 ```
 
-`VPS_PORT` and `VPS_DEPLOY_PATH` are optional. Defaults are `22` and `/var/www/bandkit`.
+Characteristics:
 
-Do not commit private keys into the repository.
+- file owner: `root:root`
+- mode: `755`
+- callable through sudo by `bandkit-deploy`
+- supports `--check` for non-mutating validation
+- performs Git, npm, build and migrations as `bandkit`
+- uses root only for publication and service control steps that actually require elevated rights
 
-## Recommended VPS user
+## Manual operator checks
 
-Create a dedicated deploy user:
+Wrapper preflight only:
 
 ```bash
-sudo adduser --disabled-password --gecos "" bandkit
-sudo mkdir -p /var/www/bandkit/releases
-sudo chown -R bandkit:bandkit /var/www/bandkit
-sudo chmod -R 755 /var/www/bandkit
+sudo /usr/local/sbin/bandkit-staging-deploy --check
 ```
 
-Add the public key matching `VPS_SSH_KEY` to:
+Manual deploy on VPS:
+
+```bash
+sudo /usr/local/sbin/bandkit-staging-deploy
+```
+
+Public health checks:
+
+```bash
+curl https://bandkitdev.mywire.org/api/v1/health
+curl https://bandkitdev.mywire.org/api/v1/health/db
+```
+
+## SSH access for GitHub Actions
+
+The dedicated SSH user is:
 
 ```text
-/home/bandkit/.ssh/authorized_keys
+bandkit-deploy
 ```
 
-## Nginx config example
+This user must not be reused for interactive admin work. It exists only to let GitHub Actions connect and run the controlled wrapper through sudo.
 
-Replace `demo.bandkit.example` with the real domain or use the VPS IP for first tests.
+The GitHub Actions key should be stored outside the repository and injected via secrets. The public key must be present in:
 
-```nginx
-server {
-    listen 80;
-    server_name demo.bandkit.example;
-
-    root /var/www/bandkit/current;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    location ~* \.(?:css|js|png|jpg|jpeg|gif|svg|webp|ico|woff2?)$ {
-        expires 7d;
-        add_header Cache-Control "public, max-age=604800";
-        try_files $uri =404;
-    }
-}
+```text
+/home/bandkit-deploy/.ssh/authorized_keys
 ```
 
-Enable it:
+## Nginx staging site
 
-```bash
-sudo nano /etc/nginx/sites-available/bandkit-preview
-sudo ln -s /etc/nginx/sites-available/bandkit-preview /etc/nginx/sites-enabled/bandkit-preview
-sudo nginx -t
-sudo systemctl reload nginx
+The active site file is:
+
+```text
+/etc/nginx/sites-available/bandkit-preview
 ```
 
-## HTTPS later
+Current expectations:
 
-After the domain points to the VPS:
+- `https://bandkitdev.mywire.org` serves the frontend;
+- `https://bandkitdev.mywire.org/api/` proxies to `127.0.0.1:3001/api/`;
+- HTTP domain traffic redirects to HTTPS;
+- direct HTTP access by IP may redirect to the domain.
 
-```bash
-sudo apt update
-sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d demo.bandkit.example
+## Workflow notes
+
+The repository workflow that drives staging is:
+
+```text
+.github/workflows/staging-deploy.yml
 ```
 
-## Manual first deploy check
+The workflow should:
 
-After the first successful GitHub Actions run:
-
-```bash
-ls -la /var/www/bandkit/current
-curl -I http://demo.bandkit.example
-```
-
-For SPA deep links, this should also return the app instead of Nginx 404:
-
-```bash
-curl -I http://demo.bandkit.example/profile/p2
-```
-
-For the temporary IP preview, use:
-
-```bash
-curl -I http://141.98.87.9/feed
-curl -I http://141.98.87.9/bands
-curl -I http://141.98.87.9/profile/p2
-```
+1. prepare the SSH key and known_hosts;
+2. connect as `bandkit-deploy`;
+3. run `sudo -n /usr/local/sbin/bandkit-staging-deploy`;
+4. run the existing `scripts/staging-smoke-api.sh` smoke test;
+5. fail if the VPS Git working tree is left dirty.
 
 ## Local development remains unchanged
 
