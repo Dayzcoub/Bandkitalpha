@@ -16,8 +16,11 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
    Приоритетнее ТЗ v1.2 там, где расходится.
 2. `docs/handoff/spec/BandKit_Security_Engineering_Standard_v1.md` — правила кода
    по всем классам атак + Security Definition of Done (§16).
-3. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
-4. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_10_26.md` — где остановились.
+3. `docs/handoff/spec/BandKit_Chat_and_Messaging_Security_v1.md` — обязательная
+   модель личных диалогов и чатов сущностей. Заменяет ТЗ v1.2 §8 и уточняет §9
+   в части сообщений.
+4. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
+5. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_10_26.md` — где остановились.
 
 Полное ТЗ: `docs/handoff/spec/BandKit_TZ_v1_2.md`.
 
@@ -32,6 +35,19 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 - **Модель данных generic:** типы/роли/статусы — reference-таблицы, не enum;
   individual и org — единый Party; вертикально-специфичные поля — extension (JSONB),
   не ALTER под каждую вертикаль. Не хардкодить под «музыкантов».
+- **Чаты разделены жёстко:** существует один канонический личный диалог на пару
+  пользователей и отдельные групповые чаты сущностей. Никаких entity-DM,
+  «личек внутри группы/мероприятия» и смешивания истории.
+- **Кнопка «Написать» у пользователя всегда открывает глобальный personal chat.**
+  Контекст группы, мероприятия или другой сущности не создаёт новый диалог.
+- **Чат сущности принадлежит ровно одной сущности.** Чат группы и чат мероприятия
+  независимы даже при совпадающем составе; доступ только через server-side
+  membership/permission policy.
+- **Текущие чаты не E2EE.** Они работают в `server_managed` режиме, потому что
+  server-side Link Guard, moderation evidence и поиск требуют обработки текста.
+  Не заявлять E2EE в UI или документации до реализации полного протокола.
+- **E2EE — только отдельный будущий epic для personal chats.** Не начинать его как
+  обычный chat slice и не отключать текущие защитные механизмы ради заглушки.
 - **Никаких хардкод пользовательских строк** — только i18n-ключи `t("module.key")`.
 - **Никаких inline styles и одноразовых CSS-костылей** — design tokens + shared
   компоненты + утверждённые layout patterns.
@@ -50,7 +66,29 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 2. Серверный PermissionService (источник истины).
 3. Реальные write-слайсы за auth (membership → events → chat → documents).
 4+. Домены по приоритету: reputation → link guard → moderation → feed → files →
-   PDF → billing → E2EE.
+   PDF → billing.
+
+### Chat plan
+
+Текущий chat domain реализуется только в `server_managed` режиме и обязан разделять:
+
+1. **Personal conversations** — один глобальный канонический диалог user ↔ user;
+   `entity_id = null`; переход «Написать» из любого места открывает тот же диалог.
+2. **Entity conversations** — отдельный групповой чат конкретной группы, проекта,
+   мероприятия, студии или организации; собственные membership, permissions,
+   история и lifecycle.
+
+Для обоих текущих типов сохраняются server-side Link Guard, moderation report flow,
+evidence snapshot и object-level authorization согласно профильной спецификации.
+
+### Future epic: E2EE for personal conversations
+
+E2EE не входит в текущий roadmap chat slices. Вернуться к нему только отдельным
+architecture epic после проектирования key management, multi-device, recovery,
+encrypted attachments, migration, client-side search/link protection, voluntary
+evidence disclosure и отдельного threat model/security review.
+
+Entity conversations остаются `server_managed` по дизайну.
 
 ## Стек
 
