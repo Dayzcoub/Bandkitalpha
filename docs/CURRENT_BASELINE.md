@@ -8,7 +8,7 @@
 - First clean GitHub baseline commit: `a178eb6`
 - Package version: `1.10.0`
 - Local preview: `http://127.0.0.1:5199`
-- Staging preview: `http://141.98.87.9`
+- Staging preview: `https://bandkitdev.mywire.org`
 - Current stage: MVP Shell + Staging Backend Foundation
 - Current accepted staging checkpoint: `1.10.18 staging deploy script verified`
 
@@ -40,8 +40,9 @@ Current stable staging backend foundation includes:
 - backend health endpoints `/api/v1/health` and `/api/v1/health/db`;
 - systemd service `bandkit-backend`;
 - Nginx `/api/` proxy;
-- verified public API health;
-- one-command staging deploy script.
+- verified public HTTPS API health;
+- root-owned wrapper `/usr/local/sbin/bandkit-staging-deploy` for controlled staging deploy;
+- dedicated autodeploy SSH user `bandkit-deploy` for GitHub Actions.
 
 Frontend mock screens are not yet connected to real backend business APIs. Real registration, entity creation, chat messages and document actions still require API modules and frontend integration.
 
@@ -67,15 +68,20 @@ If only preview is needed:
 Normal staging deploy:
 
 ```bash
-cd /opt/Bandkitalpha
-sudo scripts/staging-deploy.sh
+sudo /usr/local/sbin/bandkit-staging-deploy
+```
+
+Wrapper-only preflight:
+
+```bash
+sudo /usr/local/sbin/bandkit-staging-deploy --check
 ```
 
 Public API checks:
 
 ```bash
-curl http://141.98.87.9/api/v1/health
-curl http://141.98.87.9/api/v1/health/db
+curl https://bandkitdev.mywire.org/api/v1/health
+curl https://bandkitdev.mywire.org/api/v1/health/db
 ```
 
 Backend service checks:
