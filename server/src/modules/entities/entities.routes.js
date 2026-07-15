@@ -16,21 +16,13 @@ function slugify(value) {
     .slice(0, 64);
 }
 
-async function getDevActor(client, req) {
-  const handle = req.headers['x-bandkit-dev-user'] || 'demo-manager';
-  const result = await client.query(
-    `select id, display_name, handle, email, status
-     from users
-     where handle = $1
-     limit 1`,
-    [handle]
-  );
-
-  return result.rows[0] || null;
-}
-
+// GET /entities — the entity directory, scoped to what the caller may see. A guest
+// gets 'public' entities only; that is a real answer, not an error, because public
+// entities are meant to be discoverable. The scoping mirrors canViewEntity — keep
+// the two in step.
 export async function handleListEntities(req, res) {
   try {
+    const actor = await resolveSessionUser(req);
     const result = await getPool().query(
       `select
          e.id,
@@ -43,9 +35,22 @@ export async function handleListEntities(req, res) {
          coalesce(count(em.user_id), 0)::int as member_count
        from entities e
        left join entity_memberships em on em.entity_id = e.id and em.status = 'active'
+       where e.status not in ('deleted', 'anonymized')
+         and (
+           e.visibility = 'public'
+           or ($1::uuid is not null and e.visibility = 'registered')
+           or ($1::uuid is not null and exists (
+                select 1
+                  from entity_memberships m
+                 where m.entity_id = e.id
+                   and m.user_id = $1::uuid
+                   and m.status = 'active'
+              ))
+         )
        group by e.id
        order by e.created_at desc
-       limit 50`
+       limit 50`,
+      [actor?.id || null]
     );
 
     sendJson(res, 200, {
@@ -60,8 +65,10 @@ export async function handleListEntities(req, res) {
 }
 
 export async function handleGetEntity(req, res, entityId) {
+  const client = await getPool().connect();
   try {
-    const result = await getPool().query(
+    const actor = await resolveSessionUser(req);
+    const result = await client.query(
       `select
          e.id,
          e.name,
@@ -80,14 +87,17 @@ export async function handleGetEntity(req, res, entityId) {
     );
 
     const entity = result.rows[0];
+    const membership = entity && actor
+      ? (await client.query(
+          'select role, status from entity_memberships where entity_id = $1 and user_id = $2 limit 1',
+          [entity.id, actor.id]
+        )).rows[0] || null
+      : null;
 
-    if (!entity) {
+    // Unknown and invisible both answer 404: an outsider is never told an entity
+    // exists (same rule as events, checkpoint 1.15.1).
+    if (!entity || !permissionService.canViewEntity(actor, entity, membership)) {
       sendError(res, 404, 'ENTITY_NOT_FOUND', 'Entity not found');
-      return;
-    }
-
-    if (!permissionService.canViewEntity({ id: 'staging-reader' }, entity)) {
-      sendError(res, 403, 'ENTITY_FORBIDDEN', 'Entity access denied');
       return;
     }
 
@@ -99,6 +109,8 @@ export async function handleGetEntity(req, res, entityId) {
     sendError(res, 500, 'ENTITY_GET_FAILED', 'Failed to get entity', {
       message: error?.message || String(error)
     });
+  } finally {
+    client.release();
   }
 }
 
@@ -132,12 +144,11 @@ export async function handleCreateEntity(req, res) {
     // generated slug instead of rejecting the name.
     const finalSlug = requestedSlug || `entity-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
-    // Actor comes from the session (server-side source of truth). The dev-header
-    // fallback stays only outside production for tooling/smoke scripts.
-    let actor = await resolveSessionUser(req);
-    if (!actor && process.env.NODE_ENV !== 'production') {
-      actor = await getDevActor(getPool(), req);
-    }
+    // Actor comes from the session, and only from the session. There used to be an
+    // x-bandkit-dev-user header fallback here "for tooling outside production" —
+    // but staging is a public host, so it let anyone on the internet create an
+    // entity as any user they named. Tooling authenticates like everyone else.
+    const actor = await resolveSessionUser(req);
     if (!actor) {
       sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required to create an entity');
       return;

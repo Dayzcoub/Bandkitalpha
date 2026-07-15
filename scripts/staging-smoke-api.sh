@@ -2,13 +2,27 @@
 set -euo pipefail
 
 API_BASE="${API_BASE:-https://bandkitdev.mywire.org/api/v1}"
-ENTITY_SLUG="smoke-api-band"
-ENTITY_NAME="Smoke API Band"
+
+# The smoke authenticates like a real client. Until 1.15.3 it created its entity
+# through an x-bandkit-dev-user header backdoor, which meant the deploy gate both
+# depended on and hid an unauthenticated write path.
+SMOKE_EMAIL="${SMOKE_EMAIL:-user@bandkit.local}"
+SMOKE_PASSWORD="${SMOKE_PASSWORD:-UserPass123}"
+
+# Owned by the account above. The old 'smoke-api-band' rows belong to demo-manager
+# (created back when anyone could impersonate them) and are correctly invisible to
+# this account now, so the smoke uses its own slug rather than reusing them.
+ENTITY_SLUG="smoke-auth-band"
+ENTITY_NAME="Smoke Auth Band"
+
+COOKIE_JAR="$(mktemp)"
+trap 'rm -f "$COOKIE_JAR"' EXIT
 
 log() {
   printf '\n[bandkit smoke] %s\n' "$*"
 }
 
+# Anonymous request. Fails the script on any 4xx/5xx.
 request() {
   local method="$1"
   local path="$2"
@@ -17,10 +31,40 @@ request() {
   if [ -n "$data" ]; then
     curl -fsS -X "$method" "${API_BASE}${path}" \
       -H "Content-Type: application/json" \
-      -H "X-BandKit-Dev-User: demo-manager" \
       -d "$data"
   else
     curl -fsS -X "$method" "${API_BASE}${path}"
+  fi
+}
+
+# Request carrying the smoke session cookie.
+auth_request() {
+  local method="$1"
+  local path="$2"
+  local data="${3:-}"
+
+  if [ -n "$data" ]; then
+    curl -fsS -X "$method" "${API_BASE}${path}" \
+      -b "$COOKIE_JAR" \
+      -H "Content-Type: application/json" \
+      -d "$data"
+  else
+    curl -fsS -X "$method" "${API_BASE}${path}" -b "$COOKIE_JAR"
+  fi
+}
+
+auth_request_allow_error() {
+  local method="$1"
+  local path="$2"
+  local data="${3:-}"
+
+  if [ -n "$data" ]; then
+    curl -sS -X "$method" "${API_BASE}${path}" \
+      -b "$COOKIE_JAR" \
+      -H "Content-Type: application/json" \
+      -d "$data"
+  else
+    curl -sS -X "$method" "${API_BASE}${path}" -b "$COOKIE_JAR"
   fi
 }
 
@@ -32,10 +76,24 @@ request_allow_error() {
   if [ -n "$data" ]; then
     curl -sS -X "$method" "${API_BASE}${path}" \
       -H "Content-Type: application/json" \
-      -H "X-BandKit-Dev-User: demo-manager" \
       -d "$data"
   else
     curl -sS -X "$method" "${API_BASE}${path}"
+  fi
+}
+
+# HTTP status of an anonymous request, for the access-control assertions.
+anon_status() {
+  local method="$1"
+  local path="$2"
+  local data="${3:-}"
+
+  if [ -n "$data" ]; then
+    curl -sS -o /dev/null -w '%{http_code}' -X "$method" "${API_BASE}${path}" \
+      -H "Content-Type: application/json" \
+      -d "$data"
+  else
+    curl -sS -o /dev/null -w '%{http_code}' -X "$method" "${API_BASE}${path}"
   fi
 }
 
@@ -49,6 +107,32 @@ expect_contains() {
     echo "Expected to find: ${expected}" >&2
     echo "Response was:" >&2
     echo "$input" >&2
+    exit 1
+  fi
+}
+
+expect_missing() {
+  local input="$1"
+  local unexpected="$2"
+  local label="$3"
+
+  if printf '%s' "$input" | grep -q "$unexpected"; then
+    echo "Smoke check failed: ${label}" >&2
+    echo "Must NOT contain: ${unexpected}" >&2
+    echo "Response was:" >&2
+    echo "$input" >&2
+    exit 1
+  fi
+}
+
+expect_status() {
+  local actual="$1"
+  local expected="$2"
+  local label="$3"
+
+  if [ "$actual" != "$expected" ]; then
+    echo "Smoke check failed: ${label}" >&2
+    echo "Expected HTTP ${expected}, got ${actual}" >&2
     exit 1
   fi
 }
@@ -71,9 +155,26 @@ echo "$SEED"
 expect_contains "$SEED" '"ok":true' 'seed demo ok'
 expect_contains "$SEED" 'Demo Band' 'seed demo entity exists'
 
-log "Ensuring deterministic smoke entity"
+log "Logging in as ${SMOKE_EMAIL}"
+LOGIN_BODY="{\"email\":\"${SMOKE_EMAIL}\",\"password\":\"${SMOKE_PASSWORD}\"}"
+LOGIN_RESPONSE="$(curl -fsS -c "$COOKIE_JAR" -X POST "${API_BASE}/auth/login" \
+  -H "Content-Type: application/json" \
+  -d "$LOGIN_BODY")"
+echo "$LOGIN_RESPONSE"
+expect_contains "$LOGIN_RESPONSE" '"ok":true' 'smoke login ok'
+if ! grep -q 'bandkit_session' "$COOKIE_JAR"; then
+  echo "Smoke check failed: login set no session cookie" >&2
+  exit 1
+fi
+
+log "Checking entity writes reject anonymous callers"
+# Regression guard for the x-bandkit-dev-user backdoor: creating an entity without
+# a session must be impossible, on staging as much as in production.
 CREATE_BODY="{\"name\":\"${ENTITY_NAME}\",\"type\":\"band\",\"slug\":\"${ENTITY_SLUG}\",\"visibility\":\"members\"}"
-CREATE_RESPONSE="$(request_allow_error POST /entities "$CREATE_BODY")"
+expect_status "$(anon_status POST /entities "$CREATE_BODY")" 401 'anonymous entity create is rejected'
+
+log "Ensuring deterministic smoke entity"
+CREATE_RESPONSE="$(auth_request_allow_error POST /entities "$CREATE_BODY")"
 echo "$CREATE_RESPONSE"
 if printf '%s' "$CREATE_RESPONSE" | grep -q '"ok":true'; then
   expect_contains "$CREATE_RESPONSE" "$ENTITY_SLUG" 'created entity slug present'
@@ -85,13 +186,24 @@ else
   exit 1
 fi
 
-log "Listing entities"
-LIST_RESPONSE="$(request GET /entities)"
+log "Checking the entity directory is scoped"
+# The directory answers guests — public entities are meant to be found — but a
+# members-only entity must never appear in an anonymous listing.
+ANON_LIST="$(request GET /entities)"
+echo "$ANON_LIST"
+expect_missing "$ANON_LIST" "$ENTITY_SLUG" 'members-only entity is absent from the anonymous directory'
+
+log "Checking members-only entity detail is not readable anonymously"
+# 404, not 403: an outsider is never told the entity exists.
+expect_status "$(anon_status GET "/entities/${ENTITY_SLUG}")" 404 'anonymous entity detail is 404'
+
+log "Listing entities as a member"
+LIST_RESPONSE="$(auth_request GET /entities)"
 echo "$LIST_RESPONSE"
 expect_contains "$LIST_RESPONSE" "$ENTITY_SLUG" 'entity list contains smoke entity'
 
-log "Getting entity by slug"
-DETAIL_BY_SLUG="$(request GET "/entities/${ENTITY_SLUG}")"
+log "Getting entity by slug as a member"
+DETAIL_BY_SLUG="$(auth_request GET "/entities/${ENTITY_SLUG}")"
 echo "$DETAIL_BY_SLUG"
 expect_contains "$DETAIL_BY_SLUG" '"ok":true' 'entity detail by slug ok'
 expect_contains "$DETAIL_BY_SLUG" "$ENTITY_SLUG" 'detail by slug contains slug'
@@ -103,6 +215,10 @@ log "Checking events read API requires auth"
 EVENTS_RESPONSE="$(request_allow_error GET /events)"
 echo "$EVENTS_RESPONSE"
 expect_contains "$EVENTS_RESPONSE" 'AUTH_REQUIRED' 'events list is protected'
+
+log "Checking admin console requires staff"
+# The owner console exposes the user registry and the audit log.
+expect_status "$(anon_status GET /admin/overview)" 401 'admin console is protected'
 
 log "Checking chat rooms read API"
 ROOMS_RESPONSE="$(request GET /chat-rooms)"

@@ -116,8 +116,16 @@ cookie left in the browser from earlier local dev, which is the gate working.
    (chat spec §11).
 4. `POST /dev/seed-demo` — gated only on `NODE_ENV in (staging, development)`, and
    staging reports `env=staging`: an unauthenticated write endpoint open to the
-   internet. Likely the real source of the demo-row duplication blamed on
-   non-idempotency.
+   internet.
+
+   This doc first claimed it was "likely the real source of the demo-row
+   duplication blamed on non-idempotency". **That was wrong** — measured after
+   1.15.2: staging held 212 events at 17:25 and still exactly 212 after a deploy
+   ran the smoke (which calls this endpoint) at 17:50. The idempotency fix in
+   `34a5b38` holds; all 212 were historical residue from before it, since removed
+   by `cleanup-demo-duplicates.mjs` (211 duplicates deleted, 1 real event left).
+   The endpoint is still an unauthenticated write and still needs closing, but it
+   causes no growth — priority is lower than stated.
 
 Eight holes of one class now (three fixed in 1.14.0/1.15.1, five found here). The
 cause is structural: `index.js` lets a route exist without stating its access rule.

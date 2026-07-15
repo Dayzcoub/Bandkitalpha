@@ -79,6 +79,14 @@ set -a
 set +a
 node scripts/run-migrations.js
 
+# The smoke authenticates like a real client, so its account must exist before it
+# runs. --only is deliberate: seed-auth's passwords are in the repository, and this
+# host is on the public internet, so the deploy creates the smoke's unprivileged
+# account and nothing else. Never add the super_admin here — seeding it would put a
+# repo-known password on a staff account and reset it on every deploy.
+log "Seeding the smoke test account"
+node scripts/seed-auth.mjs --only=user@bandkit.local
+
 log "Checking backend code syntax"
 npm run check
 

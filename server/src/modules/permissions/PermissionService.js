@@ -17,16 +17,25 @@ export class PermissionService {
     return Boolean(actor && actor.id && !SANCTIONED_STATUSES.has(actor.status));
   }
 
-  canViewEntity(actor, entity) {
+  // Entity visibility levels come from the CHECK in migration 0002 and mean what
+  // they say: 'public' is readable by anyone including guests, 'registered' by any
+  // signed-in account, and 'members'/'private' only by an active member. The
+  // membership is passed in, not looked up, so this stays a pure decision and the
+  // route owns the query.
+  canViewEntity(actor, entity, membership = null) {
     if (!entity || entity.status === 'deleted' || entity.status === 'anonymized') {
       return false;
     }
 
-    if (entity.visibility === 'public' || entity.visibility === 'registered') {
+    if (entity.visibility === 'public') {
       return true;
     }
 
-    return Boolean(actor && actor.id);
+    if (entity.visibility === 'registered') {
+      return Boolean(actor && actor.id);
+    }
+
+    return Boolean(actor && actor.id && membership && membership.status === 'active');
   }
 
   // Managing your own individual party (e.g. your professions) only requires an
