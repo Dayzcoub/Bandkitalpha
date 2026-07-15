@@ -7,6 +7,7 @@ import { sendError, sendJson } from '../../shared/http.js';
 import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
 import { detectType, safeFilename, ALLOWED_MIMES } from '../../shared/fileTypes.js';
+import { getEntityPlan, getStorageUsed, getVersionCount } from '../billing/plans.js';
 
 // Files are never served from the web root: every read goes through this proxy,
 // which checks membership first (Security §6, §16.1/§16.2).
@@ -104,6 +105,26 @@ export async function handleUploadDocumentFile(req, res, env, documentId) {
       return;
     }
 
+    // Plan limits are enforced before a byte is written (Monetization policy:
+    // storage quotas, larger attachments and more file versions are exactly the
+    // paid axes). The global cap still applies as a hard ceiling.
+    const plan = await getEntityPlan(client, access.doc.entity_id);
+    const uploadCap = Math.min(Number(plan.max_upload_bytes), env.maxUploadBytes);
+    const versions = await getVersionCount(client, access.doc.id);
+    if (versions >= plan.max_file_versions) {
+      sendError(res, 409, 'PLAN_VERSION_LIMIT', 'This plan\'s file version limit is reached', {
+        plan: plan.key, limit: plan.max_file_versions
+      });
+      return;
+    }
+    const storageUsed = await getStorageUsed(client, access.doc.entity_id);
+    if (storageUsed >= Number(plan.max_storage_bytes)) {
+      sendError(res, 409, 'PLAN_STORAGE_FULL', 'This plan\'s storage is full', {
+        plan: plan.key, limit: Number(plan.max_storage_bytes), used: storageUsed
+      });
+      return;
+    }
+
     // The storage key is built from server-side values only — never from the
     // client filename — so a crafted name cannot escape the storage root.
     const nextVersion = (access.doc.version_number || 0) + 1;
@@ -115,7 +136,7 @@ export async function handleUploadDocumentFile(req, res, env, documentId) {
     absPath = path.join(env.filesDir, storageKey);
     await fsp.mkdir(path.dirname(absPath), { recursive: true });
 
-    const { size, head } = await streamToFile(req, absPath, env.maxUploadBytes);
+    const { size, head } = await streamToFile(req, absPath, uploadCap);
     if (size === 0) {
       await fsp.rm(absPath, { force: true });
       sendError(res, 400, 'UPLOAD_EMPTY', 'The uploaded file is empty');
@@ -127,6 +148,15 @@ export async function handleUploadDocumentFile(req, res, env, documentId) {
     if (!detected) {
       await fsp.rm(absPath, { force: true });
       sendError(res, 415, 'UPLOAD_TYPE_REJECTED', 'This file type is not allowed', { allowed: ALLOWED_MIMES });
+      return;
+    }
+    // The cap bounds a single file; the quota bounds the total. Check the real
+    // size against the remaining quota now that it is known.
+    if (storageUsed + size > Number(plan.max_storage_bytes)) {
+      await fsp.rm(absPath, { force: true });
+      sendError(res, 409, 'PLAN_STORAGE_FULL', 'This file would exceed the plan storage quota', {
+        plan: plan.key, limit: Number(plan.max_storage_bytes), used: storageUsed
+      });
       return;
     }
     const filename = safeFilename(decodeFilenameHeader(req.headers['x-filename']), detected.ext);

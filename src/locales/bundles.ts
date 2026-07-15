@@ -405,7 +405,12 @@ export const localeBundles = {
       "entityDetail.visibility.private": "Private",
       "entityDetail.visibility.members": "Members",
       "entityDetail.visibility.registered": "Registered users",
-      "entityDetail.visibility.public": "Public"
+      "entityDetail.visibility.public": "Public",
+      "entityDetail.planTitle": "Plan and usage",
+      "entityDetail.planMembers": "Members",
+      "entityDetail.planStorage": "Storage",
+      "entityDetail.planVersions": "File versions per document",
+      "entityDetail.planUpload": "Max file size"
     },
     "chats": {
       "chats.title": "Chats",
@@ -791,7 +796,9 @@ export const localeBundles = {
       "documents.real.uploadError": "Could not upload the file.",
       "documents.real.uploadForbidden": "You cannot upload files for this document.",
       "documents.real.typeRejected": "This file type is not allowed. Use PDF, PNG, JPEG or WebP.",
-      "documents.real.tooLarge": "The file is too large."
+      "documents.real.tooLarge": "The file is too large.",
+      "documents.real.planStorageFull": "The entity's storage quota is full for its current plan.",
+      "documents.real.planVersionLimit": "The file version limit for this plan is reached."
     },
     "errors": {
       "errors.generic": "Something went wrong",
@@ -1517,7 +1524,12 @@ export const localeBundles = {
       "entityDetail.visibility.private": "Приватная",
       "entityDetail.visibility.members": "Участники",
       "entityDetail.visibility.registered": "Зарегистрированные",
-      "entityDetail.visibility.public": "Публичная"
+      "entityDetail.visibility.public": "Публичная",
+      "entityDetail.planTitle": "Тариф и потребление",
+      "entityDetail.planMembers": "Участники",
+      "entityDetail.planStorage": "Хранилище",
+      "entityDetail.planVersions": "Версий файла на документ",
+      "entityDetail.planUpload": "Макс. размер файла"
     },
     "chats": {
       "chats.title": "Чаты",
@@ -1903,7 +1915,9 @@ export const localeBundles = {
       "documents.real.uploadError": "Не удалось загрузить файл.",
       "documents.real.uploadForbidden": "У вас нет прав загружать файлы для этого документа.",
       "documents.real.typeRejected": "Такой тип файла не разрешён. Используйте PDF, PNG, JPEG или WebP.",
-      "documents.real.tooLarge": "Файл слишком большой."
+      "documents.real.tooLarge": "Файл слишком большой.",
+      "documents.real.planStorageFull": "Хранилище сущности заполнено на текущем тарифе.",
+      "documents.real.planVersionLimit": "Достигнут лимит версий файла на этом тарифе."
     },
     "errors": {
       "errors.generic": "Что-то пошло не так",

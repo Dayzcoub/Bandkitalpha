@@ -50,5 +50,10 @@
   "entityDetail.visibility.private": "Приватная",
   "entityDetail.visibility.members": "Участники",
   "entityDetail.visibility.registered": "Зарегистрированные",
-  "entityDetail.visibility.public": "Публичная"
+  "entityDetail.visibility.public": "Публичная",
+  "entityDetail.planTitle": "Тариф и потребление",
+  "entityDetail.planMembers": "Участники",
+  "entityDetail.planStorage": "Хранилище",
+  "entityDetail.planVersions": "Версий файла на документ",
+  "entityDetail.planUpload": "Макс. размер файла"
 }

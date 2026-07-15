@@ -23,5 +23,7 @@
   "documents.real.uploadError": "Не удалось загрузить файл.",
   "documents.real.uploadForbidden": "У вас нет прав загружать файлы для этого документа.",
   "documents.real.typeRejected": "Такой тип файла не разрешён. Используйте PDF, PNG, JPEG или WebP.",
-  "documents.real.tooLarge": "Файл слишком большой."
+  "documents.real.tooLarge": "Файл слишком большой.",
+  "documents.real.planStorageFull": "Хранилище сущности заполнено на текущем тарифе.",
+  "documents.real.planVersionLimit": "Достигнут лимит версий файла на этом тарифе."
 }

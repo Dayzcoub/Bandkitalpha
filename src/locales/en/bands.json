@@ -50,5 +50,10 @@
   "entityDetail.visibility.private": "Private",
   "entityDetail.visibility.members": "Members",
   "entityDetail.visibility.registered": "Registered users",
-  "entityDetail.visibility.public": "Public"
+  "entityDetail.visibility.public": "Public",
+  "entityDetail.planTitle": "Plan and usage",
+  "entityDetail.planMembers": "Members",
+  "entityDetail.planStorage": "Storage",
+  "entityDetail.planVersions": "File versions per document",
+  "entityDetail.planUpload": "Max file size"
 }

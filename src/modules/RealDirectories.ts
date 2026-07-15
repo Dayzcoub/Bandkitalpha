@@ -165,6 +165,11 @@ async function mountDocuments(host: HTMLElement): Promise<void> {
       if (res.status === 201) return draw(t('documents.real.uploaded'), 'ok');
       if (res.status === 415) return draw(t('documents.real.typeRejected'), 'error');
       if (res.status === 413) return draw(t('documents.real.tooLarge'), 'error');
+      if (res.status === 409) {
+        const code = body?.error?.code;
+        if (code === 'PLAN_STORAGE_FULL') return draw(t('documents.real.planStorageFull'), 'error');
+        if (code === 'PLAN_VERSION_LIMIT') return draw(t('documents.real.planVersionLimit'), 'error');
+      }
       if (res.status === 403 || res.status === 404) return draw(t('documents.real.uploadForbidden'), 'error');
       return draw(body?.error?.message || t('documents.real.uploadError'), 'error');
     }).catch(() => draw(t('documents.real.uploadError'), 'error'));

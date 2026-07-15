@@ -19,6 +19,7 @@ import { handleGetMyProfessions, handleReplaceMyProfessions, handleListPartyCand
 import { handleCreateSlot, handleListSlots, handleCreateEngagement, handleListEngagements, handleUpdateEngagementStatus } from './modules/events/eventOps.routes.js';
 import { handleListReliabilityCatalogue, handleRecordReliabilityEvent, handleListReliabilityEvents, handlePartyReliabilitySummary, handleOpenDispute, handleResolveDispute, handleListMyReliability } from './modules/reliability/reliability.routes.js';
 import { handleReportCatalogue, handleCreateReport, handleListReports, handleGetReport, handleUpdateReport, handleReportAction } from './modules/moderation/reports.routes.js';
+import { handleListPlans, handleGetEntityPlan, handleSetEntityPlan } from './modules/billing/plans.routes.js';
 import { handleSubscribe, handleUnsubscribe, handleCreateEntityPost, handleListEntityPosts, handleMyFeed, handleMySubscriptions, handleCreateComment, handleListComments, handleLikePost, handleUnlikePost, handleUpdateSubscription } from './modules/feed/feed.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
@@ -59,6 +60,7 @@ const server = http.createServer((req, res) => {
       const reportActionsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/reports/([^/]+)/actions$`));
       const entitySubscriptionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/subscription$`));
       const entityPostsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/posts$`));
+      const entityPlanMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/plan$`));
       const postCommentsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/comments$`));
       const postLikeMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/like$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
@@ -128,6 +130,21 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/auth/2fa/disable`) {
         await handleDisable2fa(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/plans`) {
+        await handleListPlans(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && entityPlanMatch) {
+        await handleGetEntityPlan(req, res, decodeURIComponent(entityPlanMatch[1]));
+        return;
+      }
+
+      if (req.method === 'PUT' && entityPlanMatch) {
+        await handleSetEntityPlan(req, res, decodeURIComponent(entityPlanMatch[1]));
         return;
       }
 

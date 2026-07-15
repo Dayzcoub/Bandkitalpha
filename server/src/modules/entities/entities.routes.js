@@ -1,6 +1,7 @@
 import { getPool } from '../../db/client.js';
 import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
+import { getEntityPlan, getMemberCount } from '../billing/plans.js';
 import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 
 const allowedEntityTypes = new Set(['band', 'solo_artist', 'orchestra', 'project', 'organization', 'studio', 'venue', 'agency', 'other']);
@@ -240,6 +241,17 @@ export async function handleAddEntityMember(req, res, entityId) {
     );
     if (!permissionService.canManageEntity(actor, managerMembership.rows[0] || null)) {
       sendError(res, 403, 'MEMBER_ADD_FORBIDDEN', 'You do not manage this entity');
+      return;
+    }
+
+    // Plan member limit (Monetization policy: "extended member limits" is a paid
+    // axis). Checked before the lookup so we never hint whether a user exists.
+    const plan = await getEntityPlan(client, entityId);
+    const members = await getMemberCount(client, entityId);
+    if (members >= plan.max_members) {
+      sendError(res, 409, 'PLAN_MEMBER_LIMIT', 'This plan\'s member limit is reached', {
+        plan: plan.key, limit: plan.max_members
+      });
       return;
     }
 

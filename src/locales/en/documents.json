@@ -23,5 +23,7 @@
   "documents.real.uploadError": "Could not upload the file.",
   "documents.real.uploadForbidden": "You cannot upload files for this document.",
   "documents.real.typeRejected": "This file type is not allowed. Use PDF, PNG, JPEG or WebP.",
-  "documents.real.tooLarge": "The file is too large."
+  "documents.real.tooLarge": "The file is too large.",
+  "documents.real.planStorageFull": "The entity's storage quota is full for its current plan.",
+  "documents.real.planVersionLimit": "The file version limit for this plan is reached."
 }
