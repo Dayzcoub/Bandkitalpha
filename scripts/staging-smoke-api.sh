@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-API_BASE="${API_BASE:-http://141.98.87.9/api/v1}"
+API_BASE="${API_BASE:-https://bandkitdev.mywire.org/api/v1}"
 ENTITY_SLUG="smoke-api-band"
 ENTITY_NAME="Smoke API Band"
 

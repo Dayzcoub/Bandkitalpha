@@ -8,7 +8,7 @@ It is intentionally simple. Do not try to remember the full architecture. Use th
 
 Current staging VPS:
 
-- `http://141.98.87.9`
+- `https://bandkitdev.mywire.org`
 - repo path: `/opt/Bandkitalpha`
 - frontend web root: `/var/www/bandkit/current`
 - backend service: `bandkit-backend`
@@ -24,7 +24,7 @@ After new commits are pushed to GitHub, run this on VPS:
 
 ```bash
 cd /opt/Bandkitalpha
-sudo scripts/staging-deploy.sh
+sudo -n /usr/local/sbin/bandkit-staging-deploy
 ```
 
 This command should:
@@ -48,7 +48,7 @@ If this passes, staging deploy is OK.
 Open in browser:
 
 ```text
-http://141.98.87.9
+https://bandkitdev.mywire.org
 ```
 
 ---
@@ -56,8 +56,8 @@ http://141.98.87.9
 ## 3. Check public backend API
 
 ```bash
-curl http://141.98.87.9/api/v1/health
-curl http://141.98.87.9/api/v1/health/db
+curl https://bandkitdev.mywire.org/api/v1/health
+curl https://bandkitdev.mywire.org/api/v1/health/db
 ```
 
 Good result:
@@ -340,14 +340,14 @@ For normal work, remember only:
 
 ```bash
 cd /opt/Bandkitalpha
-sudo scripts/staging-deploy.sh
+sudo -n /usr/local/sbin/bandkit-staging-deploy
 ```
 
 Then check:
 
 ```bash
-curl http://141.98.87.9/api/v1/health
-curl http://141.98.87.9/api/v1/health/db
+curl https://bandkitdev.mywire.org/api/v1/health
+curl https://bandkitdev.mywire.org/api/v1/health/db
 ```
 
 If both return `ok: true`, staging is alive.

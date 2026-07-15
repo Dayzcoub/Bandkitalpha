@@ -8,7 +8,7 @@ This document describes how to prepare the current Ubuntu 22.04 VPS for BandKit 
 
 Current staging VPS:
 
-- `http://141.98.87.9`
+- `https://bandkitdev.mywire.org`
 
 Important:
 
@@ -33,8 +33,8 @@ Ubuntu 22.04 VPS
 Public API later:
 
 ```text
-http://141.98.87.9/api/v1/health
-http://141.98.87.9/api/v1/health/db
+https://bandkitdev.mywire.org/api/v1/health
+https://bandkitdev.mywire.org/api/v1/health/db
 ```
 
 Local backend health before Nginx proxy:
@@ -283,8 +283,8 @@ sudo systemctl reload nginx
 Public checks:
 
 ```bash
-curl http://141.98.87.9/api/v1/health
-curl http://141.98.87.9/api/v1/health/db
+curl https://bandkitdev.mywire.org/api/v1/health
+curl https://bandkitdev.mywire.org/api/v1/health/db
 ```
 
 ---

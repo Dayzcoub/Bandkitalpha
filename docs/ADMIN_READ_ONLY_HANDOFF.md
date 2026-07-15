@@ -193,20 +193,20 @@ server/package.json
 
 ```bash
 cd /opt/Bandkitalpha
-sudo scripts/staging-deploy.sh
+sudo -n /usr/local/sbin/bandkit-staging-deploy
 ```
 
 Главный адрес:
 
 ```txt
-http://141.98.87.9/admin
+https://bandkitdev.mywire.org/admin
 ```
 
 Примеры API-проверок:
 
 ```txt
-http://141.98.87.9/api/v1/admin/settings
-http://141.98.87.9/api/v1/admin/roles
+https://bandkitdev.mywire.org/api/v1/admin/settings
+https://bandkitdev.mywire.org/api/v1/admin/roles
 ```
 
 ## Следующий логичный этап
