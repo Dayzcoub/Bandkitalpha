@@ -14,8 +14,40 @@ permissions:
   contents: read
 
 jobs:
+  # Гейт ДО того, как VPS тронут вообще.
+  #
+  # `npm run check` и без этого job'а запускается — root-овым враппером на самой машине
+  # (`/usr/local/sbin/bandkit-staging-deploy`, вне контроля версий), для фронта и для
+  # сервера. Проблема не в том, что проверок нет, а в том, КОГДА они:
+  #
+  #   git pull → npm install → run-migrations.js → npm run check
+  #                            ^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^
+  #                            схема уже изменена  а проверки только здесь
+  #
+  # Миграции применяются раньше проверок и не откатываются. Коммит, не проходящий check,
+  # успевает переписать схему staging-БД до того, как об этом кто-то узнает. Здесь же
+  # красный check означает, что VPS не сделает даже `git pull`.
+  #
+  # Только server: у него нет зависимостей для сборки (stdlib + node --check + node --test),
+  # поэтому job не требует npm ci и не может упасть по чужой причине. Фронтовый tsc сюда
+  # не добавлен сознательно — его враппер уже гоняет, а зелёным сам по себе он здесь не
+  # проверялся.
+  check:
+    name: Server checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: npm run check
+        working-directory: server
+        run: npm run check
+
   deploy:
     name: Deploy to VPS staging
+    needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
