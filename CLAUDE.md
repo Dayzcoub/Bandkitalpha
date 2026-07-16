@@ -19,8 +19,11 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 3. `docs/handoff/spec/BandKit_Chat_and_Messaging_Security_v1.md` — обязательная
    модель личных диалогов и чатов сущностей. Заменяет ТЗ v1.2 §8 и уточняет §9
    в части сообщений.
-4. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
-5. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_15_1.md` — где остановились.
+4. `docs/handoff/spec/BandKit_Conversation_Lifecycle_and_Abuse_Controls_v1.md` —
+   обязательные lifecycle, message requests, блокировки, история, event-chat access,
+   пересылки/ACL, evidence, attachments и abuse/security tests для чатов.
+5. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
+6. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_15_1.md` — где остановились.
 
 Полное ТЗ: `docs/handoff/spec/BandKit_TZ_v1_2.md`.
 
@@ -43,6 +46,11 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 - **Чат сущности принадлежит ровно одной сущности.** Чат группы и чат мероприятия
   независимы даже при совпадающем составе; доступ только через server-side
   membership/permission policy.
+- **В MVP у сущности ровно один основной чат.** Подчаты, role channels и entity-DM
+  запрещены без отдельной спецификации ACL и миграции.
+- **Chat lifecycle и abuse controls обязательны.** Нельзя расширять чат до реализации
+  атомарной уникальности personal dialog, message requests, блокировок, history/access
+  revoke, event-chat access, ACL пересылок/файлов, edit/delete/evidence и retention.
 - **Текущие чаты не E2EE.** Они работают в `server_managed` режиме, потому что
   server-side Link Guard, moderation evidence и поиск требуют обработки текста.
   Не заявлять E2EE в UI или документации до реализации полного протокола.
@@ -80,6 +88,18 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 
 Для обоих текущих типов сохраняются server-side Link Guard, moderation report flow,
 evidence snapshot и object-level authorization согласно профильной спецификации.
+
+До расширения chat domain обязательны вертикальные slices:
+
+1. atomic personal conversation identity + DB invariants;
+2. message requests, incoming privacy и anti-spam limits;
+3. personal block во всех REST/realtime/write paths;
+4. entity history policy и немедленный revoke REST/WebSocket/search/push/files;
+5. формальный event-chat access lifecycle;
+6. forwarding/internal-link/file ACL без автоматического наследования;
+7. edit/delete/moderation/evidence lifecycle;
+8. archive/delete/retention/legal-hold lifecycle;
+9. abuse/security test matrix из профильной lifecycle-спеки.
 
 ### Future epic: E2EE for personal conversations
 
