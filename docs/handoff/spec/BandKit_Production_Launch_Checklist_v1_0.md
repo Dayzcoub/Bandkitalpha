@@ -32,7 +32,10 @@ Required:
 - Nginx/reverse proxy configured;
 - `/api` routing configured;
 - `/ws` routing configured if realtime enabled;
-- rollback plan defined.
+- rollback plan defined;
+- **production built from clean instructions, never migrated as a VPS image or
+  snapshot of the dev host** — an image carries the dev box's accounts, sudoers and
+  file modes along with the app, silently reproducing exactly the model §5 forbids.
 
 ---
 
@@ -89,7 +92,7 @@ Required:
 Required:
 
 - production secrets separated from staging;
-- `.env` not committed;
+- `.env` not committed, and production secrets never stored in the repository;
 - GitHub Actions secrets configured;
 - SSH access restricted;
 - firewall configured;
@@ -98,6 +101,41 @@ Required:
 - admin accounts protected;
 - basic security review completed;
 - dependency audit/check completed.
+
+### 5.1 Host account model (required on production)
+
+Four distinct accounts, none of them each other:
+
+- **admin** — the human operator's login. Sudo lives here and nowhere else.
+- **CI** (`bandkit-deploy`) — no shell privileges beyond one sudoers entry for the
+  deploy wrapper, exactly as the dev VPS has it today.
+- **app/runtime** — runs the backend. **No sudo, not even NOPASSWD, not "for
+  convenience".**
+- **build** — runs `npm install`/`npm run build`, separate from runtime where
+  practical.
+
+Plus:
+
+- the deploy wrapper stays **root-owned and outside the repository's control**;
+  version it in git as a reference copy and *install* it as a deliberate root action —
+  never `exec` a script out of the working tree as root.
+
+**Why this is a rule and not a preference.** On the dev VPS (2026-07), one account
+`bandkit` is both the human admin and the app runtime, and carries
+`ALL=(ALL:ALL) NOPASSWD:ALL`. The deploy wrapper runs `npm install` and
+`npm run build` **as that account** — i.e. it executes repository code. The chain is
+therefore: push to `main` (or steal the Actions token) → repo code runs as `bandkit`
+→ `bandkit` sudo's to root without a password → **root on the host**. The wrapper's
+sudoers airlock, which correctly limits the CI user to a single command, is bypassed
+around it. No hardening of the wrapper fixes this; only separating the accounts does.
+
+**Accepted for the dev VPS, deliberately.** That host is temporary, key-only, holds no
+user data, is controlled by one person, and will be rebuilt rather than promoted, so
+the model above is tech debt owed to production — not an incident to fix in place.
+Two conditions attach while it stands: **no irreplaceable data and no unique secrets
+live there without a backup** (a temporary box dies of a bad deploy or a root
+experiment far sooner than of an attacker), and the rebuild is done per §1 from clean
+instructions.
 
 ---
 
