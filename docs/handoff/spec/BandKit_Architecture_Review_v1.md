@@ -1037,18 +1037,26 @@ presence, typing и live read receipts — post-MVP slice и `BandKit_Realtime_D
 
 `§11` и `§22.10` предъявляют требования к системе без спеки, кода и раздела в ТЗ.
 
-### C4. ТЗ §8 противоречит обязательной чат-спеке
+### C4. ТЗ §8 противоречил обязательной чат-спеке — **ПОМЕЧЕН 2026-07-16**
 
 `Chat_and_Messaging_Security_v1` заменяет ТЗ §8, но текст §8 остался в ТЗ и описывает
 E2EE, которого нет и не будет в текущем roadmap.
 
-### C5. Шесть chat-документов описывают мёртвую модель
+### C5. Семь chat-документов описывают мёртвую модель — **ПОМЕЧЕНЫ 2026-07-16**
 
-`Chat_Message_Edit_Rules` (20 разделов), `Chat_Exit_And_Membership_Rules`,
-`Chat_Access_Notifications_Attachments_Archive_Rules`, `Chat_Advanced_Governance_Rules`,
-`Chat_History_And_Reply_Logistics`, `Chat_UI_TZ_Gap_Map` написаны против таксономии
-`direct/free_group/entity/event/safety/admin`, удалённой миграциями `0020`/`0021`.
-Детали в них ценные, модель — нет. Зафиксировано в `Communication_Domain §15`.
+`Chat_Message_Edit_Rules`, `Chat_Message_Delete_Rules`, `Chat_Exit_And_Membership_Rules`,
+`Chat_Advanced_Governance_Rules`, `Chat_History_And_Reply_Logistics`,
+`Chat_Access_Notifications_Attachments_Archive_Rules`, `Chat_UI_TZ_Gap_Map` опирались на
+типы комнат `free_group`, `safety`, `admin`, удалённые миграциями `0020`/`0021`.
+
+Уточнение к первой редакции этого ревью: документов **семь**, а не шесть —
+`Chat_Message_Delete_Rules` пропустили, хотя это второй по величине чат-док. И `direct`
+**не мёртв**: он жив как тип личного диалога, им управляет `conversation_scope='personal'`.
+Мертвы ровно три типа.
+
+Каждый документ получил шапку: исторический, не источник истины, правила ценны — модель
+под ними нет. ТЗ §8 помечен отдельно (C4): в нём обещан E2EE by default, которого нет и
+не будет в текущем roadmap.
 
 ### C6. Таблица без единого упоминания
 

@@ -1,5 +1,21 @@
 # BandKit — Chat Exit and Membership Rules v1.0
 
+> ⚠ **Исторический документ. Не источник истины по чатам.**
+>
+> Написан против модели комнат `direct / free_group / entity / event / safety / admin`.
+> Типы `free_group`, `safety` и `admin` **удалены** миграциями `0020`/`0021`: спека
+> допускает ровно два класса переписки — личный диалог и чат сущности. `direct` жив как
+> тип личного диалога, но им теперь управляет `conversation_scope = 'personal'` с
+> инвариантами в БД (канонизированная пара, уникальность, запрет привязки к entity).
+>
+> Источник истины: `BandKit_Chat_and_Messaging_Security_v1.md` и
+> `BandKit_Conversation_Lifecycle_and_Abuse_Controls_v1.md`, карта —
+> `BandKit_Communication_Domain_v1.md`.
+>
+> **Правила ниже могут быть ценны, модель под ними — нет.** Читать как вход для будущих
+> срезов, не как описание системы. Прежде чем брать отсюда правило, проверить, к какому
+> из двух существующих классов переписки оно относится.
+
 ## Status
 
 Accepted product logic.
