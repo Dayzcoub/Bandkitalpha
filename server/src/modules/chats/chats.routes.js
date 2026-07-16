@@ -5,6 +5,19 @@ import { resolveSessionUser } from '../auth/session.js';
 import { checkLinkPolicy } from '../../shared/linkPolicy.js';
 
 const MAX_MESSAGE_LENGTH = 4000;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const PERSONAL_ROOM_COLUMNS = 'id, type, conversation_scope, title, status, created_at';
+
+function findPersonalRoom(client, low, high) {
+  return client.query(
+    `select ${PERSONAL_ROOM_COLUMNS}
+       from chat_rooms
+      where conversation_scope = 'personal' and user_low_id = $1 and user_high_id = $2
+      limit 1`,
+    [low, high]
+  ).then((result) => result.rows[0] || null);
+}
 
 // Resolves actor + room + the actor's membership, then checks the given
 // capability. Returns { actor, room, membership } or null after sending an error.
@@ -40,6 +53,108 @@ async function requireRoomAccess(client, req, res, roomId, capability) {
     return null;
   }
   return { actor, room, membership };
+}
+
+// POST /conversations/personal — open the canonical dialogue with another user, or
+// create it if it does not exist yet. "Написать" from a profile, a group, an event,
+// a catalogue or a comment must all land on this same room (Chat and Messaging
+// Security §2, §10), so this is the only way a personal room is ever made.
+//
+// Opening is deliberately NOT the right to post. Conversation Lifecycle §2 puts the
+// first message from a stranger into a message request; that is a later slice. This
+// endpoint returns a room and sends nothing — keep the two apart, or that slice will
+// have to undo this one.
+export async function handleOpenPersonalConversation(req, res) {
+  // Everything that does not need the transaction runs on pooled queries first, and
+  // the dedicated connection is taken last. Holding a connection while calling
+  // resolveSessionUser — which takes one of its own — makes every request want two at
+  // once, and the pool (max 5) deadlocks under as few as five concurrent callers.
+  const actor = await resolveSessionUser(req);
+  if (!actor) {
+    sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+    return;
+  }
+
+  const body = await readJsonBody(req);
+  const targetId = String(body.user_id || '').trim();
+  if (!UUID_PATTERN.test(targetId)) {
+    sendError(res, 400, 'USER_ID_INVALID', 'user_id must be a user uuid');
+    return;
+  }
+  if (targetId === actor.id) {
+    // The actor knows their own id, so saying this plainly leaks nothing. A future
+    // "Saved messages" is a separate system object, not a self-dialogue (§1).
+    sendError(res, 400, 'CONVERSATION_SELF', 'A personal dialogue with yourself is not possible');
+    return;
+  }
+
+  const targetResult = await getPool().query(
+    'select id, status from users where id = $1 limit 1',
+    [targetId]
+  );
+  const target = targetResult.rows[0] || null;
+
+  if (!permissionService.canOpenPersonalConversation(actor, target)) {
+    // One answer for "no such user" and "not available", so the endpoint cannot be
+    // used to probe the user table by id.
+    sendError(res, 404, 'CONVERSATION_TARGET_NOT_FOUND', 'User not found');
+    return;
+  }
+
+  // The pair is canonicalised here, exactly as the unique index expects it: the
+  // dialogue is a property of the unordered pair, not of who pressed the button.
+  const [low, high] = actor.id < target.id ? [actor.id, target.id] : [target.id, actor.id];
+
+  const client = await getPool().connect();
+  try {
+    await client.query('begin');
+
+    let room = await findPersonalRoom(client, low, high);
+    let created = false;
+
+    if (!room) {
+      // Atomic per §1: concurrent opens cannot produce two dialogues. DO NOTHING
+      // rather than DO UPDATE — an update would fire the updated_at trigger, and
+      // merely opening a chat must not reorder anyone's chat list.
+      const inserted = await client.query(
+        `insert into chat_rooms (type, conversation_scope, user_low_id, user_high_id, created_by_user_id)
+         values ('direct', 'personal', $1, $2, $3)
+         on conflict (user_low_id, user_high_id) where conversation_scope = 'personal'
+         do nothing
+         returning ${PERSONAL_ROOM_COLUMNS}`,
+        [low, high, actor.id]
+      );
+
+      if (inserted.rows[0]) {
+        room = inserted.rows[0];
+        created = true;
+        await client.query(
+          `insert into chat_room_members (room_id, user_id, role, status)
+           values ($1, $2, 'member', 'active'), ($1, $3, 'member', 'active')
+           on conflict (room_id, user_id) do nothing`,
+          [room.id, low, high]
+        );
+      } else {
+        // Another request won the race and committed. Read Committed gives this
+        // statement a fresh snapshot, so it sees their row.
+        room = await findPersonalRoom(client, low, high);
+      }
+    }
+
+    await client.query('commit');
+
+    if (!room) {
+      sendError(res, 500, 'CONVERSATION_OPEN_FAILED', 'Failed to open the conversation');
+      return;
+    }
+
+    sendJson(res, created ? 201 : 200, { ok: true, created, room });
+  } catch (error) {
+    await client.query('rollback').catch(() => {});
+    sendError(res, 500, 'CONVERSATION_OPEN_FAILED', 'Failed to open the conversation');
+  } finally {
+    client.release();
+  }
 }
 
 // GET /me/chat-rooms — rooms the authenticated user belongs to (member-scoped;

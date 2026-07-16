@@ -147,6 +147,26 @@ export class PermissionService {
     return Boolean(actor && actor.id && !SANCTIONED_STATUSES.has(actor.status));
   }
 
+  // Opening the canonical personal dialogue with another user. Opening is not the
+  // right to post: the first message from a stranger belongs in a message request
+  // (Conversation Lifecycle §2), which is a separate slice — this only decides
+  // whether the room may exist.
+  //
+  // A dialogue with oneself is forbidden (§1); any future "Saved messages" is a
+  // separate system object, not this.
+  canOpenPersonalConversation(actor, target) {
+    return Boolean(
+      actor
+      && actor.id
+      && !SANCTIONED_STATUSES.has(actor.status)
+      && target
+      && target.id
+      && target.id !== actor.id
+      && !SANCTIONED_STATUSES.has(target.status)
+      && target.status !== 'deactivated'
+    );
+  }
+
   // Reading the platform owner console. It is read-only, so every staff role may
   // look — read_only_auditor exists for exactly this — but nobody outside staff
   // may: these screens expose the whole user registry and the audit log.
