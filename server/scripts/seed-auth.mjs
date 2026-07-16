@@ -15,7 +15,7 @@ import { hashPassword } from '../src/shared/auth.js';
 const accounts = [
   { email: 'owner@bandkit.local', display_name: 'BandKit Owner', password: 'OwnerPass123', platform_role: 'super_admin', email_verified: true, status: 'active' },
   { email: 'user@bandkit.local', display_name: 'Regular User', password: 'UserPass123', platform_role: null, email_verified: true, status: 'active' },
-  { email: 'newbie@bandkit.local', display_name: 'New Signup', password: 'NewbiePass123', platform_role: null, email_verified: false, status: 'registered' }
+  { email: 'newbie@bandkit.local', display_name: 'New Signup', password: 'NewbiePass123', platform_role: null, email_verified: false, status: 'active' }
 ];
 
 function selectAccounts() {

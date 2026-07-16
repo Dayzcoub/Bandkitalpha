@@ -1,6 +1,34 @@
-// Account statuses under a moderation sanction (restrict/suspend) or gone.
-// Reading generally stays available to 'restricted'; writing does not.
-const SANCTIONED_STATUSES = new Set(['restricted', 'blocked', 'deleted']);
+// A sanction limits what an account may do; a lifecycle status says whether the account
+// is alive at all. They used to share `users.status`, which is why neither had a state
+// machine — see migration 0023.
+//
+// Sanctioned: reading generally stays available to 'read_only'/'restricted'; writing does
+// not. Terminal: an anonymized account can do nothing; a deactivated one cannot act until
+// it comes back.
+const WRITE_BLOCKING_SANCTIONS = new Set(['read_only', 'restricted', 'blocked']);
+const INACTIVE_STATUSES = new Set(['deactivated', 'anonymized']);
+
+// Denied outright: the account is gone, switched off, or blocked. Nothing is available,
+// not even the safety affordances.
+function isDenied(actor) {
+  return Boolean(
+    !actor
+    || !actor.id
+    || INACTIVE_STATUSES.has(actor.status)
+    || actor.sanction === 'blocked'
+  );
+}
+
+// Cannot write: everything above, plus the softer sanctions. A 'restricted' or
+// 'read_only' account keeps reading and keeps the safety affordances (reporting), but
+// stops producing content — Moderation Rules, "restrict user action".
+//
+// Note: 'read_only' was NOT in the old SANCTIONED_STATUSES, so a read-only account could
+// write. Nothing ever set that status, so it never bit; it is fixed here rather than
+// carried over.
+function isBarred(actor) {
+  return Boolean(isDenied(actor) || WRITE_BLOCKING_SANCTIONS.has(actor.sanction));
+}
 
 // Platform staff roles, mirroring the users.platform_role CHECK in migration
 // 0003 (Owner Console spec, "Access model").
@@ -14,7 +42,7 @@ const PLATFORM_STAFF_ROLES = new Set([
 
 export class PermissionService {
   canCreateEntity(actor) {
-    return Boolean(actor && actor.id && !SANCTIONED_STATUSES.has(actor.status));
+    return !isBarred(actor);
   }
 
   // Entity visibility levels come from the CHECK in migration 0002 and mean what
@@ -41,7 +69,7 @@ export class PermissionService {
   // Managing your own individual party (e.g. your professions) only requires an
   // active account; the party is always derived from the session, never input.
   canManageOwnParty(actor) {
-    return Boolean(actor && actor.id && actor.status !== 'blocked' && actor.status !== 'deleted');
+    return !isDenied(actor);
   }
 
   canManageEntity(actor, membership) {
@@ -72,7 +100,7 @@ export class PermissionService {
   // unsanctioned account — a moderation-restricted user loses write access
   // (Moderation Rules: "restrict user action").
   canWriteMessage(actor, membership, room) {
-    if (!actor || !actor.id || SANCTIONED_STATUSES.has(actor.status) || !room || room.status !== 'active') {
+    if (isBarred(actor) || !room || room.status !== 'active') {
       return false;
     }
     return Boolean(membership && membership.status === 'active');
@@ -120,7 +148,10 @@ export class PermissionService {
   // Any active account can file a moderation report (Moderation Rules: reporting
   // is a safety affordance available to users, not a privileged action).
   canFileReport(actor) {
-    return Boolean(actor && actor.id && actor.status !== 'blocked' && actor.status !== 'deleted');
+    // Deliberately isDenied, not isBarred: a restricted account keeps the ability to
+    // report. Taking safety tools from a sanctioned user punishes them for being
+    // sanctioned and silences a possible victim.
+    return !isDenied(actor);
   }
 
   // Triaging/acting on reports is platform moderation staff only. Entity admins
@@ -132,19 +163,19 @@ export class PermissionService {
   // Subscribing to an entity feed is a read-side affordance: any account that is
   // not blocked/deleted may follow. Subscription never grants workspace access.
   canSubscribe(actor) {
-    return Boolean(actor && actor.id && actor.status !== 'blocked' && actor.status !== 'deleted');
+    return !isDenied(actor);
   }
 
   // Publishing an entity post requires a managing role in the entity AND an
   // unsanctioned account (Feed Rules: "restricted/read-only users cannot post").
   canPublishEntityPost(actor, membership) {
-    return Boolean(actor && !SANCTIONED_STATUSES.has(actor.status) && this.canManageEntity(actor, membership));
+    return Boolean(!isBarred(actor) && this.canManageEntity(actor, membership));
   }
 
   // Social interactions (comments, reactions) are open to any unsanctioned
   // account; post visibility is checked separately at the route.
   canInteractSocially(actor) {
-    return Boolean(actor && actor.id && !SANCTIONED_STATUSES.has(actor.status));
+    return !isBarred(actor);
   }
 
   // Opening the canonical personal dialogue with another user. Opening is not the
@@ -158,12 +189,11 @@ export class PermissionService {
     return Boolean(
       actor
       && actor.id
-      && !SANCTIONED_STATUSES.has(actor.status)
+      && !isBarred(actor)
       && target
       && target.id
       && target.id !== actor.id
-      && !SANCTIONED_STATUSES.has(target.status)
-      && target.status !== 'deactivated'
+      && !isDenied(target)
     );
   }
 
@@ -178,7 +208,7 @@ export class PermissionService {
   // schema yet. It is absent from dm_policies rather than quietly aliased to
   // something else.
   canRequestPersonalContact(actor, target, sharedContext) {
-    if (!actor || !actor.id || SANCTIONED_STATUSES.has(actor.status)) return false;
+    if (isBarred(actor)) return false;
     if (!target || !target.id || target.id === actor.id) return false;
 
     switch (target.dm_policy) {
@@ -204,7 +234,7 @@ export class PermissionService {
     return Boolean(
       actor
       && actor.id
-      && !SANCTIONED_STATUSES.has(actor.status)
+      && !isBarred(actor)
       && PLATFORM_STAFF_ROLES.has(actor.platform_role)
     );
   }

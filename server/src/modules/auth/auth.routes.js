@@ -74,7 +74,7 @@ export async function handleRegister(req, res, env) {
 
     const userResult = await client.query(
       `insert into users (display_name, email, status, email_verified)
-       values ($1, $2, 'registered', false)
+       values ($1, $2, 'active', false)
        returning id, display_name, email, status, email_verified`,
       [displayName, email]
     );
@@ -166,7 +166,8 @@ export async function handleVerifyEmail(req, res) {
 
     await client.query('update email_verifications set used_at = now() where id = $1', [record.id]);
     await client.query(
-      `update users set email_verified = true, status = 'active', updated_at = now() where id = $1`,
+      // Status is the lifecycle axis only (0023); verification lives in email_verified.
+      `update users set email_verified = true, updated_at = now() where id = $1`,
       [record.user_id]
     );
     await client.query(
@@ -194,7 +195,7 @@ export async function handleLogin(req, res, env) {
     const password = String(body.password || '');
 
     const found = await client.query(
-      `select u.id, u.display_name, u.email, u.status, u.email_verified, u.platform_role,
+      `select u.id, u.display_name, u.email, u.status, u.sanction, u.email_verified, u.platform_role,
               u.two_factor_enabled, c.password_hash, tf.secret as totp_secret, tf.last_used_step
        from users u
        join auth_credentials c on c.user_id = u.id
@@ -214,7 +215,11 @@ export async function handleLogin(req, res, env) {
       sendError(res, 401, 'AUTH_INVALID_CREDENTIALS', 'Invalid email or password');
       return;
     }
-    if (row.status === 'blocked' || row.status === 'deleted') {
+    // Anonymized is terminal: no login, no recovery (migration 0023). 'blocked' moved
+    // out of status into the sanction axis, so checking status for it would silently
+    // pass. A deactivated account may still sign in — that is how it comes back; every
+    // permission check bars it until it does.
+    if (row.status === 'anonymized' || row.sanction === 'blocked') {
       sendError(res, 403, 'AUTH_ACCOUNT_UNAVAILABLE', 'This account is not available');
       return;
     }

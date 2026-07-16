@@ -128,7 +128,7 @@ async function personalSendDecision(client, actor, room) {
   }
 
   const targetResult = await client.query(
-    'select id, status, email_verified, dm_policy from users where id = $1 limit 1',
+    'select id, status, sanction, email_verified, dm_policy from users where id = $1 limit 1',
     [otherId]
   );
   const target = targetResult.rows[0] || null;
@@ -195,7 +195,7 @@ export async function handleOpenPersonalConversation(req, res) {
   }
 
   const targetResult = await getPool().query(
-    'select id, status from users where id = $1 limit 1',
+    'select id, status, sanction from users where id = $1 limit 1',
     [targetId]
   );
   const target = targetResult.rows[0] || null;
