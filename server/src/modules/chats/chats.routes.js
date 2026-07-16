@@ -27,7 +27,10 @@ async function requireRoomAccess(client, req, res, roomId, capability) {
     sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
     return null;
   }
-  const roomResult = await client.query('select id, status from chat_rooms where id = $1 limit 1', [roomId]);
+  const roomResult = await client.query(
+    'select id, status, conversation_scope, user_low_id, user_high_id from chat_rooms where id = $1 limit 1',
+    [roomId]
+  );
   const room = roomResult.rows[0];
   if (!room) {
     sendError(res, 404, 'ROOM_NOT_FOUND', 'Chat room not found');
@@ -53,6 +56,109 @@ async function requireRoomAccess(client, req, res, roomId, capability) {
     return null;
   }
   return { actor, room, membership };
+}
+
+// Does the actor share a confirmed context with the other user — an active membership
+// in the same entity, or participation in the same event (Conversation Lifecycle §2,
+// "пользователи с общим подтверждённым контекстом")?
+async function hasSharedContext(client, actorId, otherId) {
+  const result = await client.query(
+    `select exists (
+       select 1
+         from entity_memberships a
+         join entity_memberships b on b.entity_id = a.entity_id
+        where a.user_id = $1 and b.user_id = $2
+          and a.status = 'active' and b.status = 'active'
+     ) or exists (
+       select 1
+         from event_participants a
+         join event_participants b on b.event_id = a.event_id
+        where a.user_id = $1 and b.user_id = $2
+          and a.status = 'confirmed' and b.status = 'confirmed'
+     ) as shared`,
+    [actorId, otherId]
+  );
+  return Boolean(result.rows[0]?.shared);
+}
+
+// Decides whether `actor` may post into a personal room, and returns what the write
+// path should do about the request record (Conversation Lifecycle §2).
+//
+// Returns { allowed: true, onSent } or { allowed: false, status, code, message }.
+//
+// The one rule that shapes everything here: **the sender must never learn that they
+// were rejected** ("отправителю не раскрываются … факт отклонения"). So a requester
+// writing again gets the identical answer whether the request is still pending or was
+// rejected. Do not add a distinct error for rejection, however tempting — it would
+// hand a blocked stranger a read receipt on their own rejection.
+async function personalSendDecision(client, actor, room) {
+  const otherId = room.user_low_id === actor.id ? room.user_high_id : room.user_low_id;
+
+  const existing = await client.query(
+    'select room_id, requester_user_id, recipient_user_id, status from conversation_requests where room_id = $1 limit 1',
+    [room.id]
+  );
+  const request = existing.rows[0] || null;
+
+  if (request) {
+    if (request.status === 'accepted') {
+      return { allowed: true };
+    }
+    if (request.recipient_user_id === actor.id) {
+      // The recipient writing back *is* acceptance — nothing else would make sense,
+      // and it also means a rejected requester regains contact only if the recipient
+      // chooses to speak first.
+      return {
+        allowed: true,
+        onSent: async () => {
+          await client.query(
+            `update conversation_requests set status = 'accepted', decided_at = now() where room_id = $1`,
+            [room.id]
+          );
+        }
+      };
+    }
+    // Requester, pending or rejected — one answer for both, deliberately.
+    return {
+      allowed: false,
+      status: 409,
+      code: 'CONVERSATION_REQUEST_PENDING',
+      message: 'Your message request is awaiting a reply'
+    };
+  }
+
+  const targetResult = await client.query(
+    'select id, status, email_verified, dm_policy from users where id = $1 limit 1',
+    [otherId]
+  );
+  const target = targetResult.rows[0] || null;
+
+  const sharedContext = target && target.dm_policy === 'shared_context'
+    ? await hasSharedContext(client, actor.id, otherId)
+    : false;
+
+  if (!permissionService.canRequestPersonalContact(actor, target, sharedContext)) {
+    return {
+      allowed: false,
+      status: 403,
+      code: 'CONVERSATION_NOT_ALLOWED',
+      message: 'This user does not accept messages from you'
+    };
+  }
+
+  // First contact: the message is stored, but the dialogue is a request, not an inbox
+  // item, until the recipient answers or accepts.
+  return {
+    allowed: true,
+    onSent: async (messageId) => {
+      await client.query(
+        `insert into conversation_requests (room_id, requester_user_id, recipient_user_id, starter_message_id)
+         values ($1, $2, $3, $4)
+         on conflict (room_id) do nothing`,
+        [room.id, actor.id, otherId, messageId]
+      );
+    }
+  };
 }
 
 // POST /conversations/personal — open the canonical dialogue with another user, or
@@ -173,13 +279,21 @@ export async function handleListMyRooms(req, res) {
       return;
     }
     const result = await getPool().query(
-      `select r.id, r.type, r.title, r.status, m.status as member_status,
+      // A pending request is not inbox: the recipient sees it under
+      // /me/conversation-requests, never here (Conversation Lifecycle §2). The
+      // requester keeps seeing their own sent request in the list — hiding it from
+      // them would look like the message was never sent.
+      `select r.id, r.type, r.title, r.status, r.conversation_scope, m.status as member_status,
               e.name as entity_name, ev.title as event_title
          from chat_room_members m
          join chat_rooms r on r.id = m.room_id
          left join entities e on e.id = r.entity_id
          left join events ev on ev.id = r.event_id
         where m.user_id = $1 and m.status in ('active', 'read_only') and r.status <> 'hidden'
+          and not exists (
+            select 1 from conversation_requests q
+             where q.room_id = r.id and q.status = 'pending' and q.recipient_user_id = $1
+          )
         order by r.updated_at desc
         limit 100`,
       [actor.id]
@@ -187,6 +301,114 @@ export async function handleListMyRooms(req, res) {
     sendJson(res, 200, { ok: true, rooms: result.rows });
   } catch (error) {
     sendError(res, 500, 'MY_ROOMS_FAILED', 'Failed to list rooms', { message: error?.message || String(error) });
+  }
+}
+
+// GET /me/dm-policy — the actor's incoming-message policy plus the catalogue, so the
+// UI can render the choices without a second call. The catalogue is reference data
+// (keys are stable; the UI renders t('chat.dmPolicy.<key>')).
+export async function handleGetDmPolicy(req, res) {
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const [me, catalogue] = await Promise.all([
+      getPool().query('select dm_policy from users where id = $1 limit 1', [actor.id]),
+      getPool().query('select key, label from dm_policies order by sort_order, key')
+    ]);
+    sendJson(res, 200, {
+      ok: true,
+      dm_policy: me.rows[0]?.dm_policy || 'everyone',
+      policies: catalogue.rows
+    });
+  } catch (error) {
+    sendError(res, 500, 'DM_POLICY_FAILED', 'Failed to load the incoming message policy');
+  }
+}
+
+// PUT /me/dm-policy — change it. Own policy only; the FK to dm_policies is what
+// rejects an unknown value, so 'circle' cannot be set until the domain exists.
+export async function handleSetDmPolicy(req, res) {
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const body = await readJsonBody(req);
+    const policy = String(body.dm_policy || '').trim();
+    const known = await getPool().query('select key from dm_policies where key = $1 limit 1', [policy]);
+    if (!known.rows[0]) {
+      sendError(res, 400, 'DM_POLICY_INVALID', 'dm_policy is not one of the available policies');
+      return;
+    }
+    await getPool().query('update users set dm_policy = $1, updated_at = now() where id = $2', [policy, actor.id]);
+    sendJson(res, 200, { ok: true, dm_policy: policy });
+  } catch (error) {
+    sendError(res, 500, 'DM_POLICY_FAILED', 'Failed to update the incoming message policy');
+  }
+}
+
+// GET /me/conversation-requests — personal dialogues waiting for this user's decision
+// (Conversation Lifecycle §2). Only the recipient's own requests; the starter message
+// is included because deciding without seeing it is impossible.
+export async function handleListConversationRequests(req, res) {
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const result = await getPool().query(
+      `select q.room_id, q.created_at,
+              u.id as requester_id, u.display_name as requester_name, u.handle as requester_handle,
+              m.body as starter_body
+         from conversation_requests q
+         join users u on u.id = q.requester_user_id
+         left join chat_messages m on m.id = q.starter_message_id and m.status not in ('deleted', 'hidden')
+        where q.recipient_user_id = $1 and q.status = 'pending'
+        order by q.created_at desc
+        limit 100`,
+      [actor.id]
+    );
+    sendJson(res, 200, { ok: true, requests: result.rows });
+  } catch (error) {
+    sendError(res, 500, 'REQUESTS_LIST_FAILED', 'Failed to list conversation requests');
+  }
+}
+
+// POST /conversations/:roomId/request/accept | /reject — the recipient decides
+// (Conversation Lifecycle §2).
+//
+// Rejecting keeps the row: contacting again must not produce a new request, and the
+// requester must not be told. There is no "unreject" — the recipient simply writes,
+// which accepts (see personalSendDecision).
+export async function handleDecideConversationRequest(req, res, roomId, decision) {
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const status = decision === 'accept' ? 'accepted' : 'rejected';
+    const result = await getPool().query(
+      `update conversation_requests
+          set status = $1, decided_at = now()
+        where room_id = $2 and recipient_user_id = $3 and status = 'pending'
+        returning room_id, status`,
+      [status, roomId, actor.id]
+    );
+    if (!result.rows[0]) {
+      // Not yours, not pending, or not a request at all — one answer, so this cannot
+      // be used to discover other people's requests.
+      sendError(res, 404, 'REQUEST_NOT_FOUND', 'No pending request for this conversation');
+      return;
+    }
+    sendJson(res, 200, { ok: true, request: result.rows[0] });
+  } catch (error) {
+    sendError(res, 500, 'REQUEST_DECIDE_FAILED', 'Failed to decide the conversation request');
   }
 }
 
@@ -260,6 +482,17 @@ export async function handleSendMessage(req, res, roomId) {
       }
     }
 
+    // Membership lets you into the room; it is not the right to post into a personal
+    // one (Conversation Lifecycle §2). Entity chats are unaffected.
+    let decision = { allowed: true };
+    if (access.room.conversation_scope === 'personal') {
+      decision = await personalSendDecision(client, access.actor, access.room);
+      if (!decision.allowed) {
+        sendError(res, decision.status, decision.code, decision.message);
+        return;
+      }
+    }
+
     await client.query('begin');
     const inserted = await client.query(
       `insert into chat_messages (room_id, author_user_id, kind, body, reply_to_message_id)
@@ -268,6 +501,10 @@ export async function handleSendMessage(req, res, roomId) {
       [roomId, access.actor.id, text, replyTo]
     );
     const message = inserted.rows[0];
+    // Creating or accepting the request happens in the same transaction as the
+    // message: a starter message without its request would be a message sitting in
+    // someone's inbox unannounced.
+    if (decision.onSent) await decision.onSent(message.id);
     await client.query(
       `insert into audit_events (actor_user_id, action, room_id, message_id, metadata)
        values ($1, 'chat.message_sent', $2, $3, '{}'::jsonb)`,

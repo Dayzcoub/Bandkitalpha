@@ -167,6 +167,36 @@ export class PermissionService {
     );
   }
 
+  // May `actor` put a first message in front of `target` at all (Conversation
+  // Lifecycle §2)? This decides whether a message request may be created, not whether
+  // the message reaches the inbox — an allowed stranger still lands in a request.
+  //
+  // `sharedContext` is computed by the route (shared active entity membership or
+  // shared event participation), because it is a query, not a decision.
+  //
+  // 'circle' is in the spec but not here: it needs the friends domain, which has no
+  // schema yet. It is absent from dm_policies rather than quietly aliased to
+  // something else.
+  canRequestPersonalContact(actor, target, sharedContext) {
+    if (!actor || !actor.id || SANCTIONED_STATUSES.has(actor.status)) return false;
+    if (!target || !target.id || target.id === actor.id) return false;
+
+    switch (target.dm_policy) {
+      case 'everyone':
+        return true;
+      case 'verified':
+        return Boolean(actor.email_verified);
+      case 'shared_context':
+        return Boolean(sharedContext);
+      case 'nobody':
+        return false;
+      default:
+        // An unknown policy fails closed. The FK to dm_policies makes this
+        // unreachable, which is the point of the FK.
+        return false;
+    }
+  }
+
   // Reading the platform owner console. It is read-only, so every staff role may
   // look — read_only_auditor exists for exactly this — but nobody outside staff
   // may: these screens expose the whole user registry and the audit log.

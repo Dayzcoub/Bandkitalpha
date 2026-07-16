@@ -7,7 +7,7 @@ import { handleAdminLocalization } from './modules/admin/localization.routes.js'
 import { handleAdminNotifications } from './modules/admin/notifications.routes.js';
 import { handleAdminSettings } from './modules/admin/settings.routes.js';
 import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
-import { handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handleUpdateMessage, handleDeleteMessage, handleOpenPersonalConversation } from './modules/chats/chats.routes.js';
+import { handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handleUpdateMessage, handleDeleteMessage, handleOpenPersonalConversation, handleListConversationRequests, handleDecideConversationRequest, handleGetDmPolicy, handleSetDmPolicy } from './modules/chats/chats.routes.js';
 import { handleListDocuments, handleListEntityDocuments, handleCreateEntityDocument } from './modules/documents/documents.routes.js';
 import { handleUploadDocumentFile, handleDownloadDocumentFile, handleListDocumentFiles } from './modules/documents/files.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
@@ -65,6 +65,7 @@ const server = http.createServer((req, res) => {
       const entityPlanMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/plan$`));
       const postCommentsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/comments$`));
       const postLikeMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/like$`));
+      const conversationDecisionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/conversations/([^/]+)/request/(accept|reject)$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
       const roomDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)$`));
       const roomMessageDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages/([^/]+)$`));
@@ -290,6 +291,26 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/conversations/personal`) {
         await handleOpenPersonalConversation(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/me/conversation-requests`) {
+        await handleListConversationRequests(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && conversationDecisionMatch) {
+        await handleDecideConversationRequest(req, res, decodeURIComponent(conversationDecisionMatch[1]), conversationDecisionMatch[2]);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/me/dm-policy`) {
+        await handleGetDmPolicy(req, res);
+        return;
+      }
+
+      if (req.method === 'PUT' && url.pathname === `${env.apiPrefix}/me/dm-policy`) {
+        await handleSetDmPolicy(req, res);
         return;
       }
 
