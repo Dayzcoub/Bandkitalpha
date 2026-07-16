@@ -4,6 +4,7 @@ import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
 import { checkLinkPolicy } from '../../shared/linkPolicy.js';
 import { raiseNotification } from '../notifications/notifications.routes.js';
+import { areFriends } from '../friends/friends.routes.js';
 
 const MAX_MESSAGE_LENGTH = 4000;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -134,11 +135,17 @@ async function personalSendDecision(client, actor, room) {
   );
   const target = targetResult.rows[0] || null;
 
-  const sharedContext = target && target.dm_policy === 'shared_context'
-    ? await hasSharedContext(client, actor.id, otherId)
-    : false;
+  // Ask only what the policy needs: a lookup per axis, not per request.
+  const context = {
+    sharedContext: target?.dm_policy === 'shared_context'
+      ? await hasSharedContext(client, actor.id, otherId)
+      : false,
+    isFriend: target?.dm_policy === 'circle'
+      ? await areFriends(client, actor.id, otherId)
+      : false
+  };
 
-  if (!permissionService.canRequestPersonalContact(actor, target, sharedContext)) {
+  if (!permissionService.canRequestPersonalContact(actor, target, context)) {
     return {
       allowed: false,
       status: 403,

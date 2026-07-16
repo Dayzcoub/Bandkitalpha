@@ -23,6 +23,7 @@ import { handleSubscribe, handleUnsubscribe, handleCreateEntityPost, handleListE
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { handleListNotifications, handleReadNotifications } from './modules/notifications/notifications.routes.js';
+import { handleRequestFriendship, handleEndFriendship, handleListFriends, handleListFriendRequests } from './modules/friends/friends.routes.js';
 import { notFound, sendError } from './shared/http.js';
 import { permissionService } from './modules/permissions/PermissionService.js';
 import { resolveSessionUser } from './modules/auth/session.js';
@@ -66,6 +67,7 @@ const server = http.createServer((req, res) => {
       const entityPlanMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/plan$`));
       const postCommentsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/comments$`));
       const postLikeMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/like$`));
+      const friendMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/me/friends/([^/]+)$`));
       const notificationReadMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/me/notifications/([^/]+)/read$`));
       const invitationDecisionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/me/invitations/([^/]+)/(accept|decline)$`));
       const conversationDecisionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/conversations/([^/]+)/request/(accept|reject)$`));
@@ -294,6 +296,26 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/conversations/personal`) {
         await handleOpenPersonalConversation(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/me/friends`) {
+        await handleListFriends(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/me/friend-requests`) {
+        await handleListFriendRequests(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && friendMatch) {
+        await handleRequestFriendship(req, res, decodeURIComponent(friendMatch[1]));
+        return;
+      }
+
+      if (req.method === 'DELETE' && friendMatch) {
+        await handleEndFriendship(req, res, decodeURIComponent(friendMatch[1]));
         return;
       }
 

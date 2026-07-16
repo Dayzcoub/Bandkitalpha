@@ -201,13 +201,11 @@ export class PermissionService {
   // Lifecycle §2)? This decides whether a message request may be created, not whether
   // the message reaches the inbox — an allowed stranger still lands in a request.
   //
-  // `sharedContext` is computed by the route (shared active entity membership or
-  // shared event participation), because it is a query, not a decision.
+  // `context` carries what only a query can answer — { sharedContext, isFriend } —
+  // because those are lookups, not decisions. Adding an axis means adding a key here,
+  // not another positional boolean.
   //
-  // 'circle' is in the spec but not here: it needs the friends domain, which has no
-  // schema yet. It is absent from dm_policies rather than quietly aliased to
-  // something else.
-  canRequestPersonalContact(actor, target, sharedContext) {
+  canRequestPersonalContact(actor, target, context = {}) {
     if (isBarred(actor)) return false;
     if (!target || !target.id || target.id === actor.id) return false;
 
@@ -217,7 +215,14 @@ export class PermissionService {
       case 'verified':
         return Boolean(actor.email_verified);
       case 'shared_context':
-        return Boolean(sharedContext);
+        return Boolean(context.sharedContext);
+      case 'circle':
+        // The personal graph, deliberately not the working one: you can share a band
+        // with someone and not be their friend, and be their friend without sharing any
+        // project. Mixing them is what the friends spec forbids ("these systems must not
+        // be mixed") — and aliasing 'circle' to shared_context would hand the working
+        // graph the keys to the setting people choose to keep it out.
+        return Boolean(context.isFriend);
       case 'nobody':
         return false;
       default:
