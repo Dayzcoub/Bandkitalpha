@@ -10,7 +10,7 @@ import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
 import { handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handleUpdateMessage, handleDeleteMessage, handleOpenPersonalConversation, handleListConversationRequests, handleDecideConversationRequest, handleGetDmPolicy, handleSetDmPolicy } from './modules/chats/chats.routes.js';
 import { handleListDocuments, handleListEntityDocuments, handleCreateEntityDocument } from './modules/documents/documents.routes.js';
 import { handleUploadDocumentFile, handleDownloadDocumentFile, handleListDocumentFiles } from './modules/documents/files.routes.js';
-import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
+import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities, handleListMyInvitations, handleDecideInvitation } from './modules/entities/entities.routes.js';
 import { handleCreateEvent, handleListEvents, handleGetEvent } from './modules/events/events.routes.js';
 import { handleDatabaseHealth, handleHealth } from './modules/health/health.routes.js';
 import { handleGetTaxonomy } from './modules/taxonomy/taxonomy.routes.js';
@@ -65,6 +65,7 @@ const server = http.createServer((req, res) => {
       const entityPlanMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/plan$`));
       const postCommentsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/comments$`));
       const postLikeMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/like$`));
+      const invitationDecisionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/me/invitations/([^/]+)/(accept|decline)$`));
       const conversationDecisionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/conversations/([^/]+)/request/(accept|reject)$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
       const roomDetailMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)$`));
@@ -291,6 +292,16 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/conversations/personal`) {
         await handleOpenPersonalConversation(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/me/invitations`) {
+        await handleListMyInvitations(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && invitationDecisionMatch) {
+        await handleDecideInvitation(req, res, decodeURIComponent(invitationDecisionMatch[1]), invitationDecisionMatch[2]);
         return;
       }
 

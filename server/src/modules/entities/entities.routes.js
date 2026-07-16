@@ -279,25 +279,32 @@ export async function handleAddEntityMember(req, res, entityId) {
     }
 
     await client.query('begin');
-    // Re-activate a previously removed/former/left membership; a currently
-    // active or invited one stays a 409 (no update, no row returned).
+    // An invitation, not a membership. Adding someone straight to 'active' was a consent
+    // bypass: an active membership grants entity chat access AND counts as shared
+    // context, so anyone could create an entity, add a stranger, and thereby earn the
+    // right to message them past their own dm_policy — verified end to end before 0024.
+    // The 'invited' state has been in the schema since 0002; only the flow was missing.
+    //
+    // A previously declined/removed/former/left membership may be invited again; an
+    // active or already-pending one stays a 409 (no update, no row returned).
     const inserted = await client.query(
-      `insert into entity_memberships (entity_id, user_id, role, status)
-       values ($1, $2, $3, 'active')
+      `insert into entity_memberships (entity_id, user_id, role, status, invited_by_user_id, invited_at)
+       values ($1, $2, $3, 'invited', $4, now())
        on conflict (entity_id, user_id) do update
-         set role = excluded.role, status = 'active', updated_at = now()
-         where entity_memberships.status in ('former', 'removed', 'left')
+         set role = excluded.role, status = 'invited', invited_by_user_id = excluded.invited_by_user_id,
+             invited_at = now(), decided_at = null, updated_at = now()
+         where entity_memberships.status in ('declined', 'former', 'removed', 'left')
        returning role, status`,
-      [entityId, target.id, role]
+      [entityId, target.id, role, actor.id]
     );
     if (inserted.rowCount === 0) {
       await client.query('rollback');
-      sendError(res, 409, 'MEMBER_ALREADY_EXISTS', 'User is already a member of this entity');
+      sendError(res, 409, 'MEMBER_ALREADY_EXISTS', 'User is already a member of or invited to this entity');
       return;
     }
     await client.query(
       `insert into audit_events (actor_user_id, action, entity_id, metadata)
-       values ($1, 'entity.member_added', $2, $3::jsonb)`,
+       values ($1, 'entity.member_invited', $2, $3::jsonb)`,
       [actor.id, entityId, JSON.stringify({ target_user_id: target.id, role })]
     );
     await client.query('commit');
@@ -307,7 +314,7 @@ export async function handleAddEntityMember(req, res, entityId) {
       membership: {
         entity_id: entityId,
         role,
-        status: 'active',
+        status: 'invited',
         user: { id: target.id, email: target.email, handle: target.handle, display_name: target.display_name }
       }
     });
@@ -324,5 +331,71 @@ export async function handleAddEntityMember(req, res, entityId) {
     sendError(res, 500, 'MEMBER_ADD_FAILED', 'Failed to add member', { message: error?.message || String(error) });
   } finally {
     client.release();
+  }
+}
+
+// GET /me/invitations — entity invitations awaiting this user's decision.
+// Consent lives here: until one of these is accepted, the membership grants nothing —
+// no chat access, no shared context (migration 0024).
+export async function handleListMyInvitations(req, res) {
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const result = await getPool().query(
+      `select m.entity_id, m.role, m.invited_at,
+              e.name as entity_name, e.slug as entity_slug, e.type as entity_type,
+              u.display_name as invited_by
+         from entity_memberships m
+         join entities e on e.id = m.entity_id
+         left join users u on u.id = m.invited_by_user_id
+        where m.user_id = $1 and m.status = 'invited'
+          and e.status not in ('deleted', 'anonymized')
+        order by m.invited_at desc nulls last
+        limit 100`,
+      [actor.id]
+    );
+    sendJson(res, 200, { ok: true, invitations: result.rows });
+  } catch (error) {
+    sendError(res, 500, 'INVITATIONS_LIST_FAILED', 'Failed to list invitations');
+  }
+}
+
+// POST /me/invitations/:entityId/accept | /decline — only the invited user decides.
+//
+// Declining keeps the row as 'declined' rather than deleting it: a re-invitation should
+// be a deliberate act by the inviter, and "she said no once" is information the entity's
+// managers are entitled to keep. It is not a block — that is a separate axis.
+export async function handleDecideInvitation(req, res, entityId, decision) {
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    const status = decision === 'accept' ? 'active' : 'declined';
+    const result = await getPool().query(
+      `update entity_memberships
+          set status = $1, decided_at = now(), updated_at = now()
+        where entity_id = $2 and user_id = $3 and status = 'invited'
+        returning entity_id, role, status`,
+      [status, entityId, actor.id]
+    );
+    if (!result.rows[0]) {
+      // Not yours, or not pending — one answer, so this cannot be used to probe who has
+      // been invited where.
+      sendError(res, 404, 'INVITATION_NOT_FOUND', 'No pending invitation for this entity');
+      return;
+    }
+    await getPool().query(
+      `insert into audit_events (actor_user_id, action, entity_id, metadata)
+       values ($1, $2, $3, '{}'::jsonb)`,
+      [actor.id, decision === 'accept' ? 'entity.invitation_accepted' : 'entity.invitation_declined', entityId]
+    );
+    sendJson(res, 200, { ok: true, membership: result.rows[0] });
+  } catch (error) {
+    sendError(res, 500, 'INVITATION_DECIDE_FAILED', 'Failed to decide the invitation');
   }
 }
