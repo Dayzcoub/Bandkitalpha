@@ -22,6 +22,7 @@ import { handleListPlans, handleGetEntityPlan, handleSetEntityPlan } from './mod
 import { handleSubscribe, handleUnsubscribe, handleCreateEntityPost, handleListEntityPosts, handleMyFeed, handleMySubscriptions, handleCreateComment, handleListComments, handleLikePost, handleUnlikePost, handleUpdateSubscription } from './modules/feed/feed.routes.js';
 import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
+import { handleListNotifications, handleReadNotifications } from './modules/notifications/notifications.routes.js';
 import { notFound, sendError } from './shared/http.js';
 import { permissionService } from './modules/permissions/PermissionService.js';
 import { resolveSessionUser } from './modules/auth/session.js';
@@ -65,6 +66,7 @@ const server = http.createServer((req, res) => {
       const entityPlanMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/entities/([^/]+)/plan$`));
       const postCommentsMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/comments$`));
       const postLikeMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/posts/([^/]+)/like$`));
+      const notificationReadMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/me/notifications/([^/]+)/read$`));
       const invitationDecisionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/me/invitations/([^/]+)/(accept|decline)$`));
       const conversationDecisionMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/conversations/([^/]+)/request/(accept|reject)$`));
       const roomMessagesMatch = url.pathname.match(new RegExp(`^${env.apiPrefix}/chat-rooms/([^/]+)/messages$`));
@@ -292,6 +294,21 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/conversations/personal`) {
         await handleOpenPersonalConversation(req, res);
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/me/notifications`) {
+        await handleListNotifications(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/me/notifications/read`) {
+        await handleReadNotifications(req, res);
+        return;
+      }
+
+      if (req.method === 'POST' && notificationReadMatch) {
+        await handleReadNotifications(req, res, decodeURIComponent(notificationReadMatch[1]));
         return;
       }
 

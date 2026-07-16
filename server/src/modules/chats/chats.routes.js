@@ -3,6 +3,7 @@ import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
 import { checkLinkPolicy } from '../../shared/linkPolicy.js';
+import { raiseNotification } from '../notifications/notifications.routes.js';
 
 const MAX_MESSAGE_LENGTH = 4000;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -157,6 +158,11 @@ async function personalSendDecision(client, actor, room) {
          on conflict (room_id) do nothing`,
         [room.id, actor.id, otherId, messageId]
       );
+      // The recipient is not told what was written — only that someone asks. The text
+      // lives in the request; §10 decides who may read it, not this.
+      await raiseNotification(client, {
+        recipient: otherId, type: 'conversation_request', actor: actor.id, roomId: room.id
+      });
     }
   };
 }

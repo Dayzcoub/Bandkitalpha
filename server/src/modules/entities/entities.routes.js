@@ -3,6 +3,7 @@ import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
 import { getEntityPlan, getMemberCount } from '../billing/plans.js';
 import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
+import { raiseNotification } from '../notifications/notifications.routes.js';
 
 const allowedEntityTypes = new Set(['band', 'solo_artist', 'orchestra', 'project', 'organization', 'studio', 'venue', 'agency', 'other']);
 const allowedVisibility = new Set(['private', 'members', 'registered', 'public']);
@@ -307,6 +308,11 @@ export async function handleAddEntityMember(req, res, entityId) {
        values ($1, 'entity.member_invited', $2, $3::jsonb)`,
       [actor.id, entityId, JSON.stringify({ target_user_id: target.id, role })]
     );
+    // In the same transaction: an invitation nobody is told about is a page you have to
+    // think to visit, and a notification about an invitation that rolled back is a lie.
+    await raiseNotification(client, {
+      recipient: target.id, type: 'entity_invitation', actor: actor.id, entityId
+    });
     await client.query('commit');
 
     sendJson(res, 201, {
@@ -380,7 +386,7 @@ export async function handleDecideInvitation(req, res, entityId, decision) {
       `update entity_memberships
           set status = $1, decided_at = now(), updated_at = now()
         where entity_id = $2 and user_id = $3 and status = 'invited'
-        returning entity_id, role, status`,
+        returning entity_id, role, status, invited_by_user_id`,
       [status, entityId, actor.id]
     );
     if (!result.rows[0]) {
@@ -394,7 +400,17 @@ export async function handleDecideInvitation(req, res, entityId, decision) {
        values ($1, $2, $3, '{}'::jsonb)`,
       [actor.id, decision === 'accept' ? 'entity.invitation_accepted' : 'entity.invitation_declined', entityId]
     );
-    sendJson(res, 200, { ok: true, membership: result.rows[0] });
+    // Tell whoever invited: they acted, they deserve the answer. Declines included —
+    // silence would read as "still pending" and invite a nag.
+    if (result.rows[0].invited_by_user_id) {
+      await raiseNotification(getPool(), {
+        recipient: result.rows[0].invited_by_user_id,
+        type: decision === 'accept' ? 'invitation_accepted' : 'invitation_declined',
+        actor: actor.id,
+        entityId
+      });
+    }
+    sendJson(res, 200, { ok: true, membership: { entity_id: result.rows[0].entity_id, role: result.rows[0].role, status: result.rows[0].status } });
   } catch (error) {
     sendError(res, 500, 'INVITATION_DECIDE_FAILED', 'Failed to decide the invitation');
   }
