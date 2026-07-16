@@ -26,7 +26,11 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
    что чем покрыто, старшинство документов, недостающий слой и открытые решения.
    Не источник истины — пункты 1–4 старше него.
 6. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
-7. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_15_1.md` — где остановились.
+7. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_21_0.md` — где остановились.
+
+Аудиты (не источник истины, но читать перед планированием):
+`BandKit_Architecture_Review_v1.md` — полнота архитектуры по 34 доменам;
+`BandKit_Specification_Gap_Audit_v1.md` — где логики нет вовсе.
 
 Полное ТЗ: `docs/handoff/spec/BandKit_TZ_v1_2.md`.
 
