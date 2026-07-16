@@ -2,7 +2,20 @@
 
 ## Status
 
-Accepted checkpoint.
+Accepted checkpoint, **superseded in part by 1.16.1**.
+
+> **The spec moved under this slice.** `BandKit_Conversation_Lifecycle_and_Abuse_Controls_v1.md`
+> (owner commits `fc53d38` + `e9640aa`) landed right after this shipped, and it is
+> mandatory. Two consequences for what is written below:
+>
+> - The pair columns are named `personal_user_a`/`personal_user_b` here. §1 of the new
+>   spec names the same invariant `user_low_id`/`user_high_id`. Renamed in migration
+>   `0021` — the semantics were already right, the vocabulary was ours.
+> - This slice is **half of** the mandatory first slice, not a slice of its own.
+>   CLAUDE.md now fixes an order of nine chat slices, of which the first is *atomic*
+>   personal conversation identity + DB invariants. The invariants are here; the
+>   atomic `INSERT … ON CONFLICT` creation and the concurrency test (§22.1) are not.
+>   "Написать" is not the next task — it is the rest of this one.
 
 First slice of the chat work the whole audit was clearing the way for. The schema now
 expresses the canonical conversation model of
