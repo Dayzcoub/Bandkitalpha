@@ -22,8 +22,11 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 4. `docs/handoff/spec/BandKit_Conversation_Lifecycle_and_Abuse_Controls_v1.md` —
    обязательные lifecycle, message requests, блокировки, история, event-chat access,
    пересылки/ACL, evidence, attachments и abuse/security tests для чатов.
-5. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
-6. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_15_1.md` — где остановились.
+5. `docs/handoff/spec/BandKit_Communication_Domain_v1.md` — карта домена взаимодействия:
+   что чем покрыто, старшинство документов, недостающий слой и открытые решения.
+   Не источник истины — пункты 1–4 старше него.
+6. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
+7. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_15_1.md` — где остановились.
 
 Полное ТЗ: `docs/handoff/spec/BandKit_TZ_v1_2.md`.
 
@@ -38,6 +41,13 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 - **Модель данных generic:** типы/роли/статусы — reference-таблицы, не enum;
   individual и org — единый Party; вертикально-специфичные поля — extension (JSONB),
   не ALTER под каждую вертикаль. Не хардкодить под «музыкантов».
+- **Актор — это Party, второго актора не заводить.** Party (Foundation §2.1,
+  таблица `parties`) — единственная абстракция актора. Не вводить рядом `Actor`:
+  это создаст вторую модель того же и вернёт фрагментацию. Event — не актор, а
+  владелец чата (примитив 2.4); сообщение всегда отправляет Party.
+- **Автор сообщения — человек, сущность — контекст** (Lifecycle §19). Не наоборот:
+  за вывеской сущности нельзя спрятать того, кто написал.
+- **«Есть ли общий контекст» спрашивают у SharedContext, а не считают сами.**
 - **Чаты разделены жёстко:** существует один канонический личный диалог на пару
   пользователей и отдельные групповые чаты сущностей. Никаких entity-DM,
   «личек внутри группы/мероприятия» и смешивания истории.
