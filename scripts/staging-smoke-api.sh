@@ -149,11 +149,10 @@ DB_HEALTH="$(request GET /health/db)"
 echo "$DB_HEALTH"
 expect_contains "$DB_HEALTH" '"ok":true' 'database health ok'
 
-log "Seeding demo data"
-SEED="$(request POST /dev/seed-demo)"
-echo "$SEED"
-expect_contains "$SEED" '"ok":true' 'seed demo ok'
-expect_contains "$SEED" 'Demo Band' 'seed demo entity exists'
+log "Checking the dev seed endpoint is gone"
+# Demo data is seeded by the deploy (scripts/seed-demo.mjs). The endpoint that used
+# to do it took no request input and wrote fixed rows with no session required.
+expect_status "$(anon_status POST /dev/seed-demo)" 404 'dev seed endpoint no longer exists'
 
 log "Logging in as ${SMOKE_EMAIL}"
 LOGIN_BODY="{\"email\":\"${SMOKE_EMAIL}\",\"password\":\"${SMOKE_PASSWORD}\"}"
@@ -220,10 +219,15 @@ log "Checking admin console requires staff"
 # The owner console exposes the user registry and the audit log.
 expect_status "$(anon_status GET /admin/overview)" 401 'admin console is protected'
 
-log "Checking chat rooms read API"
-ROOMS_RESPONSE="$(request GET /chat-rooms)"
-echo "$ROOMS_RESPONSE"
-expect_contains "$ROOMS_RESPONSE" '"ok":true' 'chat rooms list ok'
+log "Checking chat rooms are member-scoped"
+# There is no global room list any more: it was unauthenticated and unscoped, and
+# only this smoke ever called it. Rooms are reachable only through /me/chat-rooms,
+# which needs a session — a personal dialogue is a room too (chat spec §11).
+expect_status "$(anon_status GET /chat-rooms)" 404 'the global room list is gone'
+expect_status "$(anon_status GET /me/chat-rooms)" 401 'my rooms need a session'
+MY_ROOMS="$(auth_request GET /me/chat-rooms)"
+echo "$MY_ROOMS"
+expect_contains "$MY_ROOMS" '"ok":true' 'my rooms ok for a member'
 
 log "Checking documents read API requires auth"
 # Documents are workspace data: anonymous callers must be rejected, not served.

@@ -1,5 +1,13 @@
-import { getPool } from '../../db/client.js';
-import { sendError, sendJson } from '../../shared/http.js';
+// Dev/staging-only demo data: one band, one event, its chat room, one message and
+// one document. Idempotent. NEVER runs in production.
+//   node --env-file=.env scripts/seed-demo.mjs
+//
+// This used to be POST /api/v1/dev/seed-demo, gated only on NODE_ENV — and staging
+// is a public host, so it was an unauthenticated write path open to the internet.
+// It took nothing from the request and only ever wrote fixed rows: a script wearing
+// an HTTP costume. The deploy runs it directly now, like the migrations and
+// seed-auth, so there is nothing to reach.
+import { getPool } from '../src/db/client.js';
 
 const demo = {
   userHandle: 'demo-manager',
@@ -13,10 +21,6 @@ const demo = {
   messageBody: 'Demo important message from real PostgreSQL'
 };
 
-function assertStaging(env) {
-  return env.nodeEnv === 'staging' || env.nodeEnv === 'development';
-}
-
 // Returns the existing row for a deterministic key, or inserts it. Keeps the
 // seed idempotent for tables that have no natural unique constraint.
 async function findOrCreate(client, selectSql, selectParams, insertSql, insertParams) {
@@ -26,9 +30,11 @@ async function findOrCreate(client, selectSql, selectParams, insertSql, insertPa
   return created.rows[0];
 }
 
-export async function handleDevSeedDemo(req, res, env) {
-  if (!assertStaging(env)) {
-    sendError(res, 403, 'DEV_ENDPOINT_DISABLED', 'Dev endpoint is disabled outside staging/development');
+async function run() {
+  const nodeEnv = process.env.NODE_ENV || 'development';
+  if (nodeEnv !== 'development' && nodeEnv !== 'staging') {
+    console.error(`seed-demo is disabled outside development/staging (NODE_ENV=${nodeEnv})`);
+    process.exitCode = 1;
     return;
   }
 
@@ -100,47 +106,38 @@ export async function handleDevSeedDemo(req, res, env) {
       [room.id, user.id]
     );
 
-    const message = await findOrCreate(
+    await findOrCreate(
       client,
-      `select id, kind, body, is_pinned, requires_ack, created_at from chat_messages
-        where room_id = $1 and body = $2 order by created_at limit 1`,
+      `select id from chat_messages where room_id = $1 and body = $2 order by created_at limit 1`,
       [room.id, demo.messageBody],
       `insert into chat_messages (room_id, author_user_id, kind, body, is_pinned, requires_ack)
        values ($1, $2, 'important', $3, true, true)
-       returning id, kind, body, is_pinned, requires_ack, created_at`,
+       returning id`,
       [room.id, user.id, demo.messageBody]
     );
 
-    const document = await findOrCreate(
+    await findOrCreate(
       client,
-      `select id, title, document_type, status, version_number from documents
-        where event_id = $1 and title = $2 order by created_at limit 1`,
+      `select id from documents where event_id = $1 and title = $2 order by created_at limit 1`,
       [event.id, demo.documentTitle],
       `insert into documents (parent_type, entity_id, event_id, owner_user_id, title, document_type, status, created_by_user_id)
        values ('event', $1, $2, $3, $4, 'rider', 'active', $3)
-       returning id, title, document_type, status, version_number`,
+       returning id`,
       [entity.id, event.id, user.id, demo.documentTitle]
     );
 
     await client.query('commit');
 
-    sendJson(res, 201, {
-      ok: true,
-      seeded: {
-        user,
-        entity,
-        event,
-        room,
-        message,
-        document
-      }
-    });
+    console.log(`seeded ${entity.name} (${entity.slug}) — event "${event.title}", its room, message and document`);
+    console.log('Done. Demo data is for local/staging only.');
   } catch (error) {
     await client.query('rollback').catch(() => {});
-    sendError(res, 500, 'DEV_SEED_FAILED', 'Failed to seed demo data', {
-      message: error?.message || String(error)
-    });
+    console.error(error);
+    process.exitCode = 1;
   } finally {
     client.release();
+    await pool.end();
   }
 }
+
+run();

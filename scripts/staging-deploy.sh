@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+#
+# ⚠ THIS IS NOT (YET) WHAT THE PIPELINE RUNS.
+#
+# GitHub Actions calls `sudo -n /usr/local/sbin/bandkit-staging-deploy` — a root-owned
+# wrapper on the VPS, outside version control, which reimplements the deploy and never
+# references this file. The two have silently diverged: steps added here (the seeding
+# below, added in 1.15.3) have never executed on staging. Verify against the wrapper,
+# not against a green deploy — a green deploy proves nothing about this script.
+#
+# Making the wrapper thin, so that it calls this file and the deploy lives under
+# version control, is planned as its own slice.
 set -euo pipefail
 
 APP_DIR="${APP_DIR:-/opt/Bandkitalpha}"
@@ -86,6 +97,12 @@ node scripts/run-migrations.js
 # repo-known password on a staff account and reset it on every deploy.
 log "Seeding the smoke test account"
 node scripts/seed-auth.mjs --only=user@bandkit.local
+
+# Demo data used to be seeded by the smoke through POST /dev/seed-demo — an
+# unauthenticated write endpoint on a public host. It took nothing from the request,
+# so it is a script now and the endpoint is gone. Idempotent; guards itself.
+log "Seeding demo data"
+node scripts/seed-demo.mjs
 
 log "Checking backend code syntax"
 npm run check

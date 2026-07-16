@@ -7,8 +7,7 @@ import { handleAdminLocalization } from './modules/admin/localization.routes.js'
 import { handleAdminNotifications } from './modules/admin/notifications.routes.js';
 import { handleAdminSettings } from './modules/admin/settings.routes.js';
 import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
-import { handleListChatRooms, handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handleUpdateMessage, handleDeleteMessage } from './modules/chats/chats.routes.js';
-import { handleDevSeedDemo } from './modules/dev/dev.routes.js';
+import { handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handleUpdateMessage, handleDeleteMessage } from './modules/chats/chats.routes.js';
 import { handleListDocuments, handleListEntityDocuments, handleCreateEntityDocument } from './modules/documents/documents.routes.js';
 import { handleUploadDocumentFile, handleDownloadDocumentFile, handleListDocumentFiles } from './modules/documents/files.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities } from './modules/entities/entities.routes.js';
@@ -102,11 +101,6 @@ const server = http.createServer((req, res) => {
           await adminRoute.handler(req, res);
           return;
         }
-      }
-
-      if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/dev/seed-demo`) {
-        await handleDevSeedDemo(req, res, env);
-        return;
       }
 
       if (req.method === 'POST' && url.pathname === `${env.apiPrefix}/auth/register`) {
@@ -291,11 +285,6 @@ const server = http.createServer((req, res) => {
 
       if (req.method === 'POST' && engagementReliabilityMatch) {
         await handleRecordReliabilityEvent(req, res, decodeURIComponent(engagementReliabilityMatch[1]), decodeURIComponent(engagementReliabilityMatch[2]));
-        return;
-      }
-
-      if (req.method === 'GET' && url.pathname === `${env.apiPrefix}/chat-rooms`) {
-        await handleListChatRooms(req, res);
         return;
       }
 

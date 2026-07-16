@@ -118,13 +118,31 @@ leftovers, safe to delete by hand.
 
 ### Seeding is deliberate, not automatic
 
-The deploy needs the smoke's account to exist, so it runs `seed-auth.mjs`. The first
-version of this slice ran it unfiltered — `/security-review` caught that as MEDIUM
-**against this diff**: it would have guaranteed `owner@bandkit.local` /
-`OwnerPass123` (a repo-known password, `super_admin`) on a public host, and reset
-that password on every deploy, letting anyone who reads the repo walk straight
-through the console gate added in 1.15.2. `seed-auth.mjs` now takes `--only`, and the
-deploy seeds `user@bandkit.local` and nothing else.
+The smoke's account must exist, so `scripts/staging-deploy.sh` gained a
+`seed-auth.mjs --only=user@bandkit.local` step. The first version of this slice ran
+it unfiltered — `/security-review` caught that as MEDIUM **against this diff**: it
+would have put `owner@bandkit.local` / `OwnerPass123` (a repo-known password,
+`super_admin`) on a public host and reset that password on every deploy. `seed-auth.mjs`
+now takes `--only`.
+
+> **CORRECTION (added 1.15.4).** Two claims above were wrong, and the deploy passing
+> did not prove them right.
+>
+> `scripts/staging-deploy.sh` **is not what the pipeline runs.** GitHub Actions calls
+> `sudo -n /usr/local/sbin/bandkit-staging-deploy`, a root-owned wrapper on the VPS
+> that lives outside version control and reimplements the deploy: it never references
+> `staging-deploy.sh` and contains no `seed` step at all. So the seed line added here
+> **has never executed**. The smoke logged in because `user@bandkit.local` already
+> existed on staging from an earlier manual run — the green deploy was evidence of
+> nothing.
+>
+> It follows that the MEDIUM was never live either: "guaranteed on every deploy, and
+> reset every time" required the script to run. The real exposure was the manually
+> seeded `owner@bandkit.local` with a repo-known password, and deleting that account
+> (2026-07-15) is what actually fixed it.
+>
+> Demo data on staging came from the smoke calling `POST /dev/seed-demo` — that is why
+> the endpoint existed, and why duplicates accrued exactly one per deploy.
 
 ---
 
