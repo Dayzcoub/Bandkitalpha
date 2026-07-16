@@ -150,8 +150,9 @@ echo "$DB_HEALTH"
 expect_contains "$DB_HEALTH" '"ok":true' 'database health ok'
 
 log "Checking the dev seed endpoint is gone"
-# Demo data is seeded by the deploy (scripts/seed-demo.mjs). The endpoint that used
-# to do it took no request input and wrote fixed rows with no session required.
+# Ничего демо-данных не сеет: `seed-demo.mjs` удалён 2026-07-16 как мёртвый и сломанный.
+# Проверка остаётся в силе и проверяет ровно то, что написано в её названии: эндпоинт,
+# который когда-то писал фиксированные строки без сессии на публичном хосте, не вернулся.
 expect_status "$(anon_status POST /dev/seed-demo)" 404 'dev seed endpoint no longer exists'
 
 log "Logging in as ${SMOKE_EMAIL}"

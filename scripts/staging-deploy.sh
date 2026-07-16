@@ -98,11 +98,12 @@ node scripts/run-migrations.js
 log "Seeding the smoke test account"
 node scripts/seed-auth.mjs --only=user@bandkit.local
 
-# Demo data used to be seeded by the smoke through POST /dev/seed-demo — an
-# unauthenticated write endpoint on a public host. It took nothing from the request,
-# so it is a script now and the endpoint is gone. Idempotent; guards itself.
-log "Seeding demo data"
-node scripts/seed-demo.mjs
+# Демо-данных здесь больше нет. `seed-demo.mjs` удалён 2026-07-16: он писал комнату с
+# заполненными `entity_id` И `event_id` сразу, что канонические инварианты 0020/0021
+# запрещают (владелец — User XOR Entity), и падал ещё раньше, на `conversation_scope`.
+# Сломался он в тот же день, когда появился, и никто не заметил — потому что этот файл
+# не выполняется: пайплайн зовёт root-овый враппер на VPS, у которого шага сида нет.
+# Понадобится демо-набор — писать под текущую модель, а не воскрешать скрипт под мёртвую.
 
 log "Checking backend code syntax"
 npm run check
