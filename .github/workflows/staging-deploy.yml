@@ -37,6 +37,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      # `npm install`, а не `npm ci`: `server/package-lock.json` не в репозитории, и
+      # враппер на VPS ставит зависимости точно так же (строка 171). Здесь важно не
+      # разойтись с ним, а не быть строже него.
+      #
+      # Первая редакция этого job'а зависимости не ставила: «серверу нечего собирать,
+      # только stdlib». Неправда с F6 — `check-route-contracts` поднимает роутер, тот
+      # тянет `session.js` → `db/client.js` → `pg`. Локально не видно, потому что
+      # `node_modules` уже лежат. Первый же прогон это и поймал: гейт нашёл ошибку в
+      # описании самого гейта.
+      - name: npm install (server)
+        working-directory: server
+        run: npm install
       - name: npm run check (server)
         working-directory: server
         run: npm run check
