@@ -103,19 +103,32 @@ function assertIncludes(source, expected, label) {
   }
 }
 
-const indexSource = readFile('server/src/index.js');
-assertIncludes(indexSource, 'const adminGetRoutes = [', 'admin route registry');
-assertIncludes(indexSource, "if (req.method === 'GET')", 'admin route method guard');
+// До 1.22.0 реестр admin-маршрутов жил в `server/src/index.js` (`const adminGetRoutes`),
+// и эта проверка требовала именно его. F6 сделал декларативным весь роутер: реестр —
+// `server/src/routes.js`, и каждый маршрут обязан объявить свой доступ.
+//
+// Проверка переехала туда же и стала строже. Раньше она подтверждала, что маршрут
+// зарегистрирован; теперь — что он ещё и объявлен `staff`. Регистрация без гейта была бы
+// ровно той дырой, которую закрыли в 1.15.2: тринадцать эндпоинтов консоли без единой
+// проверки сессии.
+const routesSource = readFile('server/src/routes.js');
+const routeLines = routesSource.split('\n');
 
 for (const route of requiredAdminRoutes) {
-  assertIncludes(indexSource, `path: '${route}'`, 'admin GET route registry');
+  const declaration = routeLines.find((line) => line.includes(`path: '${route}'`));
+  if (!declaration) {
+    throw new Error(`admin route is not registered in server/src/routes.js: ${route}`);
+  }
+  if (!declaration.includes("access: 'staff'")) {
+    throw new Error(`admin route is registered but not gated as staff: ${route}`);
+  }
 }
 
-for (const route of requiredAdminRoutes) {
-  const legacyIf = `url.pathname === \`${'${env.apiPrefix}'}${route}\``;
-  if (indexSource.includes(legacyIf)) {
-    throw new Error(`Admin route should stay in adminGetRoutes registry, not legacy if-chain: ${route}`);
-  }
+// Диспетчеризация — только через таблицу. Admin-путь, появившийся в `index.js` мимо неё,
+// объехал бы и объявление доступа, и эту проверку.
+const indexSource = readFile('server/src/index.js');
+if (indexSource.includes('/admin/')) {
+  throw new Error('admin routes must live in server/src/routes.js, not in index.js');
 }
 
 for (const routeFile of adminRouteFiles) {
