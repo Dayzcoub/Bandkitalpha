@@ -19,6 +19,8 @@
 // «дошёл не до своих данных» (IDOR) закрывается не здесь. Два слоя, разные вопросы.
 import { resolveSessionUser } from './modules/auth/session.js';
 import { permissionService } from './modules/permissions/PermissionService.js';
+import { consumeRateLimit, isKnownPolicy, RATE_LIMIT_POLICIES } from './modules/rateLimit/rateLimitService.js';
+import { getPool } from './db/client.js';
 import { sendError } from './shared/http.js';
 
 // Больше уровней не нужно: `staff` расщепится на роли, когда у `support_agent` и
@@ -57,6 +59,23 @@ function validateRoute(route, index) {
       'Маршрут без объявленного доступа не регистрируется (F6).'
     );
   }
+  // То же самое для лимита: F6 требует, чтобы маршрут объявлял и доступ, И политику
+  // лимита. `limit: 'none'` — законный ответ, но ответ, а не умолчание.
+  if (!route.limit || !isKnownPolicy(route.limit)) {
+    throw new Error(
+      `${where}: поле limit обязательно и должно быть одним из ${Object.keys(RATE_LIMIT_POLICIES).join(' | ')}. ` +
+      'Маршрут без объявленной политики лимита не регистрируется (F6, D5).'
+    );
+  }
+  // Лимит в MVP — только per-actor (D5), а у public-маршрута актора нет. Политика на нём
+  // не «не сработает», она соврёт: выглядит как защита, не будучи ею.
+  if (route.access === 'public' && route.limit !== 'none') {
+    throw new Error(
+      `${where}: public-маршрут не может иметь политику лимита (${route.limit}) — лимиты ` +
+      'в MVP считаются по актору (D5), а его здесь нет. Ограничение анонимных путей требует ' +
+      'IP/device, вынесенных в отдельный Security Layer следующей фазы.'
+    );
+  }
 }
 
 export function createRouter(routes, prefix) {
@@ -86,6 +105,25 @@ export function createRouter(routes, prefix) {
         if (route.access === 'staff' && !permissionService.canReadAdminConsole(actor)) {
           sendError(res, 403, 'ADMIN_FORBIDDEN', 'Platform staff access is required');
           return true;
+        }
+
+        // Лимит — здесь, а не в хендлере, и это половина смысла D5: три «неограниченных
+        // write-пути» получают лимит, не зная о нём ни строчки. Списывается ПОПЫТКА:
+        // отказ хендлера не возвращает квоту, иначе перебор был бы бесплатным (0027,
+        // решение 3). Пул: диспетчер соединения не держит, поэтому передаём пул, и
+        // правило «соединение берут последним» не нарушено.
+        if (route.limit !== 'none') {
+          const verdict = await consumeRateLimit(getPool(), actor.id, route.limit);
+          if (!verdict.allowed) {
+            // Ответ зависит только от действий самого актора и никогда — от состояния
+            // получателя (`Architecture_Decisions §3.3`). Иначе 429 стал бы способом
+            // узнать, что тебя отклонили, — а §2 требует, чтобы отказ был невидим.
+            res.setHeader('retry-after', String(verdict.retryAfterSeconds));
+            sendError(res, 429, 'RATE_LIMITED', 'Too many requests, try again later', {
+              retry_after_seconds: verdict.retryAfterSeconds
+            });
+            return true;
+          }
         }
       }
 

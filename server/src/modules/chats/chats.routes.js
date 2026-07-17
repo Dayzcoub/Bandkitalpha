@@ -2,6 +2,7 @@ import { getPool } from '../../db/client.js';
 import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
+import { consumeRateLimit } from '../rateLimit/rateLimitService.js';
 import { checkLinkPolicy } from '../../shared/linkPolicy.js';
 import { raiseNotification } from '../notifications/notifications.routes.js';
 import { areFriends } from '../friends/friends.routes.js';
@@ -129,6 +130,33 @@ async function personalSendDecision(client, actor, room) {
     };
   }
 
+  // Отсюда и ниже — новое обращение к тому, с кем переписки ещё не было. Лимит на
+  // requests (`§2`) списывается ЗДЕСЬ: раньше нельзя (сообщение в принятом диалоге не
+  // request и квоты не тратит), позже — нельзя тоже, и это стоило отдельной ошибки.
+  //
+  // Первая версия списывала после проверки прав, и тогда отказ `CONVERSATION_NOT_ALLOWED`
+  // не стоил ничего: перебором первых сообщений можно было бесплатно выяснять чужой
+  // `dm_policy` — 403 против 201 — упираясь лишь в щедрый `write.default`. Это прямо
+  // противоречило собственному правилу 0027 («считаем попытки, а не успехи»). Попытка
+  // связаться с незнакомцем — это попытка, даже если он её не принимает.
+  //
+  // Списывается на том же `client` и ДО `begin` в `handleSendMessage`, поэтому откат
+  // сообщения квоту не вернёт. Переедет `begin` выше — семантика молча станет «считаем
+  // успехи», и неудачная попытка снова станет бесплатной.
+  const requestQuota = await consumeRateLimit(client, actor.id, 'conversation.request');
+  if (!requestQuota.allowed) {
+    // Ответ говорит только о поведении самого отправителя и ничего — о получателе: 429
+    // здесь значит «ты писал слишком многим незнакомцам», а не «этот тебя отклонил»
+    // (§2: отказ невидим отправителю).
+    return {
+      allowed: false,
+      status: 429,
+      code: 'RATE_LIMITED',
+      message: 'Too many requests, try again later',
+      details: { retry_after_seconds: requestQuota.retryAfterSeconds }
+    };
+  }
+
   const targetResult = await client.query(
     'select id, status, sanction, email_verified, dm_policy from users where id = $1 limit 1',
     [otherId]
@@ -155,7 +183,13 @@ async function personalSendDecision(client, actor, room) {
   }
 
   // First contact: the message is stored, but the dialogue is a request, not an inbox
-  // item, until the recipient answers or accepts.
+  // item, until the recipient answers or accepts. Квота уже списана выше — до проверки
+  // прав, чтобы отказ стоил столько же, сколько успех.
+  //
+  // Почему лимит вообще здесь, а не у маршрута: различить первое обращение к незнакомцу и
+  // сотое сообщение в принятом диалоге может только чат — маршрут у них один
+  // (`POST /chat-rooms/:id/messages`). D10 ровно про это: механизм у платформенного
+  // сервиса, смысл у домена. Своего лимитера у чата при этом нет, он зовёт единственный.
   return {
     allowed: true,
     onSent: async (messageId) => {
@@ -501,7 +535,10 @@ export async function handleSendMessage(req, res, roomId) {
     if (access.room.conversation_scope === 'personal') {
       decision = await personalSendDecision(client, access.actor, access.room);
       if (!decision.allowed) {
-        sendError(res, decision.status, decision.code, decision.message);
+        if (decision.details?.retry_after_seconds) {
+          res.setHeader('retry-after', String(decision.details.retry_after_seconds));
+        }
+        sendError(res, decision.status, decision.code, decision.message, decision.details || {});
         return;
       }
     }
