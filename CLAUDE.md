@@ -25,10 +25,14 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 5. `docs/handoff/spec/BandKit_Communication_Domain_v1.md` — карта домена взаимодействия:
    что чем покрыто, старшинство документов, недостающий слой и открытые решения.
    Не источник истины — пункты 1–4 старше него.
-6. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
-7. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_21_0.md` — где остановились.
+6. `docs/handoff/spec/BandKit_Architecture_Decisions_v1.md` — **принятые архитектурные
+   решения (Phase 2)**: account lifecycle, realtime, anti-spam, Platform Services,
+   минимизация доменов, классификация 34 доменов и Architecture Freeze. Утверждает и
+   отменяет; старше обоих аудитов, младше пунктов 1–4.
+7. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
+8. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_21_0.md` — где остановились.
 
-Аудиты (не источник истины, но читать перед планированием):
+Аудиты (не источник истины, диагноз а не вердикт; читать после п. 6):
 `BandKit_Architecture_Review_v1.md` — полнота архитектуры по 34 доменам;
 `BandKit_Specification_Gap_Audit_v1.md` — где логики нет вовсе.
 
@@ -52,6 +56,28 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 - **Автор сообщения — человек, сущность — контекст** (Lifecycle §19). Не наоборот:
   за вывеской сущности нельзя спрятать того, кто написал.
 - **«Есть ли общий контекст» спрашивают у SharedContext, а не считают сами.**
+- **Platform Service владеет механизмом, домен владеет смыслом** (Decisions §2).
+  Rate Limiting, Notifications, Search, Audit, Media Storage, Cache, Jobs, Scheduler,
+  Feature Flags — общая инфраструктура. Сервис не знает, что означают его данные:
+  уведомление хранит ссылки, а не текст; поиск не запекает права в индекс. И обратное —
+  домен не реализует механизм: `ChatLimiter`, `InvitationLimiter` и любой доменный
+  лимитер запрещены, лимит один на платформу.
+- **Не заводить домен, не проверив семь моделей** (Decisions §D8): Foundation, Party,
+  Entity, Engagement, Resource, Event, Communication. Booking — это Engagement + резерв
+  ресурса (`Foundation §2.5/2.6`), Invitations — `entity_memberships.status`, Projects —
+  `entities.type`. Каждый из них однажды искали как отдельный домен.
+- **Сущность не рождается из макета** (D9). Экран, маршрут и пункт меню ничего не
+  доказывают: Marketplace ≠ Marketplace Entity, Inbox ≠ Inbox Table, Calendar ≠ Calendar
+  Domain, `/bands` ≠ домен bands (это `entities.type`).
+- **Сначала спросить: объект или проекция?** (D12) Inbox, Calendar, Portfolio и
+  Marketplace — представления Foundation-модели, а не новые сущности (Decisions §3.5).
+- **Не унифицировать разное ради единообразия** (D11). Похожие объекты не обязаны иметь
+  одинаковый lifecycle: `users` содержит персональные данные, `entities` — нет, поэтому
+  терминальные состояния у них разные. Прежде чем распространить решение «на всё» —
+  доказать эквивалентность моделей, а не сходство.
+- **Статус — состояние, а не причина и не инициатор** (D1/D2). `status` + `reason` +
+  `terminated_by` + `terminated_at`. У `users` терминал один — `anonymized`; `deleted`
+  как бизнес-статус там не существует.
 - **Чаты разделены жёстко:** существует один канонический личный диалог на пару
   пользователей и отдельные групповые чаты сущностей. Никаких entity-DM,
   «личек внутри группы/мероприятия» и смешивания истории.
