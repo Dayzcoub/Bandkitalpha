@@ -78,29 +78,36 @@ export async function handleCreateEvent(req, res) {
   }
 }
 
-// Events carry no visibility flag: they are workspace data, so "can see" means
-// an active membership in the owning entity, or being a participant of the event
-// itself (Security DoD §16.2). Exported so every event-scoped surface — detail,
-// slots — answers the question the same way.
+// Кто видит событие (`events.visibility`, миграция 0028 — решение F1).
+//
+// `actorId` может быть null: публичное событие видно анониму, иначе `public` ничем не
+// отличался бы от `registered` — значение без собственного поведения, ровно та болезнь,
+// которой больны `private`/`members` у сущностей.
+//
+// Утечку §10 (публичное событие закрытой группы публикует группу) здесь ловить не нужно:
+// её не существует по построению — триггер 0028 не даёт событию быть шире владельца.
 export async function canViewEvent(client, actorId, eventId) {
-  if (!actorId) return false;
   const result = await client.query(
     `select 1
        from events ev
       where ev.id = $1
         and (
-          exists (
-            select 1 from entity_memberships m
-             where m.entity_id = ev.entity_id and m.user_id = $2 and m.status = 'active'
-          )
-          or exists (
-            select 1 from event_participants p
-             where p.event_id = ev.id and p.user_id = $2
-               and p.status in ('invited', 'applied', 'confirmed', 'completed')
-          )
+          ev.visibility = 'public'
+          or ($2::uuid is not null and ev.visibility = 'registered')
+          or ($2::uuid is not null and (
+            exists (
+              select 1 from entity_memberships m
+               where m.entity_id = ev.entity_id and m.user_id = $2 and m.status = 'active'
+            )
+            or exists (
+              select 1 from event_participants p
+               where p.event_id = ev.id and p.user_id = $2
+                 and p.status in ('invited', 'applied', 'confirmed', 'completed')
+            )
+          ))
         )
       limit 1`,
-    [eventId, actorId]
+    [eventId, actorId ?? null]
   );
   return result.rowCount > 0;
 }
@@ -108,9 +115,14 @@ export async function canViewEvent(client, actorId, eventId) {
 export async function handleListEvents(req, res) {
   try {
     // Previously unauthenticated and unscoped: it returned every event on the
-    // platform — including location and schedule — to anonymous callers. Events
-    // have no public visibility level, so the list is now session-scoped to the
-    // caller's entities and the events they take part in.
+    // platform — including location and schedule — to anonymous callers. Scoped to
+    // the session since 1.15.1.
+    //
+    // С 0028 у события есть своя видимость (F1), поэтому список — это «мои события
+    // ПЛЮС то, что открыто вошедшему». Маршрут остаётся `authed`: анонимной афиши
+    // как поверхности ещё нет, а `GET /events/:id` уже отдаёт публичное событие
+    // всякому. Понадобится афиша — это свой маршрут со своей пагинацией, а не
+    // ослабление этого.
     const actor = await resolveSessionUser(req);
     if (!actor) {
       sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
@@ -131,7 +143,8 @@ export async function handleListEvents(req, res) {
        from events ev
        left join entities e on e.id = ev.entity_id
        left join event_participants ep on ep.event_id = ev.id and ep.status = 'confirmed'
-       where exists (
+       where ev.visibility in ('registered', 'public')
+          or exists (
                select 1 from entity_memberships m
                 where m.entity_id = ev.entity_id and m.user_id = $1 and m.status = 'active'
              )
@@ -160,15 +173,18 @@ export async function handleListEvents(req, res) {
 
 // GET /events/:id — one event for someone entitled to see it. Unknown or
 // invisible both answer 404: never confirm an event exists to an outsider.
+// Единственный анонимно достижимый доменный маршрут (`access: 'public'` в routes.js), и
+// это цена того, чтобы `public` что-то значил. Гейт здесь не грубый, а объектный: аноним
+// видит ровно `visibility = 'public'` и ничего больше.
 export async function handleGetEvent(req, res, eventId) {
   const client = await getPool().connect();
   try {
+    // Может быть null — маршрут public. Резолв дешёвый: диспетчер уже сходил бы в базу
+    // для authed-маршрута, а здесь мемоизация отдаёт готовое (session.js).
     const actor = await resolveSessionUser(req);
-    if (!actor) {
-      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
-      return;
-    }
-    if (!(await canViewEvent(client, actor.id, eventId))) {
+    if (!(await canViewEvent(client, actor?.id ?? null, eventId))) {
+      // 404, а не 403: неизвестное и невидимое отвечают одинаково (правило с 1.15.1),
+      // иначе перебор id выдал бы, какие события существуют.
       sendError(res, 404, 'EVENT_NOT_FOUND', 'Event not found');
       return;
     }
@@ -183,15 +199,18 @@ export async function handleGetEvent(req, res, eventId) {
         where ev.id = $1 limit 1`,
       [eventId]
     );
-    const membership = await client.query(
-      'select role, status from entity_memberships where entity_id = $1 and user_id = $2 limit 1',
-      [result.rows[0].entity_id, actor.id]
-    );
+    // У анонима членства нет по определению — спрашивать базу не о чем.
+    const membership = actor
+      ? (await client.query(
+          'select role, status from entity_memberships where entity_id = $1 and user_id = $2 limit 1',
+          [result.rows[0].entity_id, actor.id]
+        )).rows[0] || null
+      : null;
     sendJson(res, 200, {
       ok: true,
       event: result.rows[0],
       // Lets the UI offer manager-only surfaces without guessing.
-      can_manage: permissionService.canManageEntity(actor, membership.rows[0] || null)
+      can_manage: actor ? permissionService.canManageEntity(actor, membership) : false
     });
   } catch (error) {
     sendError(res, 500, 'EVENT_GET_FAILED', 'Failed to load the event');

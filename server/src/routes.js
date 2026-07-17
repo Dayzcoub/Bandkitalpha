@@ -6,8 +6,9 @@
 // сверяет ответ с объявлением. Объявление, которое никто не проверяет, — это комментарий.
 //
 // `public` здесь значит ровно «диспетчер не спрашивает сессию», а не «данные публичны»:
-// object-level проверки живут в хендлерах. Публичных маршрутов шесть, и все шесть —
-// справочники и вход.
+// object-level проверки живут в хендлерах. Публичных маршрутов одиннадцать: справочники,
+// вход и — единственное исключение — `GET /events/:eventId`, где аноним видит только
+// событие с `visibility = 'public'`, и решает это хендлер, а не диспетчер (F1, 0028).
 //
 // ПОРЯДОК ЗНАЧИМ: выигрывает первое совпадение, как в `if`-цепочке, которую эта таблица
 // заменила. Порядок сохранён один в один — он был семантикой, а не оформлением.
@@ -105,7 +106,10 @@ export function buildRoutes(env) {
 
     { method: 'GET', path: '/events', limit: 'none', access: 'authed', handler: handleListEvents },
     { method: 'POST', path: '/events', limit: 'write.default', access: 'authed', handler: handleCreateEvent },
-    { method: 'GET', path: '/events/:eventId', limit: 'none', access: 'authed', handler: (req, res, p) => handleGetEvent(req, res, p[0]) },
+    // Единственный анонимно достижимый доменный маршрут. Иначе `public` в
+    // `events.visibility` не отличался бы от `registered` — значение без поведения
+    // (F1, 0028). Гейт объектный, внутри хендлера: аноним видит только `public`.
+    { method: 'GET', path: '/events/:eventId', limit: 'none', access: 'public', handler: (req, res, p) => handleGetEvent(req, res, p[0]) },
     { method: 'GET', path: '/events/:eventId/slots', limit: 'none', access: 'authed', handler: (req, res, p) => handleListSlots(req, res, p[0]) },
     { method: 'POST', path: '/events/:eventId/slots', limit: 'write.default', access: 'authed', handler: (req, res, p) => handleCreateSlot(req, res, p[0]) },
     { method: 'GET', path: '/events/:eventId/engagements', limit: 'none', access: 'authed', handler: (req, res, p) => handleListEngagements(req, res, p[0]) },
