@@ -1,0 +1,579 @@
+/* Events UI polish: shared event card/schedule layout without backend changes. */
+
+.bk-event-card-polished,
+.bk-event-card-polished * {
+  min-width: 0;
+}
+
+.bk-event-card-polished {
+  display: grid;
+  gap: var(--bk-space-3);
+}
+
+.bk-event-card-surface {
+  display: grid;
+  gap: var(--bk-space-3);
+  color: inherit;
+  text-decoration: none;
+  border-radius: 22px;
+}
+
+.bk-event-card-surface:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, .72);
+  outline-offset: 4px;
+}
+
+.bk-event-card-surface:hover .bk-card-title {
+  color: var(--bk-accent);
+}
+
+.bk-event-media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 92px;
+  overflow: hidden;
+  border: 1px solid rgba(96, 165, 250, .24);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 70% 0%, rgba(34, 211, 238, .16), transparent 58%),
+    linear-gradient(135deg, rgba(20, 28, 48, .94), rgba(9, 16, 28, .92));
+}
+
+.bk-event-media .bk-cover {
+  width: 100%;
+  height: 100%;
+  min-height: 92px;
+  border: 0;
+  border-radius: 0;
+  object-fit: cover;
+  object-position: center;
+  opacity: .72;
+}
+
+.bk-event-main {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  gap: var(--bk-space-3);
+  align-items: center;
+}
+
+.bk-event-date-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(96, 165, 250, .24);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, .72);
+  color: var(--bk-muted);
+  font-size: .76rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.bk-event-title-block {
+  display: grid;
+  gap: 3px;
+}
+
+.bk-event-title-block .bk-card-title {
+  line-height: 1.18;
+}
+
+.bk-event-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--bk-space-2);
+}
+
+.bk-event-meta-grid .bk-kpi {
+  min-height: 60px;
+  padding: 10px;
+  border-radius: 14px;
+}
+
+.bk-event-meta-grid .bk-kpi-value {
+  font-size: .92rem;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.bk-event-meta-grid .bk-kpi-label {
+  margin-top: 5px;
+  font-size: .68rem;
+  line-height: 1.1;
+}
+
+.bk-event-chips {
+  align-content: start;
+}
+
+.bk-event-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--bk-space-2);
+  margin-top: auto;
+}
+
+.bk-event-actions .bk-button {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  text-align: center;
+}
+
+.bk-schedule-card .bk-timeline {
+  gap: var(--bk-space-3);
+}
+
+.bk-schedule-card .bk-timeline-item {
+  display: grid;
+  grid-template-columns: minmax(120px, .32fr) minmax(0, 1fr);
+  gap: var(--bk-space-3);
+  align-items: start;
+}
+
+.bk-schedule-card .bk-timeline-date {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  padding: 10px 12px;
+  border: 1px solid rgba(96, 165, 250, .18);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, .55);
+  color: var(--bk-muted);
+  font-size: .78rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+/* Logistics polish: detail context cards must stay readable inside the central column with a right rail. */
+.bk-band-logistics-card,
+.bk-event-logistics-card,
+.bk-doc-context-card,
+.bk-doc-access-card,
+.bk-doc-next-actions-card,
+.bk-chat-context-card {
+  overflow: hidden;
+}
+
+.bk-band-logistics-card > .bk-card-grid-3,
+.bk-event-logistics-card > .bk-card-grid-3 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.bk-band-logistics-card > .bk-card-grid-3 > .bk-context-card:nth-child(3),
+.bk-event-logistics-card > .bk-card-grid-3 > .bk-context-card:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.bk-context-card {
+  display: grid;
+  gap: var(--bk-space-3);
+  min-width: 0;
+  align-content: start;
+  padding: var(--bk-space-4);
+}
+
+.bk-context-card .bk-card-title {
+  font-size: .94rem;
+  line-height: 1.2;
+}
+
+.bk-context-card .bk-list,
+.bk-doc-context-card .bk-list,
+.bk-doc-access-card .bk-list {
+  gap: var(--bk-space-2);
+}
+
+.bk-context-card .bk-list-row,
+.bk-doc-context-card .bk-list-row,
+.bk-doc-access-card .bk-list-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px;
+}
+
+.bk-context-card .bk-list-row .bk-avatar,
+.bk-doc-context-card .bk-list-row .bk-avatar,
+.bk-doc-access-card .bk-list-row .bk-avatar,
+.bk-context-card .bk-list-row .bk-nav-icon,
+.bk-doc-context-card .bk-list-row .bk-nav-icon,
+.bk-doc-access-card .bk-list-row .bk-nav-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  flex-basis: 40px;
+  border-radius: 13px;
+}
+
+.bk-context-card .bk-list-row-title,
+.bk-doc-context-card .bk-list-row-title,
+.bk-doc-access-card .bk-list-row-title {
+  font-size: .9rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.bk-context-card .bk-meta,
+.bk-doc-context-card .bk-meta,
+.bk-doc-access-card .bk-meta {
+  font-size: .78rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.bk-context-card .bk-button,
+.bk-doc-context-card .bk-button,
+.bk-doc-access-card .bk-button {
+  min-height: 36px;
+  padding-inline: 12px;
+  white-space: nowrap;
+}
+
+.bk-band-logistics-card .bk-profile-feed-policy,
+.bk-event-logistics-card .bk-profile-feed-policy {
+  margin-top: var(--bk-space-3);
+}
+
+.bk-doc-next-actions-card {
+  display: grid;
+  gap: var(--bk-space-3);
+}
+
+.bk-doc-next-actions-card .bk-action-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bk-doc-next-actions-card .bk-button {
+  width: 100%;
+  min-width: 0;
+}
+
+.bk-chat-context-card {
+  display: grid;
+  gap: var(--bk-space-4);
+}
+
+.bk-chat-context-card[data-chat-kind="safety"] {
+  border-color: rgba(245, 158, 11, .34);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(245, 158, 11, .12), transparent 44%),
+    var(--bk-card-bg);
+}
+
+.bk-chat-context-card > .bk-card-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--bk-space-3);
+}
+
+.bk-chat-context-link {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--bk-border);
+  border-radius: var(--bk-radius-control);
+  background: var(--bk-card-bg-soft);
+  color: inherit;
+  text-decoration: none;
+}
+
+.bk-chat-context-link:hover {
+  border-color: rgba(96, 165, 250, .34);
+  background: rgba(59, 130, 246, .08);
+}
+
+.bk-chat-context-link strong,
+.bk-chat-context-link small {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.bk-chat-context-link strong {
+  font-size: .9rem;
+  line-height: 1.15;
+}
+
+.bk-chat-context-link small {
+  margin-top: 3px;
+  color: var(--bk-muted);
+  font-size: .76rem;
+  line-height: 1.25;
+}
+
+.bk-chat-context-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(96, 165, 250, .24);
+  border-radius: 13px;
+  background: rgba(15, 23, 42, .62);
+  color: var(--bk-accent);
+  font-weight: 850;
+}
+
+.bk-chat-context-card[data-chat-kind="safety"] .bk-chat-context-icon {
+  border-color: rgba(245, 158, 11, .34);
+  color: rgb(251, 191, 36);
+}
+
+.bk-chat-context-card .bk-profile-feed-policy {
+  margin-top: 0;
+}
+
+.bk-chat-nav-row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.bk-chat-nav-row:hover {
+  border-color: rgba(96, 165, 250, .34);
+  background: rgba(59, 130, 246, .08);
+}
+
+.bk-chat-nav-row:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, .72);
+  outline-offset: 2px;
+}
+
+.bk-chat-nav-row.is-active {
+  border-color: rgba(56, 189, 248, .48);
+  background: rgba(14, 165, 233, .1);
+}
+
+.bk-chat-nav-row.is-active .bk-list-row-title {
+  color: var(--bk-accent);
+}
+
+.bk-chat-unread-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--bk-accent);
+  font-size: .74rem;
+  font-weight: 850;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.bk-chat-unread-divider::before,
+.bk-chat-unread-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(56, 189, 248, .34);
+}
+
+.bk-chat-message-card {
+  position: relative;
+}
+
+.bk-chat-first-unread {
+  border-color: rgba(56, 189, 248, .42);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, .1), 0 18px 44px rgba(14, 165, 233, .08);
+}
+
+.bk-chat-message-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.bk-chat-reply-action {
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid rgba(148, 163, 184, .18);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, .52);
+  color: var(--bk-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: .76rem;
+  font-weight: 800;
+}
+
+.bk-chat-reply-action:hover {
+  border-color: rgba(96, 165, 250, .34);
+  color: var(--bk-text);
+}
+
+.bk-chat-composer-card {
+  display: grid;
+  gap: var(--bk-space-3);
+}
+
+.bk-chat-reply-context {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid rgba(96, 165, 250, .24);
+  border-left: 3px solid var(--bk-accent);
+  border-radius: var(--bk-radius-control);
+  background: rgba(59, 130, 246, .08);
+}
+
+.bk-chat-reply-context[hidden] {
+  display: none;
+}
+
+.bk-chat-reply-context span,
+.bk-chat-reply-context strong,
+.bk-chat-reply-context p {
+  display: block;
+  min-width: 0;
+  margin: 0;
+}
+
+.bk-chat-reply-context span {
+  color: var(--bk-muted);
+  font-size: .72rem;
+  font-weight: 850;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.bk-chat-reply-context strong {
+  margin-top: 3px;
+  color: var(--bk-text);
+  font-size: .9rem;
+}
+
+.bk-chat-reply-context p {
+  margin-top: 4px;
+  color: var(--bk-muted);
+  font-size: .82rem;
+  line-height: 1.35;
+}
+
+.bk-chat-reply-context button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(148, 163, 184, .18);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, .64);
+  color: var(--bk-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+@media (max-width: 767px) {
+  .bk-event-card-polished {
+    gap: 10px;
+  }
+
+  .bk-event-card-surface {
+    gap: 10px;
+  }
+
+  .bk-event-media,
+  .bk-event-media .bk-cover {
+    min-height: 78px;
+  }
+
+  .bk-event-main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .bk-event-date-pill {
+    justify-self: start;
+    min-height: 30px;
+    padding: 6px 9px;
+    font-size: .7rem;
+  }
+
+  .bk-event-meta-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .bk-event-meta-grid .bk-kpi {
+    min-height: 50px;
+    padding: 8px 7px;
+  }
+
+  .bk-event-meta-grid .bk-kpi-value {
+    font-size: .82rem;
+  }
+
+  .bk-event-meta-grid .bk-kpi-label {
+    font-size: .62rem;
+  }
+
+  .bk-event-actions .bk-button {
+    min-height: 36px;
+    padding-inline: 8px;
+    font-size: .82rem;
+  }
+
+  .bk-schedule-card .bk-timeline-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .bk-schedule-card .bk-timeline-date {
+    position: static;
+    padding: 8px 10px;
+    font-size: .72rem;
+  }
+
+  .bk-band-logistics-card > .bk-card-grid-3,
+  .bk-event-logistics-card > .bk-card-grid-3,
+  .bk-doc-next-actions-card .bk-action-row,
+  .bk-chat-context-card > .bk-card-grid-3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bk-band-logistics-card > .bk-card-grid-3 > .bk-context-card:nth-child(3),
+  .bk-event-logistics-card > .bk-card-grid-3 > .bk-context-card:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .bk-context-card .bk-list-row,
+  .bk-doc-context-card .bk-list-row,
+  .bk-doc-access-card .bk-list-row {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .bk-context-card .bk-list-row .bk-button,
+  .bk-doc-context-card .bk-list-row .bk-button,
+  .bk-doc-access-card .bk-list-row .bk-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .bk-chat-nav-row {
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+  }
+
+  .bk-chat-message-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 380px) {
+  .bk-event-meta-grid,
+  .bk-event-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
