@@ -173,7 +173,10 @@ function renderEventDetail(ctx: AppContext): string {
 
 function renderChats(ctx: AppContext): string {
   const policy = card(`<h3 class="bk-card-title">${ctx.t('chats.policyTitle')}</h3><p class="bk-state-copy">${ctx.t('chats.policyCopy')}</p><div class="bk-chip-row">${badge(ctx.t('security.linkNotice'), 'warning')}${badge(ctx.t('security.reportAvailable'), 'positive')}</div>`, 'bk-chat-policy-card');
-  return contentGrid([pageHeader(ctx, 'chats.title', 'chats.subtitle'), policy, card(`<h3 class="bk-card-title">${ctx.t('chats.rooms')}</h3><div class="bk-list" data-real-room-list>${chats.map((chat) => chatRow(ctx, chat)).join('')}</div>`)].join(''), defaultRightRail(ctx));
+  // Enhanced by RealPeopleSearch — the only people-discovery surface, so a new
+  // personal conversation can be started from the chats screen itself.
+  const peopleSearch = `<section data-real-people-search></section>`;
+  return contentGrid([pageHeader(ctx, 'chats.title', 'chats.subtitle'), policy, peopleSearch, card(`<h3 class="bk-card-title">${ctx.t('chats.rooms')}</h3><div class="bk-list" data-real-room-list>${chats.map((chat) => chatRow(ctx, chat)).join('')}</div>`)].join(''), defaultRightRail(ctx));
 }
 
 function renderChatRoom(ctx: AppContext): string {

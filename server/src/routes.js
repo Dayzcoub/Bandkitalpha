@@ -37,6 +37,7 @@ import { handleRegister, handleVerifyEmail, handleResendVerification, handleLogi
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { handleListNotifications, handleReadNotifications } from './modules/notifications/notifications.routes.js';
 import { handleRequestFriendship, handleEndFriendship, handleListFriends, handleListFriendRequests } from './modules/friends/friends.routes.js';
+import { handleSearchUsers } from './modules/users/users.routes.js';
 
 // `env` нужен четырём хендлерам (cookie-флаги и путь к файлам), поэтому таблица — функция.
 export function buildRoutes(env) {
@@ -126,6 +127,11 @@ export function buildRoutes(env) {
     { method: 'POST', path: '/events/:eventId/engagements/:engagementId/reliability', limit: 'write.default', access: 'authed', handler: (req, res, p) => handleRecordReliabilityEvent(req, res, p[0], p[1]) },
 
     { method: 'POST', path: '/conversations/personal', limit: 'conversation.open', access: 'authed', handler: handleOpenPersonalConversation },
+
+    // People discovery — the only user-search surface (staff `/admin/users` aside).
+    // Read-only, authed; returns no contact detail, and contact stays gated by the
+    // friend_request/dm privacy axes.
+    { method: 'GET', path: '/users/search', limit: 'none', access: 'authed', handler: handleSearchUsers },
 
     { method: 'GET', path: '/me/friends', limit: 'none', access: 'authed', handler: handleListFriends },
     { method: 'GET', path: '/me/friend-requests', limit: 'none', access: 'authed', handler: handleListFriendRequests },

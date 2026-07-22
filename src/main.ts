@@ -27,6 +27,7 @@ import { initRealDirectories } from './modules/RealDirectories.js';
 import { initRealEntityDetail } from './modules/RealEntityDetail.js';
 import { initRealEventDetail } from './modules/RealEventDetail.js';
 import { initRealChat } from './modules/RealChat.js';
+import { initRealPeopleSearch } from './modules/RealPeopleSearch.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
 
@@ -73,3 +74,4 @@ initRealDirectories(root);
 initRealEntityDetail(root);
 initRealEventDetail(root);
 initRealChat(root);
+initRealPeopleSearch(root);

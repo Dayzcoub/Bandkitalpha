@@ -1,0 +1,12 @@
+{
+  "people.title": "Find people",
+  "people.subtitle": "Search registered people by name to message them or add them as a friend.",
+  "people.searchPlaceholder": "Search by name",
+  "people.hint": "Type at least 2 characters to search.",
+  "people.searching": "Searching…",
+  "people.empty": "No people found.",
+  "people.message": "Message",
+  "people.addFriend": "Add friend",
+  "people.friendSent": "Friend request sent.",
+  "people.actionError": "Something went wrong. Please try again."
+}

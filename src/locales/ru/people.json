@@ -1,0 +1,12 @@
+{
+  "people.title": "Поиск людей",
+  "people.subtitle": "Найдите зарегистрированных пользователей по имени, чтобы написать им или добавить в друзья.",
+  "people.searchPlaceholder": "Поиск по имени",
+  "people.hint": "Введите минимум 2 символа.",
+  "people.searching": "Идёт поиск…",
+  "people.empty": "Никого не найдено.",
+  "people.message": "Написать",
+  "people.addFriend": "В друзья",
+  "people.friendSent": "Заявка в друзья отправлена.",
+  "people.actionError": "Что-то пошло не так. Попробуйте ещё раз."
+}

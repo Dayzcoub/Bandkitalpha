@@ -1058,6 +1058,18 @@ export const localeBundles = {
       "notifications.eventInvite": "Event invite",
       "notifications.roleRequest": "Role request"
     },
+    "people": {
+      "people.title": "Find people",
+      "people.subtitle": "Search registered people by name to message them or add them as a friend.",
+      "people.searchPlaceholder": "Search by name",
+      "people.hint": "Type at least 2 characters to search.",
+      "people.searching": "Searching…",
+      "people.empty": "No people found.",
+      "people.message": "Message",
+      "people.addFriend": "Add friend",
+      "people.friendSent": "Friend request sent.",
+      "people.actionError": "Something went wrong. Please try again."
+    },
     "profile": {
       "profile.title": "Profile",
       "profile.meTitle": "My profile",
@@ -2193,6 +2205,18 @@ export const localeBundles = {
       "notifications.empty": "Уведомлений пока нет",
       "notifications.eventInvite": "Приглашение в событие",
       "notifications.roleRequest": "Заявка на роль"
+    },
+    "people": {
+      "people.title": "Поиск людей",
+      "people.subtitle": "Найдите зарегистрированных пользователей по имени, чтобы написать им или добавить в друзья.",
+      "people.searchPlaceholder": "Поиск по имени",
+      "people.hint": "Введите минимум 2 символа.",
+      "people.searching": "Идёт поиск…",
+      "people.empty": "Никого не найдено.",
+      "people.message": "Написать",
+      "people.addFriend": "В друзья",
+      "people.friendSent": "Заявка в друзья отправлена.",
+      "people.actionError": "Что-то пошло не так. Попробуйте ещё раз."
     },
     "profile": {
       "profile.title": "Профиль",
