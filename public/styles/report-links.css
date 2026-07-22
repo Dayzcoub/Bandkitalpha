@@ -1,0 +1,42 @@
+@import url('/styles/meta-chips.css');
+
+.bk-report-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: end;
+  align-self: center;
+  max-width: max-content;
+  min-width: 0;
+  padding: 1px 3px;
+  border-radius: 999px;
+  color: rgba(148, 163, 184, .38);
+  font-size: .66rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  opacity: .58;
+  transition: color .16s ease, opacity .16s ease, background .16s ease;
+}
+
+.bk-report-link:hover,
+.bk-report-link:focus-visible {
+  color: rgba(251, 113, 133, .72);
+  background: rgba(251, 113, 133, .045);
+  opacity: .86;
+  outline: none;
+}
+
+.bk-entity-actions .bk-report-link,
+.bk-social-actions .bk-report-link,
+.bk-profile-social-actions .bk-report-link,
+.bk-offer-card .bk-report-link {
+  align-self: center;
+  min-height: 24px;
+}
+
+@media (max-width: 767px) {
+  .bk-report-link {
+    font-size: .64rem;
+  }
+}
