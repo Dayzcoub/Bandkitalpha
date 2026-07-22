@@ -36,7 +36,7 @@ export async function handleListEntities(req, res) {
          coalesce(count(em.user_id), 0)::int as member_count
        from entities e
        left join entity_memberships em on em.entity_id = e.id and em.status = 'active'
-       where e.status not in ('deleted', 'anonymized')
+       where e.status <> 'deleted'
          and (
            e.visibility = 'public'
            or ($1::uuid is not null and e.visibility = 'registered')
@@ -283,7 +283,7 @@ export async function handleAddEntityMember(req, res, entityId) {
     // An invitation, not a membership. Adding someone straight to 'active' was a consent
     // bypass: an active membership grants entity chat access AND counts as shared
     // context, so anyone could create an entity, add a stranger, and thereby earn the
-    // right to message them past their own dm_policy — verified end to end before 0024.
+    // right to message them past their own `dm` policy — verified end to end before 0024.
     // The 'invited' state has been in the schema since 0002; only the flow was missing.
     //
     // A previously declined/removed/former/left membership may be invited again; an
@@ -358,7 +358,7 @@ export async function handleListMyInvitations(req, res) {
          join entities e on e.id = m.entity_id
          left join users u on u.id = m.invited_by_user_id
         where m.user_id = $1 and m.status = 'invited'
-          and e.status not in ('deleted', 'anonymized')
+          and e.status <> 'deleted'
         order by m.invited_at desc nulls last
         limit 100`,
       [actor.id]

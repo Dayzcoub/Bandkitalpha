@@ -31,7 +31,7 @@ const INBOX_QUERY = `
          n.entity_id, n.room_id
     from notifications n
     left join users a on a.id = n.actor_user_id and a.status <> 'anonymized'
-    left join entities e on e.id = n.entity_id and e.status not in ('deleted', 'anonymized')
+    left join entities e on e.id = n.entity_id and e.status <> 'deleted'
     left join entity_memberships m on m.entity_id = n.entity_id and m.user_id = n.recipient_user_id
    where n.recipient_user_id = $1
    order by n.created_at desc

@@ -3,6 +3,8 @@ import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
 import { raiseNotification } from '../notifications/notifications.routes.js';
+import { resolvePolicy } from '../privacy/privacyPolicies.js';
+import { hasSharedContext } from '../sharedContext/sharedContext.js';
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const SOURCES = new Set(['profile', 'search', 'event', 'project', 'chat', 'recommendation']);
@@ -92,6 +94,34 @@ export async function handleRequestFriendship(req, res, targetId) {
     if (row?.status === 'pending') {
       await client.query('rollback');
       sendError(res, 409, 'FRIENDSHIP_PENDING', 'Your request is awaiting a reply');
+      return;
+    }
+
+    // Новая заявка — и только здесь спрашивается политика `friend_request` (F2).
+    //
+    // ПОЧЕМУ НЕ ВЫШЕ. Ветки accepted/pending до этой точки — про уже существующую связь;
+    // встречная заявка там означает ПРИНЯТИЕ чужой. Проверять на ней политику того, кто
+    // сам же и позвал, значило бы дать настройке запретить согласие на собственное
+    // приглашение. Политика решает, можно ли ПОЗВАТЬ, а не можно ли ответить «да».
+    //
+    // До 0029 этой проверки не было вовсе: маршрут существовал с 0026 и пускал кого
+    // угодно к кому угодно. Это не новая фича, а незакрытая половина 0026.
+    const policy = await resolvePolicy(client, targetId, 'friend_request');
+    const context = {
+      // Спрашиваем ровно то, что нужно этой политике. `circle` у этой оси нет (0029) —
+      // «заявку могут слать только друзья» бессмысленно, — поэтому и `isFriend` здесь
+      // не спрашивается: не забыт, а невозможен.
+      sharedContext: policy === 'shared_context'
+        ? await hasSharedContext(client, actor.id, targetId)
+        : false
+    };
+    if (!permissionService.canRequestFriendship(actor, resolved.target, policy, context)) {
+      await client.query('rollback');
+      // 403, как у `CONVERSATION_NOT_ALLOWED`: существование пользователя эта ветка не
+      // раскрывает — оно уже раскрыто ветками 409 выше. Квота `friend.request` списана
+      // маршрутом ДО хендлера, поэтому отказ стоит столько же, сколько успех, и перебором
+      // чужие настройки не вычитываются бесплатно (правило 0027).
+      sendError(res, 403, 'FRIENDSHIP_NOT_ALLOWED', 'This user does not accept friend requests from you');
       return;
     }
 

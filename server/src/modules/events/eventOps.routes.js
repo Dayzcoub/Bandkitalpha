@@ -3,6 +3,7 @@ import { readJsonBody, sendError, sendJson } from '../../shared/http.js';
 import { permissionService } from '../permissions/PermissionService.js';
 import { resolveSessionUser } from '../auth/session.js';
 import { canViewEvent } from './events.routes.js';
+import { loadPartySubject } from '../parties/partySubject.js';
 
 // Resolves the event and asserts the actor is a manager of the event's owning
 // entity. Returns { actor, event } on success, or null after sending an error.
@@ -149,6 +150,20 @@ export async function handleCreateEngagement(req, res, eventId) {
 
     if (!counterpartyPartyId) {
       sendError(res, 400, 'ENGAGEMENT_COUNTERPARTY_REQUIRED', 'counterparty_party_id is required');
+      return;
+    }
+
+    // Спросить у субъекта, жив ли он (F4). FK на `parties(id)` гарантирует только, что
+    // строка есть, — а за ней может стоять удалённая группа или ушедший аккаунт. Party
+    // своего статуса не имеет и иметь не будет: она указатель, и вопрос адресуется тому,
+    // на кого она указывает.
+    //
+    // Один ответ на «такой Party нет» и «за ней никого нет»: иначе маршрут стал бы
+    // пробником чужих uuid — существует / не существует. `/parties/candidates` не зря
+    // отдаёт не весь справочник.
+    const subject = await loadPartySubject(client, counterpartyPartyId);
+    if (!permissionService.canEngageParty(subject)) {
+      sendError(res, 400, 'ENGAGEMENT_COUNTERPARTY_INVALID', 'counterparty_party_id is not an engageable party');
       return;
     }
     // A referenced slot must belong to this event (no cross-event slot binding).

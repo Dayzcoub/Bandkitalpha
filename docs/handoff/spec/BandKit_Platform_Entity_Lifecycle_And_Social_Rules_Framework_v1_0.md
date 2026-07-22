@@ -119,8 +119,10 @@ Applies to:
 Recommended lifecycle:
 
 ```text
-draft -> active -> paused -> archived -> deleted/anonymized
+draft -> active -> paused -> archived -> deleted
 ```
+
+(`anonymized` убран — F3, 1.26.0; см. §Deleted.)
 
 ### Draft
 
@@ -169,7 +171,22 @@ Behavior:
 - no new normal activity;
 - owner/admin can restore if allowed.
 
-### Deleted/anonymized
+### Deleted
+
+> **Уточнено 2026-07-17 (F3, 1.26.0, миграция `0030`).** Раздел назывался
+> «Deleted/anonymized». **Анонимизации у сущности нет** — терминал один, `deleted`, и
+> значение `anonymized` убрано из словаря `entities.status`. Причина — правило этого же
+> раздела: «do not destroy other users' legitimate history». Имя группы не её приватность,
+> а несущая конструкция чужой истории; вычистив его, мы обессмыслим каждое прошлое событие
+> и повесим репутацию контрагентов на безымянный Party. У `users` терминал другой
+> (`anonymized`), и это не дефект симметрии, а разные модели (D11).
+>
+> Имя сущности, содержащее ПД человека, решается **переименованием**, а не терминальным
+> статусом: стирание обязано дотянуться и до **живой** сущности (`solo_artist`, чей
+> владелец удалил аккаунт, продолжает выступать). Действие, не состояние.
+>
+> Ниже — `deleted`. Причина ухода живёт в `termination_reason`/`terminated_at`/
+> `terminated_by`, а не в статусе (D1/D2).
 
 Hard removal should be rare and controlled.
 

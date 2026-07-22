@@ -19,7 +19,8 @@ import { handleAdminLocalization } from './modules/admin/localization.routes.js'
 import { handleAdminNotifications } from './modules/admin/notifications.routes.js';
 import { handleAdminSettings } from './modules/admin/settings.routes.js';
 import { handleAdminStaffCatalog } from './modules/admin/staff.routes.js';
-import { handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handleUpdateMessage, handleDeleteMessage, handleOpenPersonalConversation, handleListConversationRequests, handleDecideConversationRequest, handleGetDmPolicy, handleSetDmPolicy } from './modules/chats/chats.routes.js';
+import { handleListMessages, handleSendMessage, handleListMyRooms, handleGetRoom, handleUpdateMessage, handleDeleteMessage, handleOpenPersonalConversation, handleListConversationRequests, handleDecideConversationRequest } from './modules/chats/chats.routes.js';
+import { handleGetPrivacy, handleSetPrivacy } from './modules/privacy/privacy.routes.js';
 import { handleListDocuments, handleListEntityDocuments, handleCreateEntityDocument } from './modules/documents/documents.routes.js';
 import { handleUploadDocumentFile, handleDownloadDocumentFile, handleListDocumentFiles } from './modules/documents/files.routes.js';
 import { handleAddEntityMember, handleCreateEntity, handleGetEntity, handleListEntities, handleListMyInvitations, handleDecideInvitation } from './modules/entities/entities.routes.js';
@@ -137,8 +138,11 @@ export function buildRoutes(env) {
     { method: 'GET', path: '/me/conversation-requests', limit: 'none', access: 'authed', handler: handleListConversationRequests },
     { method: 'POST', path: '/conversations/:roomId/request/:decision(accept|reject)', limit: 'write.default', access: 'authed', handler: (req, res, p) => handleDecideConversationRequest(req, res, p[0], p[1]) },
 
-    { method: 'GET', path: '/me/dm-policy', limit: 'none', access: 'authed', handler: handleGetDmPolicy },
-    { method: 'PUT', path: '/me/dm-policy', limit: 'write.default', access: 'authed', handler: handleSetDmPolicy },
+    // Все оси приватности одной парой маршрутов (F2). `/me/dm-policy` был маршрутом на
+    // ось — форма, в которой восемь осей означали бы восемь пар. Ось теперь добавляется
+    // строкой в `privacy_axis_options`, а не здесь.
+    { method: 'GET', path: '/me/privacy', limit: 'none', access: 'authed', handler: handleGetPrivacy },
+    { method: 'PUT', path: '/me/privacy/:axis', limit: 'write.default', access: 'authed', handler: (req, res, p) => handleSetPrivacy(req, res, p[0]) },
 
     { method: 'GET', path: '/me/chat-rooms', limit: 'none', access: 'authed', handler: handleListMyRooms },
     { method: 'GET', path: '/chat-rooms/:roomId/messages', limit: 'none', access: 'authed', handler: (req, res, p) => handleListMessages(req, res, p[0]) },

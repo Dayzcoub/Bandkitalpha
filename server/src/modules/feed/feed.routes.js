@@ -14,7 +14,8 @@ async function requireEntity(client, res, entityId) {
     [entityId]
   );
   const entity = result.rows[0];
-  if (!entity || entity.status === 'deleted' || entity.status === 'anonymized') {
+  // Единственный терминал сущности — `deleted` (F3, 0030).
+  if (!entity || entity.status === 'deleted') {
     sendError(res, 404, 'ENTITY_NOT_FOUND', 'Entity not found');
     return null;
   }

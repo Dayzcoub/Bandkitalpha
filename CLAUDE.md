@@ -29,8 +29,11 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
    решения (Phase 2)**: account lifecycle, realtime, anti-spam, Platform Services,
    минимизация доменов, классификация 34 доменов и Architecture Freeze. Утверждает и
    отменяет; старше обоих аудитов, младше пунктов 1–4.
-7. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
-8. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_21_0.md` — где остановились.
+7. `docs/handoff/spec/BandKit_Privacy_Model_v1.md` — **приватность** (F2, 1.25.0): оси,
+   значения, дефолты, хранение. Старше списков осей в `Friends §Privacy settings` и
+   `Lifecycle §2` — они ссылаются сюда, а не наоборот.
+8. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
+9. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_21_0.md` — где остановились.
 
 Аудиты (не источник истины, диагноз а не вердикт; читать после п. 6):
 `BandKit_Architecture_Review_v1.md` — полнота архитектуры по 34 доменам;
@@ -56,6 +59,11 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
 - **Автор сообщения — человек, сущность — контекст** (Lifecycle §19). Не наоборот:
   за вывеской сущности нельзя спрятать того, кто написал.
 - **«Есть ли общий контекст» спрашивают у SharedContext, а не считают сами.**
+- **Ось приватности существует, только если есть поверхность, которая её применяет**
+  (Privacy Model §4). Настройка, которой нечего запрещать, — не защита, а обещание.
+  Появился экран — ось добавляется строкой в `privacy_axis_options`, не миграцией и не
+  маршрутом. И обратный порядок: **сначала право, потом политика** — приватность только
+  сужает, она никогда не выдаёт доступ, которого не дал Authorization.
 - **Platform Service владеет механизмом, домен владеет смыслом** (Decisions §2).
   Rate Limiting, Notifications, Search, Audit, Media Storage, Cache, Jobs, Scheduler,
   Feature Flags — общая инфраструктура. Сервис не знает, что означают его данные:

@@ -51,7 +51,10 @@ export class PermissionService {
   // membership is passed in, not looked up, so this stays a pure decision and the
   // route owns the query.
   canViewEntity(actor, entity, membership = null) {
-    if (!entity || entity.status === 'deleted' || entity.status === 'anonymized') {
+    // `deleted` — единственный терминал сущности (F3, 0030). `anonymized` здесь больше
+    // не проверяется не потому, что его забыли: у сущности его не бывает — имя группы не
+    // её приватность, а несущая конструкция чужой истории.
+    if (!entity || entity.status === 'deleted') {
       return false;
     }
 
@@ -197,19 +200,18 @@ export class PermissionService {
     );
   }
 
-  // May `actor` put a first message in front of `target` at all (Conversation
-  // Lifecycle §2)? This decides whether a message request may be created, not whether
-  // the message reaches the inbox — an allowed stranger still lands in a request.
+  // Does `actor` satisfy `policy` with respect to the subject who chose it? This is the
+  // whole privacy dictionary and it is deliberately axis-blind (F2, Privacy Model §3):
+  // the axis says which door, the policy says who passes any door. Every value here
+  // describes the actor↔subject relationship and nothing about the object behind the
+  // door, which is why one evaluator serves every axis without becoming the god-object
+  // D8 forbids — the meaning of an axis stays in its domain, one caller below.
   //
   // `context` carries what only a query can answer — { sharedContext, isFriend } —
-  // because those are lookups, not decisions. Adding an axis means adding a key here,
-  // not another positional boolean.
-  //
-  canRequestPersonalContact(actor, target, context = {}) {
-    if (isBarred(actor)) return false;
-    if (!target || !target.id || target.id === actor.id) return false;
-
-    switch (target.dm_policy) {
+  // because those are lookups, not decisions. Adding a policy value means adding a case
+  // here; adding an axis means neither.
+  satisfiesPolicy(actor, policy, context = {}) {
+    switch (policy) {
       case 'everyone':
         return true;
       case 'verified':
@@ -226,10 +228,58 @@ export class PermissionService {
       case 'nobody':
         return false;
       default:
-        // An unknown policy fails closed. The FK to dm_policies makes this
-        // unreachable, which is the point of the FK.
+        // Unknown, or an axis that resolved to nothing, fails closed. The composite FK
+        // in 0029 makes an unknown value unstorable, which is the point of the FK; null
+        // arrives here only if the axis itself is gone, and a policy that does not
+        // resolve must not mean "anyone".
         return false;
     }
+  }
+
+  // May `actor` put a first message in front of `target` at all (Conversation
+  // Lifecycle §2)? This decides whether a message request may be created, not whether
+  // the message reaches the inbox — an allowed stranger still lands in a request.
+  //
+  // `policy` is the resolved `dm` axis, passed in rather than read off `target`: since
+  // 0029 it is not a column on `users` but a row that may not exist (absent = the axis
+  // default). Resolving it is a query, and this stays a pure decision.
+  canRequestPersonalContact(actor, target, policy, context = {}) {
+    if (isBarred(actor)) return false;
+    if (!target || !target.id || target.id === actor.id) return false;
+    return this.satisfiesPolicy(actor, policy, context);
+  }
+
+  // May `actor` ask `target` to be friends (`friend_request` axis, F2)? Until 0029 this
+  // question had no answer at all: the route existed from 0026 and let anyone request
+  // anyone. Same evaluator, different door.
+  //
+  // Note what the dictionary cannot express here: `circle` is not an option for this
+  // axis (0029), because "only friends may ask to be friends" is not a strict setting
+  // but a contradiction. The composite FK, not this method, is what enforces that.
+  canRequestFriendship(actor, target, policy, context = {}) {
+    if (isBarred(actor)) return false;
+    if (!target || !target.id || target.id === actor.id) return false;
+    return this.satisfiesPolicy(actor, policy, context);
+  }
+
+  // Может ли эта Party быть контрагентом ангажемента (F4)? До 0030 этого не спрашивал
+  // никто: `POST /events/:eventId/engagements` брал `counterparty_party_id` из тела, а FK
+  // гарантировал только существование строки `parties` — но не то, что за ней кто-то жив.
+  // Ангажировать удалённую группу было можно.
+  //
+  // Это и есть та дыра, ради которой хотелось завести `parties.status`. Она закрывается
+  // вопросом к субъекту, а не колонкой: Party — указатель (см. `partySubject.js`).
+  //
+  // `subject` приходит из `loadPartySubject`, не читается здесь: запрос принадлежит
+  // маршруту, решение — сервису.
+  //
+  // ВНИМАНИЕ, ЗДЕСЬ ЛОВУШКА. Обе ветки сходятся на строке 'active', и это СОВПАДЕНИЕ, а не
+  // общий словарь: у `users` не-active означает «ушёл» (deactivated | anonymized), у
+  // `entities` — четыре разные вещи (draft — ещё не запущена, paused — временно молчит,
+  // archived — история, deleted — ушла). Совпадение ответа не делает словари одним
+  // словарём; не «упрощать» это в приведение статусов и не заводить общий enum (D11).
+  canEngageParty(subject) {
+    return Boolean(subject) && subject.subject_status === 'active';
   }
 
   // Reading the platform owner console. It is read-only, so every staff role may

@@ -6,6 +6,8 @@ import { consumeRateLimit } from '../rateLimit/rateLimitService.js';
 import { checkLinkPolicy } from '../../shared/linkPolicy.js';
 import { raiseNotification } from '../notifications/notifications.routes.js';
 import { areFriends } from '../friends/friends.routes.js';
+import { resolvePolicy } from '../privacy/privacyPolicies.js';
+import { hasSharedContext } from '../sharedContext/sharedContext.js';
 
 const MAX_MESSAGE_LENGTH = 4000;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -61,28 +63,6 @@ async function requireRoomAccess(client, req, res, roomId, capability) {
   return { actor, room, membership };
 }
 
-// Does the actor share a confirmed context with the other user — an active membership
-// in the same entity, or participation in the same event (Conversation Lifecycle §2,
-// "пользователи с общим подтверждённым контекстом")?
-async function hasSharedContext(client, actorId, otherId) {
-  const result = await client.query(
-    `select exists (
-       select 1
-         from entity_memberships a
-         join entity_memberships b on b.entity_id = a.entity_id
-        where a.user_id = $1 and b.user_id = $2
-          and a.status = 'active' and b.status = 'active'
-     ) or exists (
-       select 1
-         from event_participants a
-         join event_participants b on b.event_id = a.event_id
-        where a.user_id = $1 and b.user_id = $2
-          and a.status = 'confirmed' and b.status = 'confirmed'
-     ) as shared`,
-    [actorId, otherId]
-  );
-  return Boolean(result.rows[0]?.shared);
-}
 
 // Decides whether `actor` may post into a personal room, and returns what the write
 // path should do about the request record (Conversation Lifecycle §2).
@@ -135,8 +115,8 @@ async function personalSendDecision(client, actor, room) {
   // request и квоты не тратит), позже — нельзя тоже, и это стоило отдельной ошибки.
   //
   // Первая версия списывала после проверки прав, и тогда отказ `CONVERSATION_NOT_ALLOWED`
-  // не стоил ничего: перебором первых сообщений можно было бесплатно выяснять чужой
-  // `dm_policy` — 403 против 201 — упираясь лишь в щедрый `write.default`. Это прямо
+  // не стоил ничего: перебором первых сообщений можно было бесплатно выяснять чужую
+  // политику `dm` — 403 против 201 — упираясь лишь в щедрый `write.default`. Это прямо
   // противоречило собственному правилу 0027 («считаем попытки, а не успехи»). Попытка
   // связаться с незнакомцем — это попытка, даже если он её не принимает.
   //
@@ -158,22 +138,27 @@ async function personalSendDecision(client, actor, room) {
   }
 
   const targetResult = await client.query(
-    'select id, status, sanction, email_verified, dm_policy from users where id = $1 limit 1',
+    'select id, status, sanction, email_verified from users where id = $1 limit 1',
     [otherId]
   );
   const target = targetResult.rows[0] || null;
 
+  // Since 0029 the policy is a row, not a column on `users`: absent means the axis
+  // default, so it is resolved rather than selected alongside the account. Same client —
+  // the connection is already held (пул: «соединение берут последним», 1.16.2).
+  const dmPolicy = target ? await resolvePolicy(client, otherId, 'dm') : null;
+
   // Ask only what the policy needs: a lookup per axis, not per request.
   const context = {
-    sharedContext: target?.dm_policy === 'shared_context'
+    sharedContext: dmPolicy === 'shared_context'
       ? await hasSharedContext(client, actor.id, otherId)
       : false,
-    isFriend: target?.dm_policy === 'circle'
+    isFriend: dmPolicy === 'circle'
       ? await areFriends(client, actor.id, otherId)
       : false
   };
 
-  if (!permissionService.canRequestPersonalContact(actor, target, context)) {
+  if (!permissionService.canRequestPersonalContact(actor, target, dmPolicy, context)) {
     return {
       allowed: false,
       status: 403,
@@ -351,52 +336,6 @@ export async function handleListMyRooms(req, res) {
   }
 }
 
-// GET /me/dm-policy — the actor's incoming-message policy plus the catalogue, so the
-// UI can render the choices without a second call. The catalogue is reference data
-// (keys are stable; the UI renders t('chat.dmPolicy.<key>')).
-export async function handleGetDmPolicy(req, res) {
-  try {
-    const actor = await resolveSessionUser(req);
-    if (!actor) {
-      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
-      return;
-    }
-    const [me, catalogue] = await Promise.all([
-      getPool().query('select dm_policy from users where id = $1 limit 1', [actor.id]),
-      getPool().query('select key, label from dm_policies order by sort_order, key')
-    ]);
-    sendJson(res, 200, {
-      ok: true,
-      dm_policy: me.rows[0]?.dm_policy || 'everyone',
-      policies: catalogue.rows
-    });
-  } catch (error) {
-    sendError(res, 500, 'DM_POLICY_FAILED', 'Failed to load the incoming message policy');
-  }
-}
-
-// PUT /me/dm-policy — change it. Own policy only; the FK to dm_policies is what
-// rejects an unknown value, so 'circle' cannot be set until the domain exists.
-export async function handleSetDmPolicy(req, res) {
-  try {
-    const actor = await resolveSessionUser(req);
-    if (!actor) {
-      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
-      return;
-    }
-    const body = await readJsonBody(req);
-    const policy = String(body.dm_policy || '').trim();
-    const known = await getPool().query('select key from dm_policies where key = $1 limit 1', [policy]);
-    if (!known.rows[0]) {
-      sendError(res, 400, 'DM_POLICY_INVALID', 'dm_policy is not one of the available policies');
-      return;
-    }
-    await getPool().query('update users set dm_policy = $1, updated_at = now() where id = $2', [policy, actor.id]);
-    sendJson(res, 200, { ok: true, dm_policy: policy });
-  } catch (error) {
-    sendError(res, 500, 'DM_POLICY_FAILED', 'Failed to update the incoming message policy');
-  }
-}
 
 // GET /me/conversation-requests — personal dialogues waiting for this user's decision
 // (Conversation Lifecycle §2). Only the recipient's own requests; the starter message
