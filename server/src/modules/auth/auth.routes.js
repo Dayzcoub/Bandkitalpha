@@ -4,7 +4,8 @@ import { logInfo } from '../../shared/logger.js';
 import { matchTotp } from '../../shared/totp.js';
 import { decryptSecret } from '../../shared/secretbox.js';
 import { consumeRecoveryCode } from './twofactor.routes.js';
-import { sendMail, mailerConfigured, verificationEmail } from '../../shared/mailer.js';
+import { sendMail, verificationEmail } from '../../shared/mailer.js';
+import { resolveSessionUser } from './session.js';
 import {
   hashPassword,
   verifyPassword,
@@ -39,10 +40,41 @@ function cookieSecure(env) {
   return Boolean(env.cookieSecure);
 }
 
+// Mints a fresh one-time email-verification token for the user and persists only
+// its hash. Returns the raw token (never stored); the caller mails it. Shared by
+// registration and the resend endpoint so both mint tokens the same way.
+async function issueVerificationToken(client, userId) {
+  const rawToken = generateToken();
+  await client.query(
+    `insert into email_verifications (user_id, token_hash, purpose, expires_at)
+     values ($1, $2, 'email_verify', $3)`,
+    [userId, hashToken(rawToken), new Date(Date.now() + VERIFY_TTL_MS)]
+  );
+  return rawToken;
+}
+
+// Builds the verification link and sends the localized email. Never throws
+// (sendMail swallows provider failures); returns { sent, ... }.
+async function deliverVerification(env, { email, displayName, locale, rawToken }) {
+  const verifyUrl = `${env.appBaseUrl}/auth/verify-email?token=${encodeURIComponent(rawToken)}`;
+  const { subject, html, text } = verificationEmail(locale, { displayName, verifyUrl });
+  return sendMail(env, { to: email, subject, html, text });
+}
+
+// The dev-only escape hatch: return the raw token in the response so a developer
+// without a mail provider can still verify. Gated behind an explicit opt-in flag
+// (AUTH_EXPOSE_DEV_TOKEN) AND never in production. NODE_ENV alone was insufficient:
+// staging is non-production and public, so it used to hand the token to anyone who
+// registered — email verification meant nothing there. Returns null when withheld.
+function maybeDevToken(env, mailSent, rawToken) {
+  if (!mailSent && env.authExposeDevToken && env.nodeEnv !== 'production') return rawToken;
+  return null;
+}
+
 // POST /auth/register — email + password. Creates user + credentials + a one-time
 // email verification token and mails the verification link (spec §9 step 3).
-// Without a configured mail provider, non-production still returns the token so
-// the flow stays testable locally.
+// Without a configured mail provider, the token is returned only under the
+// explicit local dev flag (see maybeDevToken), never on a deployed host.
 export async function handleRegister(req, res, env) {
   const client = await getPool().connect();
   try {
@@ -67,8 +99,6 @@ export async function handleRegister(req, res, env) {
     }
 
     const passwordHash = await hashPassword(password);
-    const rawToken = generateToken();
-    const verifyExpires = new Date(Date.now() + VERIFY_TTL_MS);
 
     await client.query('begin');
 
@@ -86,11 +116,7 @@ export async function handleRegister(req, res, env) {
       [user.id, passwordHash]
     );
 
-    await client.query(
-      `insert into email_verifications (user_id, token_hash, purpose, expires_at)
-       values ($1, $2, 'email_verify', $3)`,
-      [user.id, hashToken(rawToken), verifyExpires]
-    );
+    const rawToken = await issueVerificationToken(client, user.id);
 
     await client.query(
       `insert into audit_events (actor_user_id, action, metadata)
@@ -103,22 +129,21 @@ export async function handleRegister(req, res, env) {
     logInfo('User registered', { userId: user.id });
 
     // Mail the verification link. A provider failure must not fail registration:
-    // the account and token already exist, and the mail can be retried later.
-    const verifyUrl = `${env.appBaseUrl}/auth/verify-email?token=${encodeURIComponent(rawToken)}`;
-    const { subject, html, text } = verificationEmail(locale, { displayName: user.display_name, verifyUrl });
-    const mail = await sendMail(env, { to: user.email, subject, html, text });
+    // the account and token already exist, and the mail can be retried later
+    // (POST /auth/resend-verification).
+    const mail = await deliverVerification(env, {
+      email: user.email, displayName: user.display_name, locale, rawToken
+    });
 
     const payload = {
       ok: true,
       user: { id: user.id, email: user.email, display_name: user.display_name, status: user.status },
       email_sent: mail.sent
     };
-    // The token is only ever handed back when no mail went out (local dev without
-    // a provider). Once mail works, it travels by email only — never in a
-    // response or a log (Security §8).
-    if (!mail.sent && env.nodeEnv !== 'production') {
-      payload.dev_verify_token = rawToken;
-    }
+    // Token travels by email only once mail works — never in a response or a log
+    // (Security §8). The dev escape hatch is explicit and local-only.
+    const devToken = maybeDevToken(env, mail.sent, rawToken);
+    if (devToken) payload.dev_verify_token = devToken;
     sendJson(res, 201, payload);
   } catch (error) {
     await client.query('rollback').catch(() => {});
@@ -181,6 +206,51 @@ export async function handleVerifyEmail(req, res) {
   } catch (error) {
     await client.query('rollback').catch(() => {});
     sendError(res, 500, 'AUTH_VERIFY_FAILED', 'Verification failed', { message: error?.message || String(error) });
+  } finally {
+    client.release();
+  }
+}
+
+// POST /auth/resend-verification — re-issue the verification email for the
+// signed-in user's OWN address. Deliberately authed, not anonymous:
+//   - the address is the session user's, never a body field, so there is no
+//     account-existence oracle (you can only ask for yourself);
+//   - the per-actor write limit applies normally. The anonymous auth routes
+//     (register/login/verify) cannot be actor-limited and wait on the IP limiter;
+//     this one sidesteps that whole problem by having an actor.
+// Idempotent for an already-verified account: nothing is sent, same ok shape.
+export async function handleResendVerification(req, res, env) {
+  const client = await getPool().connect();
+  try {
+    const actor = await resolveSessionUser(req);
+    if (!actor) {
+      sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
+      return;
+    }
+    if (actor.email_verified) {
+      // Nothing to do — don't mint a token or send mail for a verified address.
+      sendJson(res, 200, { ok: true, email_sent: false, already_verified: true });
+      return;
+    }
+
+    const body = await readJsonBody(req).catch(() => ({}));
+    const locale = body?.locale === 'en' ? 'en' : 'ru';
+
+    const rawToken = await issueVerificationToken(client, actor.id);
+    const mail = await deliverVerification(env, {
+      email: actor.email, displayName: actor.display_name, locale, rawToken
+    });
+
+    const payload = { ok: true, email_sent: mail.sent };
+    const devToken = maybeDevToken(env, mail.sent, rawToken);
+    if (devToken) payload.dev_verify_token = devToken;
+    sendJson(res, 200, payload);
+  } catch (error) {
+    if (error?.code === 'BODY_TOO_LARGE') {
+      sendError(res, 413, 'BODY_TOO_LARGE', 'Request body is too large');
+      return;
+    }
+    sendError(res, 500, 'AUTH_RESEND_FAILED', 'Failed to resend verification', { message: error?.message || String(error) });
   } finally {
     client.release();
   }

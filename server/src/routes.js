@@ -33,7 +33,7 @@ import { handleListReliabilityCatalogue, handleRecordReliabilityEvent, handleLis
 import { handleReportCatalogue, handleCreateReport, handleListReports, handleGetReport, handleUpdateReport, handleReportAction } from './modules/moderation/reports.routes.js';
 import { handleListPlans, handleGetEntityPlan, handleSetEntityPlan } from './modules/billing/plans.routes.js';
 import { handleSubscribe, handleUnsubscribe, handleCreateEntityPost, handleListEntityPosts, handleMyFeed, handleMySubscriptions, handleCreateComment, handleListComments, handleLikePost, handleUnlikePost, handleUpdateSubscription } from './modules/feed/feed.routes.js';
-import { handleRegister, handleVerifyEmail, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
+import { handleRegister, handleVerifyEmail, handleResendVerification, handleLogin, handleLogout, handleMe } from './modules/auth/auth.routes.js';
 import { handleEnroll2fa, handleConfirm2fa, handleDisable2fa } from './modules/auth/twofactor.routes.js';
 import { handleListNotifications, handleReadNotifications } from './modules/notifications/notifications.routes.js';
 import { handleRequestFriendship, handleEndFriendship, handleListFriends, handleListFriendRequests } from './modules/friends/friends.routes.js';
@@ -79,6 +79,10 @@ export function buildRoutes(env) {
     // куку — нормальный сценарий, а не ошибка.
     { method: 'POST', path: '/auth/logout', limit: 'none', access: 'public', handler: (req, res) => handleLogout(req, res, env) },
     { method: 'GET', path: '/auth/me', limit: 'none', access: 'authed', handler: handleMe },
+    // Resend is authed (unlike register/verify above): the actor is the session
+    // user, so it carries a real actor and takes the ordinary per-actor write
+    // limit — no anonymous IP-limiter dependency, and no account-existence oracle.
+    { method: 'POST', path: '/auth/resend-verification', limit: 'write.default', access: 'authed', handler: (req, res) => handleResendVerification(req, res, env) },
     { method: 'POST', path: '/auth/2fa/enroll', limit: 'write.default', access: 'authed', handler: handleEnroll2fa },
     { method: 'POST', path: '/auth/2fa/confirm', limit: 'write.default', access: 'authed', handler: handleConfirm2fa },
     { method: 'POST', path: '/auth/2fa/disable', limit: 'write.default', access: 'authed', handler: handleDisable2fa },

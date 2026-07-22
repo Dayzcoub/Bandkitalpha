@@ -16,6 +16,12 @@ export function getEnv() {
     mailFrom: process.env.MAIL_FROM || '',
     // Public origin used to build links in emails (no trailing slash).
     appBaseUrl: (process.env.APP_BASE_URL || 'https://bandkitdev.mywire.org').replace(/\/+$/, ''),
+    // Local-only escape hatch: hand the one-time verification token back in the
+    // register/resend response when no mailer is wired. Default OFF, and explicit —
+    // NODE_ENV alone was not enough: staging runs non-production, so gating on
+    // `nodeEnv !== 'production'` leaked the token on a public host and made email
+    // verification a no-op there. A deployed host simply never sets this.
+    authExposeDevToken: process.env.AUTH_EXPOSE_DEV_TOKEN === 'true',
     // Кто имеет право говорить нам, чей это запрос. `clientIp()` доверяет
     // `x-forwarded-for` только если сокет пришёл с одного из этих адресов; для всех
     // остальных заголовок — это заявление клиента о самом себе, то есть ничто.
