@@ -1052,11 +1052,17 @@ export const localeBundles = {
     },
     "notifications": {
       "notifications.title": "Notification center",
-      "notifications.subtitle": "In-app notifications, push/email/SMS future-ready and safe lock-screen copy.",
+      "notifications.subtitle": "Friend requests, invitations and replies — all here.",
       "notifications.markRead": "Mark as read",
-      "notifications.empty": "No notifications yet",
+      "notifications.empty": "No notifications yet.",
       "notifications.eventInvite": "Event invite",
-      "notifications.roleRequest": "Role request"
+      "notifications.roleRequest": "Role request",
+      "notifications.someone": "Someone",
+      "notifications.type.friend_request": "sent you a friend request",
+      "notifications.type.friend_accepted": "accepted your friend request",
+      "notifications.type.conversation_request": "wants to start a conversation",
+      "notifications.type.entity_invitation": "invited you",
+      "notifications.type.unknown": "new notification"
     },
     "people": {
       "people.title": "Find people",
@@ -2204,11 +2210,17 @@ export const localeBundles = {
     },
     "notifications": {
       "notifications.title": "Центр уведомлений",
-      "notifications.subtitle": "In-app уведомления, push/email/SMS future-ready и безопасный текст на lock screen.",
+      "notifications.subtitle": "Заявки в друзья, приглашения и ответы — здесь.",
       "notifications.markRead": "Отметить прочитанным",
-      "notifications.empty": "Уведомлений пока нет",
+      "notifications.empty": "Уведомлений пока нет.",
       "notifications.eventInvite": "Приглашение в событие",
-      "notifications.roleRequest": "Заявка на роль"
+      "notifications.roleRequest": "Заявка на роль",
+      "notifications.someone": "Кто-то",
+      "notifications.type.friend_request": "отправил(а) вам заявку в друзья",
+      "notifications.type.friend_accepted": "принял(а) вашу заявку в друзья",
+      "notifications.type.conversation_request": "хочет начать с вами переписку",
+      "notifications.type.entity_invitation": "пригласил(а) вас",
+      "notifications.type.unknown": "новое уведомление"
     },
     "people": {
       "people.title": "Поиск людей",

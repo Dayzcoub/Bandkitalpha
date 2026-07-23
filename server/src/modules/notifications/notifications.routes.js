@@ -102,14 +102,18 @@ export async function handleReadNotifications(req, res, notificationId = null) {
       sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
       return;
     }
+    // Only a real string id selects the by-id path; anything else (e.g. the router
+    // handing this the empty params array) is a mark-all, never a query with a
+    // non-uuid bound to `id`.
+    const id = typeof notificationId === 'string' && notificationId ? notificationId : null;
     // The recipient filter is the authorization: another user's id simply matches
     // nothing, so there is no way to read — or to probe — someone else's inbox.
-    const result = notificationId
+    const result = id
       ? await getPool().query(
           `update notifications set read_at = now()
             where id = $1 and recipient_user_id = $2 and read_at is null
             returning id`,
-          [notificationId, actor.id]
+          [id, actor.id]
         )
       : await getPool().query(
           `update notifications set read_at = now()

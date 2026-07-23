@@ -139,7 +139,10 @@ export function buildRoutes(env) {
     { method: 'DELETE', path: '/me/friends/:userId', limit: 'write.default', access: 'authed', handler: (req, res, p) => handleEndFriendship(req, res, p[0]) },
 
     { method: 'GET', path: '/me/notifications', limit: 'none', access: 'authed', handler: handleListNotifications },
-    { method: 'POST', path: '/me/notifications/read', limit: 'write.default', access: 'authed', handler: handleReadNotifications },
+    // Wrapped so the router's params array isn't passed as notificationId — a bare
+    // `handler: handleReadNotifications` hands it `[]` (truthy), which drove the
+    // mark-all path into the by-id branch with an invalid uuid.
+    { method: 'POST', path: '/me/notifications/read', limit: 'write.default', access: 'authed', handler: (req, res) => handleReadNotifications(req, res) },
     { method: 'POST', path: '/me/notifications/:notificationId/read', limit: 'write.default', access: 'authed', handler: (req, res, p) => handleReadNotifications(req, res, p[0]) },
 
     { method: 'GET', path: '/me/invitations', limit: 'none', access: 'authed', handler: handleListMyInvitations },

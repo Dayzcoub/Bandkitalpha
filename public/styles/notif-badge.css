@@ -1,0 +1,27 @@
+/* Unread-count badge on the notifications bell, and the unread row accent in the
+   notification center. Tokens only. */
+
+.bk-icon-button { position: relative; }
+
+.bk-notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: var(--bk-danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.bk-list-row.bk-notif-unread {
+  border-left: 3px solid var(--bk-primary);
+  padding-left: var(--bk-space-3);
+}

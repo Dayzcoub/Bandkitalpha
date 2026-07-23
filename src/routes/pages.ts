@@ -198,7 +198,12 @@ function renderMarketplace(ctx: AppContext): string {
 }
 
 function renderNotifications(ctx: AppContext): string {
-  return inDevelopment(ctx, 'notifications.title');
+  // Filled by RealNotifications with the live inbox (friend requests, invitations,
+  // replies). No longer a stub.
+  return contentGrid([
+    pageHeader(ctx, 'notifications.title', 'notifications.subtitle'),
+    card(`<div data-real-notifications><p class="bk-state-copy">${ctx.t('notifications.empty')}</p></div>`)
+  ].join(''), defaultRightRail(ctx));
 }
 
 function renderSettings(ctx: AppContext): string {

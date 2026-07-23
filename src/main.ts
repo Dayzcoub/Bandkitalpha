@@ -28,6 +28,7 @@ import { initRealEntityDetail } from './modules/RealEntityDetail.js';
 import { initRealEventDetail } from './modules/RealEventDetail.js';
 import { initRealChat } from './modules/RealChat.js';
 import { initRealPeopleSearch } from './modules/RealPeopleSearch.js';
+import { initRealNotifications } from './modules/RealNotifications.js';
 
 type AppRootInitializer = (root: HTMLElement) => void;
 
@@ -75,3 +76,4 @@ initRealEntityDetail(root);
 initRealEventDetail(root);
 initRealChat(root);
 initRealPeopleSearch(root);
+initRealNotifications(root);

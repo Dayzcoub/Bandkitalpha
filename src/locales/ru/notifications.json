@@ -1,8 +1,14 @@
 {
   "notifications.title": "Центр уведомлений",
-  "notifications.subtitle": "In-app уведомления, push/email/SMS future-ready и безопасный текст на lock screen.",
+  "notifications.subtitle": "Заявки в друзья, приглашения и ответы — здесь.",
   "notifications.markRead": "Отметить прочитанным",
-  "notifications.empty": "Уведомлений пока нет",
+  "notifications.empty": "Уведомлений пока нет.",
   "notifications.eventInvite": "Приглашение в событие",
-  "notifications.roleRequest": "Заявка на роль"
+  "notifications.roleRequest": "Заявка на роль",
+  "notifications.someone": "Кто-то",
+  "notifications.type.friend_request": "отправил(а) вам заявку в друзья",
+  "notifications.type.friend_accepted": "принял(а) вашу заявку в друзья",
+  "notifications.type.conversation_request": "хочет начать с вами переписку",
+  "notifications.type.entity_invitation": "пригласил(а) вас",
+  "notifications.type.unknown": "новое уведомление"
 }
