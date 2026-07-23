@@ -51,6 +51,36 @@ function fieldValue(form: HTMLElement, name: string): string {
   return (form.querySelector<HTMLInputElement>(`[data-auth-field="${name}"]`)?.value || '').trim();
 }
 
+// SPA navigation: the app re-renders on popstate (same pattern as the other Real*
+// modules). Used to move from register/verify onto the login screen.
+function navigateTo(path: string): void {
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}
+
+// One-shot handoff to the login screen after register/verify. Held in memory only
+// (never persisted, never in the URL — it can carry a password), and cleared the
+// first time it is applied.
+let pendingLoginPrefill: { email?: string; password?: string; message?: string; tone?: 'error' | 'ok' | 'info' } | null = null;
+let appRoot: HTMLElement | null = null;
+
+function applyPendingPrefill(root: HTMLElement): void {
+  if (!pendingLoginPrefill) return;
+  const form = root.querySelector<HTMLElement>('form[data-auth-form="login"]');
+  if (!form) return;
+  const prefill = pendingLoginPrefill;
+  pendingLoginPrefill = null; // one-shot: applied once, then forgotten
+  if (prefill.email) {
+    const field = form.querySelector<HTMLInputElement>('[data-auth-field="email"]');
+    if (field) field.value = prefill.email;
+  }
+  if (prefill.password) {
+    const field = form.querySelector<HTMLInputElement>('[data-auth-field="password"]');
+    if (field) field.value = prefill.password;
+  }
+  if (prefill.message) setMessage(form, prefill.message, prefill.tone || 'info');
+}
+
 function setMessage(form: HTMLElement, text: string, tone: 'error' | 'ok' | 'info' = 'error'): void {
   const box = form.querySelector<HTMLElement>('[data-auth-message]');
   if (!box) return;
@@ -92,16 +122,32 @@ async function submitAuthForm(form: HTMLElement): Promise<void> {
       locale: normalizeLocale(locale)
     });
     if (status === 201) {
-      // Only a run without a mail provider hands back a token; say so honestly
-      // instead of always claiming an email was sent.
+      // Registration does not sign you in — move to the login screen with the
+      // credentials carried over, so the next step is one click. The confirmation
+      // notice (and, on a provider-less local run, the dev token) rides along.
       const devToken = data?.dev_verify_token ? ` ${t('auth.msg.devToken')} ${data.dev_verify_token}` : '';
-      setMessage(form, `${t(data?.email_sent ? 'auth.msg.checkEmail' : 'auth.msg.noMailProvider')}${devToken}`, 'ok');
+      pendingLoginPrefill = {
+        email: fieldValue(form, 'email'),
+        password: fieldValue(form, 'password'),
+        message: `${t(data?.email_sent ? 'auth.msg.checkEmail' : 'auth.msg.noMailProvider')}${devToken}`,
+        tone: 'ok'
+      };
+      navigateTo('/login');
+      if (appRoot) applyPendingPrefill(appRoot);
       return;
     }
     setMessage(form, data?.error?.message || t('auth.msg.registerFailed'));
   } else if (kind === 'verify') {
-    const { status } = await api('/auth/verify-email', { token: fieldValue(form, 'token') });
-    setMessage(form, status === 200 ? t('auth.msg.verified') : t('auth.msg.tokenInvalid'), status === 200 ? 'ok' : 'error');
+    const { status, data } = await api('/auth/verify-email', { token: fieldValue(form, 'token') });
+    if (status === 200) {
+      // Verified — land on the login screen with the address prefilled and a clear
+      // "email confirmed" status, so the confirmation is not a dead end.
+      pendingLoginPrefill = { email: data?.email || '', message: t('auth.msg.verified'), tone: 'ok' };
+      navigateTo('/login');
+      if (appRoot) applyPendingPrefill(appRoot);
+      return;
+    }
+    setMessage(form, t('auth.msg.tokenInvalid'), 'error');
   }
 }
 
@@ -121,8 +167,10 @@ function consumeVerifyTokenFromUrl(root: HTMLElement): void {
 }
 
 export function initAuthClient(root: HTMLElement): void {
+  appRoot = root;
   consumeVerifyTokenFromUrl(root);
-  new MutationObserver(() => consumeVerifyTokenFromUrl(root)).observe(root, { childList: true, subtree: true });
+  applyPendingPrefill(root);
+  new MutationObserver(() => { consumeVerifyTokenFromUrl(root); applyPendingPrefill(root); }).observe(root, { childList: true, subtree: true });
 
   root.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;

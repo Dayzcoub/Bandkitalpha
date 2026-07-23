@@ -190,9 +190,11 @@ export async function handleVerifyEmail(req, res) {
     }
 
     await client.query('update email_verifications set used_at = now() where id = $1', [record.id]);
-    await client.query(
+    const updated = await client.query(
       // Status is the lifecycle axis only (0023); verification lives in email_verified.
-      `update users set email_verified = true, updated_at = now() where id = $1`,
+      // Return the email so the client can drop the just-verified user onto the
+      // login screen with the address prefilled.
+      `update users set email_verified = true, updated_at = now() where id = $1 returning email`,
       [record.user_id]
     );
     await client.query(
@@ -202,7 +204,7 @@ export async function handleVerifyEmail(req, res) {
     );
 
     await client.query('commit');
-    sendJson(res, 200, { ok: true, verified: true });
+    sendJson(res, 200, { ok: true, verified: true, email: updated.rows[0]?.email || null });
   } catch (error) {
     await client.query('rollback').catch(() => {});
     sendError(res, 500, 'AUTH_VERIFY_FAILED', 'Verification failed', { message: error?.message || String(error) });
