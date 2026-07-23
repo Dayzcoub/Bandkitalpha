@@ -138,14 +138,32 @@ export class PermissionService {
   // organizer-side action: it requires a managing membership in the event's
   // owning entity (Reputation Rules: records come from verified collaboration
   // context, the organizer/participant relationship — not arbitrary visitors).
+  // A sanctioned account loses it — writing someone else's reputation is content
+  // production, and "restrict user action" (Moderation Rules) means no writes,
+  // same bar as canWriteMessage/canCreateEntity.
   canRecordReliabilityEvent(actor, membership) {
-    return this.canManageEntity(actor, membership);
+    return !isBarred(actor) && this.canManageEntity(actor, membership);
   }
 
   // Reading an engagement's reliability records is manager-scoped for now; the
   // public/party-level reputation summary is a later, anti-abuse-gated slice.
   canViewReliabilityEvents(actor, membership) {
     return this.canManageEntity(actor, membership);
+  }
+
+  // Resolving a dispute (upheld/retracted) is an organizer-side authority action
+  // — a write — so a sanctioned manager loses it, same bar as recording. Staff
+  // resolution is decided by platform role at the route, not through this path.
+  canResolveReliabilityDispute(actor, membership) {
+    return !isBarred(actor) && this.canManageEntity(actor, membership);
+  }
+
+  // Opening a dispute contests a record about YOURSELF — a defensive affordance,
+  // not content production. Like reporting (canFileReport), a 'restricted' subject
+  // keeps it: only a denied account (blocked/inactive) loses it. Barring restricted
+  // here would silence someone defending their own reputation.
+  canOpenReliabilityDispute(actor) {
+    return !isDenied(actor);
   }
 
   // Any active account can file a moderation report (Moderation Rules: reporting

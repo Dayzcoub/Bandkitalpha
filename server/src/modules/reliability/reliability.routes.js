@@ -37,12 +37,16 @@ async function requireEngagementManager(client, req, res, eventId, engagementId)
     [row.entity_id, actor.id]
   );
   const membership = membershipResult.rows[0] || null;
-  if (!permissionService.canRecordReliabilityEvent(actor, membership)) {
+  // The shared doorway is the read-level check (manager of the owning entity), so a
+  // 'restricted' manager keeps READ of the roster (reads stay for restricted). The
+  // write handler applies the sanction bar on top via canRecordReliabilityEvent.
+  if (!permissionService.canViewReliabilityEvents(actor, membership)) {
     sendError(res, 403, 'RELIABILITY_FORBIDDEN', 'You do not have permission to manage this engagement');
     return null;
   }
   return {
     actor,
+    membership,
     event: { id: row.event_id, entity_id: row.entity_id },
     engagement: { id: row.engagement_id, counterparty_party_id: row.counterparty_party_id, status_key: row.status_key }
   };
@@ -72,6 +76,12 @@ export async function handleRecordReliabilityEvent(req, res, eventId, engagement
   try {
     const guard = await requireEngagementManager(client, req, res, eventId, engagementId);
     if (!guard) return;
+    // Recording is a write: a sanctioned manager passes the read doorway but is
+    // barred here ("restrict user action" — no reputation writes for restricted).
+    if (!permissionService.canRecordReliabilityEvent(guard.actor, guard.membership)) {
+      sendError(res, 403, 'RELIABILITY_FORBIDDEN', 'Your account cannot record reliability events');
+      return;
+    }
 
     const body = await readJsonBody(req);
     const typeKey = String(body.type_key || '').trim();
@@ -304,6 +314,13 @@ export async function handleOpenDispute(req, res, reliabilityId) {
       sendError(res, 401, 'AUTH_REQUIRED', 'Authentication is required');
       return;
     }
+    // A denied account (blocked/inactive) cannot open a dispute; checked before the
+    // record lookup so it also does not leak whether the record exists. A merely
+    // 'restricted' subject keeps this defensive affordance (canOpenReliabilityDispute).
+    if (!permissionService.canOpenReliabilityDispute(actor)) {
+      sendError(res, 403, 'DISPUTE_FORBIDDEN', 'Your account cannot open a dispute');
+      return;
+    }
     const found = await client.query(
       `select r.id, r.dispute_state, p.user_id as subject_user_id, p.entity_id as subject_entity_id
          from reliability_events r
@@ -398,7 +415,7 @@ export async function handleResolveDispute(req, res, reliabilityId) {
         'select role, status from entity_memberships where entity_id = $1 and user_id = $2 limit 1',
         [row.entity_id, actor.id]
       );
-      canResolve = permissionService.canManageEntity(actor, m.rows[0] || null);
+      canResolve = permissionService.canResolveReliabilityDispute(actor, m.rows[0] || null);
     }
     if (!canResolve) {
       sendError(res, 403, 'DISPUTE_RESOLVE_FORBIDDEN', 'You cannot resolve this dispute');
