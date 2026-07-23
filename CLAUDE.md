@@ -33,7 +33,7 @@ backend foundation (Node + PostgreSQL). Реальный write-слайс пок
    значения, дефолты, хранение. Старше списков осей в `Friends §Privacy settings` и
    `Lifecycle §2` — они ссылаются сюда, а не наоборот.
 8. `docs/handoff/spec/BandKit_Interface_Layout_Contract_v1_0.md` — разметка/шеллы.
-9. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_21_0.md` — где остановились.
+9. `docs/handoff/next-chat/BandKit_Next_Chat_Handoff_After_1_28_1.md` — где остановились.
 
 Аудиты (не источник истины, диагноз а не вердикт; читать после п. 6):
 `BandKit_Architecture_Review_v1.md` — полнота архитектуры по 34 доменам;
