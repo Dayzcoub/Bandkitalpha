@@ -1068,7 +1068,11 @@ export const localeBundles = {
       "people.message": "Message",
       "people.addFriend": "Add friend",
       "people.friendSent": "Friend request sent.",
-      "people.actionError": "Something went wrong. Please try again."
+      "people.actionError": "Something went wrong. Please try again.",
+      "people.requestsTitle": "Friend requests",
+      "people.accept": "Accept",
+      "people.decline": "Decline",
+      "people.nowFriends": "You are now friends."
     },
     "profile": {
       "profile.title": "Profile",
@@ -2216,7 +2220,11 @@ export const localeBundles = {
       "people.message": "Написать",
       "people.addFriend": "В друзья",
       "people.friendSent": "Заявка в друзья отправлена.",
-      "people.actionError": "Что-то пошло не так. Попробуйте ещё раз."
+      "people.actionError": "Что-то пошло не так. Попробуйте ещё раз.",
+      "people.requestsTitle": "Заявки в друзья",
+      "people.accept": "Принять",
+      "people.decline": "Отклонить",
+      "people.nowFriends": "Вы теперь друзья."
     },
     "profile": {
       "profile.title": "Профиль",

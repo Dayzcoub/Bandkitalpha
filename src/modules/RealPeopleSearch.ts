@@ -16,7 +16,7 @@ function navigateTo(path: string): void {
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
-async function api(path: string, method: 'GET' | 'POST', body?: unknown): Promise<{ status: number; data: any }> {
+async function api(path: string, method: 'GET' | 'POST' | 'DELETE', body?: unknown): Promise<{ status: number; data: any }> {
   try {
     const res = await fetch(`/api/v1${path}`, {
       method,
@@ -52,6 +52,34 @@ function setStatus(host: HTMLElement, message: string, tone = ''): void {
   if (el) { el.textContent = message; if (tone) el.dataset.tone = tone; else delete el.dataset.tone; }
 }
 
+interface FriendRequest { id: string; display_name: string; handle: string | null; }
+
+// Incoming friend requests, rendered above search so an invited user actually sees
+// (and can act on) the request — the only surface for it until a notifications
+// screen exists. `id` is the requester's user id: accepting is a reciprocal
+// request (POST), declining is DELETE, exactly as the friends endpoints expect.
+function requestsHtml(requests: FriendRequest[]): string {
+  if (!requests.length) return '';
+  const rows = requests.map((r) => {
+    const sub = r.handle ? `<span class="bk-state-copy">@${esc(r.handle)}</span>` : '';
+    return `<div class="bk-list-row"><div class="bk-list-row-main">`
+      + `<span class="bk-list-row-title">${esc(r.display_name)}</span>${sub}`
+      + `</div><div class="bk-action-row">`
+      + `<button class="bk-button bk-button-primary" type="button" data-people-accept="${esc(r.id)}">${esc(t('people.accept'))}</button>`
+      + `<button class="bk-button" type="button" data-people-decline="${esc(r.id)}">${esc(t('people.decline'))}</button>`
+      + `</div></div>`;
+  }).join('');
+  return `<div class="bk-card-section-head"><h4 class="bk-card-title">${esc(t('people.requestsTitle'))} (${requests.length})</h4></div>`
+    + `<div class="bk-list">${rows}</div>`;
+}
+
+async function loadRequests(host: HTMLElement): Promise<void> {
+  const box = host.querySelector<HTMLElement>('[data-people-requests]');
+  if (!box) return;
+  const { status, data } = await api('/me/friend-requests', 'GET');
+  box.innerHTML = status === 200 ? requestsHtml(data?.requests ?? []) : '';
+}
+
 function mount(host: HTMLElement): void {
   if (host.dataset.ready === '1') return;
   host.dataset.ready = '1';
@@ -60,10 +88,13 @@ function mount(host: HTMLElement): void {
   host.innerHTML = `<div class="bk-card-section-head"><div>`
     + `<h3 class="bk-card-title">${esc(t('people.title'))}</h3>`
     + `<p class="bk-state-copy">${esc(t('people.subtitle'))}</p></div></div>`
+    + `<div data-people-requests></div>`
     + `<label class="bk-field"><input class="bk-input" type="search" maxlength="80" autocomplete="off"`
     + ` placeholder="${esc(t('people.searchPlaceholder'))}" data-people-q /></label>`
     + `<div data-people-results><p class="bk-state-copy">${esc(t('people.hint'))}</p></div>`
     + `<p class="bk-state-copy" data-people-status role="status"></p>`;
+
+  void loadRequests(host);
 
   let timer: number | null = null;
   host.addEventListener('input', (event) => {
@@ -106,6 +137,34 @@ function mount(host: HTMLElement): void {
         setStatus(host, status === 200 || status === 201 ? t('people.friendSent') : t('people.actionError'),
           status === 200 || status === 201 ? 'positive' : 'critical');
       })();
+      return;
+    }
+
+    // Accept an incoming request — a reciprocal POST turns the pending row into
+    // an accepted friendship (backend 0026/0029).
+    const acceptBtn = target.closest<HTMLElement>('[data-people-accept]');
+    if (acceptBtn) {
+      event.preventDefault();
+      const id = acceptBtn.getAttribute('data-people-accept') || '';
+      void (async () => {
+        const { status } = await api(`/me/friends/${encodeURIComponent(id)}`, 'POST');
+        const ok = status === 200 || status === 201;
+        setStatus(host, ok ? t('people.nowFriends') : t('people.actionError'), ok ? 'positive' : 'critical');
+        if (ok) await loadRequests(host);
+      })();
+      return;
+    }
+
+    // Decline — DELETE. Neutral by the friends spec (the sender sees no explicit
+    // rejection), so no status message, just drop the row.
+    const declineBtn = target.closest<HTMLElement>('[data-people-decline]');
+    if (declineBtn) {
+      event.preventDefault();
+      const id = declineBtn.getAttribute('data-people-decline') || '';
+      void (async () => {
+        await api(`/me/friends/${encodeURIComponent(id)}`, 'DELETE');
+        await loadRequests(host);
+      })();
     }
   });
 }
@@ -119,4 +178,11 @@ function maybeMount(root: HTMLElement): void {
 export function initRealPeopleSearch(root: HTMLElement): void {
   maybeMount(root);
   new MutationObserver(() => maybeMount(root)).observe(root, { childList: true, subtree: true });
+  // Refresh incoming requests periodically so a request that arrives while the
+  // panel is open appears without re-navigating (polling, not realtime — same
+  // sanctioned mechanism as chat). No-op when the panel isn't mounted.
+  window.setInterval(() => {
+    const host = root.querySelector<HTMLElement>('[data-real-people-search]');
+    if (host && host.dataset.ready === '1' && !(typeof document !== 'undefined' && document.hidden)) void loadRequests(host);
+  }, 20000);
 }

@@ -8,5 +8,9 @@
   "people.message": "Message",
   "people.addFriend": "Add friend",
   "people.friendSent": "Friend request sent.",
-  "people.actionError": "Something went wrong. Please try again."
+  "people.actionError": "Something went wrong. Please try again.",
+  "people.requestsTitle": "Friend requests",
+  "people.accept": "Accept",
+  "people.decline": "Decline",
+  "people.nowFriends": "You are now friends."
 }

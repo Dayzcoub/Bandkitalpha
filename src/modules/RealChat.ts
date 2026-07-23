@@ -613,6 +613,18 @@ export function initRealChat(root: HTMLElement): void {
     suppressClick = false;
   });
 
+  // Enter sends; Shift+Enter keeps the newline, and an in-progress IME composition
+  // is never hijacked (Enter there commits the candidate, not the message).
+  root.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' || event.shiftKey || event.ctrlKey || event.metaKey || event.altKey || event.isComposing) return;
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target?.closest('[data-chat-body]')) return;
+    const send = root.querySelector<HTMLButtonElement>('[data-chat-send]');
+    if (!send) return;
+    event.preventDefault();
+    void sendCurrent(root, send);
+  });
+
   // Long-press a message bubble to open its menu on touch devices.
   root.addEventListener('pointerdown', (event) => {
     const target = event.target instanceof Element ? event.target : null;
