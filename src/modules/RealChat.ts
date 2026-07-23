@@ -163,7 +163,23 @@ function updatePinnedBar(thread: HTMLElement, pinned: Message[]): void {
     + `<span class="bk-real-pinned-text"><span class="bk-real-reply-author">${esc(t('chats.real.pinned'))}</span> ${esc(excerpt(last.body, 80))}</span>`;
 }
 
-async function populateThread(thread: HTMLElement, roomId: string): Promise<void> {
+// Signature of the rendered message set — id + edit time + pin flag per message.
+// Lets the background poll (populateThread with pollGuard) skip the whole DOM swap
+// when nothing changed, so it never flickers or fights the reader's scroll.
+let lastThreadSig = '';
+
+function threadSignature(messages: Message[]): string {
+  return messages.map((m) => `${m.id}:${m.edited_at || ''}:${m.is_pinned ? 1 : 0}`).join('|');
+}
+
+// opts.pollGuard  — a background refresh: bail out unless the messages actually
+//                   changed, and never clobber a loaded thread on a transient error.
+// opts.preserveScroll — keep the reader where they are unless they're at the bottom.
+async function populateThread(
+  thread: HTMLElement,
+  roomId: string,
+  opts: { pollGuard?: boolean; preserveScroll?: boolean } = {}
+): Promise<void> {
   const [myId, rooms, res] = await Promise.all([
     ensureMe(),
     ensureRooms(),
@@ -171,6 +187,18 @@ async function populateThread(thread: HTMLElement, roomId: string): Promise<void
   ]);
   const { status, data } = res;
   const isDirect = rooms.find((r) => r.id === roomId)?.type === 'direct';
+
+  // A background poll must never overwrite a good thread with an error, nor
+  // re-render when nothing moved.
+  if (opts.pollGuard && status !== 200) return;
+  const messages: Message[] = status === 200 ? (data?.messages ?? []) : [];
+  const sig = status === 200 ? threadSignature(messages) : '';
+  if (opts.pollGuard && sig === lastThreadSig) return;
+
+  // Capture scroll intent before the DOM changes: a reader scrolled up stays put;
+  // one already at the bottom follows new messages down.
+  const atBottom = thread.scrollHeight - thread.scrollTop - thread.clientHeight < 120;
+  const prevTop = thread.scrollTop;
 
   // Replace only the message cards / chrome, never the sticky composer that the
   // native decorators moved into the thread (wiping it caused the overlap bug).
@@ -182,7 +210,6 @@ async function populateThread(thread: HTMLElement, roomId: string): Promise<void
   if (status !== 200) {
     html = `<p class="bk-state-copy" data-real-error data-tone="error">${esc(t('chats.real.loadError'))}</p>`;
   } else {
-    const messages: Message[] = data?.messages ?? [];
     pinned = messages.filter((m) => m.is_pinned);
     // Show the sender name only when it changes: hidden in direct chats, and for
     // a run of consecutive messages from the same author (name on the first).
@@ -200,10 +227,12 @@ async function populateThread(thread: HTMLElement, roomId: string): Promise<void
   const composer = thread.querySelector('.bk-chat-composer-inside-thread, [data-chat-composer]');
   if (composer) composer.insertAdjacentHTML('beforebegin', html);
   else thread.insertAdjacentHTML('beforeend', html);
+  lastThreadSig = sig;
 
-  // Show the newest message: scroll the thread to the bottom (on open and after
-  // sending), so a just-sent message isn't left hidden behind the composer.
-  thread.scrollTop = thread.scrollHeight;
+  // On open/send/pin/delete, snap to the newest message. On a background poll,
+  // only follow down if the reader was already at the bottom.
+  if (opts.preserveScroll && !atBottom) thread.scrollTop = prevTop;
+  else thread.scrollTop = thread.scrollHeight;
 }
 
 // The caller's role in the currently open room, for gating moderation actions.
@@ -247,8 +276,34 @@ async function ensureRoomHeader(root: HTMLElement, roomId: string): Promise<void
     + `<div class="bk-meta">${esc(subtitle)}</div></div>`;
 }
 
+// Background polling for the open room — the sanctioned MVP mechanism for "new
+// messages arrive" without realtime (Decisions: REST + explicit refresh OR
+// periodic polling; WebSocket/SSE/presence stay post-MVP).
+//
+// The timer is a SINGLE persistent interval created in init, deliberately NOT
+// driven by the MutationObserver: three observers watch `root` (this one, the
+// composer placer, the empty-state decorator), and coupling a re-fetch to their
+// churn produced a burst every time the thread re-rendered. The tick is a cheap
+// no-op when no room is open.
+const POLL_MS = 4000;
+
+// Which room the thread currently shows — kept at module scope, NOT on the thread
+// element: the decorators disturb the element's dataset during their cascade, and
+// keying off that made `refresh` re-populate (and re-fetch) in a loop.
+let populatedRoom: string | null = null;
+
+async function pollTick(root: HTMLElement): Promise<void> {
+  // Idle in a hidden tab; don't yank an open context menu out from under a tap.
+  if (typeof document !== 'undefined' && document.hidden) return;
+  if (menuEl && !menuEl.hidden) return;
+  const roomId = roomIdFromPath();
+  const thread = root.querySelector<HTMLElement>('[data-real-thread]');
+  if (!roomId || !thread) return;
+  await populateThread(thread, roomId, { pollGuard: true, preserveScroll: true });
+}
+
 function refresh(root: HTMLElement): void {
-  if (document.documentElement.dataset.bandkitAuthed !== 'true') return;
+  if (document.documentElement.dataset.bandkitAuthed !== 'true') { populatedRoom = null; return; }
 
   root.querySelectorAll<HTMLElement>('[data-real-room-list]').forEach((list) => {
     if (list.dataset.realDone === '1') return;
@@ -258,10 +313,17 @@ function refresh(root: HTMLElement): void {
 
   const roomId = roomIdFromPath();
   const thread = root.querySelector<HTMLElement>('[data-real-thread]');
-  if (thread && roomId && thread.dataset.realRoom !== roomId) {
-    thread.dataset.realRoom = roomId;
-    void ensureRoomHeader(root, roomId);
-    void populateThread(thread, roomId);
+  if (thread && roomId) {
+    // Only the first render per room. Decorator-driven mutations re-enter refresh
+    // constantly; without a module-level guard each pass would re-populate.
+    if (populatedRoom !== roomId) {
+      populatedRoom = roomId;
+      thread.dataset.realRoom = roomId;
+      void ensureRoomHeader(root, roomId);
+      void populateThread(thread, roomId);
+    }
+  } else {
+    populatedRoom = null;
   }
 }
 
@@ -464,6 +526,8 @@ const LONG_PRESS_MS = 480;
 export function initRealChat(root: HTMLElement): void {
   refresh(root);
   new MutationObserver(() => refresh(root)).observe(root, { childList: true, subtree: true });
+  // One persistent poll for the app's life; a no-op when no chat room is open.
+  window.setInterval(() => { void pollTick(root); }, POLL_MS);
 
   let longPressTimer: number | null = null;
   let suppressClick = false;
